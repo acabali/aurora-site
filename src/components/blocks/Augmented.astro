@@ -1,0 +1,19 @@
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+import { home } from "../../content/home";
+const { augmented } = home;
+---
+
+<Section id="augmented">
+  <Container>
+    <div class="reveal block-augmented" style="text-align:center;max-width:36rem;margin-inline:auto;">
+      <h2 style="font-size:var(--text-2xl);font-weight:600;margin-bottom:var(--space-6);">{augmented.headline}</h2>
+      <div style="margin-bottom:var(--space-4);color:var(--muted);font-size:var(--text-sm);">
+        {augmented.not.map((line) => <p style="margin-bottom:var(--space-1);">{line}</p>)}
+      </div>
+      <p style="margin-bottom:var(--space-4);font-weight:500;">{augmented.is}</p>
+      <p style="font-size:var(--text-lg);font-weight:600;color:var(--fg);">{augmented.cta}</p>
+    </div>
+  </Container>
+</Section>

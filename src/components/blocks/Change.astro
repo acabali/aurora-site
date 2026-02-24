@@ -1,0 +1,17 @@
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+import { home } from "../../content/home";
+const { change } = home;
+---
+
+<Section id="change">
+  <Container>
+    <div class="reveal block-change">
+      <h2 style="font-size:var(--text-2xl);font-weight:600;margin-bottom:var(--space-4);">{change.headline}</h2>
+      <p style="color:var(--fg-muted);margin-bottom:var(--space-3);">{change.sub}</p>
+      <p style="margin-bottom:var(--space-3);">{change.thisEra}</p>
+      <p style="font-weight:500;color:var(--fg);">{change.notTrend}</p>
+    </div>
+  </Container>
+</Section>
