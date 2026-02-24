@@ -5,25 +5,77 @@ import { home } from "../../content/home";
 const { rupture } = home;
 ---
 
-<Section id="rupture">
+<Section id="rupture" class="block-split-wrap">
   <Container>
     <div class="reveal block-split" data-rupture>
-      <h2 style="font-size:var(--text-2xl);font-weight:600;margin-bottom:var(--space-6);">{rupture.headline}</h2>
-      <div class="rupture-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);margin-bottom:var(--space-6);">
-        <div class="rupture-col rupture-before" data-rupture-before style="padding:var(--space-6);border:1px solid var(--border);background:var(--before-bg);font-family:var(--font-mono);font-size:var(--text-sm);color:var(--fg-muted);">
-          <h3 style="font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-3);color:var(--fg);">{rupture.before.title}</h3>
-          {rupture.before.lines.map((line) => <p style="margin-bottom:var(--space-2);">{line}</p>)}
+      <h2 class="split-title">{rupture.headline}</h2>
+      <div class="rupture-grid">
+        <div class="rupture-col rupture-before" data-rupture-before>
+          <h3 class="rupture-col-title">{rupture.before.title}</h3>
+          {rupture.before.lines.map((line) => <p class="rupture-line">{line}</p>)}
         </div>
-        <div class="rupture-col rupture-now" data-rupture-now style="padding:var(--space-6);border:1px solid var(--border);background:var(--now-bg);font-size:var(--text-sm);">
-          <h3 style="font-size:var(--text-sm);font-weight:600;margin-bottom:var(--space-3);color:var(--fg);">{rupture.now.title}</h3>
-          {rupture.now.lines.map((line) => <p style="margin-bottom:var(--space-2);">{line}</p>)}
+        <div class="split-divider" data-rupture-divider aria-hidden="true"></div>
+        <div class="rupture-col rupture-now" data-rupture-now>
+          <h3 class="rupture-col-title">{rupture.now.title}</h3>
+          {rupture.now.lines.map((line) => <p class="rupture-line">{line}</p>)}
         </div>
       </div>
-      <p style="font-weight:500;color:var(--fg);">{rupture.close}</p>
+      <p class="split-close">{rupture.close}</p>
     </div>
   </Container>
 </Section>
 
 <style>
-  @media (max-width: 640px) { .rupture-grid { grid-template-columns: 1fr !important; } }
+  .block-split-wrap {
+    background: var(--bg-dark);
+    color: var(--fg-dark);
+  }
+  .block-split .split-title {
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    margin-bottom: var(--space-6);
+    color: var(--fg-dark);
+  }
+  .rupture-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: stretch;
+    margin-bottom: var(--space-6);
+  }
+  .rupture-col {
+    padding: var(--space-6);
+    font-size: var(--text-sm);
+  }
+  .rupture-before {
+    opacity: 0.85;
+    color: var(--gris-tecnico);
+  }
+  .rupture-before .rupture-col-title { color: var(--fg-dark); }
+  .rupture-now {
+    background: var(--now-bg);
+    color: var(--fg-dark);
+  }
+  .rupture-col-title {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+  }
+  .rupture-line { margin-bottom: var(--space-2); }
+  .split-divider {
+    width: 3px;
+    background: var(--accent);
+    align-self: stretch;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .split-divider { transform: scaleY(1); }
+  }
+  .split-close { font-weight: 500; color: var(--fg-dark); }
+  @media (max-width: 640px) {
+    .rupture-grid { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+    .split-divider { width: 100%; height: 3px; transform: scaleX(0); transform-origin: left; }
+    @media (prefers-reduced-motion: reduce) { .split-divider { transform: scaleX(1); } }
+  }
 </style>

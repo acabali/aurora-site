@@ -1,0 +1,25 @@
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+import { home } from "../../content/home";
+const { category } = home;
+---
+
+<Section id="category">
+  <Container>
+    <div class="reveal block-category">
+      <h2 style="font-size:var(--text-xl);font-weight:600;margin-bottom:var(--space-4);">{category.title}</h2>
+      <p style="margin-bottom:var(--space-2);color:var(--fg);">{category.line1}</p>
+      <p style="font-weight:500;color:var(--fg);">{category.line2}</p>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .block-category {
+    border: 1px solid var(--gris-tecnico);
+    background: var(--bg);
+    padding: var(--space-10) var(--space-8);
+    border-radius: var(--radius-md);
+  }
+</style>

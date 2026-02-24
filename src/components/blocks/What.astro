@@ -8,15 +8,26 @@ const { what } = home;
 <Section id="what">
   <Container>
     <div class="reveal block-what">
-      <h2 style="font-size:var(--text-2xl);font-weight:600;margin-bottom:var(--space-6);">{what.headline}</h2>
-      <ul style="list-style:none;margin-bottom:var(--space-6);">
+      <h2 class="block-head">{what.headline}</h2>
+      <div class="what-grid">
         {what.items.map((item) => (
-          <li style="margin-bottom:var(--space-3);padding-left:var(--space-4);position:relative;">
-            <span style="position:absolute;left:0;color:var(--muted);">—</span>{item}
-          </li>
+          <p class="what-item">{item}</p>
         ))}
-      </ul>
-      <p style="font-weight:500;color:var(--fg);">{what.close}</p>
+      </div>
+      <p class="block-close">{what.close}</p>
     </div>
   </Container>
 </Section>
+
+<style>
+  .block-what .block-head { font-size: var(--text-2xl); font-weight: 600; margin-bottom: var(--space-8); }
+  .what-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6) var(--space-10);
+    margin-bottom: var(--space-10);
+  }
+  .what-item { margin-bottom: 0; color: var(--fg-muted); font-size: var(--text-sm); }
+  .block-what .block-close { font-weight: 500; color: var(--fg); }
+  @media (max-width: 640px) { .what-grid { grid-template-columns: 1fr; } }
+</style>

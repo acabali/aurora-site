@@ -5,26 +5,39 @@ import { home } from "../../content/home";
 const { binary } = home;
 ---
 
-<Section id="binary">
+<Section id="binary" class="block-binary-wrap">
   <Container>
     <div class="reveal block-binary">
       <h2 style="font-size:var(--text-2xl);font-weight:600;margin-bottom:var(--space-4);">{binary.headline}</h2>
-      <p style="color:var(--fg-muted);margin-bottom:var(--space-6);">{binary.intro}</p>
-      <div class="binary-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6);margin-bottom:var(--space-6);">
-        <div style="padding:var(--space-4);border:1px solid var(--border);border-radius:var(--radius-md);">
+      <p style="color:var(--muted);margin-bottom:var(--space-6);">{binary.intro}</p>
+      <div class="binary-grid">
+        <div class="binary-card">
           <h3 style="font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-2);">{binary.administer.title}</h3>
-          <p style="color:var(--fg-muted);font-size:var(--text-sm);">{binary.administer.body}</p>
+          <p style="color:var(--muted);font-size:var(--text-sm);">{binary.administer.body}</p>
         </div>
-        <div style="padding:var(--space-4);border:1px solid var(--border);border-radius:var(--radius-md);">
+        <div class="binary-card">
           <h3 style="font-size:var(--text-lg);font-weight:600;margin-bottom:var(--space-2);">{binary.augment.title}</h3>
-          <p style="color:var(--fg-muted);font-size:var(--text-sm);">{binary.augment.body}</p>
+          <p style="color:var(--muted);font-size:var(--text-sm);">{binary.augment.body}</p>
         </div>
       </div>
-      {binary.close.map((p) => <p style="margin-bottom:var(--space-2);font-weight:500;color:var(--fg);">{p}</p>)}
+      {binary.close.map((p) => <p class="binary-close">{p}</p>)}
     </div>
   </Container>
 </Section>
 
 <style>
-  @media (max-width: 640px) { .binary-grid { grid-template-columns: 1fr !important; } }
+  .block-binary-wrap { border-top: 1px solid var(--border); }
+  .binary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+  .binary-card {
+    padding: var(--space-6);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+  }
+  .binary-close { margin-bottom: var(--space-2); font-weight: 500; color: var(--fg); }
+  @media (max-width: 640px) { .binary-grid { grid-template-columns: 1fr; } }
 </style>

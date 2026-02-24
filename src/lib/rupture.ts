@@ -1,7 +1,6 @@
 /**
- * Ruptura (Split block): GSAP ScrollTrigger
- * Antes → aparece; Ahora → aparece con leve delay.
- * once: true, sin scrub, sin parallax. Respeta prefers-reduced-motion.
+ * Ruptura: GSAP ScrollTrigger — Antes/Ahora + divider (altura 0→100%).
+ * once: true, sin scrub. Si prefers-reduced-motion: línea sin animación (CSS).
  */
 
 export function mountRupture(): void {
@@ -17,31 +16,30 @@ export function mountRupture(): void {
 
       const before = el.querySelector("[data-rupture-before]");
       const now = el.querySelector("[data-rupture-now]");
-      if (!before || !now) return;
+      const divider = el.querySelector("[data-rupture-divider]");
+
+      const st = { trigger: el, start: "top 85%", once: true };
 
       gsap.fromTo(
         before,
         { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
-        }
+        { opacity: 0.85, y: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st }
       );
       gsap.fromTo(
         now,
         { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.5,
-          ease: "power2.out",
-          delay: 0.15,
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
-        }
+        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.15, scrollTrigger: st }
       );
+      if (divider) {
+        const isNarrow = window.innerWidth < 641;
+        gsap.fromTo(
+          divider,
+          isNarrow ? { scaleX: 0 } : { scaleY: 0 },
+          isNarrow
+            ? { scaleX: 1, duration: 0.4, ease: "power2.out", scrollTrigger: st }
+            : { scaleY: 1, duration: 0.4, ease: "power2.out", scrollTrigger: st }
+        );
+      }
     });
   });
 }

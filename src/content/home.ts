@@ -8,7 +8,12 @@ export const home = {
     sub: "Las empresas ya no crecen por intuición. Crecen cuando cada movimiento es diseñado, probado y validado antes de ejecutarse.",
     value: "Aurora combina modelado avanzado e inteligencia artificial aplicada para convertir ideas, diseño, marketing y expansión en decisiones estructuradas.",
     democratize: "Internet democratizó la información. Aurora democratiza la capacidad estratégica.",
-    cta: "Contactar",
+    cta: "Modelar una decisión",
+  },
+  category: {
+    title: "Arquitectura de Decisiones",
+    line1: "Aurora no es consultoría. No es software. No es automatización.",
+    line2: "Es la capacidad de estructurar decisiones antes de ejecutarlas.",
   },
   change: {
     headline: "Qué está cambiando",
@@ -69,8 +74,12 @@ export const home = {
   },
   augmented: {
     headline: "Empresa Aumentada",
-    not: ["No es software.", "No es agencia.", "No es automatización."],
-    is: "Es una nueva forma de administrar y construir.",
-    cta: "La Empresa Aumentada.",
+    bullets: [
+      "Modela antes de invertir",
+      "Valida antes de escalar",
+      "Integra marketing, diseño, expansión y costos bajo un mismo sistema",
+      "Reduce arbitrariedad estructural",
+    ],
+    close: "No agrega herramientas. Agrega capacidad.",
   },
 } as const;
