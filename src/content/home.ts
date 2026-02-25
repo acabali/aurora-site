@@ -5,7 +5,7 @@
 export const home = {
   hero: {
     headline: "La era de construir con evidencia.",
-    sub: "Las empresas ya no crecen por intuición. Crecen cuando cada movimiento es diseñado, probado y validado antes de ejecutarse.",
+    sub: "Aurora convierte decisiones empresariales en procesos verificables mediante inteligencia artificial, modelado estructural avanzado y análisis histórico.",
     value: "Aurora combina modelado avanzado e inteligencia artificial aplicada para convertir ideas, diseño, marketing y expansión en decisiones estructuradas.",
     democratize: "Internet democratizó la información. Aurora democratiza la capacidad estratégica.",
     cta: "Modelar una decisión",
@@ -14,6 +14,12 @@ export const home = {
     title: "Arquitectura de Decisiones",
     line1: "Aurora no es consultoría. No es software. No es automatización.",
     line2: "Es la capacidad de estructurar decisiones antes de ejecutarlas.",
+  },
+  problem: {
+    title: "El problema real",
+    line1: "Las empresas no fallan por falta de esfuerzo.",
+    line2: "Fallan por decisiones tomadas con información fragmentada.",
+    line3: "Aurora reduce arbitrariedad: modela, contrasta y valida antes de ejecutar.",
   },
   change: {
     headline: "Qué está cambiando",
@@ -74,6 +80,10 @@ export const home = {
   },
   augmented: {
     headline: "Empresa Aumentada",
+    lead: [
+      "Una Empresa Aumentada opera con capacidad estratégica integrada.",
+      "Decide con rigor verificable antes de comprometer recursos.",
+    ],
     bullets: [
       "Modela antes de invertir",
       "Valida antes de escalar",
