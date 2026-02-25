@@ -20,16 +20,20 @@ export function mountRupture(): void {
 
       const st = { trigger: el, start: "top 85%", once: true };
 
-      gsap.fromTo(
-        before,
-        { opacity: 0, y: 10 },
-        { opacity: 0.85, y: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st }
-      );
-      gsap.fromTo(
-        now,
-        { opacity: 0, y: 10 },
-        { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.15, scrollTrigger: st }
-      );
+      if (before) {
+        gsap.fromTo(
+          before,
+          { opacity: 0, y: 10 },
+          { opacity: 0.85, y: 0, duration: 0.5, ease: "power2.out", scrollTrigger: st }
+        );
+      }
+      if (now) {
+        gsap.fromTo(
+          now,
+          { opacity: 0, y: 10 },
+          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out", delay: 0.15, scrollTrigger: st }
+        );
+      }
       if (divider) {
         const isNarrow = window.innerWidth < 641;
         gsap.fromTo(
