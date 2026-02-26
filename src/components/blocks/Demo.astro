@@ -6,7 +6,7 @@ const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
 
 <Section id="demo" class="block-demo-wrap">
   <Container>
-    <div id="demo-root" class="demo-root" data-lead-endpoint={leadEndpoint}></div>
+    <div id="demo-root" class="demo-root" data-lead-endpoint={leadEndpoint || "not_configured"}={leadEndpoint}></div>
   </Container>
 </Section>
 
