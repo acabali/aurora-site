@@ -35,7 +35,6 @@ main { padding-top: 1rem; }
 #demo { scroll-margin-top: 6rem; }
 /* Reset limpio + tipografía base + reveal + prefers-reduced-motion */
 
-@import
 *,
 *::before,
 *::after {
