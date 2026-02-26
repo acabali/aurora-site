@@ -60,12 +60,14 @@ export const demo = {
     howLine2:
       "Cuando dos fuerzas se activan a la vez, Aurora marca dónde aparece el costo oculto antes de que se vea en caja.",
     cta: "Hablar con Aurora",
+    ctaUnavailable: "No disponible",
     ctaSub: "Si querés que lo modelemos con tus datos reales, lo hacemos en una llamada.",
   },
   validation: {
     required: "Completá todos los campos obligatorios.",
     email: "Ingresá un email válido.",
     corporate: "Preferimos correo corporativo para devolver el análisis.",
+    endpointMissing: "Endpoint no configurado",
   },
   analyzing: "Analizando interacción…",
   continue: "Continuar",

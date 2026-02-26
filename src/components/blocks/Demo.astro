@@ -1,7 +1,7 @@
 ---
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
-const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
+const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
 ---
 
 <Section id="demo" class="block-demo-wrap">
@@ -105,6 +105,11 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
     color: var(--muted);
     margin: var(--space-2) 0 var(--space-3);
   }
+  .demo-warning {
+    font-size: var(--text-sm);
+    color: var(--muted);
+    margin: var(--space-2) 0 var(--space-3);
+  }
   .demo-root .demo-submit {
     margin-top: var(--space-8);
     padding: var(--space-3) var(--space-6);
@@ -116,6 +121,10 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
     cursor: pointer;
     border-radius: var(--radius-md);
     width: 100%;
+  }
+  .demo-root .demo-submit[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
   .demo-root .demo-analyzing {
     text-align: center;
@@ -182,6 +191,7 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
 
   const EXECUTED_KEY = "aurora_demo_executed";
   const FINGERPRINT_KEY = "aurora_demo_fingerprint";
+  const SESSION_KEY = "aurora_demo_session_id";
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const FREE_DOMAINS = new Set(["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"]);
 
@@ -193,6 +203,18 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
 
   function domainFromEmail(email: string): string {
     return email.toLowerCase().split("@")[1] ?? "";
+  }
+
+  function getSessionId(): string {
+    try {
+      const existing = localStorage.getItem(SESSION_KEY);
+      if (existing) return existing;
+      const created = `s_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
+      localStorage.setItem(SESSION_KEY, created);
+      return created;
+    } catch {
+      return `s_${Date.now()}`;
+    }
   }
 
   function renderAlreadyExecuted(root: HTMLElement) {
@@ -227,7 +249,9 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
         country: string;
         industry: string;
         size: string;
-        email: string;
+        emailDomain: string;
+        ts: string;
+        sessionId: string;
       };
       scenario?: DemoScenario;
       signalA?: SignalA;
@@ -282,11 +306,13 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
           </div>
 
           <p class="demo-error" id="demo-context-error" style="display:none;"></p>
+          <p class="demo-warning" id="demo-context-warning" style="display:none;"></p>
           <button type="button" class="demo-submit" id="demo-context-submit">${demo.continue}</button>
         </div>
       `;
 
       const err = root.querySelector("#demo-context-error") as HTMLElement;
+      const warn = root.querySelector("#demo-context-warning") as HTMLElement;
       root.querySelector("#demo-context-submit")?.addEventListener("click", () => {
         const name = (root.querySelector("#demo-name") as HTMLInputElement)?.value.trim();
         const company = (root.querySelector("#demo-company") as HTMLInputElement)?.value.trim();
@@ -305,17 +331,21 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
           err.style.display = "block";
           return;
         }
-        if (FREE_DOMAINS.has(domainFromEmail(email))) {
-          err.textContent = demo.validation.corporate;
-          err.style.display = "block";
-          return;
-        }
         err.style.display = "none";
+        const emailDomain = domainFromEmail(email);
+        if (FREE_DOMAINS.has(emailDomain)) {
+          warn.textContent = demo.validation.corporate;
+          warn.style.display = "block";
+        } else {
+          warn.style.display = "none";
+        }
         emit("demo_started");
         emit("demo_step1_completed");
         emit("email_submitted");
+        const ts = String(Date.now());
+        const sessionId = getSessionId();
         render(root, "scenario", {
-          lead: { name, company, country, industry, size, email },
+          lead: { name, company, country, industry, size, emailDomain, ts, sessionId },
         });
       });
       return;
@@ -438,18 +468,6 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
             localStorage.setItem(EXECUTED_KEY, "1");
             localStorage.setItem(FINGERPRINT_KEY, fp);
           } catch {}
-          void sendLead((root.dataset.leadEndpoint ?? "").trim(), {
-            name: data.lead!.name,
-            company: data.lead!.company,
-            country: data.lead!.country,
-            industry: data.lead!.industry,
-            size: data.lead!.size,
-            email: data.lead!.email,
-            scenarioId: data.scenario!,
-            signalA,
-            signalB,
-            timestamp: String(ts),
-          });
           emit("demo_result_viewed");
           render(root, "result", {
             lead: data.lead,
@@ -466,6 +484,8 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
     }
 
     if (state === "result" && data?.lines) {
+      const endpoint = (root.dataset.leadEndpoint ?? "").trim();
+      const endpointReady = endpoint.length > 0;
       root.innerHTML = `
         <div class="demo-result">
           <h2 class="demo-title">${demo.result.title}</h2>
@@ -477,7 +497,10 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
             <p>${demo.result.howLine1}</p>
             <p>${demo.result.howLine2}</p>
           </div>
-          <a class="demo-submit" href="/#contacto">${demo.result.cta}</a>
+          <button type="button" class="demo-submit" id="demo-talk" ${endpointReady ? "" : "disabled"}>
+            ${endpointReady ? demo.result.cta : demo.result.ctaUnavailable}
+          </button>
+          ${endpointReady ? "" : `<p class="demo-warning">${demo.validation.endpointMissing}</p>`}
           <p class="demo-cta-sub">${demo.result.ctaSub}</p>
         </div>
       `;
@@ -488,6 +511,20 @@ const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
         setTimeout(() => {
           el.classList.add("visible");
         }, reduceMotion ? 0 : i * delay);
+      });
+
+      root.querySelector("#demo-talk")?.addEventListener("click", async () => {
+        if (!endpointReady || !data.lead) return;
+        await sendLead(endpoint, {
+          name: data.lead.name,
+          company: data.lead.company,
+          country: data.lead.country,
+          industry: data.lead.industry,
+          email_domain: data.lead.emailDomain,
+          ts: data.lead.ts,
+          session_id: data.lead.sessionId,
+        });
+        window.location.href = "/#contacto";
       });
     }
   }
