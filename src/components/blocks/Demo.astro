@@ -1,11 +1,12 @@
 ---
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
+const leadEndpoint = import.meta.env.DEMO_LEAD_ENDPOINT ?? "";
 ---
 
 <Section id="demo" class="block-demo-wrap">
   <Container>
-    <div id="demo-root" class="demo-root"></div>
+    <div id="demo-root" class="demo-root" data-lead-endpoint={leadEndpoint}></div>
   </Container>
 </Section>
 
@@ -18,15 +19,68 @@ import Section from "../ui/Section.astro";
     max-width: 28rem;
     margin-inline: auto;
   }
-  .demo-root .demo-question {
-    margin-bottom: var(--space-6);
+  .demo-title {
+    font-size: var(--text-2xl);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-4);
   }
-  .demo-root .demo-question label {
+  .demo-subtitle {
+    color: var(--muted);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--space-3);
+  }
+  .demo-note {
+    color: var(--muted);
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-8);
+  }
+  .demo-field {
+    margin-bottom: var(--space-5);
+  }
+  .demo-field label,
+  .demo-question label {
     display: block;
     font-size: var(--text-sm);
     color: var(--fg);
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-2);
     line-height: var(--leading-normal);
+  }
+  .demo-field input,
+  .demo-field select {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--fg);
+  }
+  .demo-question {
+    margin-bottom: var(--space-6);
+  }
+  .demo-scenario-list {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .demo-scenario-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: var(--space-4);
+    cursor: pointer;
+    background: #fff;
+  }
+  .demo-scenario-card[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: rgba(37, 99, 235, 0.06);
+  }
+  .demo-scenario-title {
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
+    margin-bottom: var(--space-2);
+  }
+  .demo-scenario-hint {
+    color: var(--muted);
+    font-size: var(--text-sm);
   }
   .demo-root .demo-toggle-group {
     display: flex;
@@ -46,6 +100,11 @@ import Section from "../ui/Section.astro";
     border-color: var(--accent);
     background: rgba(37, 99, 235, 0.08);
   }
+  .demo-error {
+    font-size: var(--text-sm);
+    color: var(--muted);
+    margin: var(--space-2) 0 var(--space-3);
+  }
   .demo-root .demo-submit {
     margin-top: var(--space-8);
     padding: var(--space-3) var(--space-6);
@@ -64,26 +123,25 @@ import Section from "../ui/Section.astro";
     font-size: var(--text-sm);
     padding: var(--space-12) 0;
   }
-  .demo-root .demo-email-wrap {
-    margin-top: var(--space-6);
+  .demo-how {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid var(--border);
   }
-  .demo-root .demo-email-wrap input {
-    width: 100%;
-    padding: var(--space-3) var(--space-4);
+  .demo-how h3 {
     font-size: var(--text-base);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--fg);
-    border-radius: var(--radius-md);
-    box-sizing: border-box;
+    margin-bottom: var(--space-3);
   }
-  .demo-root .demo-email-wrap input::placeholder {
-    color: var(--muted);
-  }
-  .demo-root .demo-email-error {
+  .demo-how p {
     font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
     color: var(--muted);
-    margin-top: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+  .demo-cta-sub {
+    color: var(--muted);
+    font-size: var(--text-sm);
+    margin-top: var(--space-3);
   }
   .demo-root .demo-result-line {
     opacity: 0;
@@ -114,11 +172,18 @@ import Section from "../ui/Section.astro";
 
 <script>
   import { demo } from "../../content/demo";
-  import { evaluateDecision } from "../../lib/demoEngine";
+  import {
+    evaluateDecision,
+    type DemoScenario,
+    type SignalA,
+    type SignalB,
+  } from "../../lib/demoEngine";
   import { createFingerprint, saveFingerprint } from "../../lib/demoFingerprint";
 
   const EXECUTED_KEY = "aurora_demo_executed";
+  const FINGERPRINT_KEY = "aurora_demo_fingerprint";
   const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const FREE_DOMAINS = new Set(["gmail.com", "yahoo.com", "hotmail.com", "outlook.com"]);
 
   function emit(name: string) {
     try {
@@ -126,68 +191,271 @@ import Section from "../ui/Section.astro";
     } catch {}
   }
 
+  function domainFromEmail(email: string): string {
+    return email.toLowerCase().split("@")[1] ?? "";
+  }
+
   function renderAlreadyExecuted(root: HTMLElement) {
     root.innerHTML = `
       <div class="demo-already">
-        <h3>${demo.alreadyExecuted}</h3>
-        <p>${demo.alreadyExecutedSub}</p>
+        <h3>${demo.executed.title}</h3>
+        <p>${demo.executed.sub}</p>
       </div>
     `;
   }
 
+  async function sendLead(endpoint: string, lead: Record<string, string>) {
+    if (!endpoint) return;
+    try {
+      await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lead),
+      });
+    } catch {
+      // no-op
+    }
+  }
+
   function render(
     root: HTMLElement,
-    state: "form" | "analyzing" | "email" | "result" | "already",
-    data?: { answers?: [boolean, boolean, boolean]; email?: string; lines?: [string, string, string] }
+    state: "context" | "scenario" | "signals" | "analyzing" | "result" | "already",
+    data?: {
+      lead?: {
+        name: string;
+        company: string;
+        country: string;
+        industry: string;
+        size: string;
+        email: string;
+      };
+      scenario?: DemoScenario;
+      signalA?: SignalA;
+      signalB?: SignalB;
+      lines?: [string, string, string];
+    }
   ) {
     if (state === "already") {
       renderAlreadyExecuted(root);
       return;
     }
 
-    if (state === "form") {
+    if (state === "context") {
       root.innerHTML = `
-        <div class="demo-form">
-          ${demo.questions
-            .map(
-              (q, i) => `
-            <div class="demo-question" data-q="${i}">
-              <label>${q}</label>
-              <div class="demo-toggle-group" role="group" aria-label="Sí o No">
-                <button type="button" class="demo-toggle" data-answer="true" aria-pressed="false">Sí</button>
-                <button type="button" class="demo-toggle" data-answer="false" aria-pressed="false">No</button>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-          <button type="button" class="demo-submit" id="demo-submit">Continuar</button>
+        <div class="demo-step">
+          <h2 class="demo-title">${demo.context.title}</h2>
+          <p class="demo-subtitle">${demo.context.subtitle}</p>
+          <p class="demo-note">${demo.context.note}</p>
+
+          <div class="demo-field">
+            <label>${demo.context.fields.name}</label>
+            <input id="demo-name" type="text" />
+          </div>
+          <div class="demo-field">
+            <label>${demo.context.fields.company}</label>
+            <input id="demo-company" type="text" />
+          </div>
+          <div class="demo-field">
+            <label>${demo.context.fields.country}</label>
+            <select id="demo-country">
+              <option value="">Seleccionar</option>
+              ${demo.context.countries.map((v) => `<option value="${v}">${v}</option>`).join("")}
+            </select>
+          </div>
+          <div class="demo-field">
+            <label>${demo.context.fields.industry}</label>
+            <select id="demo-industry">
+              <option value="">Seleccionar</option>
+              ${demo.context.industries.map((v) => `<option value="${v}">${v}</option>`).join("")}
+            </select>
+          </div>
+          <div class="demo-field">
+            <label>${demo.context.fields.size}</label>
+            <select id="demo-size">
+              <option value="">Seleccionar</option>
+              ${demo.context.sizes.map((v) => `<option value="${v}">${v}</option>`).join("")}
+            </select>
+          </div>
+          <div class="demo-field">
+            <label>${demo.context.fields.email}</label>
+            <input id="demo-email" type="email" />
+          </div>
+
+          <p class="demo-error" id="demo-context-error" style="display:none;"></p>
+          <button type="button" class="demo-submit" id="demo-context-submit">${demo.continue}</button>
         </div>
       `;
 
-      const toggles = root.querySelectorAll(".demo-toggle");
-      const answers: (boolean | null)[] = [null, null, null];
-      toggles.forEach((btn) => {
+      const err = root.querySelector("#demo-context-error") as HTMLElement;
+      root.querySelector("#demo-context-submit")?.addEventListener("click", () => {
+        const name = (root.querySelector("#demo-name") as HTMLInputElement)?.value.trim();
+        const company = (root.querySelector("#demo-company") as HTMLInputElement)?.value.trim();
+        const country = (root.querySelector("#demo-country") as HTMLSelectElement)?.value;
+        const industry = (root.querySelector("#demo-industry") as HTMLSelectElement)?.value;
+        const size = (root.querySelector("#demo-size") as HTMLSelectElement)?.value;
+        const email = (root.querySelector("#demo-email") as HTMLInputElement)?.value.trim();
+
+        if (!name || !company || !country || !industry || !size || !email) {
+          err.textContent = demo.validation.required;
+          err.style.display = "block";
+          return;
+        }
+        if (!EMAIL_REGEX.test(email)) {
+          err.textContent = demo.validation.email;
+          err.style.display = "block";
+          return;
+        }
+        if (FREE_DOMAINS.has(domainFromEmail(email))) {
+          err.textContent = demo.validation.corporate;
+          err.style.display = "block";
+          return;
+        }
+        err.style.display = "none";
+        emit("demo_started");
+        emit("demo_step1_completed");
+        emit("email_submitted");
+        render(root, "scenario", {
+          lead: { name, company, country, industry, size, email },
+        });
+      });
+      return;
+    }
+
+    if (state === "scenario" && data?.lead) {
+      root.innerHTML = `
+        <div class="demo-step">
+          <h2 class="demo-title">${demo.scenario.title}</h2>
+          <div class="demo-scenario-list">
+            ${demo.scenario.options
+              .map(
+                (item) => `
+              <button type="button" class="demo-scenario-card" data-scenario="${item.id}" aria-pressed="false">
+                <div class="demo-scenario-title">${item.title}</div>
+                <div class="demo-scenario-hint">${item.hint}</div>
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+          <p class="demo-error" id="demo-scenario-error" style="display:none;">${demo.validation.required}</p>
+          <button type="button" class="demo-submit" id="demo-scenario-submit">${demo.continue}</button>
+        </div>
+      `;
+      let selected: DemoScenario | null = null;
+      root.querySelectorAll(".demo-scenario-card").forEach((card) => {
+        card.addEventListener("click", () => {
+          selected = card.getAttribute("data-scenario") as DemoScenario;
+          root
+            .querySelectorAll(".demo-scenario-card")
+            .forEach((c) => c.setAttribute("aria-pressed", "false"));
+          card.setAttribute("aria-pressed", "true");
+        });
+      });
+      const err = root.querySelector("#demo-scenario-error") as HTMLElement;
+      root.querySelector("#demo-scenario-submit")?.addEventListener("click", () => {
+        if (!selected) {
+          err.style.display = "block";
+          return;
+        }
+        err.style.display = "none";
+        render(root, "signals", { lead: data.lead, scenario: selected });
+      });
+      return;
+    }
+
+    if (state === "signals" && data?.lead && data.scenario) {
+      root.innerHTML = `
+        <div class="demo-step">
+          <h2 class="demo-title">${demo.signals.title}</h2>
+
+          <div class="demo-question">
+            <label>${demo.signals.a.label}</label>
+            <div class="demo-toggle-group">
+              <button type="button" class="demo-toggle" data-signal-a="late-collection" aria-pressed="false">${demo.signals.a.options[0]}</button>
+              <button type="button" class="demo-toggle" data-signal-a="early-collection" aria-pressed="false">${demo.signals.a.options[1]}</button>
+            </div>
+          </div>
+
+          <div class="demo-question">
+            <label>${demo.signals.b.label}</label>
+            <div class="demo-toggle-group">
+              <button type="button" class="demo-toggle" data-signal-b="quality-time" aria-pressed="false">${demo.signals.b.options[0]}</button>
+              <button type="button" class="demo-toggle" data-signal-b="control-visibility" aria-pressed="false">${demo.signals.b.options[1]}</button>
+            </div>
+          </div>
+
+          <p class="demo-error" id="demo-signals-error" style="display:none;">${demo.validation.required}</p>
+          <button type="button" class="demo-submit" id="demo-signals-submit">${demo.continue}</button>
+        </div>
+      `;
+      let signalA: SignalA | null = null;
+      let signalB: SignalB | null = null;
+      root.querySelectorAll("[data-signal-a]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          const group = btn.closest(".demo-question");
-          const qIndex = parseInt(group?.getAttribute("data-q") ?? "0", 10);
-          const value = btn.getAttribute("data-answer") === "true";
-          answers[qIndex] = value;
-          group?.querySelectorAll(".demo-toggle").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          signalA = btn.getAttribute("data-signal-a") as SignalA;
+          root.querySelectorAll("[data-signal-a]").forEach((b) => b.setAttribute("aria-pressed", "false"));
           btn.setAttribute("aria-pressed", "true");
         });
       });
-
-      root.querySelector("#demo-submit")?.addEventListener("click", () => {
-        const a0 = answers[0] !== null ? answers[0] : false;
-        const a1 = answers[1] !== null ? answers[1] : false;
-        const a2 = answers[2] !== null ? answers[2] : false;
-        const tuple: [boolean, boolean, boolean] = [a0, a1, a2];
-        emit("demo_started");
-        render(root, "analyzing", { answers: tuple });
+      root.querySelectorAll("[data-signal-b]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          signalB = btn.getAttribute("data-signal-b") as SignalB;
+          root.querySelectorAll("[data-signal-b]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          btn.setAttribute("aria-pressed", "true");
+        });
+      });
+      const err = root.querySelector("#demo-signals-error") as HTMLElement;
+      root.querySelector("#demo-signals-submit")?.addEventListener("click", () => {
+        if (!signalA || !signalB) {
+          err.style.display = "block";
+          return;
+        }
+        err.style.display = "none";
+        render(root, "analyzing", { lead: data.lead, scenario: data.scenario, signalA, signalB });
         setTimeout(() => {
-          render(root, "email", { answers: tuple });
-        }, 1200);
+          const evaluated = evaluateDecision({
+            country: data.lead!.country,
+            industry: data.lead!.industry,
+            size: data.lead!.size,
+            scenario: data.scenario!,
+            signalA,
+            signalB,
+          });
+          const ts = Date.now();
+          const fp = createFingerprint(
+            {
+              country: data.lead!.country,
+              industry: data.lead!.industry,
+              size: data.lead!.size,
+              scenario: data.scenario!,
+              signalA,
+              signalB,
+            },
+            ts
+          );
+          saveFingerprint(fp);
+          try {
+            localStorage.setItem(EXECUTED_KEY, "1");
+            localStorage.setItem(FINGERPRINT_KEY, fp);
+          } catch {}
+          void sendLead((root.dataset.leadEndpoint ?? "").trim(), {
+            name: data.lead!.name,
+            company: data.lead!.company,
+            country: data.lead!.country,
+            industry: data.lead!.industry,
+            size: data.lead!.size,
+            email: data.lead!.email,
+            scenarioId: data.scenario!,
+            signalA,
+            signalB,
+            timestamp: String(ts),
+          });
+          emit("demo_result_viewed");
+          render(root, "result", {
+            lead: data.lead,
+            lines: [evaluated.line1, evaluated.line2, evaluated.line3],
+          });
+        }, 900);
       });
       return;
     }
@@ -197,47 +465,20 @@ import Section from "../ui/Section.astro";
       return;
     }
 
-    if (state === "email" && data?.answers) {
-      root.innerHTML = `
-        <div class="demo-email-wrap">
-          <input type="email" id="demo-email" placeholder="${demo.emailPlaceholder}" autocomplete="email" />
-          <p class="demo-email-error" id="demo-email-error" style="display:none;">${demo.emailRequired}</p>
-          <button type="button" class="demo-submit" id="demo-email-submit" style="margin-top:var(--space-4);">Ver resultado</button>
-        </div>
-      `;
-      const input = root.querySelector("#demo-email") as HTMLInputElement;
-      const err = root.querySelector("#demo-email-error") as HTMLElement;
-      root.querySelector("#demo-email-submit")?.addEventListener("click", () => {
-        const email = input?.value?.trim() ?? "";
-        if (!EMAIL_REGEX.test(email)) {
-          err?.style.setProperty("display", "block");
-          return;
-        }
-        err?.style.setProperty("display", "none");
-        emit("email_submitted");
-        const { vulnerability } = evaluateDecision({
-          category: demo.category,
-          answers: data.answers,
-        });
-        const ts = Date.now();
-        saveFingerprint(createFingerprint(demo.category, data.answers, ts));
-        try {
-          localStorage.setItem(EXECUTED_KEY, "true");
-        } catch {}
-        emit("demo_completed");
-        render(root, "result", {
-          lines: [vulnerability.line1, vulnerability.line2, vulnerability.line3],
-        });
-      });
-      return;
-    }
-
     if (state === "result" && data?.lines) {
       root.innerHTML = `
         <div class="demo-result">
+          <h2 class="demo-title">${demo.result.title}</h2>
           <p class="demo-result-line" data-line="0">${data.lines[0]}</p>
           <p class="demo-result-line" data-line="1">${data.lines[1]}</p>
           <p class="demo-result-line" data-line="2">${data.lines[2]}</p>
+          <div class="demo-how">
+            <h3>${demo.result.howTitle}</h3>
+            <p>${demo.result.howLine1}</p>
+            <p>${demo.result.howLine2}</p>
+          </div>
+          <a class="demo-submit" href="/#contacto">${demo.result.cta}</a>
+          <p class="demo-cta-sub">${demo.result.ctaSub}</p>
         </div>
       `;
       const lines = root.querySelectorAll(".demo-result-line");
@@ -255,11 +496,11 @@ import Section from "../ui/Section.astro";
     const root = document.getElementById("demo-root");
     if (!root) return;
     try {
-      if (localStorage.getItem(EXECUTED_KEY) === "true") {
+      if (localStorage.getItem(EXECUTED_KEY) === "1" || localStorage.getItem(EXECUTED_KEY) === "true") {
         render(root, "already");
         return;
       }
     } catch {}
-    render(root, "form");
+    render(root, "context");
   });
 </script>
