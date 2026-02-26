@@ -14,8 +14,9 @@ const { hero } = home;
       {hero.lines.map((line) => (
         <p class="hero-line-p" style="font-size:var(--text-base);color:var(--fg);margin-bottom:var(--space-3);line-height:var(--leading-relaxed);">{line}</p>
       ))}
-      <p style="margin-bottom:var(--space-8);"></p>
-      <Button href={hero.ctaHref}>{hero.cta}</Button>
+      <div style="margin-top:var(--space-8);">
+        <Button href={hero.ctaHref}>{hero.cta}</Button>
+      </div>
     </div>
   </Container>
 </Section>
