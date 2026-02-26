@@ -13,7 +13,7 @@ export const home = {
       "Aurora muestra lo que tu decisión activa antes de moverla.",
     ],
     cta: "Pon una decisión bajo evidencia",
-    ctaHref: "#demo",
+    ctaHref: "/demo",
   },
 
   cambio: {
@@ -63,6 +63,6 @@ export const home = {
       "Aurora instala ese estándar.",
     ],
     cta: "Evaluar una decisión",
-    ctaHref: "#demo",
+    ctaHref: "/demo",
   },
 } as const;
