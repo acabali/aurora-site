@@ -1,6 +1,6 @@
 /**
  * Control interno. No mostrar. No exponer.
- * Hash simple: category + answers + timestamp → localStorage.
+ * Hash simple: contexto + escenario + señales + timestamp.
  */
 
 const KEY = "aurora_demo_fingerprint";
@@ -16,11 +16,25 @@ function simpleHash(s: string): string {
 }
 
 export function createFingerprint(
-  category: string,
-  answers: [boolean, boolean, boolean],
+  context: {
+    country: string;
+    industry: string;
+    size: string;
+    scenario: string;
+    signalA: string;
+    signalB: string;
+  },
   timestamp: number
 ): string {
-  const payload = `${category}:${answers.map(Number).join("")}:${timestamp}`;
+  const payload = [
+    context.country,
+    context.industry,
+    context.size,
+    context.scenario,
+    context.signalA,
+    context.signalB,
+    String(timestamp),
+  ].join(":");
   return simpleHash(payload);
 }
 
