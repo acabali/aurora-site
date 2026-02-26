@@ -92,3 +92,8 @@ a {
     transform: none;
   }
 }
+
+/* Scroll a #demo no oculto por header sticky */
+#demo {
+  scroll-margin-top: 5rem;
+}

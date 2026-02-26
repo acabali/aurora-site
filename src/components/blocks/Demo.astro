@@ -1,0 +1,265 @@
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+---
+
+<Section id="demo" class="block-demo-wrap">
+  <Container>
+    <div id="demo-root" class="demo-root"></div>
+  </Container>
+</Section>
+
+<style>
+  .block-demo-wrap {
+    padding-block: var(--space-16);
+    border-top: 1px solid var(--border);
+  }
+  .demo-root {
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+  .demo-root .demo-question {
+    margin-bottom: var(--space-6);
+  }
+  .demo-root .demo-question label {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--fg);
+    margin-bottom: var(--space-3);
+    line-height: var(--leading-normal);
+  }
+  .demo-root .demo-toggle-group {
+    display: flex;
+    gap: var(--space-3);
+  }
+  .demo-root .demo-toggle {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .demo-root .demo-toggle[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: rgba(37, 99, 235, 0.08);
+  }
+  .demo-root .demo-submit {
+    margin-top: var(--space-8);
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border: 1px solid var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    width: 100%;
+  }
+  .demo-root .demo-analyzing {
+    text-align: center;
+    color: var(--muted);
+    font-size: var(--text-sm);
+    padding: var(--space-12) 0;
+  }
+  .demo-root .demo-email-wrap {
+    margin-top: var(--space-6);
+  }
+  .demo-root .demo-email-wrap input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-base);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    border-radius: var(--radius-md);
+    box-sizing: border-box;
+  }
+  .demo-root .demo-email-wrap input::placeholder {
+    color: var(--muted);
+  }
+  .demo-root .demo-email-error {
+    font-size: var(--text-sm);
+    color: var(--muted);
+    margin-top: var(--space-2);
+  }
+  .demo-root .demo-result-line {
+    opacity: 0;
+    padding: var(--space-4) 0;
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--fg);
+    transition: opacity 0.4s ease;
+  }
+  .demo-root .demo-result-line.visible {
+    opacity: 1;
+  }
+  .demo-root .demo-already {
+    text-align: center;
+    padding: var(--space-12) 0;
+  }
+  .demo-root .demo-already h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    margin-bottom: var(--space-3);
+    color: var(--fg);
+  }
+  .demo-root .demo-already p {
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+</style>
+
+<script>
+  import { demo } from "../../content/demo";
+  import { evaluateDecision } from "../../lib/demoEngine";
+  import { createFingerprint, saveFingerprint } from "../../lib/demoFingerprint";
+
+  const EXECUTED_KEY = "aurora_demo_executed";
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function emit(name: string) {
+    try {
+      window.dispatchEvent(new CustomEvent(name, { detail: {} }));
+    } catch {}
+  }
+
+  function renderAlreadyExecuted(root: HTMLElement) {
+    root.innerHTML = `
+      <div class="demo-already">
+        <h3>${demo.alreadyExecuted}</h3>
+        <p>${demo.alreadyExecutedSub}</p>
+      </div>
+    `;
+  }
+
+  function render(
+    root: HTMLElement,
+    state: "form" | "analyzing" | "email" | "result" | "already",
+    data?: { answers?: [boolean, boolean, boolean]; email?: string; lines?: [string, string, string] }
+  ) {
+    if (state === "already") {
+      renderAlreadyExecuted(root);
+      return;
+    }
+
+    if (state === "form") {
+      root.innerHTML = `
+        <div class="demo-form">
+          ${demo.questions
+            .map(
+              (q, i) => `
+            <div class="demo-question" data-q="${i}">
+              <label>${q}</label>
+              <div class="demo-toggle-group" role="group" aria-label="Sí o No">
+                <button type="button" class="demo-toggle" data-answer="true" aria-pressed="false">Sí</button>
+                <button type="button" class="demo-toggle" data-answer="false" aria-pressed="false">No</button>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+          <button type="button" class="demo-submit" id="demo-submit">Continuar</button>
+        </div>
+      `;
+
+      const toggles = root.querySelectorAll(".demo-toggle");
+      const answers: (boolean | null)[] = [null, null, null];
+      toggles.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const group = btn.closest(".demo-question");
+          const qIndex = parseInt(group?.getAttribute("data-q") ?? "0", 10);
+          const value = btn.getAttribute("data-answer") === "true";
+          answers[qIndex] = value;
+          group?.querySelectorAll(".demo-toggle").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          btn.setAttribute("aria-pressed", "true");
+        });
+      });
+
+      root.querySelector("#demo-submit")?.addEventListener("click", () => {
+        const a0 = answers[0] !== null ? answers[0] : false;
+        const a1 = answers[1] !== null ? answers[1] : false;
+        const a2 = answers[2] !== null ? answers[2] : false;
+        const tuple: [boolean, boolean, boolean] = [a0, a1, a2];
+        emit("demo_started");
+        render(root, "analyzing", { answers: tuple });
+        setTimeout(() => {
+          render(root, "email", { answers: tuple });
+        }, 1200);
+      });
+      return;
+    }
+
+    if (state === "analyzing") {
+      root.innerHTML = `<div class="demo-analyzing">${demo.analyzing}</div>`;
+      return;
+    }
+
+    if (state === "email" && data?.answers) {
+      root.innerHTML = `
+        <div class="demo-email-wrap">
+          <input type="email" id="demo-email" placeholder="${demo.emailPlaceholder}" autocomplete="email" />
+          <p class="demo-email-error" id="demo-email-error" style="display:none;">${demo.emailRequired}</p>
+          <button type="button" class="demo-submit" id="demo-email-submit" style="margin-top:var(--space-4);">Ver resultado</button>
+        </div>
+      `;
+      const input = root.querySelector("#demo-email") as HTMLInputElement;
+      const err = root.querySelector("#demo-email-error") as HTMLElement;
+      root.querySelector("#demo-email-submit")?.addEventListener("click", () => {
+        const email = input?.value?.trim() ?? "";
+        if (!EMAIL_REGEX.test(email)) {
+          err?.style.setProperty("display", "block");
+          return;
+        }
+        err?.style.setProperty("display", "none");
+        emit("email_submitted");
+        const { vulnerability } = evaluateDecision({
+          category: demo.category,
+          answers: data.answers,
+        });
+        const ts = Date.now();
+        saveFingerprint(createFingerprint(demo.category, data.answers, ts));
+        try {
+          localStorage.setItem(EXECUTED_KEY, "true");
+        } catch {}
+        emit("demo_completed");
+        render(root, "result", {
+          lines: [vulnerability.line1, vulnerability.line2, vulnerability.line3],
+        });
+      });
+      return;
+    }
+
+    if (state === "result" && data?.lines) {
+      root.innerHTML = `
+        <div class="demo-result">
+          <p class="demo-result-line" data-line="0">${data.lines[0]}</p>
+          <p class="demo-result-line" data-line="1">${data.lines[1]}</p>
+          <p class="demo-result-line" data-line="2">${data.lines[2]}</p>
+        </div>
+      `;
+      const lines = root.querySelectorAll(".demo-result-line");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const delay = reduceMotion ? 0 : 600;
+      lines.forEach((el, i) => {
+        setTimeout(() => {
+          el.classList.add("visible");
+        }, reduceMotion ? 0 : i * delay);
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const root = document.getElementById("demo-root");
+    if (!root) return;
+    try {
+      if (localStorage.getItem(EXECUTED_KEY) === "true") {
+        render(root, "already");
+        return;
+      }
+    } catch {}
+    render(root, "form");
+  });
+</script>
