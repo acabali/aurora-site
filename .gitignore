@@ -26,3 +26,10 @@ pnpm-debug.log*
 .vercel
 .env*.local
 ....,
+._*
+*.log
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
