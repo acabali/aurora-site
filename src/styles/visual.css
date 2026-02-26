@@ -1,0 +1,16 @@
+/* === VISUAL PASS v1 (safe) === */
+:root { color-scheme: light; }
+main { padding-top: 1rem; }
+.section { padding: var(--space-5) 0; }
+.container { max-width: var(--container); padding: 0 20px; margin: 0 auto; }
+
+.hero { padding-top: calc(var(--space-5) + 12px); padding-bottom: var(--space-5); }
+.hero h1 { font-size: var(--h1); letter-spacing: -0.02em; line-height: 1.03; }
+.hero .lead { font-size: var(--p); line-height: 1.55; max-width: 60ch; color: rgba(0,0,0,.72); }
+.hero .lines { margin-top: var(--space-3); display: grid; gap: 10px; max-width: 72ch; }
+.hero .lines p { margin: 0; font-size: var(--p); }
+
+.divider { height: 1px; background: var(--line); margin: var(--space-4) 0; }
+.card { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--space-4); background: rgba(255,255,255,.9); }
+
+#demo { scroll-margin-top: 6rem; }

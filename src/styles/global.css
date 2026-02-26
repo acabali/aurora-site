@@ -1,4 +1,6 @@
 @import "./tokens.css";
+@import "./visual.css";
+
 /* === VISUAL PASS v1 (safe) === */
 :root { color-scheme: light; }
 main { padding-top: 1rem; }
