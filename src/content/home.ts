@@ -18,7 +18,7 @@ export const home = {
 
   cambio: {
     body: [
-      "Durante años bastaba con experiencia y criterio.",
+      "Durante años bastaba con experiencia e intuición.",
       "Hoy las variables interactúan a otra velocidad.",
       "Escala, automatización, mercados abiertos, inteligencia artificial aplicada.",
       "La complejidad ya no es opcional.",
@@ -28,7 +28,7 @@ export const home = {
 
   ruptura: {
     body: [
-      "Antes se decidía con criterio.",
+      "Antes se decidía por intuición.",
       "Hoy se exige validación.",
       "Antes se corregía después.",
       "Hoy el error escala.",
@@ -43,7 +43,7 @@ export const home = {
       "No es software.",
       "No es consultoría.",
       "Es capacidad estructural aplicada a decisiones.",
-      "Una forma de operar donde cada movimiento se contrasta antes de ejecutarse.",
+      "Una forma de operar donde cada movimiento se calibra antes de ejecutarse.",
     ],
   },
 
