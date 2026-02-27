@@ -24,9 +24,11 @@ const { ruptura } = home;
     color: var(--fg-dark);
   }
   .block-split .split-title {
-    font-size: var(--text-2xl);
+    font-size: clamp(1.5rem, 3vw, var(--h2));
     font-weight: 600;
     margin-bottom: var(--space-6);
+    line-height: var(--lh-title);
+    letter-spacing: -0.01em;
     color: var(--fg-dark);
   }
   .rupture-body { max-width: 36rem; }

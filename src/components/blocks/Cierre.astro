@@ -10,7 +10,7 @@ const { cierre } = home;
   <Container>
     <div class="reveal block-cierre" style="text-align:center;max-width:36rem;margin-inline:auto;">
       {cierre.lines.map((line) => (
-        <p style="font-size:var(--text-lg);color:var(--fg);margin-bottom:var(--space-4);line-height:var(--leading-relaxed);">{line}</p>
+        <p class="section-copy section-copy-strong" style="margin-bottom:var(--space-4);">{line}</p>
       ))}
       <Button href={cierre.ctaHref}>{cierre.cta}</Button>
     </div>
