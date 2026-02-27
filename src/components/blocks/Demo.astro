@@ -1,12 +1,11 @@
 ---
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
-const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
 ---
 
 <Section id="demo" class="block-demo-wrap">
   <Container>
-    <div id="demo-root" class="demo-root" data-lead-endpoint={leadEndpoint || "not_configured"}={leadEndpoint}></div>
+    <div id="demo-root" class="demo-root" data-lead-endpoint="/api/lead"></div>
   </Container>
 </Section>
 
@@ -226,16 +225,19 @@ const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
     `;
   }
 
-  async function sendLead(endpoint: string, lead: Record<string, string>) {
-    if (!endpoint) return;
+  async function sendLead(endpoint: string, lead: Record<string, string>): Promise<boolean> {
+    if (!endpoint) return false;
     try {
-      await fetch(endpoint, {
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(lead),
       });
+      if (!res.ok) return false;
+      const json = await res.json().catch(() => null);
+      return Boolean(json?.ok === true);
     } catch {
-      // no-op
+      return false;
     }
   }
 
@@ -500,6 +502,7 @@ const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
           <button type="button" class="demo-submit" id="demo-talk" ${endpointReady ? "" : "disabled"}>
             ${endpointReady ? demo.result.cta : demo.result.ctaUnavailable}
           </button>
+          <p class="demo-warning" id="demo-submit-warning" style="display:none;">${demo.result.ctaUnavailable}</p>
           ${endpointReady ? "" : `<p class="demo-warning">${demo.validation.endpointMissing}</p>`}
           <p class="demo-cta-sub">${demo.result.ctaSub}</p>
         </div>
@@ -515,15 +518,21 @@ const leadEndpoint = import.meta.env.AURORA_LEAD_ENDPOINT ?? "";
 
       root.querySelector("#demo-talk")?.addEventListener("click", async () => {
         if (!endpointReady || !data.lead) return;
-        await sendLead(endpoint, {
+        const warning = root.querySelector("#demo-submit-warning") as HTMLElement | null;
+        if (warning) warning.style.display = "none";
+        const sent = await sendLead(endpoint, {
+          source: "aurora-site",
           name: data.lead.name,
           company: data.lead.company,
           country: data.lead.country,
           industry: data.lead.industry,
           email_domain: data.lead.emailDomain,
-          ts: data.lead.ts,
           session_id: data.lead.sessionId,
         });
+        if (!sent) {
+          if (warning) warning.style.display = "block";
+          return;
+        }
         window.location.href = "/#contacto";
       });
     }
