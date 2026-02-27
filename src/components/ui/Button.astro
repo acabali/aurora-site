@@ -4,14 +4,48 @@ const { href, variant = "primary", class: className } = Astro.props;
 const Tag = href ? "a" : "button";
 ---
 
-<Tag href={href} class:list={["btn", `btn-${variant}`, className]} style={Tag === "a" ? undefined : "border:none;cursor:pointer;font:inherit;"}>
+<Tag href={href} class:list={["btn", `btn-${variant}`, className]}>
   <slot />
 </Tag>
 
 <style>
-  .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-3) var(--space-6); font-size: var(--text-sm); font-weight: 500; border-radius: var(--radius-md); transition: border-color .2s, background .2s; }
-  .btn-primary { background: var(--fg); color: var(--bg); border: 1px solid transparent; }
-  .btn-primary:hover { opacity: .92; }
-  .btn-secondary { background: transparent; color: var(--fg); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--muted); background: rgba(0,0,0,.04); }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    font: inherit;
+    transition: border-color 0.2s, background 0.2s, opacity 0.2s;
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+  }
+
+  .btn-primary {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+
+  .btn-primary:hover {
+    opacity: 0.94;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--fg);
+    border-color: var(--border);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--muted);
+    background: rgba(0, 0, 0, 0.04);
+  }
 </style>

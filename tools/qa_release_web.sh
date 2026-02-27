@@ -7,11 +7,9 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PORT="${AURORA_QA_PORT:-4510}"
 LOCAL_URL="http://127.0.0.1:${PORT}"
 PROD_URL="${AURORA_PROD_URL:-https://aurora-site-brown.vercel.app}"
-MARKERS_REGEX='demo-root|name="email"|aurora_demo_executed|Analizando interacción'
 PAYLOAD='{"session_id":"prod_qa","name":"QA","company":"Aurora","country":"AR","industry":"Tech","email_domain":"aurora.test","source":"aurora-site"}'
 SERVER_LOG="$(mktemp -t aurora-qa-server.XXXXXX.log)"
 HOME_HTML="$(mktemp -t aurora-qa-home.XXXXXX.html)"
-
 PREVIEW_PID=""
 
 log() {
@@ -32,10 +30,15 @@ cleanup() {
 }
 trap cleanup EXIT
 
+assert_port_free() {
+  if lsof -nP -iTCP:"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
+    fail "puerto ${PORT} ocupado; liberalo o seteá AURORA_QA_PORT"
+  fi
+}
+
 wait_http_ok() {
   local url="$1"
-  local retries=50
-  for _ in $(seq 1 "${retries}"); do
+  for _ in $(seq 1 60); do
     if curl -fsS "${url}" >/dev/null 2>&1; then
       return 0
     fi
@@ -44,21 +47,15 @@ wait_http_ok() {
   return 1
 }
 
-assert_port_free() {
-  if lsof -nP -iTCP:"${PORT}" -sTCP:LISTEN >/dev/null 2>&1; then
-    fail "puerto ${PORT} ocupado; liberalo o seteá AURORA_QA_PORT"
-  fi
-}
-
 start_server() {
   local mode="$1"
   : >"${SERVER_LOG}"
   case "${mode}" in
     preview)
-      npm run preview -- --host 127.0.0.1 --port "${PORT}" >"${SERVER_LOG}" 2>&1 &
+      AURORA_LEAD_DRY_RUN=1 npm run preview -- --host 127.0.0.1 --port "${PORT}" >"${SERVER_LOG}" 2>&1 &
       ;;
     dev)
-      npm run dev -- --host 127.0.0.1 --port "${PORT}" >"${SERVER_LOG}" 2>&1 &
+      AURORA_LEAD_DRY_RUN=1 npm run dev -- --host 127.0.0.1 --port "${PORT}" >"${SERVER_LOG}" 2>&1 &
       ;;
     *)
       fail "modo de server no soportado: ${mode}"
@@ -67,32 +64,81 @@ start_server() {
   PREVIEW_PID=$!
 }
 
-assert_status_200() {
+assert_get_200() {
   local url="$1"
   local code
   code="$(curl -sS -o /dev/null -w "%{http_code}" "${url}")"
-  [[ "${code}" == "200" ]] || fail "esperaba 200 en ${url}, recibí ${code}"
-  log "200 OK ${url}"
+  [[ "${code}" == "200" ]] || fail "esperaba GET 200 en ${url}, recibí ${code}"
+  log "GET 200 ${url}"
+}
+
+assert_head_200() {
+  local url="$1"
+  local code
+  code="$(curl -sS -I -o /dev/null -w "%{http_code}" "${url}")"
+  [[ "${code}" == "200" ]] || fail "esperaba HEAD 200 en ${url}, recibí ${code}"
+  log "HEAD 200 ${url}"
+}
+
+assert_lead_ok() {
+  local url="$1"
+  local body
+  body="$(curl -fsS -X POST "${url}" -H "Content-Type: application/json" --data "${PAYLOAD}")"
+  echo "${body}" | rg -q '"ok"[[:space:]]*:[[:space:]]*true' || fail "${url} no devolvió ok:true"
+  log "POST ok:true ${url}"
+}
+
+assert_get_405() {
+  local url="$1"
+  local code
+  code="$(curl -sS -o /dev/null -w "%{http_code}" "${url}")"
+  [[ "${code}" == "405" ]] || fail "esperaba GET 405 en ${url}, recibí ${code}"
+  log "GET 405 ${url}"
+}
+
+assert_cache_control() {
+  local url="$1"
+  local header
+  header="$(curl -sS -I "${url}" | tr -d "\r" | awk -F': ' 'tolower($1)=="cache-control"{print $2}' | tail -n1)"
+  [[ -n "${header}" ]] || fail "cache-control ausente en ${url}"
+  if ! echo "${header}" | rg -qi 'max-age=0|no-store|must-revalidate'; then
+    fail "cache-control no válido en ${url}: ${header}"
+  fi
+  log "cache-control OK ${url}: ${header}"
+}
+
+assert_home_contains() {
+  local html="$1"
+  local text="$2"
+  echo "${html}" | rg -Fq "${text}" || fail "home no contiene: ${text}"
+}
+
+assert_home_not_contains_demo_markup() {
+  local html_file="$1"
+  if rg -n 'demo-root|aurora_demo_executed|Analizando interacción|name="email"' "${html_file}" >/dev/null; then
+    fail "home contiene markup/textos de demo"
+  fi
+  log "home sin markup de demo"
 }
 
 cd "${ROOT}"
 assert_port_free
 
 if [[ -f package-lock.json ]]; then
-  log "Instalando dependencias con npm ci"
+  log "npm ci"
   npm ci
 else
-  log "Instalando dependencias con npm install"
+  log "npm install"
   npm install
 fi
 
-log "Build de producción"
+log "npm run build"
 npm run build
 
-log "Intentando levantar preview local en ${LOCAL_URL}"
+log "levantando server local (${LOCAL_URL})"
 start_server "preview"
 if ! wait_http_ok "${LOCAL_URL}/"; then
-  log "preview no disponible con @astrojs/vercel, fallback a npm run dev"
+  log "preview no disponible, fallback a dev"
   kill "${PREVIEW_PID}" 2>/dev/null || true
   wait "${PREVIEW_PID}" 2>/dev/null || true
   PREVIEW_PID=""
@@ -100,33 +146,25 @@ if ! wait_http_ok "${LOCAL_URL}/"; then
   wait_http_ok "${LOCAL_URL}/" || fail "no pude levantar server local; revisar ${SERVER_LOG}"
 fi
 
-assert_status_200 "${LOCAL_URL}/"
-assert_status_200 "${LOCAL_URL}/demo"
+assert_get_200 "${LOCAL_URL}/"
+assert_get_200 "${LOCAL_URL}/demo"
 
 curl -fsS "${LOCAL_URL}/" > "${HOME_HTML}"
-if rg -n "${MARKERS_REGEX}" "${HOME_HTML}" >/dev/null; then
-  fail "la home contiene markup o textos de demo"
-fi
-log "Home limpia: sin demo markup"
+HOME_CONTENT="$(cat "${HOME_HTML}")"
+assert_home_contains "${HOME_CONTENT}" "Las variables crecieron."
+assert_home_contains "${HOME_CONTENT}" "Operar igual ya no alcanza."
+assert_home_contains "${HOME_CONTENT}" "Aurora muestra lo que tu decisión activa antes de moverla."
+assert_home_contains "${HOME_CONTENT}" "href=\"/demo\""
+assert_home_not_contains_demo_markup "${HOME_HTML}"
 
-local_lead_status=0
-local_lead_body=""
-if local_lead_body="$(curl -sS -X POST "${LOCAL_URL}/api/lead" -H "Content-Type: application/json" --data "${PAYLOAD}")"; then
-  if echo "${local_lead_body}" | rg -q '"ok"[[:space:]]*:[[:space:]]*true'; then
-    log "Lead local OK"
-    local_lead_status=1
-  fi
-fi
+assert_lead_ok "${LOCAL_URL}/api/lead"
+assert_get_405 "${LOCAL_URL}/api/lead"
 
-if [[ "${local_lead_status}" -eq 0 ]]; then
-  log "Lead local no configurable en este entorno; validando en prod"
-  prod_lead_body="$(curl -fsS -X POST "${PROD_URL}/api/lead" -H "Content-Type: application/json" --data "${PAYLOAD}")"
-  echo "${prod_lead_body}" | rg -q '"ok"[[:space:]]*:[[:space:]]*true' || fail "prod /api/lead no devolvió ok:true"
-  log "Lead prod OK"
-fi
+assert_head_200 "${PROD_URL}/"
+assert_head_200 "${PROD_URL}/demo"
+assert_cache_control "${PROD_URL}/"
+assert_cache_control "${PROD_URL}/demo"
+assert_lead_ok "${PROD_URL}/api/lead"
+assert_get_405 "${PROD_URL}/api/lead"
 
-prod_code="$(curl -sS -o /dev/null -w "%{http_code}" -X POST "${PROD_URL}/api/lead" -H "Content-Type: application/json" --data "${PAYLOAD}")"
-[[ "${prod_code}" == "200" ]] || fail "esperaba 200 en prod /api/lead, recibí ${prod_code}"
-log "Headers/status prod /api/lead OK"
-
-log "QA release web completo"
+printf "QA release web completo\n"

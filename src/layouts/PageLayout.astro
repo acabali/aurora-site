@@ -15,16 +15,16 @@ const { title = "Aurora" } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
-    <header class="site-header" style="position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--border);">
-      <div class="container-base" style="display:flex;justify-content:space-between;align-items:center;padding-block:var(--space-4);">
-        <a href="/" style="font-weight:600;font-size:var(--text-lg);">Aurora</a>
-        <a href="#contacto" style="font-size:var(--text-sm);color:var(--fg-muted);">Contactar</a>
+    <header class="site-header">
+      <div class="container-base site-header-inner">
+        <a href="/" class="site-brand">Aurora</a>
+        <a href="#contacto" class="site-contact-link">Contactar</a>
       </div>
     </header>
     <main>
       <slot />
     </main>
-    <footer id="contacto" class="site-footer" style="padding:var(--space-8) var(--space-6);border-top:1px solid var(--border);color:var(--muted);font-size:var(--text-sm);text-align:center;">
+    <footer id="contacto" class="site-footer">
       Aurora — La era de construir con evidencia.
     </footer>
   </body>

@@ -109,6 +109,9 @@ import Section from "../ui/Section.astro";
     color: var(--muted);
     margin: var(--space-2) 0 var(--space-3);
   }
+  .is-hidden {
+    display: none !important;
+  }
   .demo-root .demo-submit {
     margin-top: var(--space-8);
     padding: var(--space-3) var(--space-6);
@@ -198,6 +201,16 @@ import Section from "../ui/Section.astro";
     try {
       window.dispatchEvent(new CustomEvent(name, { detail: {} }));
     } catch {}
+  }
+
+  function hide(el: HTMLElement | null): void {
+    if (!el) return;
+    el.classList.add("is-hidden");
+  }
+
+  function show(el: HTMLElement | null): void {
+    if (!el) return;
+    el.classList.remove("is-hidden");
   }
 
   function domainFromEmail(email: string): string {
@@ -307,39 +320,39 @@ import Section from "../ui/Section.astro";
             <input id="demo-email" type="email" />
           </div>
 
-          <p class="demo-error" id="demo-context-error" style="display:none;"></p>
-          <p class="demo-warning" id="demo-context-warning" style="display:none;"></p>
+          <p class="demo-error is-hidden" id="demo-context-error"></p>
+          <p class="demo-warning is-hidden" id="demo-context-warning"></p>
           <button type="button" class="demo-submit" id="demo-context-submit">${demo.continue}</button>
         </div>
       `;
 
-      const err = root.querySelector("#demo-context-error") as HTMLElement;
-      const warn = root.querySelector("#demo-context-warning") as HTMLElement;
-      root.querySelector("#demo-context-submit")?.addEventListener("click", () => {
-        const name = (root.querySelector("#demo-name") as HTMLInputElement)?.value.trim();
-        const company = (root.querySelector("#demo-company") as HTMLInputElement)?.value.trim();
-        const country = (root.querySelector("#demo-country") as HTMLSelectElement)?.value;
-        const industry = (root.querySelector("#demo-industry") as HTMLSelectElement)?.value;
-        const size = (root.querySelector("#demo-size") as HTMLSelectElement)?.value;
-        const email = (root.querySelector("#demo-email") as HTMLInputElement)?.value.trim();
+      const err = root.querySelector("[id='demo-context-error']") as HTMLElement;
+      const warn = root.querySelector("[id='demo-context-warning']") as HTMLElement;
+      root.querySelector("[id='demo-context-submit']")?.addEventListener("click", () => {
+        const name = (root.querySelector("[id='demo-name']") as HTMLInputElement)?.value.trim();
+        const company = (root.querySelector("[id='demo-company']") as HTMLInputElement)?.value.trim();
+        const country = (root.querySelector("[id='demo-country']") as HTMLSelectElement)?.value;
+        const industry = (root.querySelector("[id='demo-industry']") as HTMLSelectElement)?.value;
+        const size = (root.querySelector("[id='demo-size']") as HTMLSelectElement)?.value;
+        const email = (root.querySelector("[id='demo-email']") as HTMLInputElement)?.value.trim();
 
         if (!name || !company || !country || !industry || !size || !email) {
           err.textContent = demo.validation.required;
-          err.style.display = "block";
+          show(err);
           return;
         }
         if (!EMAIL_REGEX.test(email)) {
           err.textContent = demo.validation.email;
-          err.style.display = "block";
+          show(err);
           return;
         }
-        err.style.display = "none";
+        hide(err);
         const emailDomain = domainFromEmail(email);
         if (FREE_DOMAINS.has(emailDomain)) {
           warn.textContent = demo.validation.corporate;
-          warn.style.display = "block";
+          show(warn);
         } else {
-          warn.style.display = "none";
+          hide(warn);
         }
         emit("demo_started");
         emit("demo_step1_completed");
@@ -369,7 +382,7 @@ import Section from "../ui/Section.astro";
               )
               .join("")}
           </div>
-          <p class="demo-error" id="demo-scenario-error" style="display:none;">${demo.validation.required}</p>
+          <p class="demo-error is-hidden" id="demo-scenario-error">${demo.validation.required}</p>
           <button type="button" class="demo-submit" id="demo-scenario-submit">${demo.continue}</button>
         </div>
       `;
@@ -383,13 +396,13 @@ import Section from "../ui/Section.astro";
           card.setAttribute("aria-pressed", "true");
         });
       });
-      const err = root.querySelector("#demo-scenario-error") as HTMLElement;
-      root.querySelector("#demo-scenario-submit")?.addEventListener("click", () => {
+      const err = root.querySelector("[id='demo-scenario-error']") as HTMLElement;
+      root.querySelector("[id='demo-scenario-submit']")?.addEventListener("click", () => {
         if (!selected) {
-          err.style.display = "block";
+          show(err);
           return;
         }
-        err.style.display = "none";
+        hide(err);
         render(root, "signals", { lead: data.lead, scenario: selected });
       });
       return;
@@ -416,7 +429,7 @@ import Section from "../ui/Section.astro";
             </div>
           </div>
 
-          <p class="demo-error" id="demo-signals-error" style="display:none;">${demo.validation.required}</p>
+          <p class="demo-error is-hidden" id="demo-signals-error">${demo.validation.required}</p>
           <button type="button" class="demo-submit" id="demo-signals-submit">${demo.continue}</button>
         </div>
       `;
@@ -436,13 +449,13 @@ import Section from "../ui/Section.astro";
           btn.setAttribute("aria-pressed", "true");
         });
       });
-      const err = root.querySelector("#demo-signals-error") as HTMLElement;
-      root.querySelector("#demo-signals-submit")?.addEventListener("click", () => {
+      const err = root.querySelector("[id='demo-signals-error']") as HTMLElement;
+      root.querySelector("[id='demo-signals-submit']")?.addEventListener("click", () => {
         if (!signalA || !signalB) {
-          err.style.display = "block";
+          show(err);
           return;
         }
-        err.style.display = "none";
+        hide(err);
         render(root, "analyzing", { lead: data.lead, scenario: data.scenario, signalA, signalB });
         setTimeout(() => {
           const evaluated = evaluateDecision({
@@ -502,7 +515,7 @@ import Section from "../ui/Section.astro";
           <button type="button" class="demo-submit" id="demo-talk" ${endpointReady ? "" : "disabled"}>
             ${endpointReady ? demo.result.cta : demo.result.ctaUnavailable}
           </button>
-          <p class="demo-warning" id="demo-submit-warning" style="display:none;">${demo.result.ctaUnavailable}</p>
+          <p class="demo-warning is-hidden" id="demo-submit-warning">${demo.result.ctaUnavailable}</p>
           ${endpointReady ? "" : `<p class="demo-warning">${demo.validation.endpointMissing}</p>`}
           <p class="demo-cta-sub">${demo.result.ctaSub}</p>
         </div>
@@ -516,10 +529,17 @@ import Section from "../ui/Section.astro";
         }, reduceMotion ? 0 : i * delay);
       });
 
-      root.querySelector("#demo-talk")?.addEventListener("click", async () => {
-        if (!endpointReady || !data.lead) return;
-        const warning = root.querySelector("#demo-submit-warning") as HTMLElement | null;
-        if (warning) warning.style.display = "none";
+      const submitButton = root.querySelector("[id=demo-talk]") as HTMLButtonElement | null;
+      let leadSubmitting = false;
+
+      submitButton?.addEventListener("click", async () => {
+        if (!endpointReady || !data.lead || leadSubmitting) return;
+        const warning = root.querySelector("[id=demo-submit-warning]") as HTMLElement | null;
+        hide(warning);
+        leadSubmitting = true;
+        submitButton.disabled = true;
+        emit("lead_submit_started");
+
         const sent = await sendLead(endpoint, {
           source: "aurora-site",
           name: data.lead.name,
@@ -529,12 +549,21 @@ import Section from "../ui/Section.astro";
           email_domain: data.lead.emailDomain,
           session_id: data.lead.sessionId,
         });
+
         if (!sent) {
-          if (warning) warning.style.display = "block";
+          emit("lead_submit_failed");
+          show(warning);
+          leadSubmitting = false;
+          submitButton.disabled = false;
           return;
         }
+
+        emit("lead_submitted");
+        emit("lead_submit_success");
         window.location.href = "/#contacto";
       });
+
+      return;
     }
   }
 

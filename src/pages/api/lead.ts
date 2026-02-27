@@ -35,6 +35,29 @@ function json(data: Record<string, unknown>, status = 200): Response {
   });
 }
 
+function decodeBase64Json(encoded: string): string {
+  if (!encoded) return "";
+  try {
+    return Buffer.from(encoded, "base64").toString("utf8").trim();
+  } catch {
+    return "";
+  }
+}
+
+function shouldAllowLocalDryRun(request: Request): boolean {
+  const enabled =
+    normalizeString(process.env.AURORA_LEAD_DRY_RUN) === "1" ||
+    normalizeString(import.meta.env.AURORA_LEAD_DRY_RUN) === "1";
+  if (!enabled) return false;
+
+  try {
+    const hostname = new URL(request.url).hostname;
+    return hostname === "127.0.0.1" || hostname === "localhost";
+  } catch {
+    return false;
+  }
+}
+
 async function ensureTabAndHeader(sheetId: string, tabName: string, sheets: ReturnType<typeof google.sheets>) {
   const metadata = await sheets.spreadsheets.get({
     spreadsheetId: sheetId,
@@ -91,30 +114,46 @@ const postHandler: APIRoute = async ({ request }) => {
 
   const sheetId =
     normalizeString(import.meta.env.AURORA_SHEETS_SHEET_ID) ||
+    normalizeString(import.meta.env.AURORA_SHEETS_SPREADSHEET_ID) ||
     normalizeString(import.meta.env.GOOGLE_SHEETS_SHEET_ID) ||
+    normalizeString(import.meta.env.GOOGLE_SHEETS_SPREADSHEET_ID) ||
     normalizeString(import.meta.env.SHEETS_SHEET_ID);
+
   const tabName =
     normalizeString(import.meta.env.AURORA_SHEETS_TAB) ||
     normalizeString(import.meta.env.GOOGLE_SHEETS_TAB) ||
     normalizeString(import.meta.env.SHEETS_TAB) ||
     "Leads";
-  const rawServiceAccount =
+
+  const rawServiceAccountJson =
     normalizeString(import.meta.env.AURORA_SHEETS_SA_JSON) ||
     normalizeString(import.meta.env.GOOGLE_SHEETS_SA_JSON) ||
     normalizeString(import.meta.env.GOOGLE_SERVICE_ACCOUNT_JSON) ||
     normalizeString(import.meta.env.GCP_SERVICE_ACCOUNT_JSON);
 
-  if (!sheetId || !tabName || !rawServiceAccount) {
+  const rawServiceAccountB64 =
+    normalizeString(import.meta.env.AURORA_SHEETS_SA_JSON_B64) ||
+    normalizeString(import.meta.env.GOOGLE_SHEETS_SA_JSON_B64) ||
+    normalizeString(import.meta.env.GOOGLE_SERVICE_ACCOUNT_JSON_B64) ||
+    normalizeString(import.meta.env.GCP_SERVICE_ACCOUNT_JSON_B64);
+
+  const serviceAccountJson = rawServiceAccountJson || decodeBase64Json(rawServiceAccountB64);
+
+  if (!sheetId || !tabName || !serviceAccountJson) {
+    if (shouldAllowLocalDryRun(request)) {
+      return json({ ok: true, dry_run: true }, 200);
+    }
+
     console.error("lead_api_missing_env", {
       hasSheetId: Boolean(sheetId),
       hasTabName: Boolean(tabName),
-      hasServiceAccount: Boolean(rawServiceAccount),
+      hasServiceAccount: Boolean(serviceAccountJson),
     });
     return json({ ok: false, error: "server_not_configured" }, 500);
   }
 
   try {
-    const parsed = JSON.parse(rawServiceAccount) as { client_email?: string; private_key?: string };
+    const parsed = JSON.parse(serviceAccountJson) as { client_email?: string; private_key?: string };
     const auth = new google.auth.GoogleAuth({
       credentials: {
         ...parsed,

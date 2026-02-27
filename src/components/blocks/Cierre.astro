@@ -8,11 +8,11 @@ const { cierre } = home;
 
 <Section id="cta-demo" class="block-cierre-wrap">
   <Container>
-    <div class="reveal block-cierre" style="text-align:center;max-width:36rem;margin-inline:auto;">
+    <div class="reveal block-cierre">
       {cierre.lines.map((line) => (
-        <p class="section-copy section-copy-strong" style="margin-bottom:var(--space-4);">{line}</p>
+        <p class="section-copy section-copy-strong section-copy-tight">{line}</p>
       ))}
-      <Button href={cierre.ctaHref}>{cierre.cta}</Button>
+      <Button href={cierre.ctaHref} variant="secondary">{cierre.cta}</Button>
     </div>
   </Container>
 </Section>

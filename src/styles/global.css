@@ -1,38 +1,4 @@
 @import "./tokens.css";
-@import "./visual.css";
-
-/* === VISUAL PASS v1 (safe) === */
-:root { color-scheme: light; }
-main { padding-top: 1rem; }
-.section { padding: var(--space-5) 0; }
-.container { max-width: var(--container); padding: 0 20px; margin: 0 auto; }
-
-.hero {
-  padding-top: calc(var(--space-5) + 12px);
-  padding-bottom: var(--space-5);
-}
-.hero h1 { font-size: var(--h1); letter-spacing: -0.02em; line-height: 1.03; }
-.hero .lead { font-size: var(--p); line-height: 1.55; max-width: 60ch; color: rgba(0,0,0,.72); }
-.hero .lines { margin-top: var(--space-3); display: grid; gap: 10px; max-width: 72ch; }
-.hero .lines p { margin: 0; font-size: var(--p); }
-.hero .lines p strong { color: rgba(0,0,0,.92); }
-
-.divider { height: 1px; background: var(--line); margin: var(--space-4) 0; }
-.card {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: var(--space-4);
-  background: rgba(255,255,255,.9);
-}
-.dark {
-  background: #0b0b0c;
-  color: #fff;
-}
-.dark .card { background: rgba(255,255,255,.06); border-color: var(--line-dark); }
-.dark .divider { background: var(--line-dark); }
-.dark .muted { color: rgba(255,255,255,.72); }
-
-/* Reset limpio + tipografía base + reveal + prefers-reduced-motion */
 
 *,
 *::before,
@@ -63,11 +29,64 @@ a {
   text-decoration: none;
 }
 
-/* Container base */
+main {
+  padding-top: 1rem;
+}
+
 .container-base {
   max-width: var(--container);
   margin-inline: auto;
   padding-inline: var(--space-6);
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: var(--space-4);
+}
+
+.site-brand {
+  font-size: var(--text-lg);
+  font-weight: 600;
+}
+
+.site-contact-link {
+  font-size: var(--text-sm);
+  color: var(--fg-muted);
+  transition: color 0.2s ease;
+}
+
+.site-contact-link:hover {
+  color: var(--fg);
+}
+
+.site-contact-link:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.site-footer {
+  padding: var(--space-8) var(--space-6);
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: var(--text-sm);
+  text-align: center;
+}
+
+.block-hero {
+  text-align: center;
+  max-width: 42rem;
+  margin-inline: auto;
 }
 
 .hero-title {
@@ -83,6 +102,10 @@ a {
   color: var(--fg);
   margin-bottom: var(--space-3);
   line-height: var(--leading-relaxed);
+}
+
+.hero-cta-wrap {
+  margin-top: var(--space-8);
 }
 
 .section-title {
@@ -104,7 +127,16 @@ a {
   font-size: var(--text-lg);
 }
 
-/* Hero line — crece 0→100% solo si no reduced-motion */
+.section-copy-tight {
+  margin-bottom: var(--space-4);
+}
+
+.block-cierre {
+  text-align: center;
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
 .hero-line {
   width: 100%;
   height: 2px;
@@ -113,24 +145,17 @@ a {
   transform-origin: left;
   margin-bottom: var(--space-6);
 }
+
 .block-hero.is-in .hero-line {
   animation: hero-line-grow 0.5s var(--ease-out) forwards;
 }
-@keyframes hero-line-grow {
-  to { transform: scaleX(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .hero-line { transform: scaleX(1); animation: none; }
-  .block-hero.is-in .hero-line { animation: none; }
-}
 
-@media (max-width: 640px) {
-  .container-base {
-    padding-inline: var(--space-4);
+@keyframes hero-line-grow {
+  to {
+    transform: scaleX(1);
   }
 }
 
-/* Reveal: solo al entrar en viewport, nunca al cargar */
 .reveal {
   opacity: 0;
   transform: translateY(12px);
@@ -149,20 +174,35 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
-    opacity: 1;
-    transform: none;
+  .hero-line {
+    transform: scaleX(1);
+    animation: none;
   }
+
+  .block-hero.is-in .hero-line {
+    animation: none;
+  }
+
+  .reveal,
   .reveal.is-in {
     opacity: 1;
     transform: none;
   }
 }
 
-@media (max-width: 640px) {
-  .section-title {
-    margin-bottom: var(--space-5);
+@media (max-width: 768px) {
+  .container-base {
+    padding-inline: var(--space-4);
   }
+
+  .site-header-inner {
+    padding-block: var(--space-3);
+  }
+
+  .site-footer {
+    padding: var(--space-6) var(--space-4);
+  }
+
   .section-copy-strong {
     font-size: var(--text-base);
   }
