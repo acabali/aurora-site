@@ -89,9 +89,20 @@ const postHandler: APIRoute = async ({ request }) => {
     return json({ ok: false, error: `missing_${missing}` }, 400);
   }
 
-  const sheetId = normalizeString(import.meta.env.AURORA_SHEETS_SHEET_ID);
-  const tabName = normalizeString(import.meta.env.AURORA_SHEETS_TAB);
-  const rawServiceAccount = normalizeString(import.meta.env.AURORA_SHEETS_SA_JSON);
+  const sheetId =
+    normalizeString(import.meta.env.AURORA_SHEETS_SHEET_ID) ||
+    normalizeString(import.meta.env.GOOGLE_SHEETS_SHEET_ID) ||
+    normalizeString(import.meta.env.SHEETS_SHEET_ID);
+  const tabName =
+    normalizeString(import.meta.env.AURORA_SHEETS_TAB) ||
+    normalizeString(import.meta.env.GOOGLE_SHEETS_TAB) ||
+    normalizeString(import.meta.env.SHEETS_TAB) ||
+    "Leads";
+  const rawServiceAccount =
+    normalizeString(import.meta.env.AURORA_SHEETS_SA_JSON) ||
+    normalizeString(import.meta.env.GOOGLE_SHEETS_SA_JSON) ||
+    normalizeString(import.meta.env.GOOGLE_SERVICE_ACCOUNT_JSON) ||
+    normalizeString(import.meta.env.GCP_SERVICE_ACCOUNT_JSON);
 
   if (!sheetId || !tabName || !rawServiceAccount) {
     console.error("lead_api_missing_env", {
