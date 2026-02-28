@@ -1,42 +1,48 @@
 export const home = {
   hero: {
-    h1: "La era de construir con evidencia.",
-    h2: "Las empresas ya no se improvisan. Se diseñan.",
-    body: "Aurora integra IA aplicada, analisis avanzado, modelado y lectura historica para reducir arbitrariedad antes de ejecutar.",
-    claim: "No promete exito: promete una base mejor, menos error y mas rigor.",
+    h1: "Antes decidías con experiencia.",
+    h2: "Hoy eso ya no alcanza.",
+    body: "El entorno cambio: mas variables, menos tiempo, mayor costo por error y menor tolerancia a decidir por intuicion.",
+    claim: "Aurora es infraestructura para decisiones críticas.",
     cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
   autoridad: {
-    title: "Autoridad operativa",
+    title: "QUÉ ESTÁ CAMBIANDO",
     bullets: [
-      "Cada decisión se evalúa antes de ejecutar presupuesto.",
-      "Cada riesgo se explicita con impacto operativo real.",
-      "Cada movimiento deja trazabilidad para corregir sin improvisar.",
+      "La complejidad operativa supera la capacidad de coordinacion tradicional.",
+      "Los ciclos se acortan: decidir tarde equivale a pagar dos veces.",
+      "La evidencia paso de ventaja competitiva a requisito minimo de gestion.",
     ],
   },
   comparativa: {
-    title: "Sin Aurora vs Con Aurora",
+    title: "RUPTURA",
     sinAurora: [
-      "Se decide con señales parciales.",
-      "El costo aparece cuando ya está en producción.",
-      "Cada ajuste depende de intuición individual.",
+      "Antes: equipos separados, consultoria fragmentada y decisiones opinables.",
+      "Antes: se ejecutaba y recien despues aparecia el costo real.",
+      "Antes: cada correccion dependia de experiencia individual no trazable.",
     ],
     conAurora: [
-      "Se decide con evidencia antes del despliegue.",
-      "El costo se anticipa y se compara en escenarios.",
-      "Cada ajuste queda respaldado por una huella verificable.",
+      "Ahora: una capacidad integrada para evaluar impacto antes de ejecutar.",
+      "Ahora: IA aplicada, analisis avanzado, modelado y lectura historica en un mismo flujo.",
+      "Ahora: menor arbitrariedad, menor margen de error, mayor rigor operativo.",
     ],
   },
   comoTrabaja: {
-    title: "Cómo trabaja Aurora",
+    title: "QUÉ HACE AURORA",
     lines: [
-      "Cruza variables y detecta patrones para anticipar qué activa cada decisión en tu operación.",
-      "Luego simula el contrafactual y deja huella de por qué se eligió ese camino.",
+      "Aurora evalua decisiones criticas con evidencia utilizable en tiempo de operacion, no como reporte tardio.",
+      "Conecta patrones, escenarios e historia para reducir error sin prometer exito automatico.",
+    ],
+  },
+  binario: {
+    body: [
+      "Sin infraestructura de decision, el crecimiento amplifica el error.",
+      "Con infraestructura de decision, el crecimiento escala con criterio verificable.",
     ],
   },
   cierre: {
-    line: "La diferencia no es opinar mejor: es operar con evidencia antes de mover el negocio.",
+    line: "No es consultoria ni texto. Es capacidad operacional para decidir mejor bajo presion real.",
     cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
