@@ -1,14 +1,14 @@
 export const home = {
   hero: {
-    h1: "Las variables crecieron.",
-    h2: "Operar igual ya no alcanza.",
-    body: "Hoy decidir bajo evidencia no es sofisticación. Es condición mínima para sostener crecimiento.",
-    claim: "Aurora calibra decisiones bajo el estándar actual.",
+    h1: "La era de construir con evidencia.",
+    h2: "Las empresas ya no se improvisan. Se diseñan.",
+    body: "Aurora integra IA aplicada, analisis avanzado, modelado y lectura historica para reducir arbitrariedad antes de ejecutar.",
+    claim: "No promete exito: promete una base mejor, menos error y mas rigor.",
     cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
   autoridad: {
-    title: "Autoridad",
+    title: "Autoridad operativa",
     bullets: [
       "Cada decisión se evalúa antes de ejecutar presupuesto.",
       "Cada riesgo se explicita con impacto operativo real.",

@@ -18,9 +18,21 @@ const { comoTrabaja } = home;
 
 <style>
   .block-category {
-    border: 1px solid var(--border);
-    background: var(--bg);
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--bg-1), rgba(255, 255, 255, 0.02));
     padding: var(--space-10) var(--space-8);
     border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+  .block-category .section-title {
+    margin-bottom: var(--space-6);
+  }
+  .block-category .section-copy:last-child {
+    margin-bottom: 0;
+  }
+  @media (max-width: 640px) {
+    .block-category {
+      padding: var(--space-8) var(--space-5);
+    }
   }
 </style>
