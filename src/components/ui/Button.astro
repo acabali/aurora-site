@@ -13,39 +13,42 @@ const Tag = href ? "a" : "button";
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: var(--space-3) var(--space-6);
+    min-height: 46px;
+    padding: 0 var(--space-6);
     font-size: var(--text-sm);
     font-weight: 500;
     border-radius: var(--radius-md);
-    border: 1px solid transparent;
+    border: 1px solid var(--line);
     cursor: pointer;
     font: inherit;
-    transition: border-color 0.2s, background 0.2s, opacity 0.2s;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
   }
 
   .btn:focus-visible {
-    outline: 2px solid var(--fg);
+    outline: 2px solid rgba(37, 99, 235, 0.85);
     outline-offset: 2px;
   }
 
   .btn-primary {
-    background: var(--fg);
-    color: var(--bg);
-    border-color: var(--fg);
+    background: var(--text-0);
+    color: var(--bg-0);
+    border-color: var(--text-0);
   }
 
   .btn-primary:hover {
-    opacity: 0.94;
+    opacity: 0.95;
+    transform: translateY(-1px);
   }
 
   .btn-secondary {
     background: transparent;
-    color: var(--fg);
-    border-color: var(--border);
+    color: var(--text-0);
+    border-color: var(--line);
   }
 
   .btn-secondary:hover {
-    border-color: var(--muted);
-    background: rgba(0, 0, 0, 0.04);
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-1px);
   }
 </style>

@@ -35,6 +35,8 @@ const { comparativa } = home;
   .block-split-wrap {
     background: var(--bg-dark);
     color: var(--fg-dark);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
   }
   .block-split .split-title {
     color: var(--fg-dark);
@@ -47,28 +49,49 @@ const { comparativa } = home;
   .comparison-card {
     border: 1px solid var(--border-dark);
     border-radius: var(--radius-md);
-    padding: var(--space-6);
+    padding: var(--space-8);
     background: var(--before-bg);
+    min-height: 100%;
   }
   .comparison-card-accent {
     background: var(--now-bg);
+    border-color: rgba(255, 255, 255, 0.22);
   }
   .comparison-card h3 {
-    font-size: var(--text-lg);
-    margin-bottom: var(--space-4);
+    font-size: var(--h3);
+    line-height: var(--lh-title);
+    margin-bottom: var(--space-6);
   }
   .comparison-card ul {
     list-style: none;
     display: grid;
-    gap: var(--space-3);
+    gap: var(--space-4);
   }
   .comparison-card li {
-    color: var(--fg-dark);
-    line-height: var(--leading-relaxed);
+    color: var(--text-1);
+    line-height: var(--lh-body);
+    padding-left: var(--space-4);
+    position: relative;
+  }
+  .comparison-card li::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    position: absolute;
+    top: 0.63em;
+    left: 0;
+    background: rgba(255, 255, 255, 0.36);
+  }
+  .comparison-card-accent li::before {
+    background: rgba(37, 99, 235, 0.85);
   }
   @media (max-width: 800px) {
     .comparison-grid {
       grid-template-columns: 1fr;
+    }
+    .comparison-card {
+      padding: var(--space-6);
     }
   }
 </style>

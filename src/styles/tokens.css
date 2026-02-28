@@ -1,50 +1,67 @@
-/* Aurora Web v2 — B/N + estructural, compacto */
+/* Aurora Web vΩ — institucional dark, sin dependencias */
 
 :root {
-  /* Type — system stack premium, sin deps externas */
   --font-sans: -apple-system, BlinkMacSystemFont, system-ui, "SF Pro Text",
     "Inter", "Segoe UI", sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
 
-  /* Escala semántica */
-  --h1: 2.75rem;
-  --h2: 2rem;
-  --h3: 1.375rem;
-  --p: 1rem;
-  --small: 0.875rem;
+  /* Color tokens */
+  --bg-0: #0b0b0c;
+  --bg-1: #121316;
+  --bg-2: #17191d;
+  --text-0: #f2f2ef;
+  --text-1: #c3c7d1;
+  --border-0: rgba(255, 255, 255, 0.14);
+  --accent-0: #2563eb;
 
-  /* Escala legacy (mantener compatibilidad con componentes) */
+  /* Legacy aliases */
+  --bg: var(--bg-0);
+  --fg: var(--text-0);
+  --bg-dark: var(--bg-0);
+  --fg-dark: var(--text-0);
+  --muted: var(--text-1);
+  --fg-muted: var(--text-1);
+  --accent: var(--accent-0);
+  --border: var(--border-0);
+  --border-dark: var(--border-0);
+  --gris-tecnico: #9ca3af;
+  --before-bg: rgba(255, 255, 255, 0.035);
+  --now-bg: rgba(255, 255, 255, 0.065);
+  --line: rgba(255, 255, 255, 0.16);
+  --line-dark: rgba(255, 255, 255, 0.2);
+  --text: var(--fg);
+  --muted-text: var(--muted);
+
+  /* Typography */
+  --h1: clamp(2.75rem, 5.2vw, 3.5rem);
+  --h2: clamp(1.75rem, 3.2vw, 2.125rem);
+  --h3: clamp(1.25rem, 2.3vw, 1.5rem);
+  --p: 1.0625rem;
+  --small: 0.875rem;
   --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
+  --text-sm: var(--small);
   --text-base: var(--p);
   --text-lg: 1.125rem;
   --text-xl: 1.25rem;
   --text-2xl: 1.5rem;
   --text-3xl: 2rem;
   --text-4xl: 2.5rem;
-
-  /* Line-height */
-  --lh-tight: 1.15;
-  --lh-title: 1.25;
-  --lh-body: 1.65;
-  /* Alias legacy */
+  --lh-tight: 1.08;
+  --lh-title: 1.28;
+  --lh-body: 1.62;
   --leading-tight: var(--lh-tight);
   --leading-normal: var(--lh-body);
-  --leading-relaxed: 1.8;
-
-  /* Pesos */
+  --leading-relaxed: 1.7;
   --w-regular: 400;
   --w-medium: 500;
   --w-semibold: 600;
+  --trk-tight: -0.024em;
+  --trk-normal: 0;
+  --measure: 68ch;
 
-  /* Tracking */
-  --trk-tight: -0.02em;
-  --trk-normal: 0em;
-
-  /* Medida máxima de texto */
-  --measure: 64ch;
-
-  /* Spacing */
+  /* Layout + spacing */
+  --container: 72rem;
+  --gutter: clamp(1.25rem, 3vw, 2rem);
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -57,35 +74,14 @@
   --space-16: 4rem;
   --space-20: 5rem;
   --space-24: 6rem;
-
-  /* B/N + semánticos */
-  --bg: #f7f7f5;
-  --fg: #0b0b0c;
-  --bg-dark: #0b0b0c;
-  --fg-dark: #f5f5f3;
-  --muted: #6b7280;
-  --fg-muted: #3d4452;
-  --accent: #2563eb;
-  --border: #e5e5e3;
-  --border-dark: rgba(255, 255, 255, 0.12);
-  --gris-tecnico: #9ca3af;
-  --before-bg: rgba(255, 255, 255, 0.06);
-  --now-bg: rgba(255, 255, 255, 0.08);
-
-  /* Semántica de texto/superficie */
-  --text: var(--fg);
-  --muted-text: var(--muted);
-  --line: #dfdfdb;
-
-  /* Layout */
-  --container: 72rem;
-  --radius-sm: 4px;
-  --radius-md: 8px;
+  --space-32: 8rem;
+  --radius-sm: 10px;
+  --radius-md: 14px;
   --radius: var(--radius-md);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-md: 0 8px 22px rgba(0, 0, 0, 0.32);
 
   /* Motion */
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
-  --duration-reveal: 0.6s;
+  --duration-reveal: 0.42s;
 }
