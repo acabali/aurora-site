@@ -353,3 +353,6 @@ select:focus-visible {
     background-size: 28px 28px;
   }
 }
+
+/* HOTFIX: disable AuroraField */
+.hero-field-wrap{display:none !important;}
