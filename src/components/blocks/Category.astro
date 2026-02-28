@@ -2,14 +2,14 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { queEsAurora } = home;
+const { comoTrabaja } = home;
 ---
 
-<Section id="que-es-aurora">
+<Section id="como-trabaja">
   <Container>
     <div class="reveal block-category">
-      <h2 class="section-title">Qué es Aurora</h2>
-      {queEsAurora.body.map((line) => (
+      <h2 class="section-title">{comoTrabaja.title}</h2>
+      {comoTrabaja.lines.map((line) => (
         <p class="section-copy">{line}</p>
       ))}
     </div>

@@ -4,7 +4,6 @@ import Hero from "../components/blocks/Hero.astro";
 import Change from "../components/blocks/Change.astro";
 import Split from "../components/blocks/Split.astro";
 import Category from "../components/blocks/Category.astro";
-import Binary from "../components/blocks/Binary.astro";
 import Cierre from "../components/blocks/Cierre.astro";---
 
 <PageLayout>
@@ -12,15 +11,12 @@ import Cierre from "../components/blocks/Cierre.astro";---
   <Change />
   <Split />
   <Category />
-  <Binary />
   <Cierre />
 </PageLayout>
 
 <script>
   import { mountReveal } from "../lib/reveal";
-  import { mountRupture } from "../lib/rupture";
   document.addEventListener("DOMContentLoaded", () => {
     mountReveal();
-    mountRupture();
   });
 </script>

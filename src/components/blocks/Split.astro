@@ -2,17 +2,30 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { ruptura } = home;
+const { comparativa } = home;
 ---
 
-<Section id="ruptura" class="block-split-wrap">
+<Section id="comparativa" class="block-split-wrap">
   <Container>
-    <div class="reveal block-split" data-rupture>
-      <h2 class="split-title">Ruptura</h2>
-      <div class="rupture-body">
-        {ruptura.body.map((line) => (
-          <p class="rupture-line">{line}</p>
-        ))}
+    <div class="reveal block-split">
+      <h2 class="section-title split-title">{comparativa.title}</h2>
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <h3>Sin Aurora</h3>
+          <ul>
+            {comparativa.sinAurora.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="comparison-card comparison-card-accent">
+          <h3>Con Aurora</h3>
+          <ul>
+            {comparativa.conAurora.map((line) => (
+              <li>{line}</li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   </Container>
@@ -24,14 +37,38 @@ const { ruptura } = home;
     color: var(--fg-dark);
   }
   .block-split .split-title {
-    font-size: clamp(1.5rem, 3vw, var(--h2));
-    font-weight: 600;
-    margin-bottom: var(--space-6);
-    line-height: var(--lh-title);
-    letter-spacing: -0.01em;
     color: var(--fg-dark);
   }
-  .rupture-body { max-width: 36rem; }
-  .rupture-line { margin-bottom: var(--space-3); color: var(--fg-dark); }
-  .rupture-line:last-child { font-weight: 600; }
+  .comparison-grid {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .comparison-card {
+    border: 1px solid var(--border-dark);
+    border-radius: var(--radius-md);
+    padding: var(--space-6);
+    background: var(--before-bg);
+  }
+  .comparison-card-accent {
+    background: var(--now-bg);
+  }
+  .comparison-card h3 {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-4);
+  }
+  .comparison-card ul {
+    list-style: none;
+    display: grid;
+    gap: var(--space-3);
+  }
+  .comparison-card li {
+    color: var(--fg-dark);
+    line-height: var(--leading-relaxed);
+  }
+  @media (max-width: 800px) {
+    .comparison-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>

@@ -1,68 +1,43 @@
-/**
- * HOME ES — narrativa final V1 (source of truth)
- */
-
 export const home = {
   hero: {
-    title: "La era de construir con evidencia.",
-    lines: [
-      "Las variables crecieron.",
-      "Operar igual ya no alcanza.",
-      "Hoy decidir bajo evidencia no es sofisticación.",
-      "Es condición mínima para sostener crecimiento.",
-      "Aurora muestra lo que tu decisión activa antes de moverla.",
-    ],
-    cta: "Pon una decisión bajo evidencia",
+    h1: "Las variables crecieron.",
+    h2: "Operar igual ya no alcanza.",
+    body: "Hoy decidir bajo evidencia no es sofisticación. Es condición mínima para sostener crecimiento.",
+    claim: "Aurora calibra decisiones bajo el estándar actual.",
+    cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
-
-  cambio: {
-    body: [
-      "Durante años bastaba con experiencia e intuición.",
-      "Hoy las variables interactúan a otra velocidad.",
-      "Escala, automatización, mercados abiertos, inteligencia artificial aplicada.",
-      "La complejidad ya no es opcional.",
-      "La precisión tampoco.",
+  autoridad: {
+    title: "Autoridad",
+    bullets: [
+      "Cada decisión se evalúa antes de ejecutar presupuesto.",
+      "Cada riesgo se explicita con impacto operativo real.",
+      "Cada movimiento deja trazabilidad para corregir sin improvisar.",
     ],
   },
-
-  ruptura: {
-    body: [
-      "Antes se decidía por intuición.",
-      "Hoy se exige validación.",
-      "Antes se corregía después.",
-      "Hoy el error escala.",
-      "No es optimización.",
-      "Es cambio de estándar.",
+  comparativa: {
+    title: "Sin Aurora vs Con Aurora",
+    sinAurora: [
+      "Se decide con señales parciales.",
+      "El costo aparece cuando ya está en producción.",
+      "Cada ajuste depende de intuición individual.",
+    ],
+    conAurora: [
+      "Se decide con evidencia antes del despliegue.",
+      "El costo se anticipa y se compara en escenarios.",
+      "Cada ajuste queda respaldado por una huella verificable.",
     ],
   },
-
-  queEsAurora: {
-    body: [
-      "No es agencia.",
-      "No es software.",
-      "No es consultoría.",
-      "Es capacidad estructural aplicada a decisiones.",
-      "Una forma de operar donde cada movimiento se calibra antes de ejecutarse.",
-    ],
-  },
-
-  binario: {
-    body: [
-      "Hay dos formas de operar hoy:",
-      "Administrar complejidad.",
-      "O calibrarla.",
-      "La diferencia está en la evidencia.",
-    ],
-  },
-
-  cierre: {
+  comoTrabaja: {
+    title: "Cómo trabaja Aurora",
     lines: [
-      "No compites más fuerte.",
-      "Operas bajo reglas actualizadas.",
-      "Aurora instala ese estándar.",
+      "Cruza variables y detecta patrones para anticipar qué activa cada decisión en tu operación.",
+      "Luego simula el contrafactual y deja huella de por qué se eligió ese camino.",
     ],
-    cta: "Evaluar una decisión",
+  },
+  cierre: {
+    line: "La diferencia no es opinar mejor: es operar con evidencia antes de mover el negocio.",
+    cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
 } as const;

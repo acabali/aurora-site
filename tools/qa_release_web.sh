@@ -153,7 +153,7 @@ curl -fsS "${LOCAL_URL}/" > "${HOME_HTML}"
 HOME_CONTENT="$(cat "${HOME_HTML}")"
 assert_home_contains "${HOME_CONTENT}" "Las variables crecieron."
 assert_home_contains "${HOME_CONTENT}" "Operar igual ya no alcanza."
-assert_home_contains "${HOME_CONTENT}" "Aurora muestra lo que tu decisión activa antes de moverla."
+assert_home_contains "${HOME_CONTENT}" "Aurora calibra decisiones bajo el estándar actual."
 assert_home_contains "${HOME_CONTENT}" "href=\"/demo\""
 assert_home_not_contains_demo_markup "${HOME_HTML}"
 

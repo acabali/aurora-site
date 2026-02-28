@@ -2,16 +2,18 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { cambio } = home;
+const { autoridad } = home;
 ---
 
-<Section id="cambio">
+<Section id="autoridad">
   <Container>
-    <div class="reveal block-change">
-      <h2 class="section-title">CAMBIO REAL</h2>
-      {cambio.body.map((line) => (
-        <p class="section-copy">{line}</p>
-      ))}
+    <div class="reveal authority-block">
+      <h2 class="section-title">{autoridad.title}</h2>
+      <ul class="authority-list">
+        {autoridad.bullets.map((line) => (
+          <li>{line}</li>
+        ))}
+      </ul>
     </div>
   </Container>
 </Section>
