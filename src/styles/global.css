@@ -354,5 +354,3 @@ select:focus-visible {
   }
 }
 
-/* HOTFIX: disable AuroraField */
-.hero-field-wrap{display:none !important;}

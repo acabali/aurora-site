@@ -4,6 +4,8 @@ import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import { home } from "../../content/home";
 const { hero } = home;
+const AURORA_FIELD_ENABLED =
+  !import.meta.env.PROD || import.meta.env.PUBLIC_AURORA_FIELD === "1";
 ---
 
 <Section id="hero">
@@ -19,45 +21,49 @@ const { hero } = home;
           <Button href={hero.ctaHref}>{hero.cta}</Button>
         </div>
       </div>
-      <div class="hero-field-wrap" aria-hidden="true">
-        <div id="aurora-field-hero" class="hero-field"></div>
-      </div>
+      {AURORA_FIELD_ENABLED && (
+        <div class="hero-field-wrap" aria-hidden="true">
+          <div id="aurora-field-hero" class="hero-field"></div>
+        </div>
+      )}
     </div>
   </Container>
 </Section>
 
-<script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const heroFieldEl = document.getElementById("aurora-field-hero");
-    if (!heroFieldEl) return;
+{AURORA_FIELD_ENABLED && (
+  <script is:inline>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const heroFieldEl = document.getElementById("aurora-field-hero");
+      if (!heroFieldEl) return;
 
-    const { initAuroraField } = await import("../visual/AuroraField");
-    const controller = initAuroraField(heroFieldEl, { mode: "hero" });
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let observer: IntersectionObserver | undefined;
+      const { initAuroraField } = await import("../visual/AuroraField");
+      const controller = initAuroraField(heroFieldEl, { mode: "hero" });
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      let observer: IntersectionObserver | undefined;
 
-    if (!reduceMotion) {
-      const triggerEl = document.getElementById("autoridad");
-      if (triggerEl && "IntersectionObserver" in window) {
-        observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              controller.setMode(entry.isIntersecting ? "dense" : "hero");
-            });
-          },
-          { threshold: 0.35, rootMargin: "0px 0px -20% 0px" }
-        );
-        observer.observe(triggerEl);
+      if (!reduceMotion) {
+        const triggerEl = document.getElementById("autoridad");
+        if (triggerEl && "IntersectionObserver" in window) {
+          observer = new IntersectionObserver(
+            (entries) => {
+              entries.forEach((entry) => {
+                controller.setMode(entry.isIntersecting ? "dense" : "hero");
+              });
+            },
+            { threshold: 0.35, rootMargin: "0px 0px -20% 0px" }
+          );
+          observer.observe(triggerEl);
+        }
       }
-    }
 
-    window.addEventListener(
-      "beforeunload",
-      () => {
-        observer?.disconnect();
-        controller.destroy();
-      },
-      { once: true }
-    );
-  });
-</script>
+      window.addEventListener(
+        "beforeunload",
+        () => {
+          observer?.disconnect();
+          controller.destroy();
+        },
+        { once: true }
+      );
+    });
+  </script>
+)}
