@@ -9,30 +9,50 @@ const { comoTrabaja } = home;
   <Container>
     <div class="reveal block-category">
       <h2 class="section-title">{comoTrabaja.title}</h2>
-      {comoTrabaja.lines.map((line) => (
-        <p class="section-copy">{line}</p>
-      ))}
+      <div class="category-stack">
+        {comoTrabaja.blocks.map((line) => (
+          <p class="category-line">{line}</p>
+        ))}
+      </div>
     </div>
   </Container>
 </Section>
 
 <style>
-  .block-category {
-    border: 1px solid var(--line);
-    background: linear-gradient(180deg, var(--bg-1), rgba(255, 255, 255, 0.02));
-    padding: var(--space-10) var(--space-8);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+  .category-stack {
+    display: grid;
+    gap: var(--space-6);
   }
-  .block-category .section-title {
-    margin-bottom: var(--space-6);
+  .category-line {
+    font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+    line-height: 1.34;
+    letter-spacing: -0.01em;
+    max-width: 42ch;
+    color: var(--text-0);
+    opacity: 0;
+    transform: translateY(8px);
   }
-  .block-category .section-copy:last-child {
-    margin-bottom: 0;
+  .block-category.is-in .category-line {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .block-category.is-in .category-line:nth-child(2) {
+    transition-delay: 0.12s;
+  }
+  .block-category.is-in .category-line:nth-child(3) {
+    transition-delay: 0.24s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .category-line {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
   @media (max-width: 640px) {
-    .block-category {
-      padding: var(--space-8) var(--space-5);
+    .category-stack {
+      gap: var(--space-5);
     }
   }
 </style>

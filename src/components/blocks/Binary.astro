@@ -1,6 +1,7 @@
 ---
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
+import Button from "../ui/Button.astro";
 import { home } from "../../content/home";
 const { binario } = home;
 ---
@@ -8,14 +9,44 @@ const { binario } = home;
 <Section id="binario" class="block-binary-wrap">
   <Container>
     <div class="reveal block-binary">
-      <h2 class="section-title">Binario</h2>
-      {binario.body.map((line) => (
-        <p class="section-copy">{line}</p>
-      ))}
+      <h2 class="binary-title">{binario.title}</h2>
+      <p class="binary-line">{binario.lineA}</p>
+      <p class="binary-line">{binario.lineB}</p>
+      <div class="binary-cta">
+        <Button href={binario.ctaHref}>{binario.cta}</Button>
+      </div>
     </div>
   </Container>
 </Section>
 
 <style>
-  .block-binary-wrap { border-top: 1px solid var(--border); }
+  .block-binary-wrap {
+    background: #f7f7f5;
+    color: #0b0b0c;
+    border-top: 1px solid rgba(11, 11, 12, 0.15);
+  }
+  .block-binary {
+    max-width: 48rem;
+  }
+  .binary-title {
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-8);
+    color: #0b0b0c;
+  }
+  .binary-line {
+    font-size: clamp(1.1rem, 2vw, 1.45rem);
+    line-height: 1.36;
+    margin-bottom: var(--space-4);
+    color: rgba(11, 11, 12, 0.82);
+  }
+  .binary-cta {
+    margin-top: var(--space-10);
+  }
+  .block-binary :global(.btn-primary) {
+    background: #0b0b0c;
+    color: #f7f7f5;
+    border-color: #0b0b0c;
+  }
 </style>

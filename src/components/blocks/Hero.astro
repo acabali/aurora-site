@@ -4,66 +4,48 @@ import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import { home } from "../../content/home";
 const { hero } = home;
-const AURORA_FIELD_ENABLED =
-  !import.meta.env.PROD || import.meta.env.PUBLIC_AURORA_FIELD === "1";
+const heroWords = hero.h1.split(" ");
 ---
 
 <Section id="hero">
   <Container>
     <div class="reveal hero-shell">
       <div class="block-hero">
-        <h1 class="hero-title">{hero.h1}</h1>
-        <h2 class="hero-subtitle">{hero.h2}</h2>
-        <div class="hero-line" aria-hidden="true"></div>
-        <p class="hero-body">{hero.body}</p>
+        <h1 class="hero-title hero-wordline" aria-label={hero.h1}>
+          {heroWords.map((word) => (
+            <span class="hero-word">{word}</span>
+          ))}
+        </h1>
         <p class="hero-claim">{hero.claim}</p>
         <div class="hero-cta-wrap">
           <Button href={hero.ctaHref}>{hero.cta}</Button>
         </div>
       </div>
-      {AURORA_FIELD_ENABLED && (
-        <div class="hero-field-wrap" aria-hidden="true">
-          <div id="aurora-field-hero" class="hero-field"></div>
-        </div>
-      )}
+      <div class="hero-structure" aria-hidden="true">
+        <svg viewBox="0 0 640 420" role="presentation">
+          <g class="hero-grid-lines">
+            <path d="M0 60H640 M0 140H640 M0 220H640 M0 300H640 M0 380H640" />
+            <path d="M80 0V420 M200 0V420 M320 0V420 M440 0V420 M560 0V420" />
+          </g>
+          <g class="hero-struct-lines">
+            <path d="M80 320L220 250L330 280L470 190L560 220" />
+            <path d="M80 180L180 145L300 170L420 105L560 140" />
+            <path d="M80 90L220 120L350 70L480 85L560 62" />
+          </g>
+          <g class="hero-struct-nodes">
+            <circle cx="80" cy="320" r="3" />
+            <circle cx="220" cy="250" r="3" />
+            <circle cx="330" cy="280" r="3" />
+            <circle cx="470" cy="190" r="3" />
+            <circle cx="560" cy="220" r="3" />
+            <circle cx="80" cy="180" r="2.5" />
+            <circle cx="180" cy="145" r="2.5" />
+            <circle cx="300" cy="170" r="2.5" />
+            <circle cx="420" cy="105" r="2.5" />
+            <circle cx="560" cy="140" r="2.5" />
+          </g>
+        </svg>
+      </div>
     </div>
   </Container>
 </Section>
-
-{AURORA_FIELD_ENABLED && (
-  <script is:inline>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const heroFieldEl = document.getElementById("aurora-field-hero");
-      if (!heroFieldEl) return;
-
-      const { initAuroraField } = await import("../visual/AuroraField");
-      const controller = initAuroraField(heroFieldEl, { mode: "hero" });
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let observer: IntersectionObserver | undefined;
-
-      if (!reduceMotion) {
-        const triggerEl = document.getElementById("autoridad");
-        if (triggerEl && "IntersectionObserver" in window) {
-          observer = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                controller.setMode(entry.isIntersecting ? "dense" : "hero");
-              });
-            },
-            { threshold: 0.35, rootMargin: "0px 0px -20% 0px" }
-          );
-          observer.observe(triggerEl);
-        }
-      }
-
-      window.addEventListener(
-        "beforeunload",
-        () => {
-          observer?.disconnect();
-          controller.destroy();
-        },
-        { once: true }
-      );
-    });
-  </script>
-)}
