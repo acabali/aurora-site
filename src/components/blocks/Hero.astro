@@ -8,15 +8,56 @@ const { hero } = home;
 
 <Section id="hero">
   <Container>
-    <div class="reveal block-hero">
-      <h1 class="hero-title">{hero.h1}</h1>
-      <h2 class="hero-subtitle">{hero.h2}</h2>
-      <div class="hero-line" aria-hidden="true"></div>
-      <p class="hero-body">{hero.body}</p>
-      <p class="hero-claim">{hero.claim}</p>
-      <div class="hero-cta-wrap">
-        <Button href={hero.ctaHref}>{hero.cta}</Button>
+    <div class="reveal hero-shell">
+      <div class="block-hero">
+        <h1 class="hero-title">{hero.h1}</h1>
+        <h2 class="hero-subtitle">{hero.h2}</h2>
+        <div class="hero-line" aria-hidden="true"></div>
+        <p class="hero-body">{hero.body}</p>
+        <p class="hero-claim">{hero.claim}</p>
+        <div class="hero-cta-wrap">
+          <Button href={hero.ctaHref}>{hero.cta}</Button>
+        </div>
+      </div>
+      <div class="hero-field-wrap" aria-hidden="true">
+        <div id="aurora-field-hero" class="hero-field"></div>
       </div>
     </div>
   </Container>
 </Section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    const heroFieldEl = document.getElementById("aurora-field-hero");
+    if (!heroFieldEl) return;
+
+    const { initAuroraField } = await import("../visual/AuroraField");
+    const controller = initAuroraField(heroFieldEl, { mode: "hero" });
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let observer: IntersectionObserver | undefined;
+
+    if (!reduceMotion) {
+      const triggerEl = document.getElementById("autoridad");
+      if (triggerEl && "IntersectionObserver" in window) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              controller.setMode(entry.isIntersecting ? "dense" : "hero");
+            });
+          },
+          { threshold: 0.35, rootMargin: "0px 0px -20% 0px" }
+        );
+        observer.observe(triggerEl);
+      }
+    }
+
+    window.addEventListener(
+      "beforeunload",
+      () => {
+        observer?.disconnect();
+        controller.destroy();
+      },
+      { once: true }
+    );
+  });
+</script>

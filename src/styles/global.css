@@ -101,7 +101,40 @@ main {
 
 .block-hero {
   max-width: 58rem;
-  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.92fr);
+  gap: var(--space-10);
+  align-items: stretch;
+}
+
+.hero-field-wrap {
+  min-height: clamp(300px, 46vw, 520px);
+}
+
+.hero-field {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background-color: rgba(18, 19, 22, 0.9);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+  overflow: hidden;
+}
+
+.aurora-field-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
 
 .hero-title {
@@ -276,6 +309,13 @@ select:focus-visible {
   .section {
     padding-block: var(--space-16);
   }
+  .hero-shell {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  .hero-field-wrap {
+    min-height: 280px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -299,5 +339,17 @@ select:focus-visible {
   }
   .hero-body {
     margin-top: var(--space-5);
+  }
+  .hero-field-wrap {
+    min-height: 220px;
+  }
+  .hero-field {
+    background-size: 20px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-field {
+    background-size: 28px 28px;
   }
 }
