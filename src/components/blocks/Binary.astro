@@ -1,26 +1,11 @@
----
-import Container from "../ui/Container.astro";
-import Section from "../ui/Section.astro";
-import Button from "../ui/Button.astro";
-import { home } from "../../content/home";
-const { binario } = home;
----
+<section id="binario" class="binary">
+  <div class="container">
+    <h2 class="kicker">BINARIO (METODOLOGÍA, NO TÍTULO)</h2>
 
-<Section id="binario" class="block-binary-wrap">
-  <Container>
-    <div class="reveal block-binary">
-      <h2 class="binary-title">{binario.title}</h2>
-      <div class="binary-panels">
-        <div class="binary-panel binary-panel-before">
-          <p>Operar como antes</p>
-        </div>
-        <div class="binary-panel binary-panel-now">
-          <p>Calibrar bajo el estándar actual</p>
-        </div>
-      </div>
-      <div class="binary-cta">
-        <Button href={binario.ctaHref}>{binario.cta}</Button>
-      </div>
+    <div class="binary-text">
+      <p>Hay dos formas de operar:</p>
+      <p><strong>Operar como antes.</strong> O <strong>calibrar bajo el estándar actual.</strong></p>
+      <p>La primera conserva inercia. La segunda reduce exposición.</p>
     </div>
-  </Container>
-</Section>
+  </div>
+</section>
