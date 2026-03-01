@@ -38,236 +38,93 @@ const { title = "Aurora" } = Astro.props;
     <footer id="contacto" class="site-footer">Aurora</footer>
 
     <script is:inline>
-      const REGIMES = new Set([
-        "unstable",
-        "compressing",
-        "collision",
-        "rupture",
-        "reordering",
-        "stabilized",
-      ]);
       const CONTROLLER_KEY = "__auroraRegimeController";
 
       class RegimeController {
         constructor() {
-          this.anchors = [];
-          this.visibility = new Map();
-          this.observer = null;
           this.raf = 0;
-          this.destroyed = false;
-          this.currentRegime = "unstable";
-          this.currentAnchor = null;
-          this.lastTick = 0;
           this.lastScrollY = window.scrollY;
           this.rawVelocity = 0;
           this.smoothVelocity = 0;
-          this.pendingAnchorRefresh = false;
-          this.mutationObserver = new MutationObserver(() => this.onMutations());
+          this.hasScrolled = false;
+          this.bootAt = performance.now();
 
           this.onScroll = this.onScroll.bind(this);
           this.onResize = this.onResize.bind(this);
-          this.onWheel = this.onWheel.bind(this);
           this.frame = this.frame.bind(this);
-
-          this.refreshAnchors();
 
           window.addEventListener("scroll", this.onScroll, { passive: true, capture: true });
           window.addEventListener("resize", this.onResize, { passive: true });
-          window.addEventListener("wheel", this.onWheel, { passive: false });
 
-          this.mutationObserver.observe(document.body, {
-            subtree: true,
-            childList: true,
-            attributes: true,
-            attributeFilter: ["data-regime-anchor", "data-regime-target", "data-scroll-damp"],
-          });
-
-          this.ensureFrame();
+          this.updateNow(performance.now());
+          this.schedule();
         }
 
         destroy() {
-          this.destroyed = true;
-
           if (this.raf !== 0) {
             window.cancelAnimationFrame(this.raf);
             this.raf = 0;
           }
-
-          if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
-          }
-
-          this.mutationObserver.disconnect();
           window.removeEventListener("scroll", this.onScroll, true);
           window.removeEventListener("resize", this.onResize);
-          window.removeEventListener("wheel", this.onWheel);
-
           delete document.body.dataset.scrollVelocity;
           delete document.body.dataset.binarySide;
-          delete document.body.dataset.scrollDamp;
-        }
-
-        onMutations() {
-          if (this.pendingAnchorRefresh) return;
-          this.pendingAnchorRefresh = true;
-          window.requestAnimationFrame(() => {
-            this.pendingAnchorRefresh = false;
-            this.refreshAnchors();
-            this.ensureFrame();
-          });
         }
 
         onScroll() {
-          const nextY = window.scrollY;
-          this.rawVelocity = nextY - this.lastScrollY;
-          this.lastScrollY = nextY;
-          this.updateNow();
-          this.ensureFrame();
+          const y = window.scrollY;
+          this.rawVelocity = y - this.lastScrollY;
+          this.lastScrollY = y;
+          if (Math.abs(this.rawVelocity) > 0.4) {
+            this.hasScrolled = true;
+          }
+          this.updateNow(performance.now());
+          this.schedule();
         }
 
         onResize() {
-          this.refreshAnchors();
-          this.updateNow();
-          this.ensureFrame();
+          this.updateNow(performance.now());
+          this.schedule();
         }
 
-        onWheel(event) {
-          if (!this.currentAnchor || !this.currentAnchor.damp) return;
-          if (event.defaultPrevented || event.ctrlKey || event.metaKey) return;
-          event.preventDefault();
-          window.scrollBy({ top: event.deltaY * 0.4, behavior: "auto" });
-        }
-
-        ensureFrame() {
-          if (this.raf !== 0 || this.destroyed) return;
+        schedule() {
+          if (this.raf !== 0) return;
           this.raf = window.requestAnimationFrame(this.frame);
         }
 
-        frame(time) {
-          if (this.destroyed) return;
+        frame(now) {
+          this.raf = 0;
+          this.smoothVelocity = this.smoothVelocity * 0.84 + this.rawVelocity * 0.16;
+          this.rawVelocity *= 0.34;
+          this.updateNow(now);
 
-          const dt = this.lastTick > 0 ? Math.min(64, time - this.lastTick) : 16;
-          this.lastTick = time;
-
-          const velocityPerFrame = dt > 0 ? this.rawVelocity * (16 / dt) : this.rawVelocity;
-          this.smoothVelocity = this.smoothVelocity * 0.82 + velocityPerFrame * 0.18;
-          this.rawVelocity *= 0.2;
-
-          this.updateNow();
-          this.raf = window.requestAnimationFrame(this.frame);
+          if (Math.abs(this.smoothVelocity) > 0.02) {
+            this.schedule();
+          }
         }
 
-        updateNow() {
-          this.applyRegime(this.resolveRegime());
-          this.syncTelemetry();
+        updateNow(now) {
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+          const introProgress = this.hasScrolled ? 0 : Math.min(1, (now - this.bootAt) / 3000);
+          const effective = Math.max(scrollProgress, introProgress * 0.86);
+
+          const regime = this.regimeByProgress(effective);
+          document.body.dataset.regime = regime;
+          document.body.dataset.state = regime;
+          document.body.dataset.scrollVelocity = Math.abs(this.smoothVelocity).toFixed(3);
+
           this.syncBinaryBoundary();
         }
 
-        refreshAnchors() {
-          if (this.observer) {
-            this.observer.disconnect();
-            this.observer = null;
-          }
-
-          const found = Array.from(document.querySelectorAll("[data-regime-anchor]"));
-
-          this.anchors = found
-            .map((el) => {
-              const raw = (el.dataset.regimeTarget || "").trim();
-              if (!REGIMES.has(raw)) return null;
-              return {
-                el,
-                regime: raw,
-                damp: el.dataset.scrollDamp === "true",
-              };
-            })
-            .filter(Boolean);
-
-          this.visibility = new Map();
-
-          if (typeof IntersectionObserver === "undefined" || this.anchors.length === 0) {
-            return;
-          }
-
-          this.observer = new IntersectionObserver(
-            (entries) => {
-              for (const entry of entries) {
-                this.visibility.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
-              }
-            },
-            {
-              root: null,
-              rootMargin: "-26% 0px -26% 0px",
-              threshold: [0, 0.2, 0.4, 0.6, 0.8],
-            }
-          );
-
-          for (const anchor of this.anchors) {
-            this.visibility.set(anchor.el, 0);
-            this.observer.observe(anchor.el);
-          }
-        }
-
-        resolveRegime() {
-          this.currentAnchor = this.findClosestAnchor();
-
-          if (window.location.pathname.startsWith("/demo")) {
-            return "stabilized";
-          }
-
-          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-          const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-
-          if (progress < 0.16) return "unstable";
-          if (progress < 0.32) return "compressing";
-          if (progress < 0.47) return "collision";
-          if (progress < 0.59) return "rupture";
-          if (progress < 0.84) return "reordering";
+        regimeByProgress(progress) {
+          if (window.location.pathname.startsWith("/demo")) return "stabilized";
+          if (progress < 0.2) return "unstable";
+          if (progress < 0.42) return "compressing";
+          if (progress < 0.62) return "collision";
+          if (progress < 0.74) return "rupture";
+          if (progress < 0.9) return "reordering";
           return "stabilized";
-        }
-
-        findClosestAnchor() {
-          if (this.anchors.length === 0) return null;
-
-          const viewportCenter = window.scrollY + window.innerHeight * 0.5;
-          let winner = null;
-          let winnerScore = -1;
-
-          for (const anchor of this.anchors) {
-            const rect = anchor.el.getBoundingClientRect();
-            const center = window.scrollY + rect.top + rect.height * 0.5;
-            const distance = Math.abs(center - viewportCenter);
-            const proximity = 1 - Math.min(1, distance / Math.max(1, window.innerHeight * 0.92));
-            const ratio = this.visibility.get(anchor.el) || 0;
-            const score = proximity * 0.88 + ratio * 0.12;
-
-            if (score > winnerScore) {
-              winnerScore = score;
-              winner = anchor;
-            }
-          }
-
-          return winner;
-        }
-
-        applyRegime(next) {
-          document.body.dataset.scrollDamp = this.currentAnchor && this.currentAnchor.damp ? "true" : "false";
-
-          if (next === this.currentRegime) return;
-
-          this.currentRegime = next;
-          document.body.dataset.regime = next;
-          document.body.dataset.state = next;
-
-          if (next !== "reordering") {
-            delete document.body.dataset.fieldFocus;
-          }
-        }
-
-        syncTelemetry() {
-          document.body.dataset.scrollVelocity = this.smoothVelocity.toFixed(3);
-          document.documentElement.style.setProperty("--scroll-velocity", this.smoothVelocity.toFixed(3));
         }
 
         syncBinaryBoundary() {

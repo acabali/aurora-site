@@ -61,7 +61,7 @@ export const demo = {
       "Detección temprana de interacción crítica antes de materialización en caja.",
     cta: "Solicitar calibración completa",
     ctaUnavailable: "No disponible",
-    ctaSub: "Evaluación generada bajo modelo de interacciones múltiples.",
+    ctaSub: "",
   },
   validation: {
     required: "Completá los campos obligatorios.",

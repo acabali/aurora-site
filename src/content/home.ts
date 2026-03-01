@@ -100,6 +100,6 @@ export const home = {
     lead: "Poner una decisión bajo evidencia.",
     cta: "Activar evaluación",
     ctaHref: "/demo",
-    seal: "Evaluación generada bajo modelo de interacciones múltiples.",
+    seal: "",
   },
 } as const;
