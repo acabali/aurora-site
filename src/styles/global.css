@@ -433,38 +433,15 @@ main {
   max-width: 20ch;
 }
 
-.binary-panels {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-6);
-}
 
-.binary-panel {
-  min-height: clamp(180px, 24vw, 260px);
-  display: flex;
-  align-items: flex-end;
-  padding: clamp(1rem, 2vw, 1.75rem);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(148, 163, 184, 0.22);
-  background: rgba(10, 15, 24, 0.55);
-}
 
-.binary-panel p {
-  font-size: clamp(1.48rem, 3.3vw, 2.72rem);
-  line-height: 1.06;
-  letter-spacing: -0.022em;
-  max-width: 11ch;
-}
 
-.binary-panel-before {
-  color: rgba(230, 237, 245, 0.68);
-  border-color: rgba(255, 176, 32, 0.26);
-}
 
-.binary-panel-now {
-  border-color: rgba(0, 255, 198, 0.34);
-  box-shadow: inset 0 0 0 1px rgba(0, 255, 198, 0.1);
-}
+
+
+
+
+
 
 .binary-cta {
   margin-top: var(--space-10);
@@ -489,9 +466,7 @@ textarea:focus-visible {
   }
 
   .rupture-grid,
-  .binary-panels {
-    grid-template-columns: 1fr;
-  }
+  
 
   .manifesto-line:nth-child(2),
   .manifesto-line:nth-child(3) {

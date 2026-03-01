@@ -3,7 +3,6 @@ export const home = {
     h1: "La era de construir con evidencia.",
     h2: "",
     body: "",
-    claim: "Aurora es infraestructura para decisiones críticas.",
     cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },

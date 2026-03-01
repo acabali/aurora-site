@@ -71,7 +71,7 @@ import Section from "../ui/Section.astro";
     display: grid;
     gap: var(--space-4);
   }
-  .demo-scenario-card {
+  .demo-scenario-item {
     border: 1px solid var(--line);
     border-radius: var(--radius-md);
     padding: var(--space-5);
@@ -79,11 +79,11 @@ import Section from "../ui/Section.astro";
     background: var(--bg-2);
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
   }
-  .demo-scenario-card:hover {
+  .demo-scenario-item:hover {
     transform: translateY(-1px);
     border-color: rgba(255, 255, 255, 0.3);
   }
-  .demo-scenario-card[aria-pressed="true"] {
+  .demo-scenario-item[aria-pressed="true"] {
     border-color: var(--accent);
     background: rgba(0, 255, 198, 0.14);
   }
@@ -210,7 +210,7 @@ import Section from "../ui/Section.astro";
     color: var(--text-1);
   }
   @media (prefers-reduced-motion: reduce) {
-    .demo-scenario-card,
+    .demo-scenario-item,
     .demo-root .demo-submit {
       transition: none;
     }
@@ -415,7 +415,7 @@ import Section from "../ui/Section.astro";
             ${demo.scenario.options
               .map(
                 (item) => `
-              <button type="button" class="demo-scenario-card" data-scenario="${item.id}" aria-pressed="false">
+              <button type="button" class="demo-scenario-item" data-scenario="${item.id}" aria-pressed="false">
                 <div class="demo-scenario-title">${item.title}</div>
                 <div class="demo-scenario-hint">${item.hint}</div>
               </button>
@@ -428,11 +428,11 @@ import Section from "../ui/Section.astro";
         </div>
       `;
       let selected: DemoScenario | null = null;
-      root.querySelectorAll(".demo-scenario-card").forEach((card) => {
+      root.querySelectorAll(".demo-scenario-item").forEach((card) => {
         card.addEventListener("click", () => {
           selected = card.getAttribute("data-scenario") as DemoScenario;
           root
-            .querySelectorAll(".demo-scenario-card")
+            .querySelectorAll(".demo-scenario-item")
             .forEach((c) => c.setAttribute("aria-pressed", "false"));
           card.setAttribute("aria-pressed", "true");
         });
