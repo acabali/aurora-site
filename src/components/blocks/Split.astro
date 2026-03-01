@@ -2,23 +2,15 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { comparativa } = home;
+
+const { rupture } = home;
 ---
 
-<Section id="comparativa" class="rupture-section">
+<Section id="rupture" class="rupture-section">
   <Container>
-    <div class="reveal rupture-block">
-      <h2 class="section-title rupture-title">{comparativa.title}</h2>
-      <div class="rupture-grid">
-        <div class="rupture-column rupture-before">
-          <h3>Antes</h3>
-          <p>{comparativa.antes}</p>
-        </div>
-        <div class="rupture-column rupture-now">
-          <h3>Ahora</h3>
-          <p>{comparativa.ahora}</p>
-        </div>
-      </div>
+    <div class="rupture-flow reveal">
+      <h2 class="section-title">{rupture.title}</h2>
+      <p class="rupture-line">{rupture.line}</p>
     </div>
   </Container>
 </Section>

@@ -1,11 +1,48 @@
-<section id="binario" class="binary">
-  <div class="container">
-    <h2 class="kicker">BINARIO (METODOLOGÍA, NO TÍTULO)</h2>
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+import { home } from "../../content/home";
 
-    <div class="binary-text">
-      <p>Hay dos formas de operar:</p>
-      <p><strong>Operar como antes.</strong> O <strong>calibrar bajo el estándar actual.</strong></p>
-      <p>La primera conserva inercia. La segunda reduce exposición.</p>
+const { binary } = home;
+---
+
+<Section id="binary" class="binary-section">
+  <Container>
+    <div class="binary-flow reveal" data-binary-root>
+      <h2 class="section-title binary-title">{binary.title}</h2>
+      <p class="binary-line binary-line-before" data-binary-state="binary-before" tabindex="0">
+        {binary.before}
+      </p>
+      <p class="binary-divider">/</p>
+      <p class="binary-line binary-line-after" data-binary-state="binary-after" tabindex="0">
+        {binary.after}
+      </p>
     </div>
-  </div>
-</section>
+  </Container>
+</Section>
+
+<script>
+  const roots = document.querySelectorAll("[data-binary-root]");
+
+  roots.forEach((root) => {
+    const lines = root.querySelectorAll("[data-binary-state]");
+
+    const setState = (state) => {
+      if (!state) return;
+      document.body.dataset.state = state;
+      lines.forEach((line) => {
+        const active = line.getAttribute("data-binary-state") === state;
+        line.classList.toggle("is-active", active);
+      });
+    };
+
+    setState("binary-before");
+
+    lines.forEach((line) => {
+      const state = line.getAttribute("data-binary-state");
+      line.addEventListener("mouseenter", () => setState(state));
+      line.addEventListener("focus", () => setState(state));
+      line.addEventListener("click", () => setState(state));
+    });
+  });
+</script>

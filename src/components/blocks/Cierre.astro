@@ -3,39 +3,17 @@ import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import { home } from "../../content/home";
-const { cierre } = home;
+
+const { demoCta } = home;
 ---
 
-<Section id="cta-demo" class="block-cierre-wrap">
+<Section id="demo-cta" class="demo-cta-section">
   <Container>
-    <div class="reveal block-cierre">
-      <p class="section-copy section-copy-strong cierre-line">{cierre.line}</p>
-      <Button href={cierre.ctaHref}>{cierre.cta}</Button>
+    <div class="demo-cta-flow reveal">
+      <p class="demo-cta-kicker">{demoCta.title}</p>
+      <p class="demo-cta-lead">{demoCta.lead}</p>
+      <Button href={demoCta.ctaHref} class="demo-cta-button">{demoCta.cta}</Button>
+      <p class="demo-cta-seal">{demoCta.seal}</p>
     </div>
   </Container>
 </Section>
-
-<style>
-  .block-cierre-wrap {
-    border-top: 1px solid var(--line);
-  }
-  .block-cierre {
-    max-width: 52rem;
-    margin-inline: auto;
-    padding: var(--space-12);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: linear-gradient(180deg, var(--bg-1), rgba(255, 255, 255, 0.03));
-  }
-  .block-cierre .cierre-line {
-    margin-bottom: var(--space-8);
-    max-width: 44ch;
-    text-wrap: balance;
-    margin-inline: auto;
-  }
-  @media (max-width: 640px) {
-    .block-cierre {
-      padding: var(--space-8) var(--space-5);
-    }
-  }
-</style>

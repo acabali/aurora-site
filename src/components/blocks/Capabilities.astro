@@ -1,0 +1,54 @@
+---
+import Container from "../ui/Container.astro";
+import Section from "../ui/Section.astro";
+import { home } from "../../content/home";
+
+const { capabilities } = home;
+---
+
+<Section id="capabilities" class="capabilities-section">
+  <Container>
+    <div class="capabilities-flow">
+      <h2 class="section-title reveal">{capabilities.title}</h2>
+      <ul class="capability-list" data-capability-list>
+        {capabilities.items.map((item) => (
+          <li class="capability-item reveal" data-capability-state={item.state} tabindex="0">
+            <p class="capability-name">{item.name}</p>
+            <p class="capability-detail">{item.detail}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </Container>
+</Section>
+
+<script>
+  const lists = document.querySelectorAll("[data-capability-list]");
+
+  lists.forEach((list) => {
+    const items = list.querySelectorAll("[data-capability-state]");
+    if (!items.length) return;
+
+    const defaultState = items[0].getAttribute("data-capability-state") || "capability-core";
+
+    const setState = (state) => {
+      if (!state) return;
+      document.body.dataset.state = state;
+      items.forEach((item) => {
+        const active = item.getAttribute("data-capability-state") === state;
+        item.classList.toggle("is-active", active);
+      });
+    };
+
+    setState(defaultState);
+
+    items.forEach((item) => {
+      const state = item.getAttribute("data-capability-state");
+      item.addEventListener("mouseenter", () => setState(state));
+      item.addEventListener("focus", () => setState(state));
+      item.addEventListener("click", () => setState(state));
+    });
+
+    list.addEventListener("mouseleave", () => setState(defaultState));
+  });
+</script>

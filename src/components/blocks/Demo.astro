@@ -3,221 +3,316 @@ import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 ---
 
-<Section id="demo" class="block-demo-wrap">
+<Section id="demo" class="demo-stage">
   <Container>
     <div id="demo-root" class="demo-root" data-lead-endpoint="/api/lead"></div>
   </Container>
 </Section>
 
 <style>
-  .block-demo-wrap {
-    padding-block: var(--space-16);
-    border-top: 1px solid var(--line);
+  .demo-stage {
+    min-height: calc(100vh - 72px);
+    padding-block: 0 var(--space-16);
+    background: linear-gradient(to bottom, #ffffff 0 44%, #03060b 44% 100%);
   }
+
   .demo-root {
-    max-width: 36rem;
+    max-width: 52rem;
     margin-inline: auto;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--bg-1);
-    padding: var(--space-8);
-    box-shadow: var(--shadow-sm);
+    margin-top: clamp(2.4rem, 7.5vh, 6rem);
+    min-height: clamp(520px, 70vh, 760px);
+    padding: clamp(1.3rem, 2.8vw, 2.4rem);
+    transition: background-color var(--duration-mid) ease, color var(--duration-mid) ease,
+      box-shadow var(--duration-mid) ease;
   }
+
+  .demo-root[data-step="context"],
+  .demo-root[data-step="scenario"],
+  .demo-root[data-step="signals"] {
+    background: #ffffff;
+    color: #08101b;
+    box-shadow: 0 20px 80px rgba(2, 6, 10, 0.13);
+  }
+
+  .demo-root[data-step="analyzing"],
+  .demo-root[data-step="result"],
+  .demo-root[data-step="already"] {
+    background: #02050a;
+    color: #f4f8fd;
+    box-shadow: 0 26px 92px rgba(0, 0, 0, 0.42);
+  }
+
+  .demo-step,
+  .demo-result,
+  .demo-already {
+    max-width: 44rem;
+    margin-inline: auto;
+  }
+
   .demo-title {
-    font-size: var(--text-2xl);
-    line-height: var(--lh-tight);
-    margin-bottom: var(--space-4);
-  }
-  .demo-subtitle {
-    color: var(--text-1);
-    line-height: var(--lh-body);
-    margin-bottom: var(--space-3);
-  }
-  .demo-note {
-    color: var(--text-1);
-    font-size: var(--text-sm);
-    margin-bottom: var(--space-8);
-  }
-  .demo-field {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4.5vw, 4.25rem);
+    line-height: 0.93;
+    letter-spacing: -0.03em;
     margin-bottom: var(--space-5);
   }
+
+  .demo-subtitle {
+    font-size: clamp(1rem, 1.6vw, 1.24rem);
+    line-height: 1.6;
+    max-width: 38ch;
+    color: rgba(8, 16, 27, 0.78);
+    margin-bottom: var(--space-3);
+  }
+
+  .demo-note {
+    font-size: 0.84rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: rgba(8, 16, 27, 0.6);
+    margin-bottom: var(--space-8);
+  }
+
+  .demo-field,
+  .demo-question {
+    margin-bottom: var(--space-5);
+  }
+
   .demo-field label,
   .demo-question label {
     display: block;
-    font-size: var(--text-sm);
-    color: var(--text-0);
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
     margin-bottom: var(--space-2);
-    line-height: var(--lh-body);
   }
+
   .demo-field input,
   .demo-field select {
     width: 100%;
-    padding: var(--space-3) var(--space-4);
-    font-size: var(--text-base);
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    background: var(--bg-2);
-    color: var(--text-0);
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 1px solid rgba(8, 16, 27, 0.3);
+    background: transparent;
+    color: #08101b;
+    border-radius: 0;
   }
+
   .demo-field input:focus-visible,
   .demo-field select:focus-visible {
-    outline: 2px solid rgba(0, 255, 198, 0.72);
-    outline-offset: 1px;
+    outline: none;
+    border-bottom-color: rgba(8, 16, 27, 0.9);
   }
-  .demo-question {
-    margin-bottom: var(--space-6);
-  }
+
   .demo-scenario-list {
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-4);
   }
-  .demo-scenario-item {
-    border: 1px solid var(--line);
-    border-radius: var(--radius-md);
-    padding: var(--space-5);
+
+  .demo-scenario-option {
+    width: 100%;
+    text-align: left;
+    border: none;
+    border-bottom: 1px solid rgba(8, 16, 27, 0.22);
+    background: transparent;
+    color: #08101b;
+    padding: 0 0 var(--space-3);
     cursor: pointer;
-    background: var(--bg-2);
-    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    transition: border-color var(--duration-fast) ease, transform var(--duration-fast) ease;
   }
-  .demo-scenario-item:hover {
-    transform: translateY(-1px);
-    border-color: rgba(255, 255, 255, 0.3);
+
+  .demo-scenario-option:hover,
+  .demo-scenario-option[aria-pressed="true"] {
+    border-bottom-color: rgba(8, 16, 27, 0.82);
+    transform: translateX(4px);
   }
-  .demo-scenario-item[aria-pressed="true"] {
-    border-color: var(--accent);
-    background: rgba(0, 255, 198, 0.14);
-  }
+
   .demo-scenario-title {
-    font-size: var(--text-sm);
-    line-height: var(--lh-body);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.2vw, 1.9rem);
+    line-height: 1.05;
+    letter-spacing: -0.016em;
     margin-bottom: var(--space-2);
   }
+
   .demo-scenario-hint {
-    color: var(--text-1);
-    font-size: var(--text-sm);
+    font-size: 0.96rem;
+    color: rgba(8, 16, 27, 0.72);
+    line-height: 1.5;
   }
+
   .demo-root .demo-toggle-group {
     display: flex;
+    flex-wrap: wrap;
     gap: var(--space-3);
   }
+
   .demo-root .demo-toggle {
-    min-height: 44px;
-    padding: 0 var(--space-4);
-    font-size: var(--text-sm);
-    border: 1px solid var(--line);
-    background: var(--bg-2);
-    color: var(--text-0);
+    min-height: 40px;
+    padding: 0 var(--space-3);
+    border: 1px solid rgba(8, 16, 27, 0.24);
+    background: transparent;
+    color: #08101b;
+    font-size: 0.92rem;
     cursor: pointer;
-    border-radius: var(--radius-sm);
-    transition: border-color 0.2s, background 0.2s;
+    transition: border-color var(--duration-fast) ease, background var(--duration-fast) ease;
   }
+
   .demo-root .demo-toggle[aria-pressed="true"] {
-    border-color: var(--accent);
-    background: rgba(0, 255, 198, 0.14);
+    border-color: rgba(8, 16, 27, 0.9);
+    background: rgba(8, 16, 27, 0.08);
   }
-  .demo-root .demo-toggle:focus-visible {
-    outline: 2px solid rgba(0, 255, 198, 0.72);
-    outline-offset: 2px;
-  }
+
   .demo-error {
-    font-size: var(--text-sm);
-    color: #ffb3b3;
-    margin: var(--space-2) 0 var(--space-3);
+    font-size: 0.88rem;
+    color: #9d1f1f;
+    margin: var(--space-3) 0;
   }
+
   .demo-warning {
-    font-size: var(--text-sm);
-    color: var(--text-1);
-    margin: var(--space-2) 0 var(--space-3);
+    font-size: 0.86rem;
+    color: rgba(8, 16, 27, 0.68);
+    margin: var(--space-3) 0;
   }
+
+  .demo-root[data-step="result"] .demo-warning,
+  .demo-root[data-step="analyzing"] .demo-warning,
+  .demo-root[data-step="already"] .demo-warning {
+    color: rgba(244, 248, 253, 0.66);
+  }
+
   .is-hidden {
     display: none !important;
   }
+
   .demo-root .demo-submit {
     margin-top: var(--space-8);
     min-height: 46px;
     padding: 0 var(--space-6);
-    font-size: var(--text-sm);
-    font-weight: 500;
-    border: 1px solid var(--text-0);
-    background: var(--text-0);
-    color: var(--bg-0);
+    border: 1px solid currentColor;
+    background: #08101b;
+    color: #ffffff;
+    font-size: 0.92rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
     cursor: pointer;
-    border-radius: var(--radius-md);
-    width: 100%;
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    transition: opacity var(--duration-fast) ease, transform var(--duration-fast) ease;
   }
+
   .demo-root .demo-submit:hover:not([disabled]) {
-    opacity: 0.96;
+    opacity: 0.94;
     transform: translateY(-1px);
   }
-  .demo-root .demo-submit:focus-visible {
-    outline: 2px solid rgba(0, 255, 198, 0.72);
-    outline-offset: 2px;
-  }
+
   .demo-root .demo-submit[disabled] {
-    opacity: 0.6;
+    opacity: 0.48;
     cursor: not-allowed;
   }
+
+  .demo-root[data-step="result"] .demo-submit,
+  .demo-root[data-step="analyzing"] .demo-submit,
+  .demo-root[data-step="already"] .demo-submit {
+    background: #ffffff;
+    color: #03060b;
+  }
+
   .demo-root .demo-analyzing {
     text-align: center;
-    color: var(--text-1);
-    font-size: var(--text-sm);
-    padding: var(--space-12) 0;
+    padding: var(--space-20) 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.8vw, 3.6rem);
+    line-height: 0.94;
+    letter-spacing: -0.02em;
   }
+
   .demo-how {
-    margin-top: var(--space-8);
+    margin-top: var(--space-10);
     padding-top: var(--space-6);
-    border-top: 1px solid var(--border);
+    border-top: 1px solid rgba(244, 248, 253, 0.24);
   }
+
   .demo-how h3 {
-    font-size: var(--text-base);
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
     margin-bottom: var(--space-3);
+    color: rgba(244, 248, 253, 0.74);
   }
+
   .demo-how p {
-    font-size: var(--text-sm);
-    line-height: var(--lh-body);
-    color: var(--text-1);
+    font-size: 0.95rem;
+    line-height: 1.62;
+    color: rgba(244, 248, 253, 0.82);
     margin-bottom: var(--space-2);
   }
+
   .demo-cta-sub {
-    color: var(--text-1);
-    font-size: var(--text-sm);
-    margin-top: var(--space-3);
+    margin-top: var(--space-4);
+    font-size: 0.72rem;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: rgba(244, 248, 253, 0.7);
   }
+
   .demo-root .demo-result-line {
     opacity: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 2.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.02em;
     padding: var(--space-4) 0;
-    font-size: var(--text-base);
-    line-height: var(--lh-body);
-    color: var(--text-0);
-    transition: opacity 0.4s ease;
+    transition: opacity 360ms ease;
   }
+
   .demo-root .demo-result-line.visible {
     opacity: 1;
   }
+
   .demo-root .demo-already {
     text-align: center;
-    padding: var(--space-12) 0;
+    padding: var(--space-20) 0;
   }
+
   .demo-root .demo-already h3 {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    margin-bottom: var(--space-3);
-    color: var(--fg);
+    font-family: var(--font-display);
+    font-size: clamp(1.9rem, 3.8vw, 3.8rem);
+    line-height: 0.94;
+    margin-bottom: var(--space-4);
   }
+
   .demo-root .demo-already p {
-    font-size: var(--text-sm);
-    color: var(--text-1);
+    color: rgba(244, 248, 253, 0.76);
   }
-  @media (prefers-reduced-motion: reduce) {
-    .demo-scenario-item,
-    .demo-root .demo-submit {
-      transition: none;
+
+  @media (max-width: 700px) {
+    .demo-stage {
+      min-height: calc(100vh - 62px);
+      background: linear-gradient(to bottom, #ffffff 0 38%, #03060b 38% 100%);
+    }
+
+    .demo-root {
+      margin-top: var(--space-8);
+      min-height: 0;
+      padding: var(--space-6) var(--space-5);
+    }
+
+    .demo-root .demo-toggle-group {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .demo-root .demo-toggle {
+      width: 100%;
     }
   }
-  @media (max-width: 640px) {
-    .demo-root {
-      padding: var(--space-6) var(--space-5);
+
+  @media (prefers-reduced-motion: reduce) {
+    .demo-scenario-option,
+    .demo-root .demo-submit,
+    .demo-root .demo-result-line {
+      transition: none;
     }
   }
 </style>
@@ -315,6 +410,8 @@ import Section from "../ui/Section.astro";
       lines?: [string, string, string];
     }
   ) {
+    root.dataset.step = state;
+
     if (state === "already") {
       renderAlreadyExecuted(root);
       return;
@@ -415,7 +512,7 @@ import Section from "../ui/Section.astro";
             ${demo.scenario.options
               .map(
                 (item) => `
-              <button type="button" class="demo-scenario-item" data-scenario="${item.id}" aria-pressed="false">
+              <button type="button" class="demo-scenario-option" data-scenario="${item.id}" aria-pressed="false">
                 <div class="demo-scenario-title">${item.title}</div>
                 <div class="demo-scenario-hint">${item.hint}</div>
               </button>
@@ -428,13 +525,13 @@ import Section from "../ui/Section.astro";
         </div>
       `;
       let selected: DemoScenario | null = null;
-      root.querySelectorAll(".demo-scenario-item").forEach((card) => {
-        card.addEventListener("click", () => {
-          selected = card.getAttribute("data-scenario") as DemoScenario;
+      root.querySelectorAll(".demo-scenario-option").forEach((optionEl) => {
+        optionEl.addEventListener("click", () => {
+          selected = optionEl.getAttribute("data-scenario") as DemoScenario;
           root
-            .querySelectorAll(".demo-scenario-item")
-            .forEach((c) => c.setAttribute("aria-pressed", "false"));
-          card.setAttribute("aria-pressed", "true");
+            .querySelectorAll(".demo-scenario-option")
+            .forEach((item) => item.setAttribute("aria-pressed", "false"));
+          optionEl.setAttribute("aria-pressed", "true");
         });
       });
       const err = root.querySelector("[id='demo-scenario-error']") as HTMLElement;
@@ -479,14 +576,14 @@ import Section from "../ui/Section.astro";
       root.querySelectorAll("[data-signal-a]").forEach((btn) => {
         btn.addEventListener("click", () => {
           signalA = btn.getAttribute("data-signal-a") as SignalA;
-          root.querySelectorAll("[data-signal-a]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          root.querySelectorAll("[data-signal-a]").forEach((item) => item.setAttribute("aria-pressed", "false"));
           btn.setAttribute("aria-pressed", "true");
         });
       });
       root.querySelectorAll("[data-signal-b]").forEach((btn) => {
         btn.addEventListener("click", () => {
           signalB = btn.getAttribute("data-signal-b") as SignalB;
-          root.querySelectorAll("[data-signal-b]").forEach((b) => b.setAttribute("aria-pressed", "false"));
+          root.querySelectorAll("[data-signal-b]").forEach((item) => item.setAttribute("aria-pressed", "false"));
           btn.setAttribute("aria-pressed", "true");
         });
       });
@@ -563,7 +660,7 @@ import Section from "../ui/Section.astro";
       `;
       const lines = root.querySelectorAll(".demo-result-line");
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const delay = reduceMotion ? 0 : 600;
+      const delay = reduceMotion ? 0 : 520;
       lines.forEach((el, i) => {
         setTimeout(() => {
           el.classList.add("visible");

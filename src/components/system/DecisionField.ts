@@ -3,8 +3,20 @@ export type DecisionFieldState =
   | "change"
   | "rupture"
   | "stabilized"
-  | "binary"
-  | "footprint";
+  | "capability-core"
+  | "capability-scenario"
+  | "capability-risk"
+  | "capability-signal"
+  | "capability-ledger"
+  | "capability-growth"
+  | "capability-cost"
+  | "capability-cash"
+  | "capability-pricing"
+  | "capability-expansion"
+  | "capability-integration"
+  | "binary-before"
+  | "binary-after"
+  | "demo-standard";
 
 type NodePoint = {
   x: number;
@@ -14,7 +26,7 @@ type NodePoint = {
   ox: number;
   oy: number;
   seed: number;
-  energy: number;
+  mass: number;
 };
 
 type Pulse = {
@@ -33,98 +45,279 @@ type StateConfig = {
   lineAlpha: number;
   instability: number;
   cursorForce: number;
-  splitChaos: number;
   anchorPull: number;
-  freezePull: number;
+  centerPull: number;
+  splitBias: number;
+  voidRadius: number;
+  criticality: number;
 };
 
-const MIN_PARTICLES = 50;
-const MAX_PARTICLES = 120;
+const MIN_PARTICLES = 40;
+const MAX_PARTICLES = 118;
 const MOBILE_BREAKPOINT = 768;
+const RAF_KEY = "__auroraDecisionField";
 
 const COLORS = {
-  stable: "0,255,198",
-  tension: "255,176,32",
-  risk: "255,77,77",
-  soft: "26,35,48",
+  stable: "0,218,183",
+  tension: "255,181,89",
+  risk: "255,102,102",
+  structure: "16,28,44",
 };
 
-const STATE_CONFIG: Record<DecisionFieldState, StateConfig> = {
+const BASE_STATE_CONFIG: Record<DecisionFieldState, StateConfig> = {
   hero: {
-    density: 0.92,
-    jitter: 0.62,
-    drag: 0.956,
+    density: 0.72,
+    jitter: 0.12,
+    drag: 0.978,
     lineDistance: 138,
-    lineAlpha: 0.22,
-    instability: 0.44,
-    cursorForce: 0.95,
-    splitChaos: 0,
-    anchorPull: 0.0006,
-    freezePull: 0,
+    lineAlpha: 0.17,
+    instability: 0.04,
+    cursorForce: 0.52,
+    anchorPull: 0.0017,
+    centerPull: 0.0004,
+    splitBias: 0,
+    voidRadius: 0.36,
+    criticality: 0.22,
   },
   change: {
-    density: 1.12,
-    jitter: 0.46,
-    drag: 0.963,
-    lineDistance: 164,
-    lineAlpha: 0.3,
-    instability: 0.26,
-    cursorForce: 1.04,
-    splitChaos: 0,
-    anchorPull: 0.0009,
-    freezePull: 0,
+    density: 0.84,
+    jitter: 0.16,
+    drag: 0.972,
+    lineDistance: 148,
+    lineAlpha: 0.21,
+    instability: 0.07,
+    cursorForce: 0.6,
+    anchorPull: 0.0014,
+    centerPull: 0.00072,
+    splitBias: 0,
+    voidRadius: 0.29,
+    criticality: 0.35,
   },
   rupture: {
-    density: 1,
-    jitter: 0.58,
-    drag: 0.951,
-    lineDistance: 146,
-    lineAlpha: 0.28,
-    instability: 0.37,
-    cursorForce: 0.88,
-    splitChaos: 0.9,
-    anchorPull: 0.0015,
-    freezePull: 0,
+    density: 1.06,
+    jitter: 0.34,
+    drag: 0.952,
+    lineDistance: 154,
+    lineAlpha: 0.3,
+    instability: 0.16,
+    cursorForce: 0.74,
+    anchorPull: 0.0008,
+    centerPull: 0.00032,
+    splitBias: 0.92,
+    voidRadius: 0.14,
+    criticality: 0.88,
   },
   stabilized: {
-    density: 0.8,
-    jitter: 0.17,
-    drag: 0.978,
-    lineDistance: 156,
-    lineAlpha: 0.25,
-    instability: 0.08,
-    cursorForce: 0.64,
-    splitChaos: 0,
-    anchorPull: 0.0021,
-    freezePull: 0,
-  },
-  binary: {
-    density: 0.86,
-    jitter: 0.2,
-    drag: 0.974,
-    lineDistance: 148,
-    lineAlpha: 0.23,
-    instability: 0.12,
-    cursorForce: 0.71,
-    splitChaos: 0,
-    anchorPull: 0.0017,
-    freezePull: 0,
-  },
-  footprint: {
-    density: 0.74,
-    jitter: 0.04,
+    density: 0.58,
+    jitter: 0.06,
     drag: 0.986,
-    lineDistance: 132,
-    lineAlpha: 0.17,
+    lineDistance: 130,
+    lineAlpha: 0.15,
     instability: 0.02,
     cursorForce: 0.42,
-    splitChaos: 0,
-    anchorPull: 0.0026,
-    freezePull: 0.024,
+    anchorPull: 0.0028,
+    centerPull: 0.0012,
+    splitBias: 0,
+    voidRadius: 0.42,
+    criticality: 0.12,
+  },
+  "capability-core": {
+    density: 0.7,
+    jitter: 0.08,
+    drag: 0.982,
+    lineDistance: 134,
+    lineAlpha: 0.17,
+    instability: 0.03,
+    cursorForce: 0.44,
+    anchorPull: 0.0022,
+    centerPull: 0.001,
+    splitBias: 0,
+    voidRadius: 0.34,
+    criticality: 0.2,
+  },
+  "capability-scenario": {
+    density: 0.82,
+    jitter: 0.15,
+    drag: 0.974,
+    lineDistance: 142,
+    lineAlpha: 0.2,
+    instability: 0.06,
+    cursorForce: 0.57,
+    anchorPull: 0.0016,
+    centerPull: 0.0009,
+    splitBias: 0,
+    voidRadius: 0.28,
+    criticality: 0.38,
+  },
+  "capability-risk": {
+    density: 1.16,
+    jitter: 0.38,
+    drag: 0.946,
+    lineDistance: 160,
+    lineAlpha: 0.33,
+    instability: 0.2,
+    cursorForce: 0.84,
+    anchorPull: 0.00072,
+    centerPull: 0.00016,
+    splitBias: 0.88,
+    voidRadius: 0.1,
+    criticality: 1,
+  },
+  "capability-signal": {
+    density: 0.92,
+    jitter: 0.2,
+    drag: 0.966,
+    lineDistance: 146,
+    lineAlpha: 0.25,
+    instability: 0.1,
+    cursorForce: 0.62,
+    anchorPull: 0.0011,
+    centerPull: 0.00066,
+    splitBias: 0,
+    voidRadius: 0.22,
+    criticality: 0.56,
+  },
+  "capability-ledger": {
+    density: 0.66,
+    jitter: 0.06,
+    drag: 0.987,
+    lineDistance: 128,
+    lineAlpha: 0.16,
+    instability: 0.02,
+    cursorForce: 0.4,
+    anchorPull: 0.0027,
+    centerPull: 0.0012,
+    splitBias: 0,
+    voidRadius: 0.38,
+    criticality: 0.14,
+  },
+  "capability-growth": {
+    density: 0.9,
+    jitter: 0.17,
+    drag: 0.971,
+    lineDistance: 150,
+    lineAlpha: 0.23,
+    instability: 0.08,
+    cursorForce: 0.58,
+    anchorPull: 0.0013,
+    centerPull: 0.00084,
+    splitBias: 0,
+    voidRadius: 0.25,
+    criticality: 0.46,
+  },
+  "capability-cost": {
+    density: 1.02,
+    jitter: 0.27,
+    drag: 0.958,
+    lineDistance: 152,
+    lineAlpha: 0.29,
+    instability: 0.14,
+    cursorForce: 0.7,
+    anchorPull: 0.0009,
+    centerPull: 0.00042,
+    splitBias: 0.52,
+    voidRadius: 0.17,
+    criticality: 0.74,
+  },
+  "capability-cash": {
+    density: 1.12,
+    jitter: 0.32,
+    drag: 0.952,
+    lineDistance: 156,
+    lineAlpha: 0.32,
+    instability: 0.17,
+    cursorForce: 0.78,
+    anchorPull: 0.00076,
+    centerPull: 0.00026,
+    splitBias: 0.74,
+    voidRadius: 0.13,
+    criticality: 0.92,
+  },
+  "capability-pricing": {
+    density: 0.94,
+    jitter: 0.22,
+    drag: 0.964,
+    lineDistance: 149,
+    lineAlpha: 0.26,
+    instability: 0.11,
+    cursorForce: 0.63,
+    anchorPull: 0.001,
+    centerPull: 0.00056,
+    splitBias: 0.34,
+    voidRadius: 0.21,
+    criticality: 0.61,
+  },
+  "capability-expansion": {
+    density: 0.86,
+    jitter: 0.14,
+    drag: 0.973,
+    lineDistance: 145,
+    lineAlpha: 0.22,
+    instability: 0.08,
+    cursorForce: 0.56,
+    anchorPull: 0.0013,
+    centerPull: 0.00076,
+    splitBias: 0.14,
+    voidRadius: 0.27,
+    criticality: 0.42,
+  },
+  "capability-integration": {
+    density: 0.8,
+    jitter: 0.1,
+    drag: 0.979,
+    lineDistance: 140,
+    lineAlpha: 0.2,
+    instability: 0.06,
+    cursorForce: 0.51,
+    anchorPull: 0.0018,
+    centerPull: 0.00094,
+    splitBias: 0,
+    voidRadius: 0.31,
+    criticality: 0.3,
+  },
+  "binary-before": {
+    density: 0.98,
+    jitter: 0.24,
+    drag: 0.962,
+    lineDistance: 150,
+    lineAlpha: 0.27,
+    instability: 0.12,
+    cursorForce: 0.64,
+    anchorPull: 0.001,
+    centerPull: 0.0005,
+    splitBias: 0.46,
+    voidRadius: 0.18,
+    criticality: 0.66,
+  },
+  "binary-after": {
+    density: 0.62,
+    jitter: 0.05,
+    drag: 0.988,
+    lineDistance: 132,
+    lineAlpha: 0.15,
+    instability: 0.02,
+    cursorForce: 0.39,
+    anchorPull: 0.0029,
+    centerPull: 0.00135,
+    splitBias: 0,
+    voidRadius: 0.45,
+    criticality: 0.1,
+  },
+  "demo-standard": {
+    density: 0.52,
+    jitter: 0.03,
+    drag: 0.989,
+    lineDistance: 126,
+    lineAlpha: 0.13,
+    instability: 0.01,
+    cursorForce: 0.34,
+    anchorPull: 0.003,
+    centerPull: 0.00142,
+    splitBias: 0,
+    voidRadius: 0.5,
+    criticality: 0.05,
   },
 };
-
-const RAF_KEY = "__auroraDecisionField";
 
 class DecisionFieldController {
   private readonly root: HTMLElement;
@@ -183,7 +376,7 @@ class DecisionFieldController {
     const y = window.scrollY;
     this.scrollRatio = Math.min(1, Math.max(0, y / maxScroll));
     const delta = y - this.lastScrollY;
-    this.scrollVelocity = Math.min(42, Math.abs(delta));
+    this.scrollVelocity = Math.min(38, Math.abs(delta));
     this.lastScrollY = y;
   };
 
@@ -197,20 +390,22 @@ class DecisionFieldController {
     this.render(performance.now());
   };
 
-  private readonly onButtonHover = (event: Event) => {
+  private readonly onActionHover = (event: Event) => {
     const target = event.target as HTMLElement | null;
     if (!target) return;
-    const actionEl = target.closest("a,button,[role='button']") as HTMLElement | null;
+    const actionEl = target.closest("a,button,[role='button'],[data-capability-state],[data-binary-state]") as
+      | HTMLElement
+      | null;
     if (!actionEl) return;
 
     const now = performance.now();
-    if (this.lastHoverTarget === actionEl && now - this.lastHoverPulseTs < 130) return;
+    if (this.lastHoverTarget === actionEl && now - this.lastHoverPulseTs < 120) return;
 
     this.lastHoverTarget = actionEl;
     this.lastHoverPulseTs = now;
 
     const rect = actionEl.getBoundingClientRect();
-    this.emitPulse(rect.left + rect.width * 0.5, rect.top + rect.height * 0.5, 32);
+    this.emitPulse(rect.left + rect.width * 0.5, rect.top + rect.height * 0.5, 28);
   };
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -269,7 +464,7 @@ class DecisionFieldController {
     window.removeEventListener("pointerleave", this.onPointerLeave);
     window.removeEventListener("scroll", this.onScroll, true);
     document.removeEventListener("visibilitychange", this.onVisibility);
-    document.removeEventListener("pointerover", this.onButtonHover, true);
+    document.removeEventListener("pointerover", this.onActionHover, true);
     this.mediaQuery.removeEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.disconnect();
 
@@ -288,7 +483,7 @@ class DecisionFieldController {
     window.addEventListener("pointerleave", this.onPointerLeave, { passive: true });
     window.addEventListener("scroll", this.onScroll, { passive: true, capture: true });
     document.addEventListener("visibilitychange", this.onVisibility);
-    document.addEventListener("pointerover", this.onButtonHover, { passive: true, capture: true });
+    document.addEventListener("pointerover", this.onActionHover, { passive: true, capture: true });
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
       attributes: true,
@@ -298,7 +493,7 @@ class DecisionFieldController {
 
   private readBodyState(): DecisionFieldState {
     const value = (document.body.dataset.state ?? "hero") as DecisionFieldState;
-    if (value in STATE_CONFIG) return value;
+    if (value in BASE_STATE_CONFIG) return value;
     return "hero";
   }
 
@@ -317,13 +512,13 @@ class DecisionFieldController {
 
   private computeParticleTarget(): number {
     const area = this.width * this.height;
-    let target = Math.round(area / 10800);
+    let target = Math.round(area / 12400);
 
     if (this.width < MOBILE_BREAKPOINT) {
       target = Math.round(target * 0.72);
     }
 
-    target = Math.round(target * STATE_CONFIG[this.state].density);
+    target = Math.round(target * BASE_STATE_CONFIG[this.state].density);
     return Math.min(MAX_PARTICLES, Math.max(MIN_PARTICLES, target));
   }
 
@@ -346,12 +541,12 @@ class DecisionFieldController {
     return {
       x,
       y,
-      vx: (Math.random() - 0.5) * 0.6,
-      vy: (Math.random() - 0.5) * 0.6,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
       ox: x,
       oy: y,
       seed: Math.random() * Math.PI * 2,
-      energy: 0.65 + Math.random() * 0.35,
+      mass: 0.8 + Math.random() * 0.6,
     };
   }
 
@@ -377,7 +572,7 @@ class DecisionFieldController {
 
   private emitPulse(x: number, y: number, power: number): void {
     this.pulses.push({ x, y, radius: 0, power, life: 1 });
-    if (this.pulses.length > 12) this.pulses.shift();
+    if (this.pulses.length > 10) this.pulses.shift();
   }
 
   private frame = (time: number): void => {
@@ -386,33 +581,31 @@ class DecisionFieldController {
   };
 
   private render(time: number): void {
-    const cfg = STATE_CONFIG[this.state];
+    const cfg = BASE_STATE_CONFIG[this.state];
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-
-    const persistence = this.state === "footprint" ? 0.08 : 0.16;
-    this.ctx.fillStyle = `rgba(${COLORS.soft}, ${persistence.toFixed(3)})`;
+    this.ctx.fillStyle = `rgba(${COLORS.structure}, ${this.state === "demo-standard" ? "0.12" : "0.2"})`;
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     this.updatePulses();
     this.updateNodes(time, cfg);
     this.drawConnections(cfg, time);
-    this.drawNodes(time);
-    this.drawStateAccents(cfg, time);
+    this.drawNodes(cfg, time);
+    this.drawRegime(cfg, time);
 
-    if (this.state === "footprint" && time >= this.nextOverlaySync) {
+    if (this.state === "demo-standard" && time >= this.nextOverlaySync) {
       this.updateOverlay();
-      this.nextOverlaySync = time + 600;
+      this.nextOverlaySync = time + 700;
     }
 
-    this.scrollVelocity = Math.max(0, this.scrollVelocity * 0.9);
+    this.scrollVelocity = Math.max(0, this.scrollVelocity * 0.88);
   }
 
   private updatePulses(): void {
     for (let i = this.pulses.length - 1; i >= 0; i -= 1) {
       const pulse = this.pulses[i];
-      pulse.radius += 10;
-      pulse.life -= 0.028;
+      pulse.radius += 9;
+      pulse.life -= 0.03;
       if (pulse.life <= 0) {
         this.pulses.splice(i, 1);
       }
@@ -423,19 +616,18 @@ class DecisionFieldController {
     const centerX = this.width * 0.5;
     const centerY = this.height * 0.5;
     const splitX = centerX;
-    const leftPoleX = this.width * 0.32;
-    const rightPoleX = this.width * 0.68;
-    const poleY = centerY;
+    const rightPole = this.width * 0.68;
+    const leftPole = this.width * 0.32;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const n = this.nodes[i];
 
       const localNoise =
-        Math.sin(time * 0.0012 + n.seed) * cfg.jitter * 0.18 +
-        Math.cos(time * 0.0017 + n.seed * 1.3) * cfg.jitter * 0.12;
+        Math.sin(time * 0.0009 + n.seed) * cfg.jitter * 0.16 +
+        Math.cos(time * 0.0011 + n.seed * 1.2) * cfg.jitter * 0.1;
 
       n.vx += localNoise;
-      n.vy += Math.sin(time * 0.001 + n.seed) * cfg.jitter * 0.16;
+      n.vy += Math.sin(time * 0.001 + n.seed) * cfg.jitter * 0.12;
 
       if (this.cursor.active && !this.reducedMotion) {
         const dx = n.x - this.cursor.x;
@@ -446,7 +638,7 @@ class DecisionFieldController {
 
         if (distSq < radiusSq) {
           const dist = Math.sqrt(Math.max(0.001, distSq));
-          const influence = (1 - dist / radius) * cfg.cursorForce;
+          const influence = (1 - dist / radius) * cfg.cursorForce * n.mass;
           n.vx += (dx / dist) * influence;
           n.vy += (dy / dist) * influence;
         }
@@ -457,46 +649,43 @@ class DecisionFieldController {
         const dx = n.x - pulse.x;
         const dy = n.y - pulse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const band = 42;
+        const band = 36;
         const waveDelta = Math.abs(dist - pulse.radius);
 
         if (waveDelta < band) {
-          const push = ((band - waveDelta) / band) * pulse.power * pulse.life * 0.012;
+          const push = ((band - waveDelta) / band) * pulse.power * pulse.life * 0.01;
           const norm = dist > 0 ? 1 / dist : 0;
           n.vx += dx * norm * push;
           n.vy += dy * norm * push;
         }
       }
 
-      if (this.state === "rupture") {
-        if (n.x < splitX) {
-          n.vx += (Math.random() - 0.5) * cfg.splitChaos;
-          n.vy += (Math.random() - 0.5) * cfg.splitChaos;
-        } else {
-          n.vx += (n.ox - n.x) * cfg.anchorPull;
-          n.vy += (n.oy - n.y) * cfg.anchorPull;
+      if (cfg.splitBias > 0) {
+        const onLeft = n.x < splitX;
+        const chaos = cfg.splitBias * 0.07;
+        n.vx += (Math.random() - 0.5) * chaos;
+        n.vy += (Math.random() - 0.5) * chaos;
+
+        if (this.state === "binary-after") {
+          const poleX = onLeft ? leftPole : rightPole;
+          n.vx += (poleX - n.x) * 0.0011;
+          n.vy += (centerY - n.y) * 0.0011;
         }
-      } else if (this.state === "stabilized") {
-        n.vx += (centerX - n.x) * 0.0007;
-        n.vy += (centerY - n.y) * 0.0007;
-      } else if (this.state === "binary") {
-        const towardsRight = n.x >= centerX;
-        const poleX = towardsRight ? rightPoleX : leftPoleX;
-        const strength = towardsRight ? 0.0018 : 0.0007;
-        n.vx += (poleX - n.x) * strength;
-        n.vy += (poleY - n.y) * strength;
-      } else if (this.state === "footprint") {
-        n.vx += (n.ox - n.x) * cfg.freezePull;
-        n.vy += (n.oy - n.y) * cfg.freezePull;
-        n.vx += (centerX - n.x) * 0.00028;
-        n.vy += (centerY - n.y) * 0.00028;
-      } else {
-        n.vx += (n.ox - n.x) * cfg.anchorPull;
-        n.vy += (n.oy - n.y) * cfg.anchorPull;
       }
 
-      const scrollImpulse = (this.scrollRatio - 0.5) * 0.04;
-      n.vx += scrollImpulse * n.energy;
+      if (this.state === "binary-before") {
+        const poleX = n.x > centerX ? rightPole : leftPole;
+        n.vx += (poleX - n.x) * 0.00058;
+        n.vy += (centerY - n.y) * 0.0005;
+      }
+
+      n.vx += (n.ox - n.x) * cfg.anchorPull;
+      n.vy += (n.oy - n.y) * cfg.anchorPull;
+      n.vx += (centerX - n.x) * cfg.centerPull;
+      n.vy += (centerY - n.y) * cfg.centerPull;
+
+      const scrollImpulse = (this.scrollRatio - 0.5) * 0.036;
+      n.vx += scrollImpulse * n.mass;
 
       n.vx *= cfg.drag;
       n.vy *= cfg.drag;
@@ -506,24 +695,24 @@ class DecisionFieldController {
 
       if (n.x < 0) {
         n.x = 0;
-        n.vx *= -0.75;
+        n.vx *= -0.72;
       } else if (n.x > this.width) {
         n.x = this.width;
-        n.vx *= -0.75;
+        n.vx *= -0.72;
       }
 
       if (n.y < 0) {
         n.y = 0;
-        n.vy *= -0.75;
+        n.vy *= -0.72;
       } else if (n.y > this.height) {
         n.y = this.height;
-        n.vy *= -0.75;
+        n.vy *= -0.72;
       }
     }
   }
 
   private drawConnections(cfg: StateConfig, time: number): void {
-    const dynamicDistance = cfg.lineDistance * (0.92 + this.scrollRatio * 0.22);
+    const dynamicDistance = cfg.lineDistance * (0.94 + this.scrollRatio * 0.14);
     const maxDistSq = dynamicDistance * dynamicDistance;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
@@ -535,30 +724,24 @@ class DecisionFieldController {
         const distSq = dx * dx + dy * dy;
 
         if (distSq > maxDistSq) continue;
-        if (!this.reducedMotion && Math.random() < cfg.instability * 0.06) continue;
+        if (!this.reducedMotion && Math.random() < cfg.instability * 0.05) continue;
 
         const dist = Math.sqrt(distSq);
         const t = 1 - dist / dynamicDistance;
+        const flicker = 0.92 + Math.sin(time * 0.002 + i + j) * 0.08;
 
+        const leftSide = a.x < this.width * 0.5 || b.x < this.width * 0.5;
         let rgb = COLORS.stable;
-        if (this.state === "hero") {
-          rgb = Math.random() < 0.46 ? COLORS.tension : COLORS.soft;
-        } else if (this.state === "change") {
-          rgb = Math.random() < 0.26 ? COLORS.tension : COLORS.stable;
-        } else if (this.state === "rupture") {
-          rgb = a.x < this.width * 0.5 || b.x < this.width * 0.5 ? COLORS.risk : COLORS.stable;
-        } else if (this.state === "binary") {
-          const inDominant = a.x > this.width * 0.5 || b.x > this.width * 0.5;
-          rgb = inDominant ? COLORS.stable : COLORS.tension;
-        } else if (this.state === "footprint") {
-          rgb = COLORS.soft;
+
+        if (cfg.criticality > 0.7 && leftSide) {
+          rgb = COLORS.risk;
+        } else if (cfg.criticality > 0.45) {
+          rgb = COLORS.tension;
         }
 
-        const flicker = this.state === "hero" ? 0.72 + Math.sin(time * 0.004 + i + j) * 0.12 : 1;
         const alpha = cfg.lineAlpha * t * flicker;
-
         this.ctx.strokeStyle = `rgba(${rgb}, ${alpha.toFixed(3)})`;
-        this.ctx.lineWidth = this.state === "stabilized" ? 0.96 : 0.84;
+        this.ctx.lineWidth = cfg.criticality > 0.7 ? 1.05 : 0.84;
         this.ctx.beginPath();
         this.ctx.moveTo(a.x, a.y);
         this.ctx.lineTo(b.x, b.y);
@@ -567,110 +750,75 @@ class DecisionFieldController {
     }
   }
 
-  private drawNodes(time: number): void {
-    const baseAlpha = this.state === "footprint" ? 0.32 : 0.44;
+  private drawNodes(cfg: StateConfig, time: number): void {
+    const baseAlpha = this.state === "demo-standard" ? 0.24 : 0.34;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const n = this.nodes[i];
-      const pulse = 0.5 + Math.sin(time * 0.0014 + n.seed * 3.1) * 0.5;
-      const radius = this.state === "footprint" ? 1.15 : 1.4 + pulse * 0.55;
+      const pulse = 0.5 + Math.sin(time * 0.0012 + n.seed * 2.7) * 0.5;
+      const radius = this.reducedMotion ? 1.1 : 1.06 + pulse * 0.4;
 
-      this.ctx.fillStyle = `rgba(${COLORS.stable}, ${(baseAlpha + pulse * 0.18).toFixed(3)})`;
+      const rgb = cfg.criticality > 0.75 ? COLORS.risk : COLORS.stable;
+      this.ctx.fillStyle = `rgba(${rgb}, ${(baseAlpha + pulse * 0.14).toFixed(3)})`;
       this.ctx.beginPath();
       this.ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     }
-
-    if (this.state === "hero") {
-      this.ctx.fillStyle = "rgba(255,176,32,0.08)";
-      this.ctx.fillRect(0, 0, this.width, this.height);
-    }
   }
 
-  private drawStateAccents(cfg: StateConfig, time: number): void {
+  private drawRegime(cfg: StateConfig, time: number): void {
     const centerX = this.width * 0.5;
     const centerY = this.height * 0.5;
 
-    if (this.state === "stabilized") {
-      const radius = 14 + Math.sin(time * 0.0035) * 4;
-      const gradient = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 120);
-      gradient.addColorStop(0, "rgba(0,255,198,0.26)");
-      gradient.addColorStop(1, "rgba(0,255,198,0)");
-      this.ctx.fillStyle = gradient;
-      this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, 120, 0, Math.PI * 2);
-      this.ctx.fill();
+    const voidRadius = Math.min(this.width, this.height) * cfg.voidRadius;
+    const hole = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, voidRadius);
+    hole.addColorStop(0, "rgba(4,8,14,0.28)");
+    hole.addColorStop(1, "rgba(4,8,14,0)");
+    this.ctx.fillStyle = hole;
+    this.ctx.beginPath();
+    this.ctx.arc(centerX, centerY, voidRadius, 0, Math.PI * 2);
+    this.ctx.fill();
 
-      this.ctx.fillStyle = "rgba(0,255,198,0.56)";
-      this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-      this.ctx.fill();
-      return;
-    }
-
-    if (this.state === "binary") {
-      this.drawPole(this.width * 0.33, centerY, 58, "rgba(255,176,32,0.10)", 0.26);
-      this.drawPole(this.width * 0.69, centerY, 92, "rgba(0,255,198,0.22)", 0.58);
-      return;
-    }
-
-    if (this.state === "rupture") {
+    if (cfg.criticality > 0.7) {
       const grad = this.ctx.createLinearGradient(0, 0, this.width, 0);
-      grad.addColorStop(0, "rgba(255,77,77,0.08)");
-      grad.addColorStop(0.48, "rgba(255,77,77,0.03)");
-      grad.addColorStop(0.52, "rgba(0,255,198,0.03)");
-      grad.addColorStop(1, "rgba(0,255,198,0.08)");
+      grad.addColorStop(0, "rgba(255,102,102,0.12)");
+      grad.addColorStop(0.5, "rgba(255,102,102,0.02)");
+      grad.addColorStop(1, "rgba(0,218,183,0.1)");
       this.ctx.fillStyle = grad;
       this.ctx.fillRect(0, 0, this.width, this.height);
-      return;
     }
 
-    if (this.state === "footprint") {
-      const radius = 96 + Math.sin(time * 0.0012) * 6;
-      const gradient = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
-      gradient.addColorStop(0, "rgba(0,255,198,0.16)");
-      gradient.addColorStop(1, "rgba(0,255,198,0)");
-      this.ctx.fillStyle = gradient;
+    if (this.state === "binary-before" || this.state === "binary-after") {
+      const split = this.ctx.createLinearGradient(0, 0, this.width, 0);
+      split.addColorStop(0, "rgba(255,181,89,0.1)");
+      split.addColorStop(0.45, "rgba(255,181,89,0.02)");
+      split.addColorStop(0.55, "rgba(0,218,183,0.02)");
+      split.addColorStop(1, "rgba(0,218,183,0.12)");
+      this.ctx.fillStyle = split;
+      this.ctx.fillRect(0, 0, this.width, this.height);
+
+      this.ctx.strokeStyle = "rgba(132,149,177,0.16)";
+      this.ctx.lineWidth = 1;
       this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      this.ctx.moveTo(centerX, 0);
+      this.ctx.lineTo(centerX, this.height);
+      this.ctx.stroke();
+    }
+
+    if (this.state === "demo-standard") {
+      const pulseRadius = 92 + Math.sin(time * 0.0014) * 4;
+      const halo = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, pulseRadius);
+      halo.addColorStop(0, "rgba(255,255,255,0.11)");
+      halo.addColorStop(1, "rgba(255,255,255,0)");
+      this.ctx.fillStyle = halo;
+      this.ctx.beginPath();
+      this.ctx.arc(centerX, centerY, pulseRadius, 0, Math.PI * 2);
       this.ctx.fill();
-      return;
     }
-
-    if (this.state === "change") {
-      this.drawPole(centerX, centerY, 78 + this.scrollVelocity * 0.3, "rgba(255,176,32,0.08)", 0.2);
-      return;
-    }
-
-    if (cfg.jitter > 0.2) {
-      const noiseAlpha = Math.min(0.045, cfg.jitter * 0.04);
-      this.ctx.fillStyle = `rgba(${COLORS.soft}, ${noiseAlpha.toFixed(3)})`;
-      for (let i = 0; i < 24; i += 1) {
-        const x = Math.random() * this.width;
-        const y = Math.random() * this.height;
-        this.ctx.fillRect(x, y, 1, 1);
-      }
-    }
-  }
-
-  private drawPole(x: number, y: number, radius: number, fill: string, nodeAlpha: number): void {
-    const gradient = this.ctx.createRadialGradient(x, y, 0, x, y, radius);
-    gradient.addColorStop(0, fill);
-    gradient.addColorStop(1, "rgba(0,0,0,0)");
-
-    this.ctx.fillStyle = gradient;
-    this.ctx.beginPath();
-    this.ctx.arc(x, y, radius, 0, Math.PI * 2);
-    this.ctx.fill();
-
-    this.ctx.fillStyle = `rgba(${COLORS.stable}, ${nodeAlpha.toFixed(3)})`;
-    this.ctx.beginPath();
-    this.ctx.arc(x, y, Math.max(6, radius * 0.08), 0, Math.PI * 2);
-    this.ctx.fill();
   }
 
   private updateOverlay(): void {
-    if (this.state !== "footprint") {
+    if (this.state !== "demo-standard") {
       this.overlay.classList.remove("is-visible");
       return;
     }
@@ -679,8 +827,7 @@ class DecisionFieldController {
     const decisionHash = this.readStorage("aurora_demo_fingerprint") ?? "pending";
 
     this.overlay.innerHTML =
-      `<span>decision_id: ${decisionId}</span>` +
-      `<span>decision_hash: ${decisionHash}</span>`;
+      `<span>decision_id: ${decisionId}</span>` + `<span>decision_hash: ${decisionHash}</span>`;
     this.overlay.classList.add("is-visible");
   }
 

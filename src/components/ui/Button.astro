@@ -4,6 +4,7 @@ interface Props {
   variant?: "primary" | "secondary";
   class?: string;
 }
+
 const { href, variant = "primary", class: className } = Astro.props;
 const Tag = href ? "a" : "button";
 ---
@@ -19,43 +20,38 @@ const Tag = href ? "a" : "button";
     justify-content: center;
     min-height: 48px;
     padding: 0 var(--space-6);
-    font-size: var(--text-sm);
-    font-weight: 560;
-    letter-spacing: 0.01em;
+    font-size: 0.94rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
     border-radius: var(--radius-md);
     border: 1px solid var(--line-soft);
     cursor: pointer;
-    font: inherit;
-    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease,
-      box-shadow 0.2s ease, color 0.2s ease;
-  }
-
-  .btn:focus-visible {
-    outline: 2px solid rgba(0, 255, 198, 0.6);
-    outline-offset: 2px;
+    font-family: var(--font-body);
+    transition: border-color var(--duration-fast) ease, background var(--duration-fast) ease,
+      transform var(--duration-fast) ease;
   }
 
   .btn-primary {
-    background: rgba(0, 255, 198, 0.14);
     color: var(--text-main);
-    border-color: rgba(0, 255, 198, 0.36);
+    border-color: rgba(0, 218, 183, 0.38);
+    background: rgba(0, 218, 183, 0.12);
   }
 
   .btn-primary:hover {
-    border-color: rgba(0, 255, 198, 0.7);
-    box-shadow: 0 0 0 1px rgba(0, 255, 198, 0.28), 0 10px 30px rgba(0, 255, 198, 0.12);
+    border-color: rgba(0, 218, 183, 0.76);
+    background: rgba(0, 218, 183, 0.2);
     transform: translateY(-1px);
   }
 
   .btn-secondary {
-    background: rgba(26, 35, 48, 0.48);
     color: var(--text-main);
-    border-color: var(--line-soft);
+    border-color: rgba(255, 255, 255, 0.34);
+    background: rgba(9, 16, 27, 0.56);
   }
 
   .btn-secondary:hover {
-    border-color: rgba(255, 176, 32, 0.56);
-    background: rgba(255, 176, 32, 0.08);
+    border-color: rgba(255, 255, 255, 0.62);
+    background: rgba(9, 16, 27, 0.8);
     transform: translateY(-1px);
   }
 </style>
