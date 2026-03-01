@@ -32,3 +32,9 @@ pnpm-debug.log*
 *.swp
 *.swo
 *~
+
+# build outputs
+dist/
+.astro/
+.vercel/output/
+.vercel/cache/
