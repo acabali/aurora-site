@@ -1,0 +1,152 @@
+---
+const products = [
+  { key:"core", title:"Core", desc:"Te da una lectura única del sistema. Te muestra qué está pasando y qué cambia el resultado." },
+  { key:"scenario", title:"Scenario", desc:"Te permite comparar caminos sin ejecutar. Te muestra qué pasa si movés una variable." },
+  { key:"risk", title:"Risk", desc:"Te muestra dónde se concentra el riesgo. Te marca el punto donde ya no podés volver atrás." },
+  { key:"signal", title:"Signal", desc:"Te separa señal de ruido. Te indica qué mirar ahora y qué ignorar." },
+  { key:"ledger", title:"Ledger", desc:"Te deja trazabilidad verificable. Te permite auditar qué se decidió, cuándo y con qué evidencia." },
+  { key:"integration", title:"Integration", desc:"Te coordina decisiones cruzadas sin contradicciones. Te mantiene coherencia entre áreas." },
+];
+
+const apps = [
+  { key:"growth", title:"Growth", desc:"Te ordena cómo escalar sin romper tu operación." },
+  { key:"cost", title:"Cost", desc:"Te muestra qué recortar sin degradar capacidad." },
+  { key:"cash", title:"Cash", desc:"Te alinea liquidez con ritmo real de ejecución." },
+  { key:"pricing", title:"Pricing", desc:"Te ajusta precio con elasticidad y margen reales." },
+  { key:"expansion", title:"Expansion", desc:"Te define entrada a mercado por umbral de evidencia." },
+  { key:"marketing", title:"Marketing", desc:"Te ordena canal, timing y secuencia antes de invertir." },
+  { key:"design", title:"Design", desc:"Te convierte decisiones de marca en criterios verificables, no opinión." },
+  { key:"ops", title:"Operations", desc:"Te revela fricción operativa antes de que aparezca en el resultado." },
+];
+
+function esc(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+---
+
+<section class="blk blk-products" aria-label="Productos Aurora">
+  <div class="blk__inner">
+    <div class="blk__kicker">MOTOR ESTRUCTURAL</div>
+    <h2 class="blk__title">Productos</h2>
+
+    <div class="dd">
+      <div class="dd__group" data-group="motor">
+        <button class="dd__head" type="button" data-dd-head="motor" aria-expanded="false">
+          Core • Scenario • Risk • Signal • Ledger • Integration
+        </button>
+        <div class="dd__panel" data-dd-panel="motor" role="region" aria-label="Motor estructural">
+          <ul class="dd__list">
+            {products.map(p => (
+              <li class="dd__item">
+                <button class="dd__btn" type="button" data-dd-item={p.key} aria-expanded="false">
+                  <span class="dd__name">{p.title}</span>
+                  <span class="dd__chev" aria-hidden="true">+</span>
+                </button>
+                <div class="dd__desc" data-dd-desc={p.key}>
+                  <p>{p.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <div class="dd__group" data-group="apps">
+        <button class="dd__head" type="button" data-dd-head="apps" aria-expanded="false">
+          APLICACIONES BAJO ESTÁNDAR
+        </button>
+        <div class="dd__panel" data-dd-panel="apps" role="region" aria-label="Aplicaciones bajo estándar">
+          <ul class="dd__list">
+            {apps.map(a => (
+              <li class="dd__item">
+                <button class="dd__btn" type="button" data-dd-item={a.key} aria-expanded="false">
+                  <span class="dd__name">{a.title}</span>
+                  <span class="dd__chev" aria-hidden="true">+</span>
+                </button>
+                <div class="dd__desc" data-dd-desc={a.key}>
+                  <p>{a.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script is:inline>
+    (function(){
+      const root = document.currentScript && document.currentScript.closest('.blk-products');
+      if(!root) return;
+
+      const isTouch = matchMedia('(hover: none)').matches;
+
+      const heads = root.querySelectorAll('[data-dd-head]');
+      const panels = root.querySelectorAll('[data-dd-panel]');
+      const items = root.querySelectorAll('[data-dd-item]');
+      const descs  = root.querySelectorAll('[data-dd-desc]');
+
+      function closeAllGroups(){
+        heads.forEach(h => h.setAttribute('aria-expanded','false'));
+        panels.forEach(p => p.setAttribute('data-open','false'));
+      }
+
+      function openGroup(id){
+        closeAllGroups();
+        const h = root.querySelector('[data-dd-head="'+id+'"]');
+        const p = root.querySelector('[data-dd-panel="'+id+'"]');
+        if(h) h.setAttribute('aria-expanded','true');
+        if(p) p.setAttribute('data-open','true');
+      }
+
+      function closeAllItems(){
+        items.forEach(b => b.setAttribute('aria-expanded','false'));
+        descs.forEach(d => d.setAttribute('data-open','false'));
+      }
+
+      function openItem(key){
+        closeAllItems();
+        const b = root.querySelector('[data-dd-item="'+key+'"]');
+        const d = root.querySelector('[data-dd-desc="'+key+'"]');
+        if(b) b.setAttribute('aria-expanded','true');
+        if(d) d.setAttribute('data-open','true');
+      }
+
+      // Desktop: hover abre solo (sin click)
+      if(!isTouch){
+        root.querySelectorAll('.dd__group').forEach(g=>{
+          g.addEventListener('mouseenter', ()=> openGroup(g.getAttribute('data-group')==='motor'?'motor':'apps'));
+        });
+        root.querySelectorAll('.dd__item').forEach(li=>{
+          li.addEventListener('mouseenter', ()=>{
+            const b = li.querySelector('[data-dd-item]');
+            if(b) openItem(b.getAttribute('data-dd-item'));
+          });
+        });
+      }
+
+      // Universal: click/tap
+      heads.forEach(h=>{
+        h.addEventListener('click', ()=>{
+          const id = h.getAttribute('data-dd-head');
+          const expanded = h.getAttribute('aria-expanded') === 'true';
+          if(expanded){ closeAllGroups(); closeAllItems(); return; }
+          openGroup(id);
+          closeAllItems();
+        });
+      });
+
+      items.forEach(b=>{
+        b.addEventListener('click', ()=>{
+          const key = b.getAttribute('data-dd-item');
+          const expanded = b.getAttribute('aria-expanded') === 'true';
+          if(expanded){ closeAllItems(); return; }
+          openItem(key);
+        });
+      });
+
+      // default: motor abierto + primer item
+      openGroup('motor');
+      openItem('core');
+    })();
+  </script>
+</section>
