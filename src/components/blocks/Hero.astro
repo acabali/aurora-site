@@ -7,13 +7,14 @@ const { hero } = home;
 const heroWords = hero.h1.split(" ");
 ---
 
-<Section id="hero">
+<Section id="hero" class="hero-section">
   <Container>
     <div class="reveal hero-shell">
+      <div class="hero-plane" aria-hidden="true"></div>
       <div class="block-hero">
         <h1 class="hero-title hero-wordline" aria-label={hero.h1}>
-          {heroWords.map((word) => (
-            <span class="hero-word">{word}</span>
+          {heroWords.map((word, idx) => (
+            <span class="hero-word" style={`--word-index:${idx};`}>{word}</span>
           ))}
         </h1>
         <p class="hero-claim">{hero.claim}</p>
@@ -22,27 +23,49 @@ const heroWords = hero.h1.split(" ");
         </div>
       </div>
       <div class="hero-structure" aria-hidden="true">
-        <svg viewBox="0 0 640 420" role="presentation">
+        <svg viewBox="0 0 920 560" role="presentation">
           <g class="hero-grid-lines">
-            <path d="M0 60H640 M0 140H640 M0 220H640 M0 300H640 M0 380H640" />
-            <path d="M80 0V420 M200 0V420 M320 0V420 M440 0V420 M560 0V420" />
+            <path d="M0 80H920 M0 160H920 M0 240H920 M0 320H920 M0 400H920 M0 480H920" />
+            <path d="M80 0V560 M200 0V560 M320 0V560 M440 0V560 M560 0V560 M680 0V560 M800 0V560" />
           </g>
           <g class="hero-struct-lines">
-            <path d="M80 320L220 250L330 280L470 190L560 220" />
-            <path d="M80 180L180 145L300 170L420 105L560 140" />
-            <path d="M80 90L220 120L350 70L480 85L560 62" />
+            <line class="struct-line is-weak" style="--d:0ms;" x1="96" y1="430" x2="204" y2="360" />
+            <line class="struct-line" style="--d:40ms;" x1="204" y1="360" x2="336" y2="300" />
+            <line class="struct-line is-tense" style="--d:80ms;" x1="336" y1="300" x2="452" y2="250" />
+            <line class="struct-line" style="--d:120ms;" x1="452" y1="250" x2="580" y2="286" />
+            <line class="struct-line is-weak" style="--d:160ms;" x1="580" y1="286" x2="736" y2="232" />
+            <line class="struct-line" style="--d:200ms;" x1="736" y1="232" x2="846" y2="190" />
+            <line class="struct-line" style="--d:240ms;" x1="96" y1="248" x2="196" y2="220" />
+            <line class="struct-line is-weak" style="--d:280ms;" x1="196" y1="220" x2="300" y2="202" />
+            <line class="struct-line is-tense" style="--d:320ms;" x1="300" y1="202" x2="452" y2="250" />
+            <line class="struct-line" style="--d:360ms;" x1="300" y1="202" x2="430" y2="132" />
+            <line class="struct-line is-weak" style="--d:400ms;" x1="430" y1="132" x2="560" y2="116" />
+            <line class="struct-line" style="--d:440ms;" x1="560" y1="116" x2="670" y2="150" />
+            <line class="struct-line is-weak" style="--d:480ms;" x1="670" y1="150" x2="780" y2="126" />
+            <line class="struct-line" style="--d:520ms;" x1="780" y1="126" x2="850" y2="92" />
+            <line class="struct-line" style="--d:560ms;" x1="204" y1="360" x2="214" y2="462" />
+            <line class="struct-line is-weak" style="--d:600ms;" x1="214" y1="462" x2="348" y2="490" />
+            <line class="struct-line" style="--d:640ms;" x1="348" y1="490" x2="506" y2="444" />
+            <line class="struct-line" style="--d:680ms;" x1="506" y1="444" x2="656" y2="404" />
+            <line class="struct-line is-tense" style="--d:720ms;" x1="656" y1="404" x2="846" y2="338" />
+            <line class="struct-line is-weak" style="--d:760ms;" x1="452" y1="250" x2="506" y2="444" />
+            <line class="struct-line" style="--d:800ms;" x1="452" y1="250" x2="670" y2="150" />
+            <line class="struct-line is-weak" style="--d:840ms;" x1="452" y1="250" x2="348" y2="490" />
           </g>
           <g class="hero-struct-nodes">
-            <circle cx="80" cy="320" r="3" />
-            <circle cx="220" cy="250" r="3" />
-            <circle cx="330" cy="280" r="3" />
-            <circle cx="470" cy="190" r="3" />
-            <circle cx="560" cy="220" r="3" />
-            <circle cx="80" cy="180" r="2.5" />
-            <circle cx="180" cy="145" r="2.5" />
-            <circle cx="300" cy="170" r="2.5" />
-            <circle cx="420" cy="105" r="2.5" />
-            <circle cx="560" cy="140" r="2.5" />
+            <circle class="node is-faint" cx="96" cy="430" r="6" />
+            <circle class="node" cx="204" cy="360" r="6" />
+            <circle class="node" cx="336" cy="300" r="7" />
+            <circle class="node node-dominant" cx="452" cy="250" r="11" />
+            <circle class="node is-faint" cx="580" cy="286" r="6" />
+            <circle class="node" cx="736" cy="232" r="6" />
+            <circle class="node is-faint" cx="846" cy="190" r="5" />
+            <circle class="node" cx="300" cy="202" r="5" />
+            <circle class="node is-faint" cx="430" cy="132" r="5" />
+            <circle class="node is-faint" cx="670" cy="150" r="5" />
+            <circle class="node is-faint" cx="214" cy="462" r="5" />
+            <circle class="node" cx="506" cy="444" r="6" />
+            <circle class="node is-faint" cx="846" cy="338" r="5" />
           </g>
         </svg>
       </div>
