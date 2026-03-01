@@ -2,7 +2,7 @@ export const demo = {
   context: {
     title: "Estándar aplicado.",
     subtitle:
-      "Definí el contexto operativo de la decisión para iniciar la calibración bajo evidencia.",
+      "Definí el contexto operativo de la decisión para iniciar la reordenamiento bajo evidencia.",
     note: "La evaluación es única por dispositivo.",
     fields: {
       name: "Nombre",
@@ -53,13 +53,13 @@ export const demo = {
     },
   },
   result: {
-    title: "Resultado calibrado.",
+    title: "Resultado reordenado.",
     howTitle: "Rastro de evaluación",
     howLine1:
       "Cruce de contexto operativo con patrón de fricción entre cobros, pagos y ejecución.",
     howLine2:
       "Detección temprana de interacción crítica antes de materialización en caja.",
-    cta: "Solicitar calibración completa",
+    cta: "Solicitar reordenamiento completa",
     ctaUnavailable: "No disponible",
     ctaSub: "",
   },
@@ -73,6 +73,6 @@ export const demo = {
   continue: "Continuar",
   executed: {
     title: "Evaluación ya registrada.",
-    sub: "Para una nueva calibración, contáctanos.",
+    sub: "Para una nueva reordenamiento, contáctanos.",
   },
 } as const;

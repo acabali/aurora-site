@@ -8,17 +8,16 @@ export const home = {
   change: {
     title: "QUÉ ESTÁ CAMBIANDO",
     lead: "Una decisión ya no impacta una variable. Impacta un sistema completo.",
-    body: "Tiempo, costo, riesgo, coordinación y ejecución ahora colisionan en el mismo instante.",
   },
   rupture: {
     title: "RUPTURA",
-    line: "Ya no se corrige después. Se calibra antes.",
+    line: "Ya no se corrige después. Se reordena antes.",
   },
   whatAurora: {
     title: "QUÉ HACE AURORA",
     blocks: [
       "No reemplaza criterio. Lo somete a evidencia.",
-      "No acelera decisiones. Las calibra.",
+      "No acelera decisiones. Las reordena.",
       "No agrega herramientas. Eleva el estándar.",
     ],
   },
