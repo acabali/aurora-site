@@ -6,7 +6,87 @@ interface Props {
   title?: string;
 }
 
+type ProductGroup = {
+  key: "motor" | "advanced";
+  label: string;
+  items: {
+    key: string;
+    name: string;
+    tech: string;
+    impact: string;
+  }[];
+};
+
 const { title = "Aurora" } = Astro.props;
+
+const PRODUCT_GROUPS: ProductGroup[] = [
+  {
+    key: "motor",
+    label: "MOTOR ESTRUCTURAL",
+    items: [
+      {
+        key: "core",
+        name: "Core",
+        tech: "Resuelve el nodo causal dominante con topologia estable de decision.",
+        impact: "Recorta deriva ejecutiva y concentra recursos en la variable critica.",
+      },
+      {
+        key: "scenario",
+        name: "Scenario",
+        tech: "Simula trayectorias bajo restricciones reales y umbrales compartidos.",
+        impact: "Evita apuestas ciegas al comparar consecuencias antes del despliegue.",
+      },
+      {
+        key: "risk",
+        name: "Risk",
+        tech: "Ubica puntos de ruptura y propaga severidad por dependencia causal.",
+        impact: "Reduce exposicion material al priorizar mitigacion en nodo critico.",
+      },
+      {
+        key: "signal",
+        name: "Signal",
+        tech: "Separa senal estructural de ruido operativo en ventanas cortas.",
+        impact: "Acelera lectura de contexto sin degradar precision decisional.",
+      },
+      {
+        key: "ledger",
+        name: "Ledger",
+        tech: "Traza hipotesis, evidencia y decision en una secuencia auditable.",
+        impact: "Sostiene memoria institucional y evita repetir errores de criterio.",
+      },
+      {
+        key: "integration",
+        name: "Integration",
+        tech: "Sincroniza criterios entre equipos con contratos de decision explicitos.",
+        impact: "Disminuye friccion transversal y mantiene coherencia bajo presion.",
+      },
+    ],
+  },
+  {
+    key: "advanced",
+    label: "ADVANCED SYSTEMS",
+    items: [
+      {
+        key: "counterfactual-engine",
+        name: "Counterfactual Engine™",
+        tech: "Genera rutas alternas consistentes con la misma carga operativa.",
+        impact: "Permite elegir el curso con menor arrepentimiento ex post.",
+      },
+      {
+        key: "regime-shift-detector",
+        name: "Regime Shift Detector™",
+        tech: "Detecta quiebres de regimen antes de impactar en indicadores rezagados.",
+        impact: "Activa cambios de politica cuando el contexto invalida supuestos base.",
+      },
+      {
+        key: "decision-entropy-map",
+        name: "Decision Entropy Map™",
+        tech: "Cuantifica dispersion causal y concentracion de incertidumbre por nodo.",
+        impact: "Ordena prioridades ejecutivas cuando el entorno aumenta volatilidad.",
+      },
+    ],
+  },
+];
 ---
 
 <!doctype html>
@@ -14,7 +94,7 @@ const { title = "Aurora" } = Astro.props;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Aurora. Infraestructura para decisiones críticas." />
+    <meta name="description" content="Aurora. Infraestructura para decisiones criticas." />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
@@ -23,10 +103,11 @@ const { title = "Aurora" } = Astro.props;
 
     <header class="site-header">
       <div class="container-base site-header-inner">
-        <a href="/" class="site-brand">
+        <a href="/" class="site-brand" aria-label="Aurora inicio">
           <img src="/brand/aurora-symbol.png" alt="Aurora" class="brand-symbol" />
           <span class="brand-word">AURORA</span>
         </a>
+
         <nav class="site-nav" aria-label="Principal">
           <button
             type="button"
@@ -40,26 +121,31 @@ const { title = "Aurora" } = Astro.props;
           <a href="/demo" class="site-nav-link">Demo</a>
         </nav>
       </div>
-      <div class="site-products-menu-wrap">
-        <div id="site-products-menu" class="site-products-menu" hidden>
-          <p class="site-products-kicker">Advanced Systems</p>
-          <div class="site-products-list" role="list">
-            <button type="button" class="site-product-item" data-product="counterfactual" role="listitem">
-              <span class="site-product-name">Counterfactual Engine™</span>
-              <span class="site-product-tech">Modela rutas alternativas bajo la misma restricción operativa.</span>
-              <span class="site-product-impact">Te permite anticipar impacto antes de comprometer ejecución.</span>
-            </button>
-            <button type="button" class="site-product-item" data-product="regime-shift" role="listitem">
-              <span class="site-product-name">Regime Shift Detector™</span>
-              <span class="site-product-tech">Detecta cambios de estado cuando la señal aún es marginal.</span>
-              <span class="site-product-impact">Te muestra cuándo un supuesto dejó de sostener la decisión.</span>
-            </button>
-            <button type="button" class="site-product-item" data-product="decision-entropy" role="listitem">
-              <span class="site-product-name">Decision Entropy Map™</span>
-              <span class="site-product-tech">Mapea dispersión causal y puntos de tensión en tiempo real.</span>
-              <span class="site-product-impact">Te reduce fricción al concentrar foco en el nodo dominante.</span>
-            </button>
-          </div>
+
+      <div class="site-products-menu-wrap" data-products-wrap hidden>
+        <div id="site-products-menu" class="site-products-menu" role="region" aria-label="Productos Aurora">
+          {PRODUCT_GROUPS.map((group) => (
+            <section class="site-products-group" data-group={group.key}>
+              <p class={`site-products-kicker${group.key === "advanced" ? " is-advanced" : ""}`}>
+                {group.label}
+              </p>
+              <div class="site-products-list" role="list">
+                {group.items.map((item) => (
+                  <button
+                    type="button"
+                    class="site-product-item"
+                    data-product-focus={item.key}
+                    data-group-focus={group.key}
+                    role="listitem"
+                  >
+                    <span class="site-product-name">{item.name}</span>
+                    <span class="site-product-tech">{item.tech}</span>
+                    <span class="site-product-impact">{item.impact}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
         </div>
       </div>
     </header>
@@ -73,47 +159,79 @@ const { title = "Aurora" } = Astro.props;
     <script is:inline>
       const CONTROLLER_KEY = "__auroraRegimeController";
       const PRODUCT_ALGORITHM = {
-        counterfactual: "scenario",
-        "regime-shift": "risk",
-        "decision-entropy": "integration",
+        core: "core",
+        scenario: "scenario",
+        risk: "risk",
+        signal: "signal",
+        ledger: "ledger",
+        integration: "integration",
+        "counterfactual-engine": "scenario",
+        "regime-shift-detector": "risk",
+        "decision-entropy-map": "integration",
+      };
+
+      const setProductFocus = (productKey, groupKey) => {
+        if (productKey) {
+          document.body.dataset.productFocus = productKey;
+        } else {
+          delete document.body.dataset.productFocus;
+        }
+
+        if (groupKey) {
+          document.body.dataset.groupFocus = groupKey;
+        } else {
+          delete document.body.dataset.groupFocus;
+        }
+
+        document.body.dataset.algorithm = PRODUCT_ALGORITHM[productKey] || "core";
       };
 
       const mountProductsMenu = () => {
         const trigger = document.getElementById("site-products-trigger");
+        const wrap = document.querySelector("[data-products-wrap]");
         const menu = document.getElementById("site-products-menu");
-        if (!trigger || !menu) return () => {};
+        if (!trigger || !wrap || !menu) return () => {};
 
-        const items = Array.prototype.slice.call(menu.querySelectorAll("[data-product]"));
+        const items = Array.prototype.slice.call(menu.querySelectorAll("[data-product-focus]"));
+        const itemHandlers = [];
         let isOpen = false;
 
-        const setAlgorithm = (productKey) => {
-          document.body.dataset.menuProduct = productKey || "";
-          document.body.dataset.algorithm = PRODUCT_ALGORITHM[productKey] || "core";
+        const clearActive = () => {
+          items.forEach((item) => item.removeAttribute("data-active"));
         };
 
         const open = () => {
+          if (isOpen) return;
           isOpen = true;
           trigger.setAttribute("aria-expanded", "true");
-          menu.hidden = false;
+          wrap.hidden = false;
         };
 
         const close = () => {
           isOpen = false;
           trigger.setAttribute("aria-expanded", "false");
-          menu.hidden = true;
-          items.forEach((item) => item.removeAttribute("data-active"));
-          setAlgorithm("");
+          wrap.hidden = true;
+          clearActive();
+          setProductFocus("", "");
+        };
+
+        const activateItem = (item) => {
+          const productKey = item.getAttribute("data-product-focus") || "";
+          const groupKey = item.getAttribute("data-group-focus") || "";
+          clearActive();
+          item.setAttribute("data-active", "true");
+          setProductFocus(productKey, groupKey);
         };
 
         const onDocumentClick = (event) => {
           if (!isOpen) return;
-          if (menu.contains(event.target) || trigger.contains(event.target)) return;
+          const target = event.target;
+          if (target instanceof Node && (wrap.contains(target) || trigger.contains(target))) return;
           close();
         };
 
         const onEscape = (event) => {
-          if (event.key !== "Escape") return;
-          if (!isOpen) return;
+          if (event.key !== "Escape" || !isOpen) return;
           close();
           trigger.focus();
         };
@@ -121,33 +239,27 @@ const { title = "Aurora" } = Astro.props;
         const onTriggerClick = () => {
           if (isOpen) {
             close();
-          } else {
-            open();
+            return;
           }
+          open();
         };
 
-        const onTriggerEnter = () => {
-          if (window.matchMedia("(hover: hover)").matches) {
-            open();
-          }
+        const onTriggerKeyDown = (event) => {
+          if (event.key !== "ArrowDown") return;
+          event.preventDefault();
+          open();
+          const firstItem = items[0];
+          if (firstItem) firstItem.focus();
         };
 
         trigger.addEventListener("click", onTriggerClick);
-        trigger.addEventListener("mouseenter", onTriggerEnter);
-        menu.addEventListener("mouseleave", () => {
-          if (window.matchMedia("(hover: hover)").matches) close();
-        });
-        menu.addEventListener("mouseenter", open);
+        trigger.addEventListener("keydown", onTriggerKeyDown);
         document.addEventListener("click", onDocumentClick);
         document.addEventListener("keydown", onEscape);
 
         items.forEach((item) => {
-          const activate = () => {
-            const key = item.getAttribute("data-product");
-            items.forEach((node) => node.removeAttribute("data-active"));
-            item.setAttribute("data-active", "true");
-            setAlgorithm(key);
-          };
+          const activate = () => activateItem(item);
+          itemHandlers.push({ item, activate });
           item.addEventListener("mouseenter", activate);
           item.addEventListener("focus", activate);
           item.addEventListener("click", activate);
@@ -155,9 +267,16 @@ const { title = "Aurora" } = Astro.props;
 
         return () => {
           trigger.removeEventListener("click", onTriggerClick);
-          trigger.removeEventListener("mouseenter", onTriggerEnter);
+          trigger.removeEventListener("keydown", onTriggerKeyDown);
           document.removeEventListener("click", onDocumentClick);
           document.removeEventListener("keydown", onEscape);
+
+          itemHandlers.forEach(({ item, activate }) => {
+            item.removeEventListener("mouseenter", activate);
+            item.removeEventListener("focus", activate);
+            item.removeEventListener("click", activate);
+          });
+
           close();
         };
       };

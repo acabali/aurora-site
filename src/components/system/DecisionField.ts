@@ -7,7 +7,18 @@ type Regime =
   | "stabilized";
 
 type FieldAlgorithm = "core" | "scenario" | "risk" | "signal" | "ledger" | "integration";
-type MenuProduct = "counterfactual" | "regime-shift" | "decision-entropy" | "";
+type ProductFocus =
+  | "core"
+  | "scenario"
+  | "risk"
+  | "signal"
+  | "ledger"
+  | "integration"
+  | "counterfactual-engine"
+  | "regime-shift-detector"
+  | "decision-entropy-map"
+  | "";
+type GroupFocus = "motor" | "advanced" | "";
 
 type NodePoint = {
   index: number;
@@ -46,7 +57,39 @@ const VALID_REGIMES = new Set<Regime>([
   "reordering",
   "stabilized",
 ]);
-const VALID_PRODUCTS = new Set<MenuProduct>(["counterfactual", "regime-shift", "decision-entropy", ""]);
+const VALID_PRODUCT_FOCUS = new Set<ProductFocus>([
+  "core",
+  "scenario",
+  "risk",
+  "signal",
+  "ledger",
+  "integration",
+  "counterfactual-engine",
+  "regime-shift-detector",
+  "decision-entropy-map",
+  "",
+]);
+const VALID_GROUP_FOCUS = new Set<GroupFocus>(["motor", "advanced", ""]);
+
+const PRODUCT_FOCUS_PROFILE: Record<
+  Exclude<ProductFocus, "">,
+  { dominant: number; cluster: number[] }
+> = {
+  core: { dominant: 10, cluster: [8, 9, 10, 11, 12] },
+  scenario: { dominant: 4, cluster: [2, 3, 4, 5, 6] },
+  risk: { dominant: 15, cluster: [13, 14, 15, 16, 17] },
+  signal: { dominant: 7, cluster: [5, 6, 7, 8, 9] },
+  ledger: { dominant: 18, cluster: [16, 17, 18, 19, 20] },
+  integration: { dominant: 11, cluster: [9, 10, 11, 12, 13] },
+  "counterfactual-engine": { dominant: 3, cluster: [1, 2, 3, 4, 5] },
+  "regime-shift-detector": { dominant: 14, cluster: [12, 13, 14, 15, 16] },
+  "decision-entropy-map": { dominant: 19, cluster: [17, 18, 19, 20, 21] },
+};
+
+const GROUP_FOCUS_CLUSTER: Record<Exclude<GroupFocus, "">, number[]> = {
+  motor: [3, 4, 5, 7, 9, 10, 11, 13, 15, 18],
+  advanced: [2, 3, 4, 14, 15, 18, 19, 20],
+};
 
 const REGIME_CONFIG: Record<Regime, RegimeConfig> = {
   unstable: {
@@ -109,8 +152,12 @@ class DecisionFieldController {
   private reducedMotion = false;
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
-  private menuProduct: MenuProduct = "";
-  private productBlend = 0;
+  private productFocus: ProductFocus = "";
+  private groupFocus: GroupFocus = "";
+  private focusBlend = 0;
+  private focusDominant: number | null = null;
+  private focusCluster = new Set<number>();
+  private lastFrameAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   private readonly mutationObserver = new MutationObserver(() => this.syncState());
@@ -190,21 +237,31 @@ class DecisionFieldController {
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
       attributes: true,
-      attributeFilter: ["data-regime", "data-state", "data-algorithm", "data-binary-side", "data-scroll-velocity"],
+      attributeFilter: [
+        "data-regime",
+        "data-state",
+        "data-algorithm",
+        "data-product-focus",
+        "data-group-focus",
+        "data-binary-side",
+        "data-scroll-velocity",
+      ],
     });
   }
 
   private syncState(): void {
     const nextRegime = this.readRegime();
     const nextAlgorithm = this.readAlgorithm();
-    const nextProduct = this.readMenuProduct();
+    const nextProduct = this.readProductFocus();
+    const nextGroup = this.readGroupFocus();
 
     if (nextRegime !== this.regime) {
       this.regime = nextRegime;
     }
 
     this.algorithm = nextAlgorithm;
-    this.menuProduct = nextProduct;
+    this.productFocus = nextProduct;
+    this.groupFocus = nextGroup;
   }
 
   private readRegime(): Regime {
@@ -223,9 +280,17 @@ class DecisionFieldController {
     return "core";
   }
 
-  private readMenuProduct(): MenuProduct {
-    const raw = (document.body.dataset.menuProduct ?? "").trim() as MenuProduct;
-    if (VALID_PRODUCTS.has(raw)) {
+  private readProductFocus(): ProductFocus {
+    const raw = (document.body.dataset.productFocus ?? "").trim() as ProductFocus;
+    if (VALID_PRODUCT_FOCUS.has(raw)) {
+      return raw;
+    }
+    return "";
+  }
+
+  private readGroupFocus(): GroupFocus {
+    const raw = (document.body.dataset.groupFocus ?? "").trim() as GroupFocus;
+    if (VALID_GROUP_FOCUS.has(raw)) {
       return raw;
     }
     return "";
@@ -301,15 +366,44 @@ class DecisionFieldController {
 
   private render(time: number): void {
     const cfg = REGIME_CONFIG[this.regime];
-    const productTarget = this.menuProduct ? 1 : 0;
-    this.productBlend += (productTarget - this.productBlend) * 0.18;
+    const elapsed = Math.max(0, Math.min(64, time - this.lastFrameAt || 16));
+    this.lastFrameAt = time;
+    const focusTarget = this.productFocus ? 1 : 0;
+    const step = this.easeOutStep(elapsed, 180);
+    this.focusBlend += (focusTarget - this.focusBlend) * step;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
+    this.resolveFocusProfile();
     this.updateNodes(time, cfg);
     this.updateTopology(cfg);
     this.drawConnections(cfg);
     this.drawNodes();
+  }
+
+  private easeOutStep(deltaMs: number, durationMs: number): number {
+    if (durationMs <= 0) return 1;
+    const t = Math.min(1, deltaMs / durationMs);
+    return 1 - (1 - t) * (1 - t);
+  }
+
+  private resolveFocusProfile(): void {
+    const clamp = (index: number) => Math.max(0, Math.min(this.nodes.length - 1, index));
+
+    if (this.productFocus) {
+      const profile = PRODUCT_FOCUS_PROFILE[this.productFocus];
+      this.focusDominant = clamp(profile.dominant);
+      this.focusCluster = new Set(profile.cluster.map(clamp));
+      return;
+    }
+
+    this.focusDominant = null;
+    if (this.groupFocus) {
+      this.focusCluster = new Set(GROUP_FOCUS_CLUSTER[this.groupFocus].map(clamp));
+      return;
+    }
+
+    this.focusCluster.clear();
   }
 
   private updateNodes(time: number, cfg: RegimeConfig): void {
@@ -324,7 +418,7 @@ class DecisionFieldController {
     }
 
     const velocityBias = Math.min(1, Number.parseFloat(document.body.dataset.scrollVelocity ?? "0") / 14);
-    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * 0.004;
+    const pull = cfg.pull + velocityBias * 0.004 + this.focusBlend * 0.002;
 
     for (const node of this.nodes) {
       const target = this.nodeTarget(node, center, spreadRadius, introBlend);
@@ -434,8 +528,7 @@ class DecisionFieldController {
   }
 
   private updateTopology(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance - this.productBlend * 16;
-    const thresholdSq = threshold * threshold;
+    const baseThreshold = cfg.lineDistance;
 
     for (const node of this.nodes) {
       node.degree = 0;
@@ -448,50 +541,44 @@ class DecisionFieldController {
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const distSq = dx * dx + dy * dy;
-        if (distSq > thresholdSq) continue;
+
+        let threshold = baseThreshold;
+        if (this.focusCluster.has(i) && this.focusCluster.has(j)) {
+          threshold += 22 * this.focusBlend;
+        }
+
+        if (distSq > threshold * threshold) continue;
         a.degree += 1;
         b.degree += 1;
       }
     }
 
-    let dominant = this.pickDominantByProduct();
-    let dominantDegree = this.nodes[dominant]?.degree ?? -1;
-    for (let i = 0; i < this.nodes.length; i += 1) {
-      const score = this.nodes[i].degree;
-      if (score > dominantDegree) {
-        dominantDegree = score;
-        dominant = i;
+    let dominant = this.focusDominant ?? 0;
+
+    if (this.focusDominant === null) {
+      let dominantDegree = this.nodes[dominant]?.degree ?? -1;
+      for (let i = 0; i < this.nodes.length; i += 1) {
+        const score = this.nodes[i].degree;
+        if (score > dominantDegree) {
+          dominantDegree = score;
+          dominant = i;
+        }
       }
     }
 
     this.dominantIndex = dominant;
 
     const ranked = this.nodes
-      .map((node, idx) => ({ idx, degree: node.degree }))
+      .map((node, idx) => {
+        const clusterBias = this.focusCluster.has(idx) ? this.focusBlend * 1.6 : 0;
+        return { idx, degree: node.degree + clusterBias };
+      })
       .filter((entry) => entry.idx !== dominant)
       .sort((a, b) => b.degree - a.degree)
       .slice(0, Math.max(3, Math.min(4, cfg.secondaryCount)))
       .map((entry) => entry.idx);
 
     this.secondaryIndices = new Set(ranked);
-  }
-
-  private pickDominantByProduct(): number {
-    // Dominante estructural fijo por producto.
-    // Evita saltos por cambios de longitud/orden del grafo.
-    if (!this.nodes.length) return 0;
-
-    // Índices elegidos para N=22 (actual). Si cambia N, clamp protege.
-    const clamp = (i: number) => Math.max(0, Math.min(this.nodes.length - 1, i));
-
-    switch (this.menuProduct) {
-      case "counterfactual":
-        return clamp(4);
-      case "regime-shift":
-        return clamp(11);
-      default:
-        return clamp(17); // "entropy" y fallback
-    }
   }
 
   private accent(alpha: number): string {
@@ -502,8 +589,7 @@ class DecisionFieldController {
   }
 
   private drawConnections(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance - this.productBlend * 16;
-    const thresholdSq = threshold * threshold;
+    const baseThreshold = cfg.lineDistance;
     let strongestLine:
       | {
           i: number;
@@ -519,8 +605,10 @@ class DecisionFieldController {
         const dx = b.x - a.x;
         const dy = b.y - a.y;
         const distSq = dx * dx + dy * dy;
+        const inFocusCluster = this.focusCluster.has(i) && this.focusCluster.has(j);
+        const threshold = baseThreshold + (inFocusCluster ? 22 * this.focusBlend : 0);
 
-        if (distSq > thresholdSq) continue;
+        if (distSq > threshold * threshold) continue;
 
         const dist = Math.sqrt(distSq);
         const t = 1 - dist / threshold;
@@ -534,6 +622,10 @@ class DecisionFieldController {
           alpha = 0.46 * t;
         } else if (aSecondary || bSecondary) {
           alpha = 0.28 * t;
+        }
+
+        if (inFocusCluster) {
+          alpha += 0.1 * this.focusBlend * t;
         }
 
         if (this.algorithm === "signal" && !aDominant && !bDominant && !aSecondary && !bSecondary) {
