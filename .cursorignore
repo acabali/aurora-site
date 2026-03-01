@@ -1,0 +1,11 @@
+node_modules
+dist
+.astro
+.vercel
+coverage
+.env*
+.cache
+.turbo
+.vite
+**/_ARCHIVE/**
+**/Documents/_OUTSIDE_REPOS/**

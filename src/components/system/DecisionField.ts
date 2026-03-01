@@ -7,6 +7,7 @@ type Regime =
   | "stabilized";
 
 type FieldAlgorithm = "core" | "scenario" | "risk" | "signal" | "ledger" | "integration";
+type MenuProduct = "counterfactual" | "regime-shift" | "decision-entropy" | "";
 
 type NodePoint = {
   index: number;
@@ -28,6 +29,7 @@ type RegimeConfig = {
 };
 
 const RAF_KEY = "__auroraDecisionField";
+const ACCENT_HEX = "#4F3C8C";
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -44,20 +46,21 @@ const VALID_REGIMES = new Set<Regime>([
   "reordering",
   "stabilized",
 ]);
+const VALID_PRODUCTS = new Set<MenuProduct>(["counterfactual", "regime-shift", "decision-entropy", ""]);
 
 const REGIME_CONFIG: Record<Regime, RegimeConfig> = {
   unstable: {
     spread: 0.48,
     pull: 0.052,
     lineDistance: 248,
-    secondaryCount: 5,
+    secondaryCount: 4,
     latentLineAlpha: 0.16,
   },
   compressing: {
     spread: 0.37,
     pull: 0.063,
     lineDistance: 226,
-    secondaryCount: 5,
+    secondaryCount: 4,
     latentLineAlpha: 0.13,
   },
   collision: {
@@ -106,6 +109,8 @@ class DecisionFieldController {
   private reducedMotion = false;
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
+  private menuProduct: MenuProduct = "";
+  private productBlend = 0;
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   private readonly mutationObserver = new MutationObserver(() => this.syncState());
@@ -192,12 +197,14 @@ class DecisionFieldController {
   private syncState(): void {
     const nextRegime = this.readRegime();
     const nextAlgorithm = this.readAlgorithm();
+    const nextProduct = this.readMenuProduct();
 
     if (nextRegime !== this.regime) {
       this.regime = nextRegime;
     }
 
     this.algorithm = nextAlgorithm;
+    this.menuProduct = nextProduct;
   }
 
   private readRegime(): Regime {
@@ -216,6 +223,14 @@ class DecisionFieldController {
     return "core";
   }
 
+  private readMenuProduct(): MenuProduct {
+    const raw = (document.body.dataset.menuProduct ?? "").trim() as MenuProduct;
+    if (VALID_PRODUCTS.has(raw)) {
+      return raw;
+    }
+    return "";
+  }
+
   private syncSize(): void {
     this.width = Math.max(1, window.innerWidth);
     this.height = Math.max(1, window.innerHeight);
@@ -229,9 +244,6 @@ class DecisionFieldController {
   }
 
   private targetNodeCount(): number {
-    if (this.width <= 440) return 18;
-    if (this.width >= 1400) return 26;
-    if (this.width >= 1080) return 24;
     return 22;
   }
 
@@ -289,6 +301,8 @@ class DecisionFieldController {
 
   private render(time: number): void {
     const cfg = REGIME_CONFIG[this.regime];
+    const productTarget = this.menuProduct ? 1 : 0;
+    this.productBlend += (productTarget - this.productBlend) * 0.18;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -310,7 +324,7 @@ class DecisionFieldController {
     }
 
     const velocityBias = Math.min(1, Number.parseFloat(document.body.dataset.scrollVelocity ?? "0") / 14);
-    const pull = cfg.pull + velocityBias * 0.004;
+    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * 0.004;
 
     for (const node of this.nodes) {
       const target = this.nodeTarget(node, center, spreadRadius, introBlend);
@@ -420,7 +434,7 @@ class DecisionFieldController {
   }
 
   private updateTopology(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance;
+    const threshold = cfg.lineDistance - this.productBlend * 16;
     const thresholdSq = threshold * threshold;
 
     for (const node of this.nodes) {
@@ -440,9 +454,8 @@ class DecisionFieldController {
       }
     }
 
-    let dominant = 0;
-    let dominantDegree = -1;
-
+    let dominant = this.pickDominantByProduct();
+    let dominantDegree = this.nodes[dominant]?.degree ?? -1;
     for (let i = 0; i < this.nodes.length; i += 1) {
       const score = this.nodes[i].degree;
       if (score > dominantDegree) {
@@ -457,15 +470,37 @@ class DecisionFieldController {
       .map((node, idx) => ({ idx, degree: node.degree }))
       .filter((entry) => entry.idx !== dominant)
       .sort((a, b) => b.degree - a.degree)
-      .slice(0, cfg.secondaryCount)
+      .slice(0, Math.max(3, Math.min(4, cfg.secondaryCount)))
       .map((entry) => entry.idx);
 
     this.secondaryIndices = new Set(ranked);
   }
 
+  private pickDominantByProduct(): number {
+    if (!this.nodes.length) return 0;
+    if (!this.menuProduct) return 0;
+    if (this.menuProduct === "counterfactual") return Math.floor(this.nodes.length * 0.2);
+    if (this.menuProduct === "regime-shift") return Math.floor(this.nodes.length * 0.52);
+    return Math.floor(this.nodes.length * 0.8);
+  }
+
+  private accent(alpha: number): string {
+    const r = Number.parseInt(ACCENT_HEX.slice(1, 3), 16);
+    const g = Number.parseInt(ACCENT_HEX.slice(3, 5), 16);
+    const b = Number.parseInt(ACCENT_HEX.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${Math.max(0, Math.min(1, alpha)).toFixed(3)})`;
+  }
+
   private drawConnections(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance;
+    const threshold = cfg.lineDistance - this.productBlend * 16;
     const thresholdSq = threshold * threshold;
+    let strongestLine:
+      | {
+          i: number;
+          j: number;
+          tension: number;
+        }
+      | null = null;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const a = this.nodes[i];
@@ -495,6 +530,13 @@ class DecisionFieldController {
           continue;
         }
 
+        if (
+          (aDominant || bDominant) &&
+          (!strongestLine || t > strongestLine.tension)
+        ) {
+          strongestLine = { i, j, tension: t };
+        }
+
         this.ctx.strokeStyle = `rgba(10, 10, 10, ${alpha.toFixed(3)})`;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
@@ -502,6 +544,17 @@ class DecisionFieldController {
         this.ctx.lineTo(b.x, b.y);
         this.ctx.stroke();
       }
+    }
+
+    if (strongestLine) {
+      const a = this.nodes[strongestLine.i];
+      const b = this.nodes[strongestLine.j];
+      this.ctx.strokeStyle = this.accent(0.88);
+      this.ctx.lineWidth = 1.2;
+      this.ctx.beginPath();
+      this.ctx.moveTo(a.x, a.y);
+      this.ctx.lineTo(b.x, b.y);
+      this.ctx.stroke();
     }
   }
 
@@ -516,7 +569,7 @@ class DecisionFieldController {
 
       if (isDominant) {
         radius = 3.6;
-        color = "rgba(10, 10, 10, 1)";
+        color = this.accent(1);
       } else if (isSecondary) {
         radius = 2.5;
         color = "rgba(10, 10, 10, 0.78)";

@@ -16,7 +16,7 @@ html {
 body {
   font-family: var(--font-body);
   font-size: var(--fs-body);
-  line-height: 1.5;
+  line-height: 1.45;
   color: var(--text-main);
   background: var(--bg-base);
   min-height: 100vh;
@@ -60,7 +60,7 @@ main,
 .site-header {
   position: sticky;
   top: 0;
-  background: rgba(246, 247, 248, 0.94);
+  background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid var(--line-soft);
 }
 
@@ -92,22 +92,81 @@ main,
   color: #000;
 }
 
-.site-contact-link {
-  min-height: 36px;
+.site-nav {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 14px;
-  border: 1px solid var(--line-soft);
-  font-size: 0.78rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: #000;
+  gap: 24px;
+  margin-left: auto;
 }
 
-.site-contact-link:hover {
-  border-color: #000;
+.site-nav-link {
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1;
+  color: #000;
+  cursor: pointer;
+}
+
+.site-products-menu-wrap {
+  position: relative;
+  z-index: 3;
+}
+
+.site-products-menu {
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 24px var(--gutter) 28px;
+  background: var(--bg-base);
+}
+
+.site-products-kicker {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-variant-caps: all-small-caps;
+  color: rgba(10, 10, 10, 0.7);
+  margin-bottom: 24px;
+}
+
+.site-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.site-product-item {
+  border: none;
+  background: transparent;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: #000;
+  cursor: pointer;
+  transition: color 180ms ease-out;
+}
+
+.site-product-item[data-active="true"],
+.site-product-item:hover,
+.site-product-item:focus-visible,
+.site-products-trigger[aria-expanded="true"] {
+  color: #4F3C8C;
+}
+
+.site-product-name {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.site-product-tech,
+.site-product-impact {
+  font-size: 15px;
+  line-height: 1.45;
+  color: rgba(10, 10, 10, 0.82);
 }
 
 .container-base {
@@ -124,29 +183,33 @@ main,
   display: flex;
   flex-direction: column;
   gap: var(--space-30);
+  align-items: center;
 }
 
 .flow-block {
-  max-width: 64ch;
+  width: min(100%, 68ch);
+  margin-inline: auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-10);
+  text-align: center;
+  align-items: center;
 }
 
 .hero-title {
   font-size: var(--fs-h1);
-  line-height: 1.1;
+  line-height: 1.06;
   font-weight: 500;
-  max-width: 64ch;
+  max-width: 68ch;
   letter-spacing: -0.01em;
 }
 
 .hero-subtitle {
-  font-size: clamp(16px, 1.5vw, 18px);
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.45;
   font-weight: 400;
   color: rgba(10, 10, 10, 0.85);
-  max-width: 60ch;
+  max-width: 68ch;
 }
 
 .micro-title {
@@ -161,61 +224,22 @@ main,
   gap: var(--space-6);
 }
 
-.model-selector {
-  display: flex;
-  gap: var(--space-6);
-  align-items: center;
-  overflow-x: auto;
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--line-soft);
-  scrollbar-width: thin;
-}
-
-.model-trigger {
-  border: none;
-  background: transparent;
-  color: rgba(10, 10, 10, 0.68);
-  font-size: 0.92rem;
-  font-weight: 400;
-  line-height: 1.2;
-  padding: 0 0 8px;
-  white-space: nowrap;
-  cursor: pointer;
-  border-bottom: 1px solid transparent;
-}
-
-.model-trigger[aria-pressed="true"] {
-  color: #000;
-  font-weight: 600;
-  border-bottom-color: #000;
-}
-
-.apps-title {
-  margin-top: var(--space-4);
-}
-
-.apps-line {
-  font-size: 0.92rem;
-  color: rgba(10, 10, 10, 0.72);
-  line-height: 1.4;
-}
-
 .home-cta {
   margin-top: var(--space-4);
 }
 
 .line-strong {
   font-size: clamp(24px, 2.7vw, 32px);
-  line-height: 1.25;
+  line-height: 1.2;
   font-weight: 500;
-  max-width: 30ch;
+  max-width: 28ch;
 }
 
 .line-body {
-  font-size: clamp(16px, 1.3vw, 18px);
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.45;
   color: rgba(10, 10, 10, 0.85);
-  max-width: 62ch;
+  max-width: 68ch;
 }
 
 .site-footer {
@@ -259,18 +283,20 @@ textarea:focus-visible,
   }
 
   .hero-title {
-    font-size: 34px;
+    font-size: 32px;
   }
 
-  .site-contact-link {
-    min-height: 34px;
-    padding-inline: 10px;
+  .site-nav {
+    gap: 16px;
   }
 
-  .model-selector {
-    gap: var(--space-5);
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+  .site-products-menu {
+    padding-inline: 24px;
+  }
+
+  .site-product-tech,
+  .site-product-impact {
+    font-size: 14px;
   }
 }
 
