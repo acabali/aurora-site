@@ -53,10 +53,14 @@ echo
 echo "== Detectar capas muertas (blocks + lib) =="
 mkdir -p "$ARCHIVE_DIR"
 
-### mapfile_removed ###
+]}"; do
+  base="$((?:[^)]|
+)*?)"
+  if ! rg -q "$base" /tmp/aurora_hygiene/imports.txt; then
+    dead_list+=("$f")
+  fi
 
-dead_list=()
-for f in "${CANDIDATES[@]}"; do
+done@]}"; do
   base="$(basename "$f")"
   if ! rg -q "$base" /tmp/aurora_hygiene/imports.txt; then
     dead_list+=("$f")
