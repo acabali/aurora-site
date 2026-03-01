@@ -51,10 +51,9 @@ echo
 
 # detectar capas muertas (blocks + lib)
 echo "== Detectar capas muertas (blocks + lib) =="
-# detectar capas muertas (blocks + lib)
-echo "== Detectar capas muertas (blocks + lib) =="
-mkdir -p "$ARCHIVE_DIR"
-
+if [[ "$DRYRUN" != "1" ]]; then
+  mkdir -p "$ARCHIVE_DIR"
+fi
 CANDIDATES_FILE="/tmp/aurora_hygiene/candidates.txt"
 : > "$CANDIDATES_FILE"
 
