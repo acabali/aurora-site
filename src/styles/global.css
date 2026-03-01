@@ -560,3 +560,23 @@ textarea:focus-visible,
     scroll-behavior: auto !important;
   }
 }
+
+/* BRAND LOCKUP */
+.site-brand{
+  display:inline-flex;
+  align-items:center;
+  gap:12px;
+  text-decoration:none;
+}
+.brand-symbol{
+  width:auto;
+  height:22px;
+  display:block;
+}
+.brand-word{
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#000;
+  line-height:1;
+}
