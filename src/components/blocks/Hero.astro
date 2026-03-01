@@ -3,24 +3,16 @@ import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import Button from "../ui/Button.astro";
 import { home } from "../../content/home";
+
 const { hero } = home;
-const heroWords = hero.h1.split(" ");
 ---
 
 <Section id="hero" class="hero-section">
   <Container>
-    <div class="reveal hero-shell">
-      <div class="block-hero">
-        <h1 class="hero-title hero-wordline" aria-label={hero.h1}>
-          {heroWords.map((word, idx) => (
-            <span class="hero-word" style={`--word-index:${idx};`}>{word}</span>
-          ))}
-        </h1>
-        <p class="hero-claim">{hero.claim}</p>
-        <div class="hero-cta-wrap">
-          <Button href={hero.ctaHref}>{hero.cta}</Button>
-        </div>
-      </div>
+    <div class="hero-flow reveal">
+      <h1 class="hero-title">{hero.lineA}</h1>
+      <p class="hero-subtitle">{hero.lineB}</p>
+      <Button href={hero.ctaHref} class="hero-cta">{hero.cta}</Button>
     </div>
   </Container>
 </Section>

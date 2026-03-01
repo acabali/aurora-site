@@ -1,0 +1,100 @@
+---
+import Button from "../ui/Button.astro";
+import Container from "../ui/Container.astro";
+import { home } from "../../content/home";
+
+const { hero, change, rupture, whatAurora, capabilities, binary, demoCta } = home;
+const motorGroup = capabilities.groups.find((group) => group.key === "motor");
+const appGroup = capabilities.groups.find((group) => group.key === "applications");
+const appLine = (appGroup?.items ?? []).map((item) => item.name).join(" · ");
+---
+
+<div class="home-system" data-home-system>
+  <Container class="home-column">
+    <div class="flow-block hero-block" data-regime-anchor data-regime-target="unstable">
+      <h1 class="hero-title">{hero.lineA}</h1>
+      <p class="hero-subtitle">{hero.lineB}</p>
+    </div>
+
+    <div class="flow-block model-block" data-regime-anchor data-regime-target="compressing">
+      <p class="micro-title">{motorGroup?.title}</p>
+      <div class="model-selector" role="toolbar" aria-label={motorGroup?.title}>
+        {motorGroup?.items.map((item) => (
+          <button
+            type="button"
+            class="model-trigger"
+            data-algorithm-button={item.key}
+            aria-pressed={item.key === "core" ? "true" : "false"}
+          >
+            {item.name}
+          </button>
+        ))}
+      </div>
+      <p class="micro-title apps-title">{appGroup?.title}</p>
+      <p class="apps-line">{appLine}</p>
+      <Button href={hero.ctaHref} class="home-cta">{hero.cta}</Button>
+    </div>
+
+    <div class="flow-block" data-regime-anchor data-regime-target="collision">
+      <p class="micro-title">{change.title}</p>
+      <p class="line-strong">{change.lead}</p>
+      <p class="line-body">{change.body}</p>
+    </div>
+
+    <div class="flow-block" data-regime-anchor data-regime-target="rupture">
+      <p class="micro-title">{rupture.title}</p>
+      <p class="line-strong">{rupture.line}</p>
+      <p class="line-strong">{binary.title}</p>
+    </div>
+
+    <div class="flow-block" data-regime-anchor data-regime-target="reordering" data-binary-boundary>
+      <p class="line-body">{binary.before}</p>
+      <p class="line-body">{binary.after}</p>
+    </div>
+
+    <div class="flow-block" data-regime-anchor data-regime-target="reordering">
+      <p class="micro-title">{whatAurora.title}</p>
+      {whatAurora.blocks.map((line) => (
+        <p class="line-body">{line}</p>
+      ))}
+    </div>
+
+    <div class="flow-block" data-regime-anchor data-regime-target="stabilized">
+      <p class="micro-title">{demoCta.title}</p>
+      <p class="line-strong">{demoCta.lead}</p>
+      <Button href={demoCta.ctaHref} class="home-cta">{demoCta.cta}</Button>
+    </div>
+  </Container>
+</div>
+
+<script>
+  const roots = document.querySelectorAll("[data-home-system]");
+
+  roots.forEach((root) => {
+    const modelButtons = root.querySelectorAll("[data-algorithm-button]");
+
+    const applyAlgorithm = (next) => {
+      if (!next) return;
+
+      modelButtons.forEach((button) => {
+        const current = button.getAttribute("data-algorithm-button");
+        button.setAttribute("aria-pressed", current === next ? "true" : "false");
+      });
+
+      document.body.dataset.algorithm = next;
+      document.dispatchEvent(new CustomEvent("aurora:algorithm-change", { detail: { algorithm: next } }));
+    };
+
+    modelButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyAlgorithm(button.getAttribute("data-algorithm-button"));
+      });
+
+      button.addEventListener("focus", () => {
+        applyAlgorithm(button.getAttribute("data-algorithm-button"));
+      });
+    });
+
+    applyAlgorithm("core");
+  });
+</script>

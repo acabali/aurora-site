@@ -5,24 +5,28 @@ import DecisionField from "../components/system/DecisionField.astro";
 interface Props {
   title?: string;
 }
+
 const { title = "Aurora" } = Astro.props;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="La era de construir con evidencia." />
+    <meta name="description" content="La era de la evidencia comenzó." />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body data-state="hero">
+  <body data-regime="unstable" data-state="unstable" data-algorithm="core">
     <DecisionField />
 
     <header class="site-header">
       <div class="container-base site-header-inner">
-        <a href="/" class="site-brand">Aurora</a>
+        <a href="/" class="site-brand">
+          <img src="/brand/aurora-symbol.png" alt="Aurora" class="brand-symbol" />
+          <span class="brand-word">AURORA</span>
+        </a>
         <a href="#contacto" class="site-contact-link">Contactar</a>
       </div>
     </header>
@@ -31,77 +35,156 @@ const { title = "Aurora" } = Astro.props;
       <slot />
     </main>
 
-    <footer id="contacto" class="site-footer">
-      Aurora - La era de construir con evidencia.
-    </footer>
+    <footer id="contacto" class="site-footer">Aurora</footer>
 
-    <script>
-      const STATE_BY_SECTION = {
-        hero: "hero",
-        autoridad: "change",
-        comparativa: "rupture",
-        "como-trabaja": "stabilized",
-        binario: "binary",
-        demo: "footprint",
-        "cta-demo": "footprint",
-      };
+    <script is:inline>
+      const CONTROLLER_KEY = "__auroraRegimeController";
 
-      const sectionIds = Object.keys(STATE_BY_SECTION);
-      const trackedSections = sectionIds
-        .map((id) => document.getElementById(id))
-        .filter(Boolean);
+      class RegimeController {
+        constructor() {
+          this.raf = 0;
+          this.lastScrollY = window.scrollY;
+          this.rawVelocity = 0;
+          this.smoothVelocity = 0;
+          this.hasScrolled = false;
+          this.bootAt = performance.now();
 
-      const setState = (nextState) => {
-        if (!nextState) return;
-        if (document.body.dataset.state !== nextState) {
-          document.body.dataset.state = nextState;
+          this.onScroll = this.onScroll.bind(this);
+          this.onResize = this.onResize.bind(this);
+          this.frame = this.frame.bind(this);
+
+          window.addEventListener("scroll", this.onScroll, { passive: true, capture: true });
+          window.addEventListener("resize", this.onResize, { passive: true });
+
+          this.updateNow(performance.now());
+          this.schedule();
         }
+
+        destroy() {
+          if (this.raf !== 0) {
+            window.cancelAnimationFrame(this.raf);
+            this.raf = 0;
+          }
+          window.removeEventListener("scroll", this.onScroll, true);
+          window.removeEventListener("resize", this.onResize);
+          delete document.body.dataset.scrollVelocity;
+          delete document.body.dataset.binarySide;
+        }
+
+        onScroll() {
+          const y = window.scrollY;
+          this.rawVelocity = y - this.lastScrollY;
+          this.lastScrollY = y;
+          if (Math.abs(this.rawVelocity) > 0.4) {
+            this.hasScrolled = true;
+          }
+          this.updateNow(performance.now());
+          this.schedule();
+        }
+
+        onResize() {
+          this.updateNow(performance.now());
+          this.schedule();
+        }
+
+        schedule() {
+          if (this.raf !== 0) return;
+          this.raf = window.requestAnimationFrame(this.frame);
+        }
+
+        frame(now) {
+          this.raf = 0;
+          this.smoothVelocity = this.smoothVelocity * 0.84 + this.rawVelocity * 0.16;
+          this.rawVelocity *= 0.34;
+          this.updateNow(now);
+
+          if (Math.abs(this.smoothVelocity) > 0.02) {
+            this.schedule();
+          }
+        }
+
+        updateNow(now) {
+          const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+          const scrollProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+          const introProgress = this.hasScrolled ? 0 : Math.min(1, (now - this.bootAt) / 3000);
+          const effective = Math.max(scrollProgress, introProgress * 0.86);
+
+          const regime = this.regimeByProgress(effective);
+          document.body.dataset.regime = regime;
+          document.body.dataset.state = regime;
+          document.body.dataset.scrollVelocity = Math.abs(this.smoothVelocity).toFixed(3);
+
+          this.syncBinaryBoundary();
+        }
+
+        regimeByProgress(progress) {
+          if (window.location.pathname.startsWith("/demo")) return "stabilized";
+          if (progress < 0.2) return "unstable";
+          if (progress < 0.42) return "compressing";
+          if (progress < 0.62) return "collision";
+          if (progress < 0.74) return "rupture";
+          if (progress < 0.9) return "reordering";
+          return "stabilized";
+        }
+
+        syncBinaryBoundary() {
+          const boundary = document.querySelector("[data-binary-boundary]");
+          if (!boundary) {
+            delete document.body.dataset.binarySide;
+            return;
+          }
+
+          const rect = boundary.getBoundingClientRect();
+          const numerator = window.innerHeight * 0.5 - rect.top;
+          const progress = rect.height > 0 ? numerator / rect.height : -1;
+
+          if (progress < 0 || progress > 1) {
+            delete document.body.dataset.binarySide;
+            return;
+          }
+
+          document.body.dataset.binarySide = progress < 0.5 ? "entropy" : "center";
+        }
+      }
+
+      const mountRegimeController = () => {
+        const scope = window;
+
+        if (scope[CONTROLLER_KEY]) {
+          scope[CONTROLLER_KEY].destroy();
+        }
+
+        const controller = new RegimeController();
+        scope[CONTROLLER_KEY] = controller;
+
+        return () => {
+          controller.destroy();
+          if (scope[CONTROLLER_KEY] === controller) {
+            delete scope[CONTROLLER_KEY];
+          }
+        };
       };
 
-      if (trackedSections.length === 0 || typeof IntersectionObserver === "undefined") {
-        setState("hero");
+      let cleanup;
+
+      const boot = () => {
+        if (typeof cleanup === "function") cleanup();
+        cleanup = mountRegimeController();
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", boot, { once: true });
       } else {
-        const visibility = new Map();
-        const fallbackState = STATE_BY_SECTION[trackedSections[0].id] ?? "hero";
-
-        const applyBestState = () => {
-          let bestScore = -1;
-          let bestState = fallbackState;
-
-          for (let i = 0; i < trackedSections.length; i += 1) {
-            const section = trackedSections[i];
-            const ratio = visibility.get(section) ?? 0;
-            const score = ratio + (trackedSections.length - i) * 0.0001;
-            if (score > bestScore) {
-              bestScore = score;
-              bestState = STATE_BY_SECTION[section.id] ?? bestState;
-            }
-          }
-
-          setState(bestState);
-        };
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            for (const entry of entries) {
-              visibility.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
-            }
-            applyBestState();
-          },
-          {
-            root: null,
-            rootMargin: "-18% 0px -18% 0px",
-            threshold: [0, 0.18, 0.36, 0.52, 0.68, 0.84],
-          }
-        );
-
-        trackedSections.forEach((section) => {
-          visibility.set(section, 0);
-          observer.observe(section);
-        });
-
-        applyBestState();
+        boot();
       }
+
+      window.addEventListener(
+        "pagehide",
+        () => {
+          if (typeof cleanup === "function") cleanup();
+        },
+        { once: true }
+      );
     </script>
   </body>
 </html>

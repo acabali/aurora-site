@@ -1,23 +1,8 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
-import Hero from "../components/blocks/Hero.astro";
-import Change from "../components/blocks/Change.astro";
-import Split from "../components/blocks/Split.astro";
-import Category from "../components/blocks/Category.astro";
-import Binary from "../components/blocks/Binary.astro";
+import HomeSystem from "../components/home/HomeSystem.astro";
 ---
 
 <PageLayout>
-  <Hero />
-  <Change />
-  <Split />
-  <Category />
-  <Binary />
+  <HomeSystem />
 </PageLayout>
-
-<script>
-  import { mountReveal } from "../lib/reveal";
-  document.addEventListener("DOMContentLoaded", () => {
-    mountReveal();
-  });
-</script>

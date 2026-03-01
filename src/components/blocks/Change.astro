@@ -2,17 +2,16 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { autoridad } = home;
+
+const { change } = home;
 ---
 
-<Section id="autoridad" class="change-section">
+<Section id="change" class="change-section">
   <Container>
-    <div class="reveal authority-layout">
-      <div class="authority-copy">
-        <h2 class="section-title">{autoridad.title}</h2>
-        <p class="authority-lead">{autoridad.lead}</p>
-        <p class="section-copy">{autoridad.body}</p>
-      </div>
+    <div class="change-flow reveal">
+      <h2 class="section-title">{change.title}</h2>
+      <p class="change-lead">{change.lead}</p>
+      <p class="section-copy">{change.body}</p>
     </div>
   </Container>
 </Section>

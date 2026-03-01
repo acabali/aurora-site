@@ -2,18 +2,17 @@
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
 import { home } from "../../content/home";
-const { comoTrabaja } = home;
+
+const { whatAurora } = home;
 ---
 
-<Section id="como-trabaja" class="manifesto-section">
+<Section id="what-aurora" class="manifesto-section">
   <Container>
-    <div class="manifesto-shell">
-      <h2 class="section-title">{comoTrabaja.title}</h2>
-      <div class="manifesto-flow">
-        {comoTrabaja.blocks.map((line, idx) => (
-          <p class="manifesto-line reveal" style={`--m-index:${idx};`}>{line}</p>
-        ))}
-      </div>
+    <div class="manifesto-flow">
+      <h2 class="section-title reveal">{whatAurora.title}</h2>
+      {whatAurora.blocks.map((line, idx) => (
+        <p class="manifesto-line reveal" style={`--m-index:${idx};`}>{line}</p>
+      ))}
     </div>
   </Container>
 </Section>
