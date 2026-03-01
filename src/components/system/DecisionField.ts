@@ -14,7 +14,6 @@ export type DecisionFieldState =
   | "capability-pricing"
   | "capability-expansion"
   | "capability-integration"
-  | "capability-operations"
   | "binary-before"
   | "binary-after"
   | "demo-standard";
@@ -77,275 +76,281 @@ const FIELD_OVERRIDE_TO_STATE: Record<string, DecisionFieldState> = {
   cash: "capability-cash",
   pricing: "capability-pricing",
   expansion: "capability-expansion",
-  operations: "capability-operations",
+};
+
+const STATE_PHASE_BY_STATE: Partial<Record<DecisionFieldState, string>> = {
+  hero: "EXPANSION",
+  change: "TENSION",
+  rupture: "RUPTURA",
+  stabilized: "REORDENANDO",
+  "capability-core": "REORDENANDO",
+  "capability-scenario": "TENSION",
+  "capability-risk": "RUPTURA",
+  "capability-signal": "REORDENANDO",
+  "capability-ledger": "REORDENANDO",
+  "capability-growth": "EXPANSION",
+  "capability-cost": "TENSION",
+  "capability-cash": "RUPTURA",
+  "capability-pricing": "TENSION",
+  "capability-expansion": "EXPANSION",
+  "capability-integration": "REORDENANDO",
+  "binary-before": "RUPTURA",
+  "binary-after": "REORDENANDO",
+  "demo-standard": "REORDENANDO",
 };
 
 const BASE_STATE_CONFIG: Record<DecisionFieldState, StateConfig> = {
   hero: {
-    density: 0.72,
-    jitter: 0.12,
-    drag: 0.978,
-    lineDistance: 138,
-    lineAlpha: 0.17,
-    instability: 0.04,
-    cursorForce: 0.52,
-    anchorPull: 0.0017,
-    centerPull: 0.0004,
-    splitBias: 0,
-    voidRadius: 0.36,
-    criticality: 0.22,
-  },
-  change: {
-    density: 0.84,
-    jitter: 0.16,
-    drag: 0.972,
-    lineDistance: 148,
-    lineAlpha: 0.21,
-    instability: 0.07,
-    cursorForce: 0.6,
-    anchorPull: 0.0014,
-    centerPull: 0.00072,
-    splitBias: 0,
-    voidRadius: 0.29,
-    criticality: 0.35,
-  },
-  rupture: {
-    density: 1.06,
-    jitter: 0.34,
-    drag: 0.952,
-    lineDistance: 154,
-    lineAlpha: 0.3,
-    instability: 0.16,
-    cursorForce: 0.74,
-    anchorPull: 0.0008,
-    centerPull: 0.00032,
-    splitBias: 0.92,
-    voidRadius: 0.14,
-    criticality: 0.88,
-  },
-  stabilized: {
-    density: 0.58,
+    density: 0.62,
     jitter: 0.06,
-    drag: 0.986,
-    lineDistance: 130,
-    lineAlpha: 0.15,
+    drag: 0.988,
+    lineDistance: 126,
+    lineAlpha: 0.12,
     instability: 0.02,
-    cursorForce: 0.42,
-    anchorPull: 0.0028,
-    centerPull: 0.0012,
-    splitBias: 0,
-    voidRadius: 0.42,
-    criticality: 0.12,
-  },
-  "capability-core": {
-    density: 0.7,
-    jitter: 0.08,
-    drag: 0.982,
-    lineDistance: 134,
-    lineAlpha: 0.17,
-    instability: 0.03,
-    cursorForce: 0.44,
+    cursorForce: 0.36,
     anchorPull: 0.0022,
-    centerPull: 0.001,
-    splitBias: 0,
-    voidRadius: 0.34,
-    criticality: 0.2,
-  },
-  "capability-scenario": {
-    density: 0.82,
-    jitter: 0.15,
-    drag: 0.974,
-    lineDistance: 142,
-    lineAlpha: 0.2,
-    instability: 0.06,
-    cursorForce: 0.57,
-    anchorPull: 0.0016,
-    centerPull: 0.0009,
-    splitBias: 0,
-    voidRadius: 0.28,
-    criticality: 0.38,
-  },
-  "capability-risk": {
-    density: 1.16,
-    jitter: 0.38,
-    drag: 0.946,
-    lineDistance: 160,
-    lineAlpha: 0.33,
-    instability: 0.2,
-    cursorForce: 0.84,
-    anchorPull: 0.00072,
-    centerPull: 0.00016,
-    splitBias: 0.88,
-    voidRadius: 0.1,
-    criticality: 1,
-  },
-  "capability-signal": {
-    density: 0.92,
-    jitter: 0.2,
-    drag: 0.966,
-    lineDistance: 146,
-    lineAlpha: 0.25,
-    instability: 0.1,
-    cursorForce: 0.62,
-    anchorPull: 0.0011,
-    centerPull: 0.00066,
-    splitBias: 0,
-    voidRadius: 0.22,
-    criticality: 0.56,
-  },
-  "capability-ledger": {
-    density: 0.66,
-    jitter: 0.06,
-    drag: 0.987,
-    lineDistance: 128,
-    lineAlpha: 0.16,
-    instability: 0.02,
-    cursorForce: 0.4,
-    anchorPull: 0.0027,
-    centerPull: 0.0012,
+    centerPull: 0.0011,
     splitBias: 0,
     voidRadius: 0.38,
-    criticality: 0.14,
+    criticality: 0.2,
   },
-  "capability-growth": {
-    density: 0.9,
-    jitter: 0.17,
-    drag: 0.971,
-    lineDistance: 150,
-    lineAlpha: 0.23,
-    instability: 0.08,
-    cursorForce: 0.58,
-    anchorPull: 0.0013,
-    centerPull: 0.00084,
-    splitBias: 0,
-    voidRadius: 0.25,
-    criticality: 0.46,
-  },
-  "capability-cost": {
-    density: 1.02,
-    jitter: 0.27,
-    drag: 0.958,
-    lineDistance: 152,
-    lineAlpha: 0.29,
-    instability: 0.14,
-    cursorForce: 0.7,
-    anchorPull: 0.0009,
-    centerPull: 0.00042,
-    splitBias: 0.52,
-    voidRadius: 0.17,
-    criticality: 0.74,
-  },
-  "capability-cash": {
-    density: 1.12,
-    jitter: 0.32,
-    drag: 0.952,
-    lineDistance: 156,
-    lineAlpha: 0.32,
-    instability: 0.17,
-    cursorForce: 0.78,
-    anchorPull: 0.00076,
-    centerPull: 0.00026,
-    splitBias: 0.74,
-    voidRadius: 0.13,
-    criticality: 0.92,
-  },
-  "capability-pricing": {
-    density: 0.94,
-    jitter: 0.22,
-    drag: 0.964,
-    lineDistance: 149,
-    lineAlpha: 0.26,
-    instability: 0.11,
-    cursorForce: 0.63,
-    anchorPull: 0.001,
-    centerPull: 0.00056,
-    splitBias: 0.34,
-    voidRadius: 0.21,
-    criticality: 0.61,
-  },
-  "capability-expansion": {
-    density: 0.86,
-    jitter: 0.14,
-    drag: 0.973,
-    lineDistance: 145,
-    lineAlpha: 0.22,
-    instability: 0.08,
-    cursorForce: 0.56,
-    anchorPull: 0.0013,
-    centerPull: 0.00076,
-    splitBias: 0.14,
-    voidRadius: 0.27,
-    criticality: 0.42,
-  },
-  "capability-integration": {
-    density: 0.8,
-    jitter: 0.1,
-    drag: 0.979,
-    lineDistance: 140,
-    lineAlpha: 0.2,
-    instability: 0.06,
-    cursorForce: 0.51,
-    anchorPull: 0.0018,
-    centerPull: 0.00094,
-    splitBias: 0,
-    voidRadius: 0.31,
-    criticality: 0.3,
-  },
-  "capability-operations": {
-    density: 0.94,
-    jitter: 0.18,
-    drag: 0.968,
-    lineDistance: 148,
-    lineAlpha: 0.26,
-    instability: 0.12,
-    cursorForce: 0.66,
-    anchorPull: 0.0012,
-    centerPull: 0.00062,
-    splitBias: 0.22,
-    voidRadius: 0.22,
-    criticality: 0.58,
-  },
-  "binary-before": {
-    density: 0.98,
-    jitter: 0.24,
-    drag: 0.962,
-    lineDistance: 150,
-    lineAlpha: 0.27,
-    instability: 0.12,
-    cursorForce: 0.64,
-    anchorPull: 0.001,
-    centerPull: 0.0005,
-    splitBias: 0.46,
-    voidRadius: 0.18,
-    criticality: 0.66,
-  },
-  "binary-after": {
-    density: 0.62,
-    jitter: 0.05,
-    drag: 0.988,
+  change: {
+    density: 0.72,
+    jitter: 0.08,
+    drag: 0.984,
     lineDistance: 132,
     lineAlpha: 0.15,
-    instability: 0.02,
-    cursorForce: 0.39,
-    anchorPull: 0.0029,
-    centerPull: 0.00135,
+    instability: 0.03,
+    cursorForce: 0.42,
+    anchorPull: 0.0018,
+    centerPull: 0.001,
     splitBias: 0,
-    voidRadius: 0.45,
+    voidRadius: 0.3,
+    criticality: 0.38,
+  },
+  rupture: {
+    density: 0.56,
+    jitter: 0.02,
+    drag: 0.994,
+    lineDistance: 108,
+    lineAlpha: 0.07,
+    instability: 0.01,
+    cursorForce: 0.22,
+    anchorPull: 0.0024,
+    centerPull: 0.0018,
+    splitBias: 0.14,
+    voidRadius: 0.2,
+    criticality: 0.72,
+  },
+  stabilized: {
+    density: 0.46,
+    jitter: 0.01,
+    drag: 0.992,
+    lineDistance: 122,
+    lineAlpha: 0.1,
+    instability: 0.01,
+    cursorForce: 0.24,
+    anchorPull: 0.0032,
+    centerPull: 0.0019,
+    splitBias: 0,
+    voidRadius: 0.44,
+    criticality: 0.08,
+  },
+  "capability-core": {
+    density: 0.54,
+    jitter: 0.02,
+    drag: 0.991,
+    lineDistance: 124,
+    lineAlpha: 0.12,
+    instability: 0.01,
+    cursorForce: 0.26,
+    anchorPull: 0.0028,
+    centerPull: 0.0021,
+    splitBias: 0,
+    voidRadius: 0.46,
     criticality: 0.1,
   },
-  "demo-standard": {
-    density: 0.52,
-    jitter: 0.03,
-    drag: 0.989,
-    lineDistance: 126,
-    lineAlpha: 0.13,
-    instability: 0.01,
+  "capability-scenario": {
+    density: 0.78,
+    jitter: 0.06,
+    drag: 0.985,
+    lineDistance: 128,
+    lineAlpha: 0.15,
+    instability: 0.03,
     cursorForce: 0.34,
-    anchorPull: 0.003,
-    centerPull: 0.00142,
+    anchorPull: 0.002,
+    centerPull: 0.0011,
+    splitBias: 0,
+    voidRadius: 0.3,
+    criticality: 0.48,
+  },
+  "capability-risk": {
+    density: 1.02,
+    jitter: 0.11,
+    drag: 0.976,
+    lineDistance: 136,
+    lineAlpha: 0.2,
+    instability: 0.05,
+    cursorForce: 0.46,
+    anchorPull: 0.0014,
+    centerPull: 0.0007,
+    splitBias: 0.24,
+    voidRadius: 0.15,
+    criticality: 0.9,
+  },
+  "capability-signal": {
+    density: 0.5,
+    jitter: 0.01,
+    drag: 0.993,
+    lineDistance: 118,
+    lineAlpha: 0.08,
+    instability: 0.004,
+    cursorForce: 0.2,
+    anchorPull: 0.0031,
+    centerPull: 0.0017,
+    splitBias: 0,
+    voidRadius: 0.48,
+    criticality: 0.12,
+  },
+  "capability-ledger": {
+    density: 0.64,
+    jitter: 0.02,
+    drag: 0.99,
+    lineDistance: 126,
+    lineAlpha: 0.12,
+    instability: 0.01,
+    cursorForce: 0.28,
+    anchorPull: 0.0026,
+    centerPull: 0.0015,
+    splitBias: 0,
+    voidRadius: 0.42,
+    criticality: 0.16,
+  },
+  "capability-growth": {
+    density: 0.74,
+    jitter: 0.05,
+    drag: 0.986,
+    lineDistance: 130,
+    lineAlpha: 0.14,
+    instability: 0.03,
+    cursorForce: 0.32,
+    anchorPull: 0.0022,
+    centerPull: 0.0012,
+    splitBias: 0,
+    voidRadius: 0.32,
+    criticality: 0.34,
+  },
+  "capability-cost": {
+    density: 0.84,
+    jitter: 0.07,
+    drag: 0.982,
+    lineDistance: 132,
+    lineAlpha: 0.17,
+    instability: 0.04,
+    cursorForce: 0.38,
+    anchorPull: 0.0018,
+    centerPull: 0.001,
+    splitBias: 0.16,
+    voidRadius: 0.24,
+    criticality: 0.52,
+  },
+  "capability-cash": {
+    density: 0.96,
+    jitter: 0.1,
+    drag: 0.978,
+    lineDistance: 134,
+    lineAlpha: 0.19,
+    instability: 0.05,
+    cursorForce: 0.44,
+    anchorPull: 0.0016,
+    centerPull: 0.0009,
+    splitBias: 0.2,
+    voidRadius: 0.19,
+    criticality: 0.7,
+  },
+  "capability-pricing": {
+    density: 0.82,
+    jitter: 0.07,
+    drag: 0.983,
+    lineDistance: 132,
+    lineAlpha: 0.16,
+    instability: 0.04,
+    cursorForce: 0.35,
+    anchorPull: 0.0019,
+    centerPull: 0.001,
+    splitBias: 0.1,
+    voidRadius: 0.24,
+    criticality: 0.46,
+  },
+  "capability-expansion": {
+    density: 0.78,
+    jitter: 0.05,
+    drag: 0.985,
+    lineDistance: 130,
+    lineAlpha: 0.14,
+    instability: 0.03,
+    cursorForce: 0.31,
+    anchorPull: 0.0021,
+    centerPull: 0.0011,
+    splitBias: 0.08,
+    voidRadius: 0.29,
+    criticality: 0.32,
+  },
+  "capability-integration": {
+    density: 0.88,
+    jitter: 0.06,
+    drag: 0.984,
+    lineDistance: 138,
+    lineAlpha: 0.18,
+    instability: 0.03,
+    cursorForce: 0.33,
+    anchorPull: 0.002,
+    centerPull: 0.0011,
+    splitBias: 0,
+    voidRadius: 0.28,
+    criticality: 0.4,
+  },
+  "binary-before": {
+    density: 0.9,
+    jitter: 0.12,
+    drag: 0.977,
+    lineDistance: 140,
+    lineAlpha: 0.2,
+    instability: 0.05,
+    cursorForce: 0.42,
+    anchorPull: 0.0016,
+    centerPull: 0.0008,
+    splitBias: 0.34,
+    voidRadius: 0.2,
+    criticality: 0.68,
+  },
+  "binary-after": {
+    density: 0.48,
+    jitter: 0.01,
+    drag: 0.993,
+    lineDistance: 120,
+    lineAlpha: 0.1,
+    instability: 0.01,
+    cursorForce: 0.22,
+    anchorPull: 0.0032,
+    centerPull: 0.002,
     splitBias: 0,
     voidRadius: 0.5,
-    criticality: 0.05,
+    criticality: 0.08,
+  },
+  "demo-standard": {
+    density: 0.42,
+    jitter: 0.008,
+    drag: 0.994,
+    lineDistance: 116,
+    lineAlpha: 0.08,
+    instability: 0.004,
+    cursorForce: 0.18,
+    anchorPull: 0.0034,
+    centerPull: 0.0022,
+    splitBias: 0,
+    voidRadius: 0.54,
+    criticality: 0.04,
   },
 };
 
@@ -369,6 +374,7 @@ class DecisionFieldController {
   private nextOverlaySync = 0;
   private lastHoverTarget: HTMLElement | null = null;
   private lastHoverPulseTs = 0;
+  private stateEnteredAt = 0;
 
   private cursor = {
     active: false,
@@ -414,6 +420,7 @@ class DecisionFieldController {
     const next = this.readBodyState();
     if (next === this.state) return;
     this.state = next;
+    this.stateEnteredAt = performance.now();
     this.ensureNodeCount();
     this.nextOverlaySync = 0;
     this.updateOverlay();
@@ -437,7 +444,7 @@ class DecisionFieldController {
     this.lastHoverPulseTs = now;
 
     const rect = actionEl.getBoundingClientRect();
-    this.emitPulse(rect.left + rect.width * 0.5, rect.top + rect.height * 0.5, 28);
+    this.emitPulse(rect.left + rect.width * 0.5, rect.top + rect.height * 0.5, 14);
   };
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -477,6 +484,7 @@ class DecisionFieldController {
 
     this.reducedMotion = this.mediaQuery.matches;
     this.state = this.readBodyState();
+    this.stateEnteredAt = performance.now();
     this.syncSize();
     this.ensureNodeCount();
     this.bind();
@@ -578,8 +586,8 @@ class DecisionFieldController {
     return {
       x,
       y,
-      vx: (Math.random() - 0.5) * 0.45,
-      vy: (Math.random() - 0.5) * 0.45,
+      vx: (Math.random() - 0.5) * 0.26,
+      vy: (Math.random() - 0.5) * 0.26,
       ox: x,
       oy: y,
       seed: Math.random() * Math.PI * 2,
@@ -619,63 +627,82 @@ class DecisionFieldController {
 
   private render(time: number): void {
     const cfg = BASE_STATE_CONFIG[this.state];
+    const ruptureElapsed = this.state === "rupture" ? time - this.stateEnteredAt : Number.POSITIVE_INFINITY;
+    const inRuptureSilence = ruptureElapsed < 300;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.fillStyle = `rgba(${COLORS.structure}, ${this.state === "demo-standard" ? "0.12" : "0.2"})`;
+    this.ctx.fillStyle = `rgba(${COLORS.structure}, ${this.state === "demo-standard" ? "0.08" : "0.16"})`;
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     this.updatePulses();
-    this.updateNodes(time, cfg);
-    this.drawConnections(cfg, time);
-    this.drawNodes(cfg, time);
-    this.drawRegime(cfg, time);
+    this.updateNodes(time, cfg, inRuptureSilence);
 
-    if (this.state === "demo-standard" && time >= this.nextOverlaySync) {
+    if (!inRuptureSilence) {
+      this.drawConnections(cfg, time);
+      this.drawNodes(cfg, time);
+    }
+    this.drawRegime(cfg, inRuptureSilence);
+
+    if (time >= this.nextOverlaySync) {
       this.updateOverlay();
-      this.nextOverlaySync = time + 700;
+      this.nextOverlaySync = time + 360;
     }
 
-    this.scrollVelocity = Math.max(0, this.scrollVelocity * 0.88);
+    this.scrollVelocity = Math.max(0, this.scrollVelocity * 0.9);
   }
 
   private updatePulses(): void {
     for (let i = this.pulses.length - 1; i >= 0; i -= 1) {
       const pulse = this.pulses[i];
-      pulse.radius += 9;
-      pulse.life -= 0.03;
+      pulse.radius += 6;
+      pulse.life -= 0.05;
       if (pulse.life <= 0) {
         this.pulses.splice(i, 1);
       }
     }
   }
 
-  private updateNodes(time: number, cfg: StateConfig): void {
+  private updateNodes(time: number, cfg: StateConfig, inRuptureSilence: boolean): void {
     const centerX = this.width * 0.5;
     const centerY = this.height * 0.5;
     const splitX = centerX;
     const rightPole = this.width * 0.68;
     const leftPole = this.width * 0.32;
+    const scenarioCenters = [
+      { x: this.width * 0.28, y: this.height * 0.36 },
+      { x: this.width * 0.7, y: this.height * 0.42 },
+      { x: this.width * 0.5, y: this.height * 0.72 },
+    ];
+    const riskZones = [
+      { x: this.width * 0.22, y: this.height * 0.62 },
+      { x: this.width * 0.76, y: this.height * 0.34 },
+    ];
+    const ledgerLanes = [this.height * 0.26, this.height * 0.5, this.height * 0.74];
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const n = this.nodes[i];
+      let noiseScale = 1;
+      if (this.state === "capability-signal" || this.state === "stabilized" || this.state === "demo-standard") {
+        noiseScale = 0.35;
+      }
 
       const localNoise =
-        Math.sin(time * 0.0009 + n.seed) * cfg.jitter * 0.16 +
-        Math.cos(time * 0.0011 + n.seed * 1.2) * cfg.jitter * 0.1;
+        Math.sin(time * 0.0007 + n.seed) * cfg.jitter * 0.08 * noiseScale +
+        Math.cos(time * 0.0009 + n.seed * 1.2) * cfg.jitter * 0.06 * noiseScale;
 
       n.vx += localNoise;
-      n.vy += Math.sin(time * 0.001 + n.seed) * cfg.jitter * 0.12;
+      n.vy += Math.sin(time * 0.0008 + n.seed) * cfg.jitter * 0.06 * noiseScale;
 
       if (this.cursor.active && !this.reducedMotion) {
         const dx = n.x - this.cursor.x;
         const dy = n.y - this.cursor.y;
         const distSq = dx * dx + dy * dy;
-        const radius = 180 + this.scrollVelocity * 2;
+        const radius = 150 + this.scrollVelocity * 1.4;
         const radiusSq = radius * radius;
 
         if (distSq < radiusSq) {
           const dist = Math.sqrt(Math.max(0.001, distSq));
-          const influence = (1 - dist / radius) * cfg.cursorForce * n.mass;
+          const influence = (1 - dist / radius) * cfg.cursorForce * n.mass * 0.75;
           n.vx += (dx / dist) * influence;
           n.vy += (dy / dist) * influence;
         }
@@ -686,34 +713,82 @@ class DecisionFieldController {
         const dx = n.x - pulse.x;
         const dy = n.y - pulse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        const band = 36;
+        const band = 20;
         const waveDelta = Math.abs(dist - pulse.radius);
 
         if (waveDelta < band) {
-          const push = ((band - waveDelta) / band) * pulse.power * pulse.life * 0.01;
+          const push = ((band - waveDelta) / band) * pulse.power * pulse.life * 0.006;
           const norm = dist > 0 ? 1 / dist : 0;
           n.vx += dx * norm * push;
           n.vy += dy * norm * push;
         }
       }
 
-      if (cfg.splitBias > 0) {
+      if (this.state === "capability-core") {
+        n.vx += (centerX - n.x) * 0.0022;
+        n.vy += (centerY - n.y) * 0.0022;
+      }
+
+      if (this.state === "capability-scenario") {
+        const target = scenarioCenters[i % scenarioCenters.length];
+        n.vx += (target.x - n.x) * 0.0018;
+        n.vy += (target.y - n.y) * 0.0018;
+      }
+
+      if (this.state === "capability-risk") {
+        const target = riskZones[i % riskZones.length];
+        n.vx += (target.x - n.x) * 0.0017;
+        n.vy += (target.y - n.y) * 0.0017;
+      }
+
+      if (this.state === "capability-signal") {
+        n.vx *= 0.84;
+        n.vy *= 0.84;
+      }
+
+      if (this.state === "capability-ledger") {
+        const lane = ledgerLanes[i % ledgerLanes.length];
+        n.vy += (lane - n.y) * 0.0021;
+      }
+
+      if (this.state === "capability-integration") {
+        const crossX = this.width * (0.2 + 0.6 * (n.y / this.height));
+        n.vx += (crossX - n.x) * 0.0016;
+        n.vy += (centerY - n.y) * 0.0011;
+      }
+
+      if (cfg.splitBias > 0 && this.state !== "rupture") {
         const onLeft = n.x < splitX;
         const chaos = cfg.splitBias * 0.07;
         n.vx += (Math.random() - 0.5) * chaos;
         n.vy += (Math.random() - 0.5) * chaos;
-
-        if (this.state === "binary-after") {
-          const poleX = onLeft ? leftPole : rightPole;
-          n.vx += (poleX - n.x) * 0.0011;
-          n.vy += (centerY - n.y) * 0.0011;
-        }
       }
 
       if (this.state === "binary-before") {
+        const onLeft = n.x < centerX;
+        if (onLeft) {
+          n.vx += (Math.random() - 0.5) * 0.12;
+          n.vy += (Math.random() - 0.5) * 0.12;
+        } else {
+          n.vx += (rightPole - n.x) * 0.0018;
+          n.vy += (centerY - n.y) * 0.0018;
+        }
+      }
+
+      if (this.state === "binary-after") {
         const poleX = n.x > centerX ? rightPole : leftPole;
-        n.vx += (poleX - n.x) * 0.00058;
-        n.vy += (centerY - n.y) * 0.0005;
+        n.vx += (poleX - n.x) * 0.0013;
+        n.vy += (centerY - n.y) * 0.0013;
+      }
+
+      if (this.state === "rupture") {
+        n.vx *= 0.3;
+        n.vy *= 0.3;
+        n.vy += (centerY - n.y) * 0.0026;
+        if (inRuptureSilence) {
+          n.vx *= 0.68;
+          n.vy *= 0.68;
+        }
       }
 
       n.vx += (n.ox - n.x) * cfg.anchorPull;
@@ -721,7 +796,7 @@ class DecisionFieldController {
       n.vx += (centerX - n.x) * cfg.centerPull;
       n.vy += (centerY - n.y) * cfg.centerPull;
 
-      const scrollImpulse = (this.scrollRatio - 0.5) * 0.036;
+      const scrollImpulse = (this.scrollRatio - 0.5) * 0.018;
       n.vx += scrollImpulse * n.mass;
 
       n.vx *= cfg.drag;
@@ -732,18 +807,18 @@ class DecisionFieldController {
 
       if (n.x < 0) {
         n.x = 0;
-        n.vx *= -0.72;
+        n.vx *= -0.6;
       } else if (n.x > this.width) {
         n.x = this.width;
-        n.vx *= -0.72;
+        n.vx *= -0.6;
       }
 
       if (n.y < 0) {
         n.y = 0;
-        n.vy *= -0.72;
+        n.vy *= -0.6;
       } else if (n.y > this.height) {
         n.y = this.height;
-        n.vy *= -0.72;
+        n.vy *= -0.6;
       }
     }
   }
@@ -761,24 +836,28 @@ class DecisionFieldController {
         const distSq = dx * dx + dy * dy;
 
         if (distSq > maxDistSq) continue;
-        if (!this.reducedMotion && Math.random() < cfg.instability * 0.05) continue;
+        const skipGate = (Math.sin((i + 1) * (j + 1) + time * 0.0004) + 1) * 0.5;
+        if (!this.reducedMotion && skipGate < cfg.instability * 0.6) continue;
 
         const dist = Math.sqrt(distSq);
         const t = 1 - dist / dynamicDistance;
-        const flicker = 0.92 + Math.sin(time * 0.002 + i + j) * 0.08;
 
         const leftSide = a.x < this.width * 0.5 || b.x < this.width * 0.5;
         let rgb = COLORS.stable;
 
-        if (cfg.criticality > 0.7 && leftSide) {
+        if (this.state === "capability-ledger") {
+          rgb = COLORS.structure;
+        } else if (this.state === "capability-scenario" && (i + j) % 5 === 0) {
+          rgb = COLORS.tension;
+        } else if (cfg.criticality > 0.7 && leftSide) {
           rgb = COLORS.risk;
         } else if (cfg.criticality > 0.45) {
           rgb = COLORS.tension;
         }
 
-        const alpha = cfg.lineAlpha * t * flicker;
+        const alpha = cfg.lineAlpha * t;
         this.ctx.strokeStyle = `rgba(${rgb}, ${alpha.toFixed(3)})`;
-        this.ctx.lineWidth = cfg.criticality > 0.7 ? 1.05 : 0.84;
+        this.ctx.lineWidth = this.state === "capability-integration" ? 1 : 0.78;
         this.ctx.beginPath();
         this.ctx.moveTo(a.x, a.y);
         this.ctx.lineTo(b.x, b.y);
@@ -788,28 +867,28 @@ class DecisionFieldController {
   }
 
   private drawNodes(cfg: StateConfig, time: number): void {
-    const baseAlpha = this.state === "demo-standard" ? 0.24 : 0.34;
+    const baseAlpha = this.state === "demo-standard" ? 0.18 : 0.26;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const n = this.nodes[i];
-      const pulse = 0.5 + Math.sin(time * 0.0012 + n.seed * 2.7) * 0.5;
-      const radius = this.reducedMotion ? 1.1 : 1.06 + pulse * 0.4;
+      const pulse = 0.5 + Math.sin(time * 0.0006 + n.seed * 1.6) * 0.18;
+      const radius = this.reducedMotion ? 1.02 : 0.92 + pulse * 0.18;
 
       const rgb = cfg.criticality > 0.75 ? COLORS.risk : COLORS.stable;
-      this.ctx.fillStyle = `rgba(${rgb}, ${(baseAlpha + pulse * 0.14).toFixed(3)})`;
+      this.ctx.fillStyle = `rgba(${rgb}, ${(baseAlpha + pulse * 0.08).toFixed(3)})`;
       this.ctx.beginPath();
       this.ctx.arc(n.x, n.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     }
   }
 
-  private drawRegime(cfg: StateConfig, time: number): void {
+  private drawRegime(cfg: StateConfig, inRuptureSilence: boolean): void {
     const centerX = this.width * 0.5;
     const centerY = this.height * 0.5;
 
     const voidRadius = Math.min(this.width, this.height) * cfg.voidRadius;
     const hole = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, voidRadius);
-    hole.addColorStop(0, "rgba(4,8,14,0.28)");
+    hole.addColorStop(0, "rgba(3,6,11,0.32)");
     hole.addColorStop(1, "rgba(4,8,14,0)");
     this.ctx.fillStyle = hole;
     this.ctx.beginPath();
@@ -827,44 +906,45 @@ class DecisionFieldController {
 
     if (this.state === "binary-before" || this.state === "binary-after") {
       const split = this.ctx.createLinearGradient(0, 0, this.width, 0);
-      split.addColorStop(0, "rgba(255,181,89,0.1)");
-      split.addColorStop(0.45, "rgba(255,181,89,0.02)");
-      split.addColorStop(0.55, "rgba(0,218,183,0.02)");
-      split.addColorStop(1, "rgba(0,218,183,0.12)");
+      split.addColorStop(0, "rgba(255,181,89,0.08)");
+      split.addColorStop(0.5, "rgba(9,16,26,0)");
+      split.addColorStop(1, "rgba(0,218,183,0.09)");
       this.ctx.fillStyle = split;
       this.ctx.fillRect(0, 0, this.width, this.height);
+    }
 
-      this.ctx.strokeStyle = "rgba(132,149,177,0.16)";
-      this.ctx.lineWidth = 1;
-      this.ctx.beginPath();
-      this.ctx.moveTo(centerX, 0);
-      this.ctx.lineTo(centerX, this.height);
-      this.ctx.stroke();
+    if (this.state === "rupture") {
+      const compression = this.ctx.createLinearGradient(0, 0, 0, this.height);
+      compression.addColorStop(0, "rgba(255,255,255,0.03)");
+      compression.addColorStop(0.5, "rgba(0,0,0,0)");
+      compression.addColorStop(1, "rgba(255,255,255,0.03)");
+      this.ctx.fillStyle = compression;
+      this.ctx.fillRect(0, 0, this.width, this.height);
+      if (inRuptureSilence) {
+        this.ctx.fillStyle = "rgba(2,4,8,0.18)";
+        this.ctx.fillRect(0, 0, this.width, this.height);
+      }
     }
 
     if (this.state === "demo-standard") {
-      const pulseRadius = 92 + Math.sin(time * 0.0014) * 4;
-      const halo = this.ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, pulseRadius);
-      halo.addColorStop(0, "rgba(255,255,255,0.11)");
-      halo.addColorStop(1, "rgba(255,255,255,0)");
-      this.ctx.fillStyle = halo;
+      this.ctx.fillStyle = "rgba(1,3,7,0.22)";
       this.ctx.beginPath();
-      this.ctx.arc(centerX, centerY, pulseRadius, 0, Math.PI * 2);
+      this.ctx.arc(centerX, centerY, Math.min(this.width, this.height) * 0.14, 0, Math.PI * 2);
       this.ctx.fill();
     }
   }
 
   private updateOverlay(): void {
-    if (this.state !== "demo-standard") {
-      this.overlay.classList.remove("is-visible");
-      return;
+    const phase = STATE_PHASE_BY_STATE[this.state] ?? "REORDENANDO";
+    let html = `<span>ESTADO: ${phase}</span>`;
+
+    if (this.state === "demo-standard") {
+      const decisionId = this.readStorage("aurora_demo_session_id") ?? "pending";
+      const decisionHash = this.readStorage("aurora_demo_fingerprint") ?? "pending";
+      html += `<span>decision_id: ${decisionId}</span><span>decision_hash: ${decisionHash}</span>`;
     }
 
-    const decisionId = this.readStorage("aurora_demo_session_id") ?? "pending";
-    const decisionHash = this.readStorage("aurora_demo_fingerprint") ?? "pending";
-
-    this.overlay.innerHTML =
-      `<span>decision_id: ${decisionId}</span>` + `<span>decision_hash: ${decisionHash}</span>`;
+    this.overlay.innerHTML = html;
     this.overlay.classList.add("is-visible");
   }
 

@@ -86,11 +86,6 @@ export const home = {
             name: "Expansion",
             detail: "Te define entrada por umbral de evidencia.",
           },
-          {
-            key: "operations",
-            name: "Operations",
-            detail: "Te detecta cuellos y te reordena la secuencia.",
-          },
         ] as const,
       },
     ] as const,
