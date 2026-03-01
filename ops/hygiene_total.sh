@@ -51,39 +51,47 @@ echo
 
 # detectar capas muertas (blocks + lib)
 echo "== Detectar capas muertas (blocks + lib) =="
+# detectar capas muertas (blocks + lib)
+echo "== Detectar capas muertas (blocks + lib) =="
 mkdir -p "$ARCHIVE_DIR"
 
-]}"; do
-  base="$((?:[^)]|
-)*?)"
-  if ! rg -q "$base" /tmp/aurora_hygiene/imports.txt; then
-    dead_list+=("$f")
-  fi
+CANDIDATES_FILE="/tmp/aurora_hygiene/candidates.txt"
+: > "$CANDIDATES_FILE"
 
-done@]}"; do
+# candidatos: blocks + lib (portable bash 3.2)
+find src/components/blocks -maxdepth 1 -type f -name "*.astro" -print >> "$CANDIDATES_FILE" 2>/dev/null || true
+find src/lib -maxdepth 1 -type f \( -name "*.ts" -o -name "*.js" \) -print >> "$CANDIDATES_FILE" 2>/dev/null || true
+
+dead_list_file="/tmp/aurora_hygiene/dead_candidates.txt"
+: > "$dead_list_file"
+
+count=0
+while IFS= read -r f; do
+  [ -n "$f" ] || continue
   base="$(basename "$f")"
   if ! rg -q "$base" /tmp/aurora_hygiene/imports.txt; then
-    dead_list+=("$f")
+    printf "%s\n" "$f" >> "$dead_list_file"
+    count=$((count+1))
   fi
-done
+done < "$CANDIDATES_FILE"
 
-echo "Candidatos muertos: ${#dead_list[@]}"
-printf "%s\n" "${dead_list[@]}" > /tmp/aurora_hygiene/dead_candidates.txt
-echo "Lista -> /tmp/aurora_hygiene/dead_candidates.txt"
+echo "Candidatos muertos: $count"
+echo "Lista -> $dead_list_file"
 echo
 
-if [[ "${#dead_list[@]}" -eq 0 ]]; then
+if [[ "$count" -eq 0 ]]; then
   echo "OK: no hay capas muertas obvias en blocks/lib"
 else
   echo "Acción: mover a $ARCHIVE_DIR (fuera del build)"
   if [[ "$DRYRUN" == "1" ]]; then
     echo "DRYRUN=1: no muevo nada. Para ejecutar: DRYRUN=0 bash ops/hygiene_total.sh"
   else
-    for f in "${dead_list[@]}"; do
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
       rel="${f#"$ROOT"/}"
       mkdir -p "$ARCHIVE_DIR/$(dirname "$rel")"
       git mv "$f" "$ARCHIVE_DIR/$rel"
-    done
+    done < "$dead_list_file"
     echo "OK: movidos a ARCHIVE via git mv"
   fi
 fi
