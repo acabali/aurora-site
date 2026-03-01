@@ -1,6 +1,9 @@
 ---
 import Container from "../ui/Container.astro";
 import Section from "../ui/Section.astro";
+import { demoResetIfRequested } from "../../lib/demoReset";
+demoResetIfRequested();
+
 ---
 
 <Section id="demo" class="demo-stage">
