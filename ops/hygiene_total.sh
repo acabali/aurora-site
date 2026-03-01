@@ -51,7 +51,7 @@ echo
 echo "== Detectar capas muertas (blocks + lib) =="
 mkdir -p "$ARCHIVE_DIR"
 
-mapfile -t CANDIDATES < <(find src/components/blocks src/lib -type f \( -name "*.astro" -o -name "*.ts" \) 2>/dev/null | sort || true)
+### mapfile_removed ###
 
 dead_list=()
 for f in "${CANDIDATES[@]}"; do
