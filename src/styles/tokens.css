@@ -1,26 +1,27 @@
 :root {
-  --font-display: "Playfair Display", "Times New Roman", serif;
-  --font-body: "Inter", "Helvetica Neue", "Segoe UI", sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --font-body: "Avenir Next", "Franklin Gothic Book", "Segoe UI", sans-serif;
+  --font-tech: "Menlo", "Consolas", "SFMono-Regular", monospace;
 
-  --fs-h1: clamp(3.4rem, 9.6vw, 8.4rem);
+  --fs-h1: clamp(3.1rem, 8.8vw, 8rem);
   --fs-h2: clamp(1.9rem, 5vw, 4rem);
-  --fs-body: clamp(1rem, 1.35vw, 1.24rem);
+  --fs-body: clamp(1rem, 1.25vw, 1.16rem);
 
-  --text-main: #f6f8fb;
-  --text-muted: #a2adbd;
-  --text-soft: #7e8899;
+  --text-main: #edf4fb;
+  --text-muted: #b4c2cf;
+  --text-soft: #8fa0b1;
 
-  --bg-base: #04070d;
-  --bg-deep: #08101d;
-  --bg-fade: #0d1623;
-  --line-soft: rgba(152, 168, 191, 0.24);
-  --line-strong: rgba(225, 235, 246, 0.44);
-  --accent-teal: #00dab7;
-  --accent-amber: #ffb559;
-  --accent-risk: #ff6666;
+  --bg-base: #02060b;
+  --bg-deep: #07111b;
+  --bg-fade: #111c28;
+  --line-soft: rgba(164, 186, 207, 0.28);
+  --line-strong: rgba(222, 235, 247, 0.52);
+  --accent-teal: #9ad6c6;
+  --accent-amber: #f2c99c;
+  --accent-risk: #d86b6b;
 
-  --container: 76rem;
-  --gutter: clamp(1.1rem, 3.3vw, 2.25rem);
+  --container: 80rem;
+  --gutter: clamp(1rem, 3.1vw, 2.1rem);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -36,13 +37,13 @@
   --space-24: 6rem;
   --space-32: 8rem;
 
-  --radius-sm: 0.45rem;
-  --radius-md: 0.7rem;
+  --radius-sm: 0;
+  --radius-md: 0;
 
-  --track-tight: -0.032em;
-  --track-body: -0.01em;
+  --track-tight: -0.03em;
+  --track-body: -0.004em;
 
   --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
-  --duration-fast: 180ms;
-  --duration-mid: 320ms;
+  --duration-fast: 170ms;
+  --duration-mid: 290ms;
 }

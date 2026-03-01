@@ -1,0 +1,234 @@
+---
+import Button from "../ui/Button.astro";
+import Container from "../ui/Container.astro";
+import { home } from "../../content/home";
+
+const { hero, change, rupture, whatAurora, capabilities, binary, demoCta } = home;
+const motorGroup = capabilities.groups.find((group) => group.key === "motor");
+const appGroup = capabilities.groups.find((group) => group.key === "applications");
+---
+
+<div class="home-system" data-home-system>
+  <Container class="system-shell">
+    <div class="regime-phase phase-unstable" data-regime-anchor data-regime-target="unstable">
+      <div class="regime-copy hero-copy">
+        <h1 class="hero-title">{hero.lineA}</h1>
+        <p class="hero-subtitle">{hero.lineB}</p>
+        <Button href={hero.ctaHref} class="home-cta">{hero.cta}</Button>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-compressing" data-regime-anchor data-regime-target="compressing">
+      <div class="regime-copy">
+        <p class="regime-label">{change.title}</p>
+        <p class="regime-headline">{change.lead}</p>
+        <p class="regime-body">{change.body}</p>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-collision" data-regime-anchor data-regime-target="collision">
+      <div class="regime-copy">
+        <p class="regime-label">{rupture.title}</p>
+        <p class="regime-rupture-line">{rupture.line}</p>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-rupture" data-regime-anchor data-regime-target="rupture">
+      <div class="regime-copy regime-copy-tight">
+        <p class="regime-headline">{binary.title}</p>
+      </div>
+    </div>
+
+    <div
+      class="regime-phase phase-silence"
+      data-regime-anchor
+      data-regime-target="reordering"
+      data-scroll-damp="true"
+      aria-label="Silencio estructural"
+    ></div>
+
+    <div class="regime-phase phase-reordering" data-regime-anchor data-regime-target="reordering">
+      <div class="regime-copy">
+        <p class="regime-label">{whatAurora.title}</p>
+        <p class="regime-body" data-aurora-annotation="dominant">{whatAurora.blocks[0]}</p>
+        <p class="regime-body" data-aurora-annotation="dependencies">{whatAurora.blocks[1]}</p>
+        <p class="regime-body" data-aurora-annotation="signal">{whatAurora.blocks[2]}</p>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-products" data-regime-anchor data-regime-target="reordering" data-products-phase>
+      <div class="regime-copy products-copy">
+        <p class="regime-label">{capabilities.title}</p>
+
+        <div class="products-block-title">{capabilities.groups[0].title}</div>
+        <div class="algorithm-selector" role="toolbar" aria-label={capabilities.groups[0].title}>
+          {motorGroup?.items.map((item) => (
+            <button
+              type="button"
+              class="algorithm-trigger"
+              data-algorithm-button={item.key}
+              data-algorithm-detail={item.detail}
+              aria-pressed={item.key === "core" ? "true" : "false"}
+            >
+              {item.name}
+            </button>
+          ))}
+        </div>
+
+        <p class="algorithm-detail" data-algorithm-detail-panel>
+          {motorGroup?.items[0].detail}
+        </p>
+
+        <div class="products-block-title">{capabilities.groups[1].title}</div>
+        <div class="applications-inline">
+          {appGroup?.items.map((item) => (
+            <span class="application-line">{item.name}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-binary" data-regime-anchor data-regime-target="collision" data-binary-boundary>
+      <div class="binary-physics" aria-hidden="true"></div>
+      <div class="regime-copy binary-copy">
+        <p class="binary-line binary-left">{binary.before}</p>
+        <p class="binary-line binary-right">{binary.after}</p>
+      </div>
+    </div>
+
+    <div class="regime-phase phase-stabilized" data-regime-anchor data-regime-target="stabilized">
+      <div class="regime-copy stabilized-copy">
+        <p class="regime-label">{demoCta.title}</p>
+        <p class="regime-headline">{demoCta.lead}</p>
+        <Button href={demoCta.ctaHref} class="home-cta home-cta-final">{demoCta.cta}</Button>
+        <p class="regime-seal">{demoCta.seal}</p>
+      </div>
+    </div>
+  </Container>
+</div>
+
+<script>
+  const roots = document.querySelectorAll("[data-home-system]");
+
+  roots.forEach((root) => {
+    const algorithmButtons = root.querySelectorAll("[data-algorithm-button]");
+    const detailPanel = root.querySelector("[data-algorithm-detail-panel]");
+    const productsPhase = root.querySelector("[data-products-phase]");
+    const annotations = root.querySelectorAll("[data-aurora-annotation]");
+
+    let activeAlgorithm = "core";
+
+    const applyAlgorithm = (next, source = "ui") => {
+      if (!next) return;
+      activeAlgorithm = next;
+
+      algorithmButtons.forEach((button) => {
+        const key = button.getAttribute("data-algorithm-button");
+        const isActive = key === next;
+        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+
+      if (detailPanel) {
+        const activeButton = root.querySelector(`[data-algorithm-button="${next}"]`);
+        if (activeButton) {
+          detailPanel.textContent = activeButton.getAttribute("data-algorithm-detail") || "";
+        }
+      }
+
+      document.body.dataset.algorithm = next;
+      document.dispatchEvent(
+        new CustomEvent("aurora:algorithm-change", {
+          detail: { algorithm: next, source },
+        })
+      );
+    };
+
+    algorithmButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const key = button.getAttribute("data-algorithm-button");
+        applyAlgorithm(key, "click");
+      });
+
+      button.addEventListener("mouseenter", () => {
+        const key = button.getAttribute("data-algorithm-button");
+        applyAlgorithm(key, "hover");
+      });
+
+      button.addEventListener("focus", () => {
+        const key = button.getAttribute("data-algorithm-button");
+        applyAlgorithm(key, "focus");
+      });
+    });
+
+    if (productsPhase && typeof IntersectionObserver !== "undefined") {
+      const productsObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.22) {
+              if (document.body.dataset.algorithm) {
+                document.body.dataset.algorithm = "core";
+                activeAlgorithm = "core";
+              }
+              return;
+            }
+
+            if (!document.body.dataset.algorithm) {
+              applyAlgorithm(activeAlgorithm, "viewport");
+            }
+          });
+        },
+        {
+          root: null,
+          rootMargin: "-18% 0px -18% 0px",
+          threshold: [0, 0.22, 0.44, 0.66],
+        }
+      );
+
+      productsObserver.observe(productsPhase);
+    }
+
+    const setFocus = (value) => {
+      if (!value) {
+        delete document.body.dataset.fieldFocus;
+        return;
+      }
+      document.body.dataset.fieldFocus = value;
+    };
+
+    annotations.forEach((line) => {
+      line.addEventListener("mouseenter", () => {
+        setFocus(line.getAttribute("data-aurora-annotation"));
+      });
+      line.addEventListener("focus", () => {
+        setFocus(line.getAttribute("data-aurora-annotation"));
+      });
+      line.addEventListener("mouseleave", () => {
+        setFocus(null);
+      });
+      line.addEventListener("blur", () => {
+        setFocus(null);
+      });
+    });
+
+    if (annotations.length > 0 && typeof IntersectionObserver !== "undefined") {
+      const lineObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const target = entry.target;
+            if (!entry.isIntersecting || entry.intersectionRatio < 0.5) return;
+            setFocus(target.getAttribute("data-aurora-annotation"));
+          });
+        },
+        {
+          root: null,
+          rootMargin: "-34% 0px -34% 0px",
+          threshold: [0.5, 0.72],
+        }
+      );
+
+      annotations.forEach((line) => lineObserver.observe(line));
+    }
+
+    applyAlgorithm("core", "init");
+  });
+</script>

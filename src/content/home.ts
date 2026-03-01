@@ -93,7 +93,7 @@ export const home = {
   binary: {
     title: "Hay dos formas de operar.",
     before: "Operar como antes",
-    after: "Calibrar bajo estándar actual",
+    after: "Reordenar bajo estándar actual",
   },
   demoCta: {
     title: "Estándar aplicado",
