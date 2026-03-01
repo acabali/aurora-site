@@ -24,61 +24,74 @@ export const home = {
   },
   capabilities: {
     title: "Capacidades bajo estándar",
-    items: [
+    groups: [
       {
-        name: "Core",
-        detail: "Define estructura decisional y elimina ambigüedad operativa.",
-        state: "capability-core",
+        key: "motor",
+        title: "MOTOR ESTRUCTURAL",
+        items: [
+          { key: "core", name: "Core", detail: "Te ordena el problema y te muestra qué manda." },
+          {
+            key: "scenario",
+            name: "Scenario",
+            detail: "Te compara escenarios y te muestra qué cambia el resultado.",
+          },
+          {
+            key: "risk",
+            name: "Risk",
+            detail: "Te marca dónde se concentra el riesgo y dónde se rompe.",
+          },
+          {
+            key: "signal",
+            name: "Signal",
+            detail: "Te separa señal de ruido y te devuelve foco accionable.",
+          },
+          {
+            key: "ledger",
+            name: "Ledger",
+            detail: "Te deja trazabilidad: qué decidiste, por qué y con qué evidencia.",
+          },
+          {
+            key: "integration",
+            name: "Integration",
+            detail: "Te alinea equipos y decisiones para evitar contradicciones.",
+          },
+        ] as const,
       },
       {
-        name: "Scenario",
-        detail: "Modela variaciones de entorno antes de comprometer capital.",
-        state: "capability-scenario",
-      },
-      {
-        name: "Risk",
-        detail: "Expone el punto de quiebre antes de que aparezca en resultados.",
-        state: "capability-risk",
-      },
-      {
-        name: "Signal",
-        detail: "Prioriza señales accionables sobre ruido operativo.",
-        state: "capability-signal",
-      },
-      {
-        name: "Ledger",
-        detail: "Ancla la decisión en trazabilidad verificable.",
-        state: "capability-ledger",
-      },
-      {
-        name: "Growth",
-        detail: "Escala expansión sin perder consistencia de régimen.",
-        state: "capability-growth",
-      },
-      {
-        name: "Cost",
-        detail: "Recorta fricción sin degradar capacidad de ejecución.",
-        state: "capability-cost",
-      },
-      {
-        name: "Cash",
-        detail: "Sincroniza caja con ritmo real de operación.",
-        state: "capability-cash",
-      },
-      {
-        name: "Pricing",
-        detail: "Calibra precio con elasticidad, margen y velocidad de cobro.",
-        state: "capability-pricing",
-      },
-      {
-        name: "Expansion",
-        detail: "Define entrada a mercado por umbral de evidencia.",
-        state: "capability-expansion",
-      },
-      {
-        name: "Integration",
-        detail: "Coordina decisiones cruzadas sin pérdida de contexto.",
-        state: "capability-integration",
+        key: "applications",
+        title: "APLICACIONES BAJO ESTÁNDAR",
+        items: [
+          {
+            key: "growth",
+            name: "Growth",
+            detail: "Te escala con estructura, sin romper la operación.",
+          },
+          {
+            key: "cost",
+            name: "Cost",
+            detail: "Te recorta fricción sin degradar capacidad.",
+          },
+          {
+            key: "cash",
+            name: "Cash",
+            detail: "Te sincroniza caja con el ritmo real de ejecución.",
+          },
+          {
+            key: "pricing",
+            name: "Pricing",
+            detail: "Te ajusta precio con elasticidad y margen reales.",
+          },
+          {
+            key: "expansion",
+            name: "Expansion",
+            detail: "Te define entrada por umbral de evidencia.",
+          },
+          {
+            key: "operations",
+            name: "Operations",
+            detail: "Te detecta cuellos y te reordena la secuencia.",
+          },
+        ] as const,
       },
     ] as const,
   },

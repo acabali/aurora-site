@@ -14,6 +14,7 @@ export type DecisionFieldState =
   | "capability-pricing"
   | "capability-expansion"
   | "capability-integration"
+  | "capability-operations"
   | "binary-before"
   | "binary-after"
   | "demo-standard";
@@ -62,6 +63,21 @@ const COLORS = {
   tension: "255,181,89",
   risk: "255,102,102",
   structure: "16,28,44",
+};
+
+const FIELD_OVERRIDE_TO_STATE: Record<string, DecisionFieldState> = {
+  core: "capability-core",
+  scenario: "capability-scenario",
+  risk: "capability-risk",
+  signal: "capability-signal",
+  ledger: "capability-ledger",
+  integration: "capability-integration",
+  growth: "capability-growth",
+  cost: "capability-cost",
+  cash: "capability-cash",
+  pricing: "capability-pricing",
+  expansion: "capability-expansion",
+  operations: "capability-operations",
 };
 
 const BASE_STATE_CONFIG: Record<DecisionFieldState, StateConfig> = {
@@ -275,6 +291,20 @@ const BASE_STATE_CONFIG: Record<DecisionFieldState, StateConfig> = {
     voidRadius: 0.31,
     criticality: 0.3,
   },
+  "capability-operations": {
+    density: 0.94,
+    jitter: 0.18,
+    drag: 0.968,
+    lineDistance: 148,
+    lineAlpha: 0.26,
+    instability: 0.12,
+    cursorForce: 0.66,
+    anchorPull: 0.0012,
+    centerPull: 0.00062,
+    splitBias: 0.22,
+    voidRadius: 0.22,
+    criticality: 0.58,
+  },
   "binary-before": {
     density: 0.98,
     jitter: 0.24,
@@ -393,7 +423,9 @@ class DecisionFieldController {
   private readonly onActionHover = (event: Event) => {
     const target = event.target as HTMLElement | null;
     if (!target) return;
-    const actionEl = target.closest("a,button,[role='button'],[data-capability-state],[data-binary-state]") as
+    const actionEl = target.closest(
+      "a,button,[role='button'],[data-capability-state],[data-binary-state],[data-product-item]"
+    ) as
       | HTMLElement
       | null;
     if (!actionEl) return;
@@ -487,11 +519,16 @@ class DecisionFieldController {
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
       attributes: true,
-      attributeFilter: ["data-state"],
+      attributeFilter: ["data-state", "data-field-override"],
     });
   }
 
   private readBodyState(): DecisionFieldState {
+    const override = document.body.dataset.fieldOverride?.trim().toLowerCase();
+    if (override && override in FIELD_OVERRIDE_TO_STATE) {
+      return FIELD_OVERRIDE_TO_STATE[override];
+    }
+
     const value = (document.body.dataset.state ?? "hero") as DecisionFieldState;
     if (value in BASE_STATE_CONFIG) return value;
     return "hero";

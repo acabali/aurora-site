@@ -8,47 +8,223 @@ const { capabilities } = home;
 
 <Section id="capabilities" class="capabilities-section">
   <Container>
-    <div class="capabilities-flow">
-      <h2 class="section-title reveal">{capabilities.title}</h2>
-      <ul class="capability-list" data-capability-list>
-        {capabilities.items.map((item) => (
-          <li class="capability-item reveal" data-capability-state={item.state} tabindex="0">
-            <p class="capability-name">{item.name}</p>
-            <p class="capability-detail">{item.detail}</p>
-          </li>
+    <div class="capabilities-flow reveal" data-products-root>
+      <h2 class="section-title products-title">{capabilities.title}</h2>
+
+      <div class="products-groups">
+        {capabilities.groups.map((group) => (
+          <section class="products-group" data-product-group={group.key}>
+            <button
+              type="button"
+              class="products-group-head"
+              data-product-group-head={group.key}
+              aria-expanded="false"
+            >
+              {group.title}
+            </button>
+
+            <ul class="products-list" data-product-list={group.key}>
+              {group.items.map((item) => (
+                <li class="products-item" data-product-owner={group.key}>
+                  <button
+                    type="button"
+                    class="products-item-trigger"
+                    data-product-item={item.key}
+                    data-product-item-group={group.key}
+                    aria-expanded="false"
+                  >
+                    <span class="products-item-name">{item.name}</span>
+                  </button>
+                  <p class="products-item-detail" data-product-detail={item.key}>
+                    {item.detail}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
         ))}
-      </ul>
+      </div>
     </div>
   </Container>
 </Section>
 
 <script>
-  const lists = document.querySelectorAll("[data-capability-list]");
+  const roots = document.querySelectorAll("[data-products-root]");
 
-  lists.forEach((list) => {
-    const items = list.querySelectorAll("[data-capability-state]");
-    if (!items.length) return;
+  roots.forEach((root) => {
+    const section = root.closest("section[id='capabilities']");
+    const groupEls = root.querySelectorAll("[data-product-group]");
+    const groupHeads = root.querySelectorAll("[data-product-group-head]");
+    const itemButtons = root.querySelectorAll("[data-product-item]");
+    const detailEls = root.querySelectorAll("[data-product-detail]");
+    const desktopPointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 
-    const defaultState = items[0].getAttribute("data-capability-state") || "capability-core";
+    const firstItemByGroup = {};
+    const groupByItem = {};
 
-    const setState = (state) => {
-      if (!state) return;
-      document.body.dataset.state = state;
-      items.forEach((item) => {
-        const active = item.getAttribute("data-capability-state") === state;
-        item.classList.toggle("is-active", active);
-      });
-    };
-
-    setState(defaultState);
-
-    items.forEach((item) => {
-      const state = item.getAttribute("data-capability-state");
-      item.addEventListener("mouseenter", () => setState(state));
-      item.addEventListener("focus", () => setState(state));
-      item.addEventListener("click", () => setState(state));
+    groupEls.forEach((groupEl) => {
+      const groupKey = groupEl.getAttribute("data-product-group");
+      const firstItem = groupEl.querySelector("[data-product-item]");
+      if (groupKey && firstItem) {
+        const firstKey = firstItem.getAttribute("data-product-item");
+        if (firstKey) {
+          firstItemByGroup[groupKey] = firstKey;
+        }
+      }
     });
 
-    list.addEventListener("mouseleave", () => setState(defaultState));
+    itemButtons.forEach((button) => {
+      const itemKey = button.getAttribute("data-product-item");
+      const groupKey = button.getAttribute("data-product-item-group");
+      if (itemKey && groupKey) {
+        groupByItem[itemKey] = groupKey;
+      }
+    });
+
+    let activeInViewport = false;
+    let openGroup = "motor";
+    let openItem = "core";
+    let lockedItem = null;
+
+    const clearOverride = () => {
+      if (document.body.dataset.fieldOverride) {
+        delete document.body.dataset.fieldOverride;
+      }
+    };
+
+    const syncOverride = () => {
+      if (!activeInViewport || !openItem) {
+        clearOverride();
+        return;
+      }
+      document.body.dataset.fieldOverride = openItem;
+    };
+
+    const syncUI = () => {
+      groupHeads.forEach((head) => {
+        const groupKey = head.getAttribute("data-product-group-head");
+        head.setAttribute("aria-expanded", groupKey === openGroup ? "true" : "false");
+      });
+
+      groupEls.forEach((groupEl) => {
+        const groupKey = groupEl.getAttribute("data-product-group");
+        groupEl.setAttribute("data-open", groupKey === openGroup ? "true" : "false");
+      });
+
+      itemButtons.forEach((button) => {
+        const itemKey = button.getAttribute("data-product-item");
+        button.setAttribute("aria-expanded", itemKey === openItem ? "true" : "false");
+      });
+
+      detailEls.forEach((detail) => {
+        const itemKey = detail.getAttribute("data-product-detail");
+        detail.setAttribute("data-open", itemKey === openItem ? "true" : "false");
+      });
+
+      syncOverride();
+    };
+
+    const setGroup = (groupKey) => {
+      if (!groupKey) return;
+      openGroup = groupKey;
+      if (!openItem || groupByItem[openItem] !== groupKey) {
+        openItem = firstItemByGroup[groupKey] || null;
+      }
+      syncUI();
+    };
+
+    const setItem = (itemKey, options = {}) => {
+      if (!itemKey) return;
+      const nextGroup = groupByItem[itemKey];
+      if (nextGroup) openGroup = nextGroup;
+
+      if (options.toggle && openItem === itemKey) {
+        openItem = null;
+        if (options.lock) lockedItem = null;
+      } else {
+        openItem = itemKey;
+        if (options.lock) {
+          lockedItem = itemKey;
+        }
+      }
+
+      syncUI();
+    };
+
+    groupHeads.forEach((head) => {
+      head.addEventListener("click", () => {
+        const groupKey = head.getAttribute("data-product-group-head");
+        setGroup(groupKey);
+        if (!desktopPointer.matches) {
+          lockedItem = null;
+        }
+      });
+
+      head.addEventListener("mouseenter", () => {
+        if (!desktopPointer.matches) return;
+        const groupKey = head.getAttribute("data-product-group-head");
+        setGroup(groupKey);
+      });
+    });
+
+    itemButtons.forEach((button) => {
+      button.addEventListener("mouseenter", () => {
+        if (!desktopPointer.matches || lockedItem) return;
+        const itemKey = button.getAttribute("data-product-item");
+        setItem(itemKey);
+      });
+
+      button.addEventListener("focus", () => {
+        const itemKey = button.getAttribute("data-product-item");
+        setItem(itemKey);
+      });
+
+      button.addEventListener("click", () => {
+        const itemKey = button.getAttribute("data-product-item");
+        if (desktopPointer.matches) {
+          if (lockedItem === itemKey) {
+            lockedItem = null;
+            setItem(itemKey);
+            return;
+          }
+          setItem(itemKey, { lock: true });
+          return;
+        }
+
+        setItem(itemKey, { toggle: true });
+      });
+    });
+
+    root.addEventListener("mouseleave", () => {
+      if (!desktopPointer.matches || lockedItem) return;
+      openGroup = "motor";
+      openItem = "core";
+      syncUI();
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          activeInViewport = entry.isIntersecting && entry.intersectionRatio > 0.32;
+          if (!activeInViewport) {
+            clearOverride();
+            return;
+          }
+          syncOverride();
+        });
+      },
+      {
+        root: null,
+        rootMargin: "-18% 0px -18% 0px",
+        threshold: [0, 0.16, 0.32, 0.5, 0.7],
+      }
+    );
+
+    if (section) {
+      observer.observe(section);
+    }
+
+    setGroup("motor");
+    setItem("core");
   });
 </script>

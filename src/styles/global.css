@@ -234,8 +234,10 @@ main {
 
 .section-copy {
   color: var(--text-muted);
-  max-width: 46ch;
+  max-width: 60ch;
   line-height: 1.62;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .reveal {
@@ -258,8 +260,11 @@ main {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: var(--space-8);
-  max-width: 16ch;
+  max-width: 60ch;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .hero-title {
@@ -276,7 +281,7 @@ main {
   line-height: 1.02;
   letter-spacing: -0.02em;
   color: rgba(246, 248, 251, 0.9);
-  max-width: 14ch;
+  max-width: 22ch;
 }
 
 .hero-cta {
@@ -298,7 +303,9 @@ main {
 .capabilities-flow,
 .binary-flow,
 .demo-cta-flow {
-  max-width: 58rem;
+  max-width: 60ch;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .change-lead {
@@ -307,81 +314,120 @@ main {
   line-height: 1.03;
   letter-spacing: -0.02em;
   margin-bottom: var(--space-6);
-  max-width: 20ch;
+  max-width: 26ch;
+  margin-inline: auto;
 }
 
 .rupture-line {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  align-items: center;
   font-family: var(--font-display);
   font-size: clamp(2.1rem, 5.1vw, 4.8rem);
-  line-height: 0.94;
+  line-height: 0.9;
   letter-spacing: -0.03em;
-  max-width: 12ch;
+  max-width: 14ch;
+  margin-inline: auto;
 }
 
 .manifesto-flow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-14, 3.5rem);
 }
 
 .manifesto-line {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4.1vw, 3.55rem);
-  line-height: 0.97;
-  letter-spacing: -0.02em;
-  max-width: 18ch;
+  line-height: 0.95;
+  letter-spacing: -0.024em;
+  max-width: 22ch;
+  margin-inline: auto;
   transition-delay: calc(var(--m-index) * 90ms);
 }
 
-.manifesto-line:nth-child(3) {
-  margin-left: clamp(0px, 6vw, 6rem);
+.products-title {
+  margin-bottom: var(--space-8);
 }
 
-.manifesto-line:nth-child(4) {
-  margin-left: clamp(0px, 10vw, 10rem);
-}
-
-.capability-list {
-  list-style: none;
+.products-groups {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-8);
 }
 
-.capability-item {
-  padding-bottom: var(--space-5);
-  border-bottom: 1px solid rgba(225, 235, 246, 0.16);
+.products-group {
+  border-top: 1px solid rgba(225, 235, 246, 0.18);
+  padding-top: var(--space-4);
+  text-align: left;
+}
+
+.products-group-head {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: rgba(246, 248, 251, 0.78);
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: left;
   cursor: pointer;
-  transition: transform var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  padding: 0 0 var(--space-4);
+  transition: color var(--duration-fast) ease;
 }
 
-.capability-item:hover,
-.capability-item:focus,
-.capability-item.is-active {
-  transform: translateX(6px);
-  border-color: rgba(0, 218, 183, 0.56);
-}
-
-.capability-name {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 3.1vw, 2.7rem);
-  line-height: 0.98;
-  letter-spacing: -0.02em;
-  transition: font-size var(--duration-fast) var(--ease-out), color var(--duration-fast) ease;
-}
-
-.capability-item.is-active .capability-name,
-.capability-item:hover .capability-name,
-.capability-item:focus .capability-name {
+.products-group-head[aria-expanded="true"] {
   color: #ffffff;
-  font-size: clamp(1.58rem, 3.2vw, 2.86rem);
 }
 
-.capability-detail {
-  margin-top: var(--space-3);
+.products-list {
+  list-style: none;
+  display: none;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.products-group[data-open="true"] .products-list {
+  display: flex;
+}
+
+.products-item {
+  border-bottom: 1px solid rgba(225, 235, 246, 0.12);
+  padding: var(--space-2) 0;
+}
+
+.products-item-trigger {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: rgba(246, 248, 251, 0.74);
+  padding: var(--space-1) 0;
+  transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.products-item-trigger:hover,
+.products-item-trigger:focus,
+.products-item-trigger[aria-expanded="true"] {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+.products-item-name {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.22rem, 2.4vw, 2.04rem);
+  line-height: 1;
+  letter-spacing: -0.016em;
+}
+
+.products-item-detail {
   color: var(--text-muted);
-  max-width: 48ch;
-  line-height: 1.58;
+  max-width: 52ch;
+  font-size: 0.96rem;
+  line-height: 1.52;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -390,12 +436,11 @@ main {
     transform var(--duration-mid) var(--ease-out);
 }
 
-.capability-item.is-active .capability-detail,
-.capability-item:hover .capability-detail,
-.capability-item:focus .capability-detail {
-  max-height: 12rem;
+.products-item-detail[data-open="true"] {
+  max-height: 5rem;
   opacity: 1;
   transform: translateY(0);
+  padding-bottom: var(--space-3);
 }
 
 .binary-flow {
@@ -478,10 +523,14 @@ main {
 
 .demo-cta-seal {
   margin-top: var(--space-8);
-  color: rgba(246, 248, 251, 0.62);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  color: rgba(246, 248, 251, 0.66);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  text-align: center;
+  max-width: 58ch;
+  margin-inline: auto;
 }
 
 button:focus-visible,
@@ -501,12 +550,7 @@ textarea:focus-visible,
 
   .hero-flow {
     min-height: calc(100vh - 116px);
-    max-width: 14ch;
-  }
-
-  .manifesto-line:nth-child(3),
-  .manifesto-line:nth-child(4) {
-    margin-left: 0;
+    max-width: 56ch;
   }
 }
 
@@ -525,18 +569,21 @@ textarea:focus-visible,
     padding-top: var(--space-12);
   }
 
+  .hero-title {
+    font-size: clamp(2.6rem, 12vw, 4.3rem);
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1.25rem, 6.2vw, 2rem);
+    max-width: 20ch;
+  }
+
   .section-title {
     margin-bottom: var(--space-8);
   }
 
-  .capability-item {
-    padding-bottom: var(--space-4);
-  }
-
-  .capability-item.is-active .capability-detail,
-  .capability-item:focus .capability-detail,
-  .capability-item:hover .capability-detail {
-    max-height: 15rem;
+  .products-item-detail[data-open="true"] {
+    max-height: 8rem;
   }
 
   .demo-cta-flow {
@@ -577,6 +624,6 @@ textarea:focus-visible,
   font-weight:600;
   letter-spacing:.08em;
   text-transform:uppercase;
-  color:#000;
+  color:var(--text-main);
   line-height:1;
 }

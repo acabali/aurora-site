@@ -54,6 +54,9 @@ const { title = "Aurora" } = Astro.props;
 
       const setState = (nextState) => {
         if (!nextState) return;
+        if (!nextState.startsWith("capability-") && document.body.dataset.fieldOverride) {
+          delete document.body.dataset.fieldOverride;
+        }
         if (document.body.dataset.state !== nextState) {
           document.body.dataset.state = nextState;
         }
