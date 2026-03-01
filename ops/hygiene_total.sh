@@ -81,6 +81,13 @@ echo
 if [[ "$count" -eq 0 ]]; then
   echo "OK: no hay capas muertas obvias en blocks/lib"
 else
+## HARD PROTECT: nunca archivar libs usadas por Demo (imports vivos)
+if [[ -f /tmp/aurora_hygiene/dead_candidates.txt ]]; then
+  sed -i "" -e "/^src\/lib\/demoEngine\.ts$/d" \
+             -e "/^src\/lib\/demoFingerprint\.ts$/d" \
+             -e "/^src\/lib\/reveal\.ts$/d" \
+    /tmp/aurora_hygiene/dead_candidates.txt || true
+fi
   echo "Acción: mover a $ARCHIVE_DIR (fuera del build)"
   if [[ "$DRYRUN" == "1" ]]; then
     echo "DRYRUN=1: no muevo nada. Para ejecutar: DRYRUN=0 bash ops/hygiene_total.sh"
