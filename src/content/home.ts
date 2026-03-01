@@ -28,7 +28,7 @@ export const home = {
         key: "motor",
         title: "MOTOR ESTRUCTURAL",
         items: [
-          { key: "core", name: "Core", detail: "Te ordena el problema y te muestra qué manda." },
+          { key: "core", name: "Core", detail: "Detecta qué variable cambia el resultado." },
           {
             key: "scenario",
             name: "Scenario",
