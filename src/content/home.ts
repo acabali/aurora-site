@@ -1,7 +1,7 @@
 export const home = {
   hero: {
-    lineA: "La era de la evidencia comenzó.",
-    lineB: "Antes decidías con experiencia. Hoy eso ya no alcanza.",
+    lineA: "La era de la evidencia.",
+    lineB: "Antes decidías con experiencia.\nHoy eso ya no alcanza.",
     cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
   },
@@ -97,7 +97,7 @@ export const home = {
   demoCta: {
     title: "Estándar aplicado",
     lead: "Poner una decisión bajo evidencia.",
-    cta: "Activar evaluación",
+    cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
     seal: "",
   },
