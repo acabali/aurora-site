@@ -1,0 +1,30 @@
+---
+---
+
+<div id="decision-field-root" class="decision-field-root" aria-hidden="true"></div>
+
+<script>
+  import { mountDecisionField } from "./DecisionField";
+
+  let cleanup;
+
+  const boot = () => {
+    const root = document.getElementById("decision-field-root");
+    if (!root) return;
+    cleanup = mountDecisionField(root);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
+
+  window.addEventListener(
+    "pagehide",
+    () => {
+      if (typeof cleanup === "function") cleanup();
+    },
+    { once: true }
+  );
+</script>

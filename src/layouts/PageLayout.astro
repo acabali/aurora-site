@@ -1,7 +1,10 @@
 ---
 import "../styles/global.css";
+import DecisionField from "../components/system/DecisionField.astro";
 
-interface Props { title?: string; }
+interface Props {
+  title?: string;
+}
 const { title = "Aurora" } = Astro.props;
 ---
 
@@ -14,18 +17,91 @@ const { title = "Aurora" } = Astro.props;
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body>
+  <body data-state="hero">
+    <DecisionField />
+
     <header class="site-header">
       <div class="container-base site-header-inner">
         <a href="/" class="site-brand">Aurora</a>
         <a href="#contacto" class="site-contact-link">Contactar</a>
       </div>
     </header>
+
     <main>
       <slot />
     </main>
+
     <footer id="contacto" class="site-footer">
-      Aurora — La era de construir con evidencia.
+      Aurora - La era de construir con evidencia.
     </footer>
+
+    <script>
+      const STATE_BY_SECTION = {
+        hero: "hero",
+        autoridad: "change",
+        comparativa: "rupture",
+        "como-trabaja": "stabilized",
+        binario: "binary",
+        demo: "footprint",
+        "cta-demo": "footprint",
+      };
+
+      const sectionIds = Object.keys(STATE_BY_SECTION);
+      const trackedSections = sectionIds
+        .map((id) => document.getElementById(id))
+        .filter(Boolean);
+
+      const setState = (nextState) => {
+        if (!nextState) return;
+        if (document.body.dataset.state !== nextState) {
+          document.body.dataset.state = nextState;
+        }
+      };
+
+      if (trackedSections.length === 0 || typeof IntersectionObserver === "undefined") {
+        setState("hero");
+      } else {
+        const visibility = new Map();
+        const fallbackState = STATE_BY_SECTION[trackedSections[0].id] ?? "hero";
+
+        const applyBestState = () => {
+          let bestScore = -1;
+          let bestState = fallbackState;
+
+          for (let i = 0; i < trackedSections.length; i += 1) {
+            const section = trackedSections[i];
+            const ratio = visibility.get(section) ?? 0;
+            const score = ratio + (trackedSections.length - i) * 0.0001;
+            if (score > bestScore) {
+              bestScore = score;
+              bestState = STATE_BY_SECTION[section.id] ?? bestState;
+            }
+          }
+
+          setState(bestState);
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              visibility.set(entry.target, entry.isIntersecting ? entry.intersectionRatio : 0);
+            }
+            applyBestState();
+          },
+          {
+            root: null,
+            rootMargin: "-18% 0px -18% 0px",
+            threshold: [0, 0.18, 0.36, 0.52, 0.68, 0.84],
+          }
+        );
+
+        trackedSections.forEach((section) => {
+          visibility.set(section, 0);
+          observer.observe(section);
+        });
+
+        applyBestState();
+      }
+    </script>
   </body>
 </html>
