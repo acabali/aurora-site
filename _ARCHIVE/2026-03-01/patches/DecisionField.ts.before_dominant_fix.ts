@@ -477,21 +477,11 @@ class DecisionFieldController {
   }
 
   private pickDominantByProduct(): number {
-    // Dominante estructural fijo por producto.
-    // Evita saltos por cambios de longitud/orden del grafo.
     if (!this.nodes.length) return 0;
-
-    // Índices elegidos para N=22 (actual). Si cambia N, clamp protege.
-    const clamp = (i: number) => Math.max(0, Math.min(this.nodes.length - 1, i));
-
-    switch (this.menuProduct) {
-      case "counterfactual":
-        return clamp(4);
-      case "regime-shift":
-        return clamp(11);
-      default:
-        return clamp(17); // "entropy" y fallback
-    }
+    if (!this.menuProduct) return 0;
+    if (this.menuProduct === "counterfactual") return Math.floor(this.nodes.length * 0.2);
+    if (this.menuProduct === "regime-shift") return Math.floor(this.nodes.length * 0.52);
+    return Math.floor(this.nodes.length * 0.8);
   }
 
   private accent(alpha: number): string {
