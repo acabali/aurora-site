@@ -38,3 +38,17 @@ dist/
 .astro/
 .vercel/output/
 .vercel/cache/
+
+# local deps/build
+node_modules
+dist
+.astro
+.vercel
+.vercel/output
+coverage
+.turbo
+.next
+playwright-report
+test-results
+.pnpm-store
+*.log
