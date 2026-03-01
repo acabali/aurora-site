@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+# bash3.2 safe: evitar unbound en listas vacías
+shopt -s nullglob 2>/dev/null || true
 
 ROOT="$(pwd)"
 DATE="$(date +%F)"
