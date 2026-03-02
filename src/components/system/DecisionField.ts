@@ -40,7 +40,7 @@ type RegimeConfig = {
 };
 
 const RAF_KEY = "__auroraDecisionField";
-const ACCENT_HEX = "#4F3C8C";
+const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -136,6 +136,15 @@ class DecisionFieldController {
   private productBlend = 0;
   private fieldProgress = 0;
   private smoothedProgress = 0;
+  private dominantWeight = 1.2;
+  private secondaryWeight = 1.1;
+  private latentWeight = 0.85;
+  private transitionMs = 180;
+  private fieldLineLatent = "rgba(232, 237, 245, 0.1)";
+  private fieldLineActive = "rgba(232, 237, 245, 0.22)";
+  private fieldNodeLatent = "rgba(232, 237, 245, 0.12)";
+  private fieldNodeActive = "rgba(232, 237, 245, 0.3)";
+  private fieldDominant = "rgba(232, 237, 245, 0.42)";
   private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -143,6 +152,7 @@ class DecisionFieldController {
 
   private readonly onResize = () => {
     this.syncSize();
+    this.syncPalette();
     this.ensureNodeCount();
     this.clampNodes();
     this.render(performance.now());
@@ -186,6 +196,7 @@ class DecisionFieldController {
     this.root.appendChild(this.canvas);
 
     this.reducedMotion = this.mediaQuery.matches;
+    this.syncPalette();
     this.syncState();
     this.smoothedProgress = this.fieldProgress;
     this.syncSize();
@@ -226,6 +237,10 @@ class DecisionFieldController {
         "data-field-progress",
         "data-product-focus",
         "data-group-focus",
+        "data-field-dominant-weight",
+        "data-field-secondary-weight",
+        "data-field-latent-weight",
+        "data-field-transition-ms",
       ],
     });
   }
@@ -245,6 +260,19 @@ class DecisionFieldController {
     this.productFocus = nextProduct;
     this.groupFocus = nextGroup;
     this.fieldProgress = nextProgress;
+    this.dominantWeight = this.readWeight("fieldDominantWeight", 1.2);
+    this.secondaryWeight = this.readWeight("fieldSecondaryWeight", 1.1);
+    this.latentWeight = this.readWeight("fieldLatentWeight", 0.85);
+    this.transitionMs = this.readTransitionMs();
+  }
+
+  private syncPalette(): void {
+    const style = window.getComputedStyle(document.documentElement);
+    this.fieldLineLatent = style.getPropertyValue("--field-line-latent").trim() || this.fieldLineLatent;
+    this.fieldLineActive = style.getPropertyValue("--field-line-active").trim() || this.fieldLineActive;
+    this.fieldNodeLatent = style.getPropertyValue("--field-node-latent").trim() || this.fieldNodeLatent;
+    this.fieldNodeActive = style.getPropertyValue("--field-node-active").trim() || this.fieldNodeActive;
+    this.fieldDominant = style.getPropertyValue("--field-dominant").trim() || this.fieldDominant;
   }
 
   private readRegime(): Regime {
@@ -285,6 +313,21 @@ class DecisionFieldController {
       return this.regimeToProgress(this.regime);
     }
     return Math.max(0, Math.min(1, raw));
+  }
+
+  private readWeight(
+    key: "fieldDominantWeight" | "fieldSecondaryWeight" | "fieldLatentWeight",
+    fallback: number
+  ): number {
+    const raw = Number.parseFloat(document.body.dataset[key] ?? "");
+    if (!Number.isFinite(raw)) return fallback;
+    return clamp(raw, 0, 2);
+  }
+
+  private readTransitionMs(): number {
+    const raw = Number.parseFloat(document.body.dataset.fieldTransitionMs ?? "");
+    if (!Number.isFinite(raw)) return 180;
+    return clamp(raw, 60, 400);
   }
 
   private syncSize(): void {
@@ -390,8 +433,8 @@ class DecisionFieldController {
     const delta = Math.max(0, Math.min(64, time - this.lastRenderAt));
     this.lastRenderAt = time;
 
-    const easeOut = 1 - Math.exp(-delta / 180);
-    const progressEase = 1 - Math.exp(-delta / 180);
+    const easeOut = 1 - Math.exp(-delta / this.transitionMs);
+    const progressEase = 1 - Math.exp(-delta / this.transitionMs);
 
     const productTarget = this.productFocus ? 1 : 0;
     this.productBlend += (productTarget - this.productBlend) * easeOut;
@@ -633,23 +676,9 @@ class DecisionFieldController {
     }
   }
 
-  private accent(alpha: number): string {
-    const r = Number.parseInt(ACCENT_HEX.slice(1, 3), 16);
-    const g = Number.parseInt(ACCENT_HEX.slice(3, 5), 16);
-    const b = Number.parseInt(ACCENT_HEX.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${Math.max(0, Math.min(1, alpha)).toFixed(3)})`;
-  }
-
   private drawConnections(cfg: RegimeConfig): void {
     const threshold = cfg.lineDistance - this.productBlend * 16;
     const thresholdSq = threshold * threshold;
-    let strongestLine:
-      | {
-          i: number;
-          j: number;
-          tension: number;
-        }
-      | null = null;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
       const a = this.nodes[i];
@@ -668,43 +697,33 @@ class DecisionFieldController {
         const aSecondary = this.secondaryIndices.has(i);
         const bSecondary = this.secondaryIndices.has(j);
 
-        let alpha = cfg.latentLineAlpha * t;
+        let alpha = cfg.latentLineAlpha * t * this.latentWeight;
+        let lineColor = this.fieldLineLatent;
+        let lineWidth = 1;
+
         if (aDominant || bDominant) {
-          alpha = 0.46 * t;
+          alpha = 0.4 * t * this.dominantWeight;
+          lineColor = this.fieldDominant;
+          lineWidth = 1.5;
         } else if (aSecondary || bSecondary) {
-          alpha = 0.28 * t;
+          alpha = 0.28 * t * this.secondaryWeight;
+          lineColor = this.fieldLineActive;
         }
 
         if (this.algorithm === "signal" && !aDominant && !bDominant && !aSecondary && !bSecondary) {
           continue;
         }
 
-        if (
-          (aDominant || bDominant) &&
-          (!strongestLine || t > strongestLine.tension)
-        ) {
-          strongestLine = { i, j, tension: t };
-        }
-
-        this.ctx.strokeStyle = `rgba(154, 166, 178, ${alpha.toFixed(3)})`;
-        this.ctx.lineWidth = 1;
+        this.ctx.globalAlpha = clamp(alpha, 0, 1);
+        this.ctx.strokeStyle = lineColor;
+        this.ctx.lineWidth = lineWidth;
         this.ctx.beginPath();
         this.ctx.moveTo(a.x, a.y);
         this.ctx.lineTo(b.x, b.y);
         this.ctx.stroke();
       }
     }
-
-    if (strongestLine) {
-      const a = this.nodes[strongestLine.i];
-      const b = this.nodes[strongestLine.j];
-      this.ctx.strokeStyle = this.accent(0.88);
-      this.ctx.lineWidth = 1.2;
-      this.ctx.beginPath();
-      this.ctx.moveTo(a.x, a.y);
-      this.ctx.lineTo(b.x, b.y);
-      this.ctx.stroke();
-    }
+    this.ctx.globalAlpha = 1;
   }
 
   private drawNodes(): void {
@@ -714,21 +733,26 @@ class DecisionFieldController {
       const isSecondary = this.secondaryIndices.has(i);
 
       let radius = 1.8;
-      let color = "rgba(154, 166, 178, 0.42)";
+      let color = this.fieldNodeLatent;
+      let alpha = this.latentWeight;
 
       if (isDominant) {
         radius = 3.6;
-        color = this.accent(1);
+        color = this.fieldDominant;
+        alpha = this.dominantWeight;
       } else if (isSecondary) {
         radius = 2.5;
-        color = "rgba(232, 237, 245, 0.84)";
+        color = this.fieldNodeActive;
+        alpha = this.secondaryWeight;
       }
 
+      this.ctx.globalAlpha = clamp(alpha, 0, 1);
       this.ctx.fillStyle = color;
       this.ctx.beginPath();
       this.ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
       this.ctx.fill();
     }
+    this.ctx.globalAlpha = 1;
   }
 }
 

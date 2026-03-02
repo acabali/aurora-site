@@ -120,7 +120,7 @@ a {
 .decision-field-root {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  z-index: 5;
   pointer-events: none;
 }
 
@@ -132,7 +132,7 @@ a {
 
 [data-page="home"] .home-main {
   position: relative;
-  z-index: 1;
+  z-index: 12;
   overflow-x: clip;
   background: transparent;
   padding: calc(68px + var(--space-12)) var(--gutter) var(--space-30);
@@ -312,7 +312,7 @@ body[data-products-open="true"] .products-menu {
 
 [data-page="home"] .home-surface {
   position: relative;
-  z-index: 1;
+  z-index: 12;
 }
 
 [data-page="home"] .home-hero {
