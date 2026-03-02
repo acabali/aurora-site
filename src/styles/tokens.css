@@ -7,8 +7,8 @@
   --fs-body: 16px;
 
   --bg-base: #07090f;
-  --bg-deep: #0c111a;
-  --bg-layer: #131a24;
+  --bg-deep: #07090f;
+  --bg-layer: #0f131d;
 
   --text-main: #e8edf5;
   --text-dim: #9aa6b2;
@@ -34,6 +34,7 @@
   --space-24: 96px;
   --space-30: 120px;
 
-  --duration-fast: 160ms;
+  --duration-fast: 180ms;
   --duration-mid: 260ms;
+  --duration-field: 180ms;
 }

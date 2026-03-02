@@ -117,7 +117,7 @@ export function mountHomeField(): () => void {
   };
 
   const refreshField = (): void => {
-    const probe = window.scrollY + window.innerHeight * 0.46;
+    const probe = window.scrollY + window.innerHeight * 0.28;
     const progress = interpolateProgress(stagePoints, probe);
     writeFieldState(progress);
   };
