@@ -1,9 +1,9 @@
 export const home = {
   hero: {
-    lineA: "La era de la evidencia.",
-    lineB: "Antes decidías con experiencia.\nHoy eso ya no alcanza.",
-    cta: "Poner una decisión bajo evidencia",
-    ctaHref: "/demo",
+    lineA: "Antes hacían falta equipos, consultoras y meses para entender si crecer, cuándo y cómo. Hoy no.",
+    lineB: "Aurora concentra ese entendimiento en un solo lugar, antes de que pongas un dólar en juego.",
+    cta: "Ver cómo funciona",
+    ctaHref: "/#productos",
   },
   change: {
     title: "QUÉ ESTÁ CAMBIANDO",
