@@ -58,20 +58,26 @@ export function mountHomeField(): () => void {
   }
 
   let isMenuOpen = false;
-  let raf = 0;
-  let smoothedProgress = Number.parseFloat(body.dataset.fieldProgress ?? "0") || 0;
-  let targetProgress = smoothedProgress;
   let smoothedVelocity = 0;
   let lastY = window.scrollY;
   let lastT = performance.now();
   let stagePoints = readStagePoints(stageNodes);
 
-  const closeMenu = (): void => {
+  const getFocusableMenuNodes = (): HTMLElement[] => {
+    const buttons = Array.from(menu.querySelectorAll<HTMLButtonElement>(".product-trigger"));
+    return [toggle, ...buttons].filter((node) => !node.hidden && !node.hasAttribute("disabled"));
+  };
+
+  const closeMenu = (restoreFocus = false): void => {
     if (!isMenuOpen) return;
     isMenuOpen = false;
     body.dataset.productsOpen = "false";
     toggle.setAttribute("aria-expanded", "false");
     menu.hidden = true;
+    clearProductFocus();
+    if (restoreFocus) {
+      toggle.focus();
+    }
   };
 
   const openMenu = (): void => {
@@ -80,6 +86,11 @@ export function mountHomeField(): () => void {
     menu.hidden = false;
     body.dataset.productsOpen = "true";
     toggle.setAttribute("aria-expanded", "true");
+
+    const focusable = getFocusableMenuNodes();
+    if (focusable.length > 1) {
+      focusable[1].focus();
+    }
   };
 
   const setProductFocus = (node: HTMLElement): void => {
@@ -102,39 +113,65 @@ export function mountHomeField(): () => void {
     const bounded = clamp(progress, 0, 1);
     body.dataset.fieldProgress = bounded.toFixed(4);
     body.dataset.regime = regimeFromProgress(bounded);
-
-    const velocity = clamp(smoothedVelocity, 0, 14);
-    body.dataset.scrollVelocity = velocity.toFixed(3);
+    body.dataset.scrollVelocity = clamp(smoothedVelocity, 0, 14).toFixed(3);
   };
 
-  const scheduleFrame = (): void => {
-    if (raf !== 0) return;
-    raf = window.requestAnimationFrame(stepFrame);
-  };
-
-  const refreshTarget = (): void => {
+  const refreshField = (): void => {
     const probe = window.scrollY + window.innerHeight * 0.46;
-    targetProgress = interpolateProgress(stagePoints, probe);
+    const progress = interpolateProgress(stagePoints, probe);
+    writeFieldState(progress);
   };
 
-  const stepFrame = (): void => {
-    raf = 0;
+  const onToggleClick = (): void => {
+    if (isMenuOpen) {
+      closeMenu();
+      return;
+    }
+    openMenu();
+  };
 
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const onPointerDown = (event: PointerEvent): void => {
+    if (!isMenuOpen) return;
+    const target = event.target as Node;
+    if (menu.contains(target) || toggle.contains(target)) return;
+    closeMenu();
+  };
 
-    if (reduceMotion) {
-      smoothedProgress = targetProgress;
-    } else {
-      smoothedProgress += (targetProgress - smoothedProgress) * 0.12;
+  const onMenuLeave = (): void => {
+    if (document.activeElement && menu.contains(document.activeElement)) return;
+    clearProductFocus();
+  };
+
+  const onKeyDown = (event: KeyboardEvent): void => {
+    if (event.key === "Escape") {
+      closeMenu(true);
+      return;
     }
 
-    smoothedVelocity += (0 - smoothedVelocity) * 0.16;
+    if (!isMenuOpen || event.key !== "Tab") return;
 
-    writeFieldState(smoothedProgress);
+    const focusable = getFocusableMenuNodes();
+    if (!focusable.length) return;
 
-    const delta = Math.abs(targetProgress - smoothedProgress);
-    if (delta > 0.001 || smoothedVelocity > 0.04) {
-      scheduleFrame();
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (!active || !focusable.includes(active)) {
+      event.preventDefault();
+      first.focus();
+      return;
+    }
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
     }
   };
 
@@ -149,43 +186,12 @@ export function mountHomeField(): () => void {
     const instantVelocity = clamp((Math.abs(dy) / dt) * 18, 0, 14);
     smoothedVelocity += (instantVelocity - smoothedVelocity) * 0.3;
 
-    refreshTarget();
-    scheduleFrame();
+    refreshField();
   };
 
   const onResize = (): void => {
     stagePoints = readStagePoints(stageNodes);
-    refreshTarget();
-    scheduleFrame();
-  };
-
-  const onToggleClick = (): void => {
-    if (isMenuOpen) {
-      closeMenu();
-      clearProductFocus();
-      return;
-    }
-    openMenu();
-  };
-
-  const onPointerDown = (event: PointerEvent): void => {
-    if (!isMenuOpen) return;
-    const target = event.target as Node;
-    if (menu.contains(target) || toggle.contains(target)) return;
-    closeMenu();
-    clearProductFocus();
-  };
-
-  const onKeyDown = (event: KeyboardEvent): void => {
-    if (event.key !== "Escape") return;
-    closeMenu();
-    clearProductFocus();
-    toggle.focus();
-  };
-
-  const onMenuLeave = (): void => {
-    if (document.activeElement && menu.contains(document.activeElement)) return;
-    clearProductFocus();
+    refreshField();
   };
 
   const nodeHandlers = productNodes.map((node) => {
@@ -193,6 +199,7 @@ export function mountHomeField(): () => void {
     const onBlur = (): void => {
       window.setTimeout(onMenuLeave, 0);
     };
+
     return { node, onEnter, onBlur };
   });
 
@@ -212,21 +219,16 @@ export function mountHomeField(): () => void {
 
   body.dataset.productsOpen = "false";
   body.dataset.algorithm = body.dataset.algorithm ?? "core";
-  refreshTarget();
-  writeFieldState(smoothedProgress);
-  scheduleFrame();
+  refreshField();
 
   return () => {
-    if (raf !== 0) {
-      window.cancelAnimationFrame(raf);
-    }
-
     toggle.removeEventListener("click", onToggleClick);
     menu.removeEventListener("pointerleave", onMenuLeave);
     document.removeEventListener("pointerdown", onPointerDown);
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
+
     for (const { node, onEnter, onBlur } of nodeHandlers) {
       node.removeEventListener("pointerenter", onEnter);
       node.removeEventListener("focus", onEnter);
