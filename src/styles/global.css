@@ -13,7 +13,7 @@ body {
   font-size: var(--fs-body);
   line-height: 1.45;
   color: var(--text-main);
-  background: var(--bg-deep);
+  background: var(--bg-base);
   text-rendering: optimizeLegibility;
 }
 
@@ -37,8 +37,8 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 72px;
-  padding: 18px var(--gutter);
+  min-height: 68px;
+  padding: 16px var(--gutter);
   background: var(--bg-base);
   border-bottom: 1px solid var(--line-soft);
 }
@@ -93,7 +93,7 @@ a {
   font-weight: 500;
   text-decoration: none;
   cursor: pointer;
-  transition: color 180ms ease-out;
+  transition: color var(--duration-field) ease-out;
 }
 
 .header-action::before {
@@ -135,7 +135,7 @@ a {
   z-index: 1;
   overflow-x: clip;
   background: transparent;
-  padding: calc(72px + var(--space-12)) var(--gutter) var(--space-30);
+  padding: calc(68px + var(--space-12)) var(--gutter) var(--space-30);
 }
 
 [data-page="home"] .home-column {
@@ -197,7 +197,7 @@ a {
   padding: 0;
   font-size: 0.95rem;
   font-weight: 500;
-  transition: color 180ms ease-out, border-color 180ms ease-out;
+  transition: color var(--duration-field) ease-out, border-color var(--duration-field) ease-out;
 }
 
 [data-page="home"] .home-cta:hover,
@@ -213,14 +213,14 @@ a {
 
 .products-menu {
   position: fixed;
-  top: calc(72px + var(--space-8));
+  top: calc(68px + var(--space-8));
   left: 50%;
   z-index: 55;
   width: min(820px, calc(100vw - 32px));
   transform: translateX(-50%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 180ms ease-out;
+  transition: opacity var(--duration-field) ease-out;
 }
 
 body[data-products-open="true"] .products-menu {
@@ -284,7 +284,7 @@ body[data-products-open="true"] .products-menu {
   font-size: 18px;
   font-weight: 500;
   line-height: 1.2;
-  transition: color 180ms ease-out;
+  transition: color var(--duration-field) ease-out;
 }
 
 .product-tech,
@@ -326,7 +326,7 @@ body[data-products-open="true"] .products-menu {
 
 @media (max-width: 768px) {
   .site-header {
-    min-height: 66px;
+    min-height: 64px;
     padding: 14px 16px;
   }
 
@@ -339,19 +339,19 @@ body[data-products-open="true"] .products-menu {
   }
 
   [data-page="home"] .home-main {
-    padding: calc(66px + var(--space-10)) 16px var(--space-24);
+    padding: calc(64px + var(--space-12)) 16px var(--space-30);
   }
 
   [data-page="home"] .home-stack > section + section {
-    margin-top: 96px;
+    margin-top: var(--space-30);
   }
 
   [data-page="home"] .home-block {
-    gap: 40px;
+    gap: var(--space-12);
   }
 
   .products-menu {
-    top: calc(66px + var(--space-6));
+    top: calc(64px + var(--space-6));
     width: calc(100vw - 24px);
   }
 }

@@ -128,7 +128,6 @@ class DecisionFieldController {
   private width = 0;
   private height = 0;
   private dpr = 1;
-  private bootAt = performance.now();
   private reducedMotion = false;
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
@@ -137,10 +136,6 @@ class DecisionFieldController {
   private productBlend = 0;
   private fieldProgress = 0;
   private smoothedProgress = 0;
-  private pointerTargetX = 0;
-  private pointerTargetY = 0;
-  private pointerX = 0;
-  private pointerY = 0;
   private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -164,39 +159,11 @@ class DecisionFieldController {
   private readonly onReduceMotionChange = () => {
     this.reducedMotion = this.mediaQuery.matches;
     if (this.reducedMotion) {
-      this.pointerTargetX = 0;
-      this.pointerTargetY = 0;
-      this.pointerX = 0;
-      this.pointerY = 0;
       this.stop();
       this.render(performance.now());
       return;
     }
     this.start();
-  };
-
-  private readonly onPointerMove = (event: PointerEvent) => {
-    if (this.reducedMotion || this.width <= 0 || this.height <= 0) {
-      return;
-    }
-
-    const rawX = (event.clientX / this.width - 0.5) * 2;
-    const rawY = (event.clientY / this.height - 0.5) * 2;
-    const deadzone = 0.18;
-
-    const map = (value: number): number => {
-      const mag = Math.abs(value);
-      if (mag < deadzone) return 0;
-      return ((mag - deadzone) / (1 - deadzone)) * Math.sign(value);
-    };
-
-    this.pointerTargetX = Math.max(-1, Math.min(1, map(rawX)));
-    this.pointerTargetY = Math.max(-1, Math.min(1, map(rawY)));
-  };
-
-  private readonly onPointerLeave = () => {
-    this.pointerTargetX = 0;
-    this.pointerTargetY = 0;
   };
 
   private readonly frame = (time: number) => {
@@ -235,8 +202,6 @@ class DecisionFieldController {
   destroy(): void {
     this.stop();
     window.removeEventListener("resize", this.onResize);
-    window.removeEventListener("pointermove", this.onPointerMove);
-    window.removeEventListener("pointerleave", this.onPointerLeave);
     document.removeEventListener("visibilitychange", this.onVisibility);
     this.mediaQuery.removeEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.disconnect();
@@ -248,8 +213,6 @@ class DecisionFieldController {
 
   private bind(): void {
     window.addEventListener("resize", this.onResize);
-    window.addEventListener("pointermove", this.onPointerMove, { passive: true });
-    window.addEventListener("pointerleave", this.onPointerLeave, { passive: true });
     document.addEventListener("visibilitychange", this.onVisibility);
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
@@ -428,41 +391,31 @@ class DecisionFieldController {
     this.lastRenderAt = time;
 
     const easeOut = 1 - Math.exp(-delta / 180);
-    const progressEase = 1 - Math.exp(-delta / 220);
+    const progressEase = 1 - Math.exp(-delta / 180);
 
     const productTarget = this.productFocus ? 1 : 0;
     this.productBlend += (productTarget - this.productBlend) * easeOut;
 
     if (this.reducedMotion) {
       this.smoothedProgress = this.fieldProgress;
-      this.pointerX = 0;
-      this.pointerY = 0;
     } else {
       this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * progressEase;
-      this.pointerX += (this.pointerTargetX - this.pointerX) * progressEase;
-      this.pointerY += (this.pointerTargetY - this.pointerY) * progressEase;
     }
 
     const cfg = this.resolveConfig(this.smoothedProgress);
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.updateNodes(time, cfg, this.smoothedProgress);
+    this.updateNodes(cfg, this.smoothedProgress);
     this.updateTopology(cfg);
     this.drawConnections(cfg);
     this.drawNodes();
   }
 
-  private updateNodes(time: number, cfg: RegimeConfig, progress: number): void {
+  private updateNodes(cfg: RegimeConfig, progress: number): void {
     const center = this.regimeCenter(progress);
     const minDimension = Math.min(this.width, this.height);
     const spreadRadius = minDimension * cfg.spread;
-
-    let introBlend = 0;
-    const elapsed = time - this.bootAt;
-    if (window.scrollY < 8 && elapsed < 3000) {
-      introBlend = elapsed / 3000;
-    }
 
     const velocityBias = Math.min(1, Number.parseFloat(document.body.dataset.scrollVelocity ?? "0") / 14);
     const groupPull =
@@ -474,7 +427,7 @@ class DecisionFieldController {
     const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * (0.004 + groupPull);
 
     for (const node of this.nodes) {
-      const target = this.nodeTarget(node, center, spreadRadius, introBlend);
+      const target = this.nodeTarget(node, center, spreadRadius);
       node.vx = node.vx * 0.78 + (target.x - node.x) * pull;
       node.vy = node.vy * 0.78 + (target.y - node.y) * pull;
 
@@ -505,18 +458,16 @@ class DecisionFieldController {
     const endX = this.width * 0.5;
     const startY = this.height * 0.48;
     const endY = this.height * 0.5;
-    const pointerScale = this.reducedMotion ? 0 : Math.min(this.width, this.height) * 0.008;
     return {
-      x: startX + (endX - startX) * p + this.pointerX * pointerScale,
-      y: startY + (endY - startY) * p + this.pointerY * pointerScale * 0.8,
+      x: startX + (endX - startX) * p,
+      y: startY + (endY - startY) * p,
     };
   }
 
   private nodeTarget(
     node: NodePoint,
     center: { x: number; y: number },
-    spreadRadius: number,
-    introBlend: number
+    spreadRadius: number
   ): { x: number; y: number } {
     const baseOffsetX = (node.baseX - 0.5) * spreadRadius * 1.6;
     const baseOffsetY = (node.baseY - 0.5) * spreadRadius * 1.6;
@@ -578,11 +529,6 @@ class DecisionFieldController {
       const clusterBias = this.productBlend * (this.groupFocus === "advanced-systems" ? 0.28 : 0.2);
       targetX = targetX * (1 - clusterBias) + focusCenter.x * clusterBias;
       targetY = targetY * (1 - clusterBias) + focusCenter.y * clusterBias;
-    }
-
-    if (introBlend > 0) {
-      targetX = targetX * (1 - introBlend * 0.42) + this.width * 0.5 * (introBlend * 0.42);
-      targetY = targetY * (1 - introBlend * 0.42) + this.height * 0.5 * (introBlend * 0.42);
     }
 
     return { x: targetX, y: targetY };
