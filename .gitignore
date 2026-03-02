@@ -1,31 +1,20 @@
-# build output
-dist/
-# generated types
-.astro/
-
-# dependencies
+# dependencies and package-manager caches
 node_modules/
+.pnpm-store/
 
-# logs
+# build and framework outputs
+dist/
+.astro/
+.vercel/
+coverage/
+playwright-report/
+test-results/
+
+# logs and transient editor files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-
-
-# environment variables
-.env
-.env.production
-
-# macOS-specific files
-.DS_Store
-
-# jetbrains setting folder
-.idea/
-.ops_backups/
-.vercel
-.env*.local
-._*
 *.log
 *.bak
 *.tmp
@@ -33,8 +22,15 @@ pnpm-debug.log*
 *.swo
 *~
 
-# build outputs
-dist/
-.astro/
-.vercel/output/
-.vercel/cache/
+# local environment files
+.env
+.env.production
+.env*.local
+
+# IDE and OS files
+.DS_Store
+._*
+.idea/
+
+# local ops backup artifacts
+.ops_backups/
