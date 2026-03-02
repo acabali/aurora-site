@@ -1,18 +1,23 @@
 :root {
-  --font-display: "Avenir Next", "Inter", "Segoe UI", sans-serif;
-  --font-body: "Avenir Next", "Inter", "Segoe UI", sans-serif;
-  --font-tech: "Avenir Next", "Inter", "Segoe UI", sans-serif;
+  --font-display: "Avenir Next", "Manrope", "Helvetica Neue", sans-serif;
+  --font-body: "Avenir Next", "Manrope", "Helvetica Neue", sans-serif;
+  --font-tech: "Avenir Next", "IBM Plex Sans", "Helvetica Neue", sans-serif;
 
-  --fs-h1: clamp(34px, 4.6vw, 42px);
-  --fs-h2: clamp(30px, 2.7vw, 36px);
+  --fs-h1: clamp(2.1rem, 5.5vw, 42px);
   --fs-body: 16px;
 
-  --bg-base: #ffffff;
-  --text-main: #0a0a0a;
-  --line-soft: #dadada;
-  --cta-main: #000000;
+  --bg-base: #07090f;
+  --bg-deep: #0c111a;
+  --bg-layer: #131a24;
 
-  --container: 920px;
+  --text-main: #e8edf5;
+  --text-dim: #9aa6b2;
+
+  --line-soft: #1f2733;
+
+  --accent-primary: #4f3c8c;
+
+  --container: 68ch;
   --gutter: 24px;
 
   --space-2: 8px;
@@ -24,6 +29,7 @@
   --space-10: 40px;
   --space-12: 48px;
   --space-14: 56px;
+  --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
   --space-30: 120px;

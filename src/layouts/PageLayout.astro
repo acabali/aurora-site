@@ -1,5 +1,14 @@
 ---
-const { title = "Aurora" } = Astro.props;
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  page?: "home" | "demo" | "default";
+}
+
+const { title = "Aurora", page = "default" } = Astro.props;
+const showProductsToggle = page === "home";
 ---
 <!DOCTYPE html>
 <html lang="es">
@@ -8,15 +17,31 @@ const { title = "Aurora" } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
   </head>
-  <body>
+  <body data-page={page} data-algorithm="core">
     <header class="site-header">
-      <a href="/" class="logo">AURORA</a>
-      <nav>
-        <a href="/demo">Demo</a>
+      <a href="/" class="logo-lockup" aria-label="Aurora">
+        <span class="logo-symbol" aria-hidden="true"></span>
+        <span class="logo-wordmark">AURORA</span>
+      </a>
+
+      <nav class="site-nav" aria-label="Principal">
+        {showProductsToggle ? (
+          <button
+            type="button"
+            class="header-action"
+            data-products-toggle
+            aria-controls="products-menu"
+            aria-expanded="false"
+          >
+            Productos
+          </button>
+        ) : (
+          <a href="/#productos" class="header-action">Productos</a>
+        )}
+        <a href="/demo" class="header-action">Demo</a>
       </nav>
     </header>
 
     <slot />
-
   </body>
 </html>

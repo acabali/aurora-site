@@ -135,6 +135,7 @@ class DecisionFieldController {
   private productFocus: ProductFocus = "";
   private groupFocus: GroupFocus = "";
   private productBlend = 0;
+  private fieldProgress = 0;
   private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -221,6 +222,7 @@ class DecisionFieldController {
         "data-algorithm",
         "data-binary-side",
         "data-scroll-velocity",
+        "data-field-progress",
         "data-product-focus",
         "data-group-focus",
       ],
@@ -232,6 +234,7 @@ class DecisionFieldController {
     const nextAlgorithm = this.readAlgorithm();
     const nextProduct = this.readProductFocus();
     const nextGroup = this.readGroupFocus();
+    const nextProgress = this.readFieldProgress();
 
     if (nextRegime !== this.regime) {
       this.regime = nextRegime;
@@ -240,6 +243,7 @@ class DecisionFieldController {
     this.algorithm = nextAlgorithm;
     this.productFocus = nextProduct;
     this.groupFocus = nextGroup;
+    this.fieldProgress = nextProgress;
   }
 
   private readRegime(): Regime {
@@ -272,6 +276,14 @@ class DecisionFieldController {
       return raw;
     }
     return "";
+  }
+
+  private readFieldProgress(): number {
+    const raw = Number.parseFloat(document.body.dataset.fieldProgress ?? "");
+    if (!Number.isFinite(raw)) {
+      return this.regimeToProgress(this.regime);
+    }
+    return Math.max(0, Math.min(1, raw));
   }
 
   private syncSize(): void {
@@ -342,8 +354,39 @@ class DecisionFieldController {
     this.raf = 0;
   }
 
+  private regimeToProgress(regime: Regime): number {
+    switch (regime) {
+      case "unstable":
+        return 0;
+      case "compressing":
+        return 0.22;
+      case "collision":
+        return 0.4;
+      case "rupture":
+        return 0.58;
+      case "reordering":
+        return 0.76;
+      case "stabilized":
+      default:
+        return 1;
+    }
+  }
+
+  private resolveConfig(): RegimeConfig {
+    const p = this.fieldProgress;
+    const start = REGIME_CONFIG.unstable;
+    const end = REGIME_CONFIG.stabilized;
+    return {
+      spread: start.spread + (end.spread - start.spread) * p,
+      pull: start.pull + (end.pull - start.pull) * p,
+      lineDistance: start.lineDistance + (end.lineDistance - start.lineDistance) * p,
+      secondaryCount: p >= 0.72 ? 3 : 4,
+      latentLineAlpha: start.latentLineAlpha + (end.latentLineAlpha - start.latentLineAlpha) * p,
+    };
+  }
+
   private render(time: number): void {
-    const cfg = REGIME_CONFIG[this.regime];
+    const cfg = this.resolveConfig();
     const delta = Math.max(0, Math.min(64, time - this.lastRenderAt));
     this.lastRenderAt = time;
     const easeOut = 1 - Math.exp(-delta / 180);
@@ -352,14 +395,14 @@ class DecisionFieldController {
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.updateNodes(time, cfg);
+    this.updateNodes(time, cfg, this.fieldProgress);
     this.updateTopology(cfg);
     this.drawConnections(cfg);
     this.drawNodes();
   }
 
-  private updateNodes(time: number, cfg: RegimeConfig): void {
-    const center = this.regimeCenter();
+  private updateNodes(time: number, cfg: RegimeConfig, progress: number): void {
+    const center = this.regimeCenter(progress);
     const minDimension = Math.min(this.width, this.height);
     const spreadRadius = minDimension * cfg.spread;
 
@@ -404,16 +447,16 @@ class DecisionFieldController {
     }
   }
 
-  private regimeCenter(): { x: number; y: number } {
-    const cx = this.width * 0.5;
-    const cy = this.height * 0.52;
-
-    if (this.regime === "unstable") return { x: this.width * 0.58, y: this.height * 0.48 };
-    if (this.regime === "compressing") return { x: this.width * 0.55, y: this.height * 0.5 };
-    if (this.regime === "collision") return { x: this.width * 0.52, y: this.height * 0.52 };
-    if (this.regime === "rupture") return { x: cx, y: cy };
-    if (this.regime === "reordering") return { x: cx, y: this.height * 0.5 };
-    return { x: cx, y: this.height * 0.5 };
+  private regimeCenter(progress: number): { x: number; y: number } {
+    const p = Math.max(0, Math.min(1, progress));
+    const startX = this.width * 0.58;
+    const endX = this.width * 0.5;
+    const startY = this.height * 0.48;
+    const endY = this.height * 0.5;
+    return {
+      x: startX + (endX - startX) * p,
+      y: startY + (endY - startY) * p,
+    };
   }
 
   private nodeTarget(
@@ -644,7 +687,7 @@ class DecisionFieldController {
           strongestLine = { i, j, tension: t };
         }
 
-        this.ctx.strokeStyle = `rgba(10, 10, 10, ${alpha.toFixed(3)})`;
+        this.ctx.strokeStyle = `rgba(154, 166, 178, ${alpha.toFixed(3)})`;
         this.ctx.lineWidth = 1;
         this.ctx.beginPath();
         this.ctx.moveTo(a.x, a.y);
@@ -672,14 +715,14 @@ class DecisionFieldController {
       const isSecondary = this.secondaryIndices.has(i);
 
       let radius = 1.8;
-      let color = "rgba(10, 10, 10, 0.38)";
+      let color = "rgba(154, 166, 178, 0.42)";
 
       if (isDominant) {
         radius = 3.6;
         color = this.accent(1);
       } else if (isSecondary) {
         radius = 2.5;
-        color = "rgba(10, 10, 10, 0.78)";
+        color = "rgba(232, 237, 245, 0.84)";
       }
 
       this.ctx.fillStyle = color;

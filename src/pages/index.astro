@@ -1,19 +1,159 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
+import DecisionField from "../components/system/DecisionField.astro";
+import { home } from "../content/home";
+
+const { hero, change, rupture, whatAurora, binary, demoCta, capabilities } = home;
+const motorGroup = capabilities.groups.find((group) => group.key === "motor");
+
+if (!motorGroup) {
+  throw new Error("Home content missing MOTOR ESTRUCTURAL group.");
+}
+
+const impactByKey: Record<string, string> = {
+  core: whatAurora.blocks[0],
+  scenario: whatAurora.blocks[1],
+  risk: whatAurora.blocks[2],
+  signal: whatAurora.blocks[1],
+  ledger: whatAurora.blocks[0],
+  integration: whatAurora.blocks[2],
+};
+
+const advancedSystems = [
+  {
+    key: "counterfactual",
+    name: "Counterfactual Engine™",
+    technical: change.lead,
+    impact: binary.after,
+    algorithm: "scenario",
+  },
+  {
+    key: "regime-shift",
+    name: "Regime Shift Detector™",
+    technical: rupture.line,
+    impact: whatAurora.blocks[2],
+    algorithm: "risk",
+  },
+  {
+    key: "decision-entropy",
+    name: "Decision Entropy Map™",
+    technical: binary.title,
+    impact: whatAurora.blocks[1],
+    algorithm: "integration",
+  },
+] as const;
 ---
 
-<PageLayout title="Aurora">
+<PageLayout title="Aurora" page="home">
+  <DecisionField />
 
-  <main class="home">
+  <main class="home-main home-surface">
+    <article class="home-column home-stack">
+      <section class="home-block home-hero" data-field-stage="0.00">
+        <h1 class="hero-title">{hero.lineA}</h1>
+        <p class="hero-subtitle">{hero.lineB}</p>
+        <a href={hero.ctaHref} class="home-cta">{hero.cta}</a>
+      </section>
 
-    <section class="hero">
-      <h1>La era de la evidencia.</h1>
-      <p>
-        Infraestructura decisional para entornos donde el error es costoso.
-      </p>
-      <a href="/demo">Poner una decisión bajo evidencia</a>
-    </section>
+      <section class="home-block home-divider" data-field-stage="0.18">
+        <p class="micro-title">{change.title}</p>
+        <p class="declaration">{change.lead}</p>
+      </section>
 
+      <section class="home-block" data-field-stage="0.34">
+        <p class="micro-title">{rupture.title}</p>
+        <p class="declaration">{rupture.line}</p>
+      </section>
+
+      <section class="home-block" data-field-stage="0.52">
+        <p class="micro-title">{whatAurora.title}</p>
+        {whatAurora.blocks.map((line) => (
+          <p class="declaration">{line}</p>
+        ))}
+      </section>
+
+      <section class="home-block" data-field-stage="0.66">
+        <p class="line-strong">{binary.title}</p>
+        <p class="line-body">{binary.before}</p>
+        <p class="line-body">{binary.after}</p>
+      </section>
+
+      <section id="productos" class="home-block" data-field-stage="0.82">
+        <p class="micro-title">{capabilities.title}</p>
+        <p class="line-body">{demoCta.lead}</p>
+      </section>
+
+      <section class="home-block" data-field-stage="1.00">
+        <p class="micro-title">{demoCta.title}</p>
+        <p class="line-strong">{demoCta.lead}</p>
+        <a href={demoCta.ctaHref} class="home-cta">{demoCta.cta}</a>
+      </section>
+    </article>
   </main>
 
+  <aside id="products-menu" class="products-menu" data-products-menu hidden>
+    <div class="products-wrap">
+      <p class="products-group-title">MOTOR ESTRUCTURAL</p>
+      <ul class="products-list">
+        {motorGroup.items.map((item) => (
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product={item.key}
+              data-group="motor-structural"
+              data-field-algorithm={item.key}
+            >
+              <span class="product-name">{item.name}</span>
+              <p class="product-tech">{item.detail}</p>
+              <p class="product-impact">{impactByKey[item.key]}</p>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <p class="products-group-title advanced">ADVANCED SYSTEMS</p>
+      <ul class="products-list">
+        {advancedSystems.map((item) => (
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product={item.key}
+              data-group="advanced-systems"
+              data-field-algorithm={item.algorithm}
+            >
+              <span class="product-name">{item.name}</span>
+              <p class="product-tech">{item.technical}</p>
+              <p class="product-impact">{item.impact}</p>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </aside>
+
+  <script>
+    import { mountHomeField } from "../lib/homeField";
+
+    let cleanup;
+
+    const boot = () => {
+      cleanup = mountHomeField();
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot, { once: true });
+    } else {
+      boot();
+    }
+
+    window.addEventListener(
+      "pagehide",
+      () => {
+        if (typeof cleanup === "function") cleanup();
+      },
+      { once: true }
+    );
+  </script>
 </PageLayout>
