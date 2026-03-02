@@ -7,7 +7,18 @@ type Regime =
   | "stabilized";
 
 type FieldAlgorithm = "core" | "scenario" | "risk" | "signal" | "ledger" | "integration";
-type MenuProduct = "counterfactual" | "regime-shift" | "decision-entropy" | "";
+type ProductFocus =
+  | "core"
+  | "scenario"
+  | "risk"
+  | "signal"
+  | "ledger"
+  | "integration"
+  | "counterfactual"
+  | "regime-shift"
+  | "decision-entropy"
+  | "";
+type GroupFocus = "motor-structural" | "advanced-systems" | "";
 
 type NodePoint = {
   index: number;
@@ -46,7 +57,19 @@ const VALID_REGIMES = new Set<Regime>([
   "reordering",
   "stabilized",
 ]);
-const VALID_PRODUCTS = new Set<MenuProduct>(["counterfactual", "regime-shift", "decision-entropy", ""]);
+const VALID_PRODUCTS = new Set<ProductFocus>([
+  "core",
+  "scenario",
+  "risk",
+  "signal",
+  "ledger",
+  "integration",
+  "counterfactual",
+  "regime-shift",
+  "decision-entropy",
+  "",
+]);
+const VALID_GROUPS = new Set<GroupFocus>(["motor-structural", "advanced-systems", ""]);
 
 const REGIME_CONFIG: Record<Regime, RegimeConfig> = {
   unstable: {
@@ -109,8 +132,10 @@ class DecisionFieldController {
   private reducedMotion = false;
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
-  private menuProduct: MenuProduct = "";
+  private productFocus: ProductFocus = "";
+  private groupFocus: GroupFocus = "";
   private productBlend = 0;
+  private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   private readonly mutationObserver = new MutationObserver(() => this.syncState());
@@ -190,21 +215,31 @@ class DecisionFieldController {
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
       attributes: true,
-      attributeFilter: ["data-regime", "data-state", "data-algorithm", "data-binary-side", "data-scroll-velocity"],
+      attributeFilter: [
+        "data-regime",
+        "data-state",
+        "data-algorithm",
+        "data-binary-side",
+        "data-scroll-velocity",
+        "data-product-focus",
+        "data-group-focus",
+      ],
     });
   }
 
   private syncState(): void {
     const nextRegime = this.readRegime();
     const nextAlgorithm = this.readAlgorithm();
-    const nextProduct = this.readMenuProduct();
+    const nextProduct = this.readProductFocus();
+    const nextGroup = this.readGroupFocus();
 
     if (nextRegime !== this.regime) {
       this.regime = nextRegime;
     }
 
     this.algorithm = nextAlgorithm;
-    this.menuProduct = nextProduct;
+    this.productFocus = nextProduct;
+    this.groupFocus = nextGroup;
   }
 
   private readRegime(): Regime {
@@ -223,9 +258,17 @@ class DecisionFieldController {
     return "core";
   }
 
-  private readMenuProduct(): MenuProduct {
-    const raw = (document.body.dataset.menuProduct ?? "").trim() as MenuProduct;
+  private readProductFocus(): ProductFocus {
+    const raw = (document.body.dataset.productFocus ?? "").trim() as ProductFocus;
     if (VALID_PRODUCTS.has(raw)) {
+      return raw;
+    }
+    return "";
+  }
+
+  private readGroupFocus(): GroupFocus {
+    const raw = (document.body.dataset.groupFocus ?? "").trim() as GroupFocus;
+    if (VALID_GROUPS.has(raw)) {
       return raw;
     }
     return "";
@@ -301,8 +344,11 @@ class DecisionFieldController {
 
   private render(time: number): void {
     const cfg = REGIME_CONFIG[this.regime];
-    const productTarget = this.menuProduct ? 1 : 0;
-    this.productBlend += (productTarget - this.productBlend) * 0.18;
+    const delta = Math.max(0, Math.min(64, time - this.lastRenderAt));
+    this.lastRenderAt = time;
+    const easeOut = 1 - Math.exp(-delta / 180);
+    const productTarget = this.productFocus ? 1 : 0;
+    this.productBlend += (productTarget - this.productBlend) * easeOut;
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -324,7 +370,13 @@ class DecisionFieldController {
     }
 
     const velocityBias = Math.min(1, Number.parseFloat(document.body.dataset.scrollVelocity ?? "0") / 14);
-    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * 0.004;
+    const groupPull =
+      this.groupFocus === "advanced-systems"
+        ? 0.005
+        : this.groupFocus === "motor-structural"
+          ? 0.003
+          : 0;
+    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * (0.004 + groupPull);
 
     for (const node of this.nodes) {
       const target = this.nodeTarget(node, center, spreadRadius, introBlend);
@@ -425,6 +477,13 @@ class DecisionFieldController {
       targetY = this.height * (0.24 + (1 - t) * 0.52);
     }
 
+    const focusCenter = this.focusCenter();
+    if (focusCenter) {
+      const clusterBias = this.productBlend * (this.groupFocus === "advanced-systems" ? 0.28 : 0.2);
+      targetX = targetX * (1 - clusterBias) + focusCenter.x * clusterBias;
+      targetY = targetY * (1 - clusterBias) + focusCenter.y * clusterBias;
+    }
+
     if (introBlend > 0) {
       targetX = targetX * (1 - introBlend * 0.42) + this.width * 0.5 * (introBlend * 0.42);
       targetY = targetY * (1 - introBlend * 0.42) + this.height * 0.5 * (introBlend * 0.42);
@@ -434,7 +493,13 @@ class DecisionFieldController {
   }
 
   private updateTopology(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance - this.productBlend * 16;
+    const groupDensityShift =
+      this.groupFocus === "advanced-systems"
+        ? -14
+        : this.groupFocus === "motor-structural"
+          ? 8
+          : 0;
+    const threshold = cfg.lineDistance + groupDensityShift * this.productBlend - this.productBlend * 10;
     const thresholdSq = threshold * threshold;
 
     for (const node of this.nodes) {
@@ -484,13 +549,45 @@ class DecisionFieldController {
     // Índices elegidos para N=22 (actual). Si cambia N, clamp protege.
     const clamp = (i: number) => Math.max(0, Math.min(this.nodes.length - 1, i));
 
-    switch (this.menuProduct) {
+    switch (this.productFocus) {
+      case "core":
+        return clamp(10);
+      case "scenario":
       case "counterfactual":
         return clamp(4);
+      case "risk":
       case "regime-shift":
         return clamp(11);
+      case "signal":
+        return clamp(7);
+      case "ledger":
+        return clamp(15);
+      case "integration":
+      case "decision-entropy":
+        return clamp(17);
       default:
-        return clamp(17); // "entropy" y fallback
+        return clamp(10);
+    }
+  }
+
+  private focusCenter(): { x: number; y: number } | null {
+    switch (this.productFocus) {
+      case "core":
+        return { x: this.width * 0.5, y: this.height * 0.52 };
+      case "counterfactual":
+      case "scenario":
+        return { x: this.width * 0.32, y: this.height * 0.38 };
+      case "regime-shift":
+      case "risk":
+        return { x: this.width * 0.34, y: this.height * 0.58 };
+      case "signal":
+        return { x: this.width * 0.58, y: this.height * 0.34 };
+      case "ledger":
+        return { x: this.width * 0.68, y: this.height * 0.58 };
+      case "integration":
+      default:
+      case "decision-entropy":
+        return { x: this.width * 0.54, y: this.height * 0.62 };
     }
   }
 
