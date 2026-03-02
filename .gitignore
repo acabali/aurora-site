@@ -35,3 +35,4 @@ pnpm-debug.log*
 
 # local ops backup artifacts
 .ops_backups/
+.vercel
