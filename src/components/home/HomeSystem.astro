@@ -3,10 +3,7 @@ import Button from "../ui/Button.astro";
 import Container from "../ui/Container.astro";
 import { home } from "../../content/home";
 
-const { hero, change, rupture, whatAurora, capabilities, binary, demoCta } = home;
-const motorGroup = capabilities.groups.find((group) => group.key === "motor");
-const appGroup = capabilities.groups.find((group) => group.key === "applications");
-const appLine = (appGroup?.items ?? []).map((item) => item.name).join(" · ");
+const { hero, change, rupture, whatAurora, binary, demoCta } = home;
 ---
 
 <div class="home-system" data-home-system>
@@ -14,25 +11,14 @@ const appLine = (appGroup?.items ?? []).map((item) => item.name).join(" · ");
     <div class="flow-block hero-block" data-regime-anchor data-regime-target="unstable">
       <h1 class="hero-title">{hero.lineA}</h1>
       <p class="hero-subtitle">{hero.lineB}</p>
+      <Button href={hero.ctaHref} class="home-cta">{hero.cta}</Button>
     </div>
 
     <div class="flow-block model-block" data-regime-anchor data-regime-target="compressing">
-      <p class="micro-title">{motorGroup?.title}</p>
-      <div class="model-selector" role="toolbar" aria-label={motorGroup?.title}>
-        {motorGroup?.items.map((item) => (
-          <button
-            type="button"
-            class="model-trigger"
-            data-algorithm-button={item.key}
-            aria-pressed={item.key === "core" ? "true" : "false"}
-          >
-            {item.name}
-          </button>
-        ))}
-      </div>
-      <p class="micro-title apps-title">{appGroup?.title}</p>
-      <p class="apps-line">{appLine}</p>
-      <Button href={hero.ctaHref} class="home-cta">{hero.cta}</Button>
+      <p class="micro-title">ESTRUCTURA BAJO EVIDENCIA</p>
+      <p class="line-body">
+        Aurora opera como infraestructura de decisión: detecta tensiones, prioriza causalidad y sostiene trazabilidad.
+      </p>
     </div>
 
     <div class="flow-block" data-regime-anchor data-regime-target="collision">
@@ -67,34 +53,3 @@ const appLine = (appGroup?.items ?? []).map((item) => item.name).join(" · ");
   </Container>
 </div>
 
-<script>
-  const roots = document.querySelectorAll("[data-home-system]");
-
-  roots.forEach((root) => {
-    const modelButtons = root.querySelectorAll("[data-algorithm-button]");
-
-    const applyAlgorithm = (next) => {
-      if (!next) return;
-
-      modelButtons.forEach((button) => {
-        const current = button.getAttribute("data-algorithm-button");
-        button.setAttribute("aria-pressed", current === next ? "true" : "false");
-      });
-
-      document.body.dataset.algorithm = next;
-      document.dispatchEvent(new CustomEvent("aurora:algorithm-change", { detail: { algorithm: next } }));
-    };
-
-    modelButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        applyAlgorithm(button.getAttribute("data-algorithm-button"));
-      });
-
-      button.addEventListener("focus", () => {
-        applyAlgorithm(button.getAttribute("data-algorithm-button"));
-      });
-    });
-
-    applyAlgorithm("core");
-  });
-</script>

@@ -3,13 +3,13 @@
   --font-body: "Avenir Next", "Inter", "Segoe UI", sans-serif;
   --font-tech: "Avenir Next", "Inter", "Segoe UI", sans-serif;
 
-  --fs-h1: clamp(44px, 3.2vw, 48px);
+  --fs-h1: clamp(34px, 4.6vw, 42px);
   --fs-h2: clamp(30px, 2.7vw, 36px);
   --fs-body: 16px;
 
-  --bg-base: #f6f7f8;
+  --bg-base: #ffffff;
   --text-main: #0a0a0a;
-  --line-soft: #dcdcdc;
+  --line-soft: #dadada;
   --cta-main: #000000;
 
   --container: 920px;

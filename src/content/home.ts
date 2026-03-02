@@ -1,9 +1,9 @@
 export const home = {
   hero: {
-    lineA: "La era de la evidencia comenzó.",
-    lineB: "Antes decidías con experiencia. Hoy eso ya no alcanza.",
-    cta: "Poner una decisión bajo evidencia",
-    ctaHref: "/demo",
+    lineA: "Antes hacían falta equipos, consultoras y meses para entender si crecer, cuándo y cómo. Hoy no.",
+    lineB: "Aurora concentra ese entendimiento en un solo lugar, antes de que pongas un dólar en juego.",
+    cta: "Ver cómo funciona",
+    ctaHref: "/#productos",
   },
   change: {
     title: "QUÉ ESTÁ CAMBIANDO",
@@ -28,7 +28,7 @@ export const home = {
         key: "motor",
         title: "MOTOR ESTRUCTURAL",
         items: [
-          { key: "core", name: "Core", detail: "Te ordena el problema y te muestra qué manda." },
+          { key: "core", name: "Core", detail: "Detecta qué variable cambia el resultado." },
           {
             key: "scenario",
             name: "Scenario",
@@ -97,7 +97,7 @@ export const home = {
   demoCta: {
     title: "Estándar aplicado",
     lead: "Poner una decisión bajo evidencia.",
-    cta: "Activar evaluación",
+    cta: "Poner una decisión bajo evidencia",
     ctaHref: "/demo",
     seal: "",
   },

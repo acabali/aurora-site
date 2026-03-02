@@ -69,7 +69,7 @@ export const demo = {
     corporate: "Usá correo corporativo para habilitar devolución.",
     endpointMissing: "Endpoint no configurado",
   },
-  analyzing: "Calibrando interacción...",
+  analyzing: "Procesando interacción...",
   continue: "Continuar",
   executed: {
     title: "Evaluación ya registrada.",
