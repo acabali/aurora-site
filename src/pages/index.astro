@@ -9,7 +9,6 @@ import { mountDecisionField } from "../components/system/DecisionField";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Aurora — Decision Infrastructure</title>
-    <meta name="description" content="Aurora expone el efecto real de una decisión antes de ejecutar." />
   </head>
 
   <body class="vomega-body">
@@ -37,17 +36,91 @@ import { mountDecisionField } from "../components/system/DecisionField";
         const unmount = mountDecisionField(root);
         window.addEventListener("beforeunload", () => unmount?.(), { once: true });
       }
+
+      const body = document.body;
+
+      let mx = 0, my = 0, sp = 0;
+
+      window.addEventListener("mousemove", (e) => {
+        mx = (e.clientX / window.innerWidth - 0.5) * 2;
+        my = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+
+      window.addEventListener("scroll", () => {
+        const max = document.body.scrollHeight - window.innerHeight;
+        sp = max > 0 ? window.scrollY / max : 0;
+      });
+
+      function loop() {
+        body.style.setProperty("--mx", mx.toFixed(4));
+        body.style.setProperty("--my", my.toFixed(4));
+        body.style.setProperty("--sp", sp.toFixed(4));
+        requestAnimationFrame(loop);
+      }
+
+      loop();
     </script>
 
     <style>
-      .vomega-body { margin: 0; background: #000; color: #fff; }
-      .vomega-surface { position: relative; min-height: 100vh; overflow: hidden; }
-      .decision-field-root { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-      .vomega-hero { position: relative; z-index: 10; max-width: 980px; padding: 20vh 8vw; }
-      .vomega-h1 { font-size: clamp(2.8rem, 5.2vw, 5rem); line-height: 1.02; letter-spacing: -0.03em; margin: 0; }
-      .vomega-sub { margin-top: 1.4rem; font-size: 1.15rem; opacity: 0.72; max-width: 52ch; }
-      .vomega-cta { display: inline-block; margin-top: 2.4rem; padding: 0.95rem 1.6rem; border: 1px solid #4F3C8C; color: #fff; text-decoration: none; }
-      .vomega-cta:hover { background: #4F3C8C; }
+      .vomega-body {
+        margin: 0;
+        background: #000;
+        color: #fff;
+        --mx: 0;
+        --my: 0;
+        --sp: 0;
+      }
+
+      .vomega-surface {
+        position: relative;
+        min-height: 150vh;
+        overflow: hidden;
+      }
+
+      .decision-field-root {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        transform: translate3d(calc(var(--mx) * 8px), calc(var(--my) * 8px), 0);
+        transition: transform 0.1s linear;
+      }
+
+      .vomega-hero {
+        position: relative;
+        z-index: 10;
+        max-width: 980px;
+        padding: 25vh 8vw;
+        transform: translateY(calc(var(--sp) * -40px));
+      }
+
+      .vomega-h1 {
+        font-size: clamp(3rem, 6vw, 5.5rem);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+
+      .vomega-sub {
+        margin-top: 1.4rem;
+        font-size: 1.2rem;
+        opacity: 0.75;
+        max-width: 52ch;
+      }
+
+      .vomega-cta {
+        display: inline-block;
+        margin-top: 2.5rem;
+        padding: 1rem 1.8rem;
+        border: 1px solid #4F3C8C;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.25s ease;
+      }
+
+      .vomega-cta:hover {
+        background: #4F3C8C;
+      }
     </style>
   </body>
 </html>
