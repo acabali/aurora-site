@@ -127,56 +127,117 @@ const { title = "Aurora" } = Astro.props;
 
 
 
-<script is:inline>
-(() => {
-  const MAX_TRIES = 120; // ~2s en 60fps
-  let tries = 0;
+<script is:inline type="module">
+  (() => {
+    if (window.__auroraNavInit) return;
+    window.__auroraNavInit = true;
 
-  const init = () => {
-    const trigger = document.getElementById('site-products-trigger');
-    const menu = document.getElementById('site-products-menu');
-    if (!trigger || !menu) {
-      tries++;
-      if (tries < MAX_TRIES) requestAnimationFrame(init);
-      return;
+    const PRODUCT_ALGORITHM = {
+      core: "core",
+      scenario: "scenario",
+      risk: "risk",
+      signal: "signal",
+      ledger: "ledger",
+      integration: "integration",
+      counterfactual: "scenario",
+      "regime-shift": "risk",
+      "decision-entropy": "integration",
+    };
+
+    const trigger = document.getElementById("site-products-trigger");
+    const menu = document.getElementById("site-products-menu");
+    if (!trigger || !menu) return;
+
+    const items = Array.from(menu.querySelectorAll("[data-product]"));
+    let isOpen = false;
+
+    const setAlgorithm = (productKey) => {
+      document.body.dataset.algorithm = PRODUCT_ALGORITHM[productKey] || "core";
+    };
+
+    const setFocus = (productKey, groupKey) => {
+      document.body.dataset.productFocus = productKey || "";
+      document.body.dataset.groupFocus = groupKey || "";
+    };
+
+    const setOpenState = (nextOpen) => {
+      isOpen = nextOpen;
+      trigger.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      menu.hidden = !nextOpen;
+      menu.style.display = nextOpen ? "" : "none";
+      if (!nextOpen) {
+        items.forEach((item) => item.removeAttribute("data-active"));
+        setAlgorithm("");
+        setFocus("", "");
+      }
+    };
+
+    const activateItem = (item) => {
+      const key = item.getAttribute("data-product");
+      const group = item.getAttribute("data-group");
+      items.forEach((node) => node.removeAttribute("data-active"));
+      item.setAttribute("data-active", "true");
+      setAlgorithm(key);
+      setFocus(key, group);
+    };
+
+    trigger.setAttribute("aria-haspopup", "menu");
+    if (!trigger.hasAttribute("aria-controls")) {
+      trigger.setAttribute("aria-controls", "site-products-menu");
     }
+    setOpenState(false);
 
-    // evita doble init
-    if (trigger.dataset.bound === "1") return;
-    trigger.dataset.bound = "1";
-
-    const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-    const open = () => { trigger.setAttribute('aria-expanded','true'); menu.hidden = false; };
-    const close = () => { trigger.setAttribute('aria-expanded','false'); menu.hidden = true; };
-
-    // estado base
-    trigger.setAttribute('aria-haspopup','menu');
-    if (!trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded','false');
-    menu.hidden = trigger.getAttribute('aria-expanded') !== 'true';
-
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      isOpen() ? close() : open();
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      setOpenState(!isOpen);
+      if (isOpen && items.length > 0) {
+        activateItem(items[0]);
+      }
     });
 
-    document.addEventListener('click', (e) => {
-      if (!isOpen()) return;
-          if (trigger.contains(e.target) || menu.contains(e.target)) return;
-      close();
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        setOpenState(!isOpen);
+        return;
+      }
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (!isOpen) setOpenState(true);
+        if (items.length > 0) items[0].focus();
+      }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && isOpen()) close();
+    document.addEventListener("click", (event) => {
+      if (!isOpen) return;
+      const target = event.target;
+      if (trigger.contains(target) || menu.contains(target)) return;
+      setOpenState(false);
     });
-  };
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(init));
-  } else {
-    requestAnimationFrame(init);
-  }
-})();
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !isOpen) return;
+      setOpenState(false);
+      trigger.focus();
+    });
+
+    menu.addEventListener("focusout", () => {
+      if (!isOpen) return;
+      requestAnimationFrame(() => {
+        const active = document.activeElement;
+        if (!menu.contains(active) && active !== trigger) {
+          setOpenState(false);
+        }
+      });
+    });
+
+    items.forEach((item) => {
+      item.addEventListener("mouseenter", () => activateItem(item));
+      item.addEventListener("focus", () => activateItem(item));
+      item.addEventListener("click", () => activateItem(item));
+    });
+  })();
 </script>
 
 </body>

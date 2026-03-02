@@ -3,6 +3,8 @@ set -euo pipefail
 
 FILE="ops/prohibited_strings.txt"
 [[ -f "$FILE" ]] || { echo "❌ Missing $FILE"; exit 1; }
+[[ -d "src" ]] || { echo "❌ Missing src directory"; exit 1; }
+[[ -d "public" ]] || { echo "❌ Missing public directory"; exit 1; }
 
 FAIL=0
 
@@ -10,7 +12,8 @@ while IFS= read -r s; do
   [[ -z "${s// }" ]] && continue
 
   if rg -n -F "$s" src public; then
-    echo "❌ PROHIBITED STRING DETECTED IN EXECUTABLE CODE: $s"
+    echo "❌ PROHIBITED STRING DETECTED: \"$s\""
+    echo "   scope: src public"
     FAIL=1
   fi
 done < "$FILE"
