@@ -122,54 +122,60 @@ const { title = "Aurora" } = Astro.props;
 
     <footer id="contacto" class="site-footer">Aurora</footer>
 
-    <script is:inline>
-document.addEventListener('DOMContentLoaded', () => {
-  const trigger = document.getElementById('site-products-trigger');
-  const menu = document.getElementById('site-products-menu');
-  if (!trigger || !menu) return;
-
-  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-  const open = () => { trigger.setAttribute('aria-expanded','true'); menu.hidden = false; };
-  const close = () => { trigger.setAttribute('aria-expanded','false'); menu.hidden = true; };
-  const toggle = () => (isOpen() ? close() : open());
-
-  trigger.setAttribute('aria-haspopup','menu');
-  if (!trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded','false');
-  menu.hidden = trigger.getAttribute('aria-expanded') !== 'true';
-
-  trigger.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    toggle();
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!isOpen()) return;
-    if (trigger.contains(e.target) || menu.contains(e.target)) return;
-    close();
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && isOpen()) close();
-  });
-});
-</script>
+    
   
+
+
+
 <script is:inline>
 (() => {
-  const trigger = document.getElementById('site-products-trigger');
-  const menu = document.getElementById('site-products-menu');
-  if (!trigger || !menu) return;
+  const MAX_TRIES = 120; // ~2s en 60fps
+  let tries = 0;
 
-  const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
-  const open = () => { trigger.setAttribute('aria-expanded','true'); menu.hidden = false; };
-  const close = () => { trigger.setAttribute('aria-expanded','false'); menu.hidden = true; };
-  const toggle = () => (isOpen() ? close() : open());
+  const init = () => {
+    const trigger = document.getElementById('site-products-trigger');
+    const menu = document.getElementById('site-products-menu');
+    if (!trigger || !menu) {
+      tries++;
+      if (tries < MAX_TRIES) requestAnimationFrame(init);
+      return;
+    }
 
-  // estado inicial coherente
-  trigger.setAttribute('aria-haspopup','menu');
-  if (!trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded','false');
-  if (trigger.getAttribute('aria-expanded') !== 'true') menu.hidden = true
+    // evita doble init
+    if (trigger.dataset.bound === "1") return;
+    trigger.dataset.bound = "1";
+
+    const isOpen = () => trigger.getAttribute('aria-expanded') === 'true';
+    const open = () => { trigger.setAttribute('aria-expanded','true'); menu.hidden = false; };
+    const close = () => { trigger.setAttribute('aria-expanded','false'); menu.hidden = true; };
+
+    // estado base
+    trigger.setAttribute('aria-haspopup','menu');
+    if (!trigger.hasAttribute('aria-expanded')) trigger.setAttribute('aria-expanded','false');
+    menu.hidden = trigger.getAttribute('aria-expanded') !== 'true';
+
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      isOpen() ? close() : open();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!isOpen()) return;
+      if (trigger.contains(e.target) or menu.contains(e.target)) return;
+      close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen()) close();
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(init));
+  } else {
+    requestAnimationFrame(init);
+  }
 })();
 </script>
 
