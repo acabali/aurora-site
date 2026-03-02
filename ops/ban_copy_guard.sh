@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
-BAN='Antes hacían falta equipos, consultoras y meses'
-if rg -n --hidden --no-ignore-vcs "$BAN" .; then
-  echo "❌ COPY BANNED DETECTED: $BAN"
-  exit 1
-fi
-echo "✅ OK: banned copy not found"
+FILE="ops/prohibited_strings.txt"
+[[ -f "$FILE" ]] || { echo "❌ Missing $FILE"; exit 1; }
+FAIL=0
+while IFS= read -r s; do
+  [[ -z "${s// }" ]] && continue
+  if rg -n --hidden --no-ignore-vcs -F "$s" .; then
+    echo "❌ PROHIBITED STRING DETECTED: $s"
+    FAIL=1
+  fi
+done < "$FILE"
+[[ "$FAIL" -eq 0 ]] && echo "✅ OK: no prohibited strings"
+exit "$FAIL"
