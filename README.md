@@ -41,3 +41,10 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+# Production Policy
+
+- Production = main branch only
+- No direct CLI prod deploys
+- Use: ./ops/vercel_prod_guard.sh
+- Validate after deploy: ./ops/validate_prod_alignment.sh
