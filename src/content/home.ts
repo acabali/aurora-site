@@ -1,6 +1,6 @@
 export const home = {
   hero: {
-    lineA: "Antes hacían falta equipos, consultoras y meses para entender si crecer, cuándo y cómo. Hoy no.",
+    lineA: "La era de la evidencia comenzó.",
     lineB: "Aurora concentra ese entendimiento en un solo lugar, antes de que pongas un dólar en juego.",
     cta: "Ver cómo funciona",
     ctaHref: "/#productos",
