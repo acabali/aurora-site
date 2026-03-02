@@ -162,7 +162,7 @@ const { title = "Aurora" } = Astro.props;
 
     document.addEventListener('click', (e) => {
       if (!isOpen()) return;
-      if (trigger.contains(e.target) or menu.contains(e.target)) return;
+          if (trigger.contains(e.target) || menu.contains(e.target)) return;
       close();
     });
 
