@@ -6,12 +6,14 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "qa:fullscreen": "bash ops/qa_fullscreen_overlay.sh"
   },
   "dependencies": {
     "@astrojs/vercel": "^9.0.4",
     "astro": "^5.17.1",
     "googleapis": "^171.4.0",
-    "gsap": "^3.12.5"
+    "gsap": "^3.12.5",
+    "playwright": "^1.58.2"
   }
 }
