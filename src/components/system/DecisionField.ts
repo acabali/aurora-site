@@ -136,6 +136,11 @@ class DecisionFieldController {
   private groupFocus: GroupFocus = "";
   private productBlend = 0;
   private fieldProgress = 0;
+  private smoothedProgress = 0;
+  private pointerTargetX = 0;
+  private pointerTargetY = 0;
+  private pointerX = 0;
+  private pointerY = 0;
   private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -159,11 +164,39 @@ class DecisionFieldController {
   private readonly onReduceMotionChange = () => {
     this.reducedMotion = this.mediaQuery.matches;
     if (this.reducedMotion) {
+      this.pointerTargetX = 0;
+      this.pointerTargetY = 0;
+      this.pointerX = 0;
+      this.pointerY = 0;
       this.stop();
       this.render(performance.now());
       return;
     }
     this.start();
+  };
+
+  private readonly onPointerMove = (event: PointerEvent) => {
+    if (this.reducedMotion || this.width <= 0 || this.height <= 0) {
+      return;
+    }
+
+    const rawX = (event.clientX / this.width - 0.5) * 2;
+    const rawY = (event.clientY / this.height - 0.5) * 2;
+    const deadzone = 0.18;
+
+    const map = (value: number): number => {
+      const mag = Math.abs(value);
+      if (mag < deadzone) return 0;
+      return ((mag - deadzone) / (1 - deadzone)) * Math.sign(value);
+    };
+
+    this.pointerTargetX = Math.max(-1, Math.min(1, map(rawX)));
+    this.pointerTargetY = Math.max(-1, Math.min(1, map(rawY)));
+  };
+
+  private readonly onPointerLeave = () => {
+    this.pointerTargetX = 0;
+    this.pointerTargetY = 0;
   };
 
   private readonly frame = (time: number) => {
@@ -187,6 +220,7 @@ class DecisionFieldController {
 
     this.reducedMotion = this.mediaQuery.matches;
     this.syncState();
+    this.smoothedProgress = this.fieldProgress;
     this.syncSize();
     this.ensureNodeCount();
     this.bind();
@@ -201,6 +235,8 @@ class DecisionFieldController {
   destroy(): void {
     this.stop();
     window.removeEventListener("resize", this.onResize);
+    window.removeEventListener("pointermove", this.onPointerMove);
+    window.removeEventListener("pointerleave", this.onPointerLeave);
     document.removeEventListener("visibilitychange", this.onVisibility);
     this.mediaQuery.removeEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.disconnect();
@@ -212,6 +248,8 @@ class DecisionFieldController {
 
   private bind(): void {
     window.addEventListener("resize", this.onResize);
+    window.addEventListener("pointermove", this.onPointerMove, { passive: true });
+    window.addEventListener("pointerleave", this.onPointerLeave, { passive: true });
     document.addEventListener("visibilitychange", this.onVisibility);
     this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
@@ -372,8 +410,8 @@ class DecisionFieldController {
     }
   }
 
-  private resolveConfig(): RegimeConfig {
-    const p = this.fieldProgress;
+  private resolveConfig(progress: number): RegimeConfig {
+    const p = progress;
     const start = REGIME_CONFIG.unstable;
     const end = REGIME_CONFIG.stabilized;
     return {
@@ -386,16 +424,30 @@ class DecisionFieldController {
   }
 
   private render(time: number): void {
-    const cfg = this.resolveConfig();
     const delta = Math.max(0, Math.min(64, time - this.lastRenderAt));
     this.lastRenderAt = time;
+
     const easeOut = 1 - Math.exp(-delta / 180);
+    const progressEase = 1 - Math.exp(-delta / 220);
+
     const productTarget = this.productFocus ? 1 : 0;
     this.productBlend += (productTarget - this.productBlend) * easeOut;
 
+    if (this.reducedMotion) {
+      this.smoothedProgress = this.fieldProgress;
+      this.pointerX = 0;
+      this.pointerY = 0;
+    } else {
+      this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * progressEase;
+      this.pointerX += (this.pointerTargetX - this.pointerX) * progressEase;
+      this.pointerY += (this.pointerTargetY - this.pointerY) * progressEase;
+    }
+
+    const cfg = this.resolveConfig(this.smoothedProgress);
+
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    this.updateNodes(time, cfg, this.fieldProgress);
+    this.updateNodes(time, cfg, this.smoothedProgress);
     this.updateTopology(cfg);
     this.drawConnections(cfg);
     this.drawNodes();
@@ -453,9 +505,10 @@ class DecisionFieldController {
     const endX = this.width * 0.5;
     const startY = this.height * 0.48;
     const endY = this.height * 0.5;
+    const pointerScale = this.reducedMotion ? 0 : Math.min(this.width, this.height) * 0.008;
     return {
-      x: startX + (endX - startX) * p,
-      y: startY + (endY - startY) * p,
+      x: startX + (endX - startX) * p + this.pointerX * pointerScale,
+      y: startY + (endY - startY) * p + this.pointerY * pointerScale * 0.8,
     };
   }
 
