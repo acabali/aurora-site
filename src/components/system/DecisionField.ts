@@ -18,7 +18,7 @@ type ProductFocus =
   | "regime"
   | "entropy"
   | "";
-type GroupFocus = "motor-structural" | "advanced-systems" | "";
+type GroupFocus = "system-modules" | "advanced-capabilities" | "";
 
 type NodePoint = {
   index: number;
@@ -74,7 +74,7 @@ const VALID_PRODUCTS = new Set<ProductFocus>([
   "",
 ]);
 
-const VALID_GROUPS = new Set<GroupFocus>(["motor-structural", "advanced-systems", ""]);
+const VALID_GROUPS = new Set<GroupFocus>(["system-modules", "advanced-capabilities", ""]);
 
 class DecisionFieldController {
   private readonly root: HTMLElement;
@@ -85,7 +85,6 @@ class DecisionFieldController {
   private width = 0;
   private height = 0;
   private dpr = 1;
-  private reducedMotion = false;
   private mobileMuted = false;
 
   private regime: Regime = "unstable";
@@ -102,16 +101,15 @@ class DecisionFieldController {
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
 
-  private fieldLineLatent = "rgba(230, 235, 242, 0.028)";
-  private fieldLineActive = "rgba(230, 235, 242, 0.12)";
-  private fieldDominant = "rgba(230, 235, 242, 0.24)";
-  private fieldNodeLatent = "rgba(230, 235, 242, 0.15)";
-  private fieldNodeActive = "rgba(230, 235, 242, 0.34)";
-  private fieldNodeDominant = "rgba(230, 235, 242, 0.82)";
+  private fieldLineLatent = "rgba(230, 235, 242, 0.023)";
+  private fieldLineActive = "rgba(230, 235, 242, 0.11)";
+  private fieldDominant = "rgba(109, 90, 178, 0.52)";
+  private fieldNodeLatent = "rgba(230, 235, 242, 0.14)";
+  private fieldNodeActive = "rgba(230, 235, 242, 0.35)";
+  private fieldNodeDominant = "rgba(133, 114, 212, 0.88)";
 
   private raf = 0;
 
-  private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   private readonly mutationObserver = new MutationObserver(() => {
     this.syncState();
     this.queueRender();
@@ -129,11 +127,6 @@ class DecisionFieldController {
     this.queueRender();
   };
 
-  private readonly onReduceMotionChange = () => {
-    this.reducedMotion = this.mediaQuery.matches;
-    this.queueRender();
-  };
-
   constructor(root: HTMLElement) {
     this.root = root;
 
@@ -148,7 +141,6 @@ class DecisionFieldController {
     this.canvas.setAttribute("aria-hidden", "true");
     this.root.appendChild(this.canvas);
 
-    this.reducedMotion = this.mediaQuery.matches;
     this.syncState();
     this.syncSize();
     this.ensureNodeCount();
@@ -165,7 +157,6 @@ class DecisionFieldController {
 
     window.removeEventListener("resize", this.onResize);
     document.removeEventListener("visibilitychange", this.onVisibility);
-    this.mediaQuery.removeEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.disconnect();
 
     if (this.canvas.parentElement === this.root) {
@@ -176,13 +167,13 @@ class DecisionFieldController {
   private bind(): void {
     window.addEventListener("resize", this.onResize);
     document.addEventListener("visibilitychange", this.onVisibility);
-    this.mediaQuery.addEventListener("change", this.onReduceMotionChange);
     this.mutationObserver.observe(document.body, {
       attributes: true,
       attributeFilter: [
         "data-regime",
         "data-algorithm",
         "data-field-progress",
+        "data-field-product",
         "data-product-focus",
         "data-group-focus",
         "data-field-dominant-weight",
@@ -239,7 +230,7 @@ class DecisionFieldController {
   }
 
   private readProductFocus(): ProductFocus {
-    const raw = (document.body.dataset.productFocus ?? "").trim() as ProductFocus;
+    const raw = (document.body.dataset.fieldProduct ?? document.body.dataset.productFocus ?? "").trim() as ProductFocus;
     if (VALID_PRODUCTS.has(raw)) return raw;
     return "";
   }
@@ -288,7 +279,7 @@ class DecisionFieldController {
 
   private targetNodeCount(): number {
     if (this.mobileMuted) return 0;
-    if (this.width <= 900) return 9;
+    if (this.width <= 900) return 8;
     if (this.width <= 1200) return 12;
     return 16;
   }
@@ -348,7 +339,7 @@ class DecisionFieldController {
       spread: 0.56 - p * 0.33,
       lineDistance: 212 - p * 62,
       secondaryCount: p > 0.72 ? 3 : 4,
-      latentLineAlpha: 0.053 - p * 0.02,
+      latentLineAlpha: 0.05 - p * 0.02,
     };
   }
 
@@ -405,7 +396,7 @@ class DecisionFieldController {
   private resolvePoints(cfg: RegimeConfig): PositionedNode[] {
     const center = this.resolveCenter(this.fieldProgress);
     const focus = this.focusCenter();
-    const focusBlend = this.productFocus ? (this.groupFocus === "advanced-systems" ? 0.28 : 0.22) : 0;
+    const focusBlend = this.productFocus ? (this.groupFocus === "advanced-capabilities" ? 0.28 : 0.22) : 0;
     const spreadRadius = Math.min(this.width, this.height) * cfg.spread;
 
     return this.nodes.map((node) => {
@@ -493,7 +484,7 @@ class DecisionFieldController {
   }
 
   private updateTopology(points: PositionedNode[], cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance + (this.groupFocus === "advanced-systems" ? -10 : 0);
+    const threshold = cfg.lineDistance + (this.groupFocus === "advanced-capabilities" ? -10 : 0);
     const thresholdSq = threshold * threshold;
 
     for (const node of this.nodes) {
@@ -608,7 +599,7 @@ class DecisionFieldController {
       let color = this.fieldNodeLatent;
 
       if (isDominant) {
-        radius = 3.0;
+        radius = 3;
         alpha = clamp(0.34 * this.dominantWeight * focusFactor * restFactor, 0.06, 1);
         color = this.fieldNodeDominant;
       } else if (isSecondary) {

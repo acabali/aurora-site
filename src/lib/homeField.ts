@@ -4,6 +4,8 @@ type StagePoint = {
   block: string;
 };
 
+type GroupFocus = "system-modules" | "advanced-capabilities" | "";
+
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 const FIELD_TRANSITION_MS = 160;
 const IDLE_MS = 1400;
@@ -86,7 +88,7 @@ export function mountHomeField(): () => void {
   const scheduleIdle = (): void => {
     clearIdleTimer();
     idleTimer = window.setTimeout(() => {
-      const keepActive = Boolean(body.dataset.productFocus) || isMenuOpen;
+      const keepActive = Boolean(body.dataset.fieldProduct) || isMenuOpen;
       body.dataset.fieldActive = keepActive ? "true" : "false";
     }, IDLE_MS);
   };
@@ -103,6 +105,7 @@ export function mountHomeField(): () => void {
 
   const clearProductFocus = (): void => {
     delete body.dataset.productFocus;
+    delete body.dataset.fieldProduct;
     delete body.dataset.groupFocus;
     body.dataset.algorithm = "core";
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
@@ -136,10 +139,13 @@ export function mountHomeField(): () => void {
 
   const setProductFocus = (node: HTMLElement): void => {
     const product = (node.dataset.product ?? "").trim();
-    const group = (node.dataset.group ?? "").trim();
+    const rawGroup = (node.dataset.group ?? "").trim() as GroupFocus;
+    const group: GroupFocus =
+      rawGroup === "system-modules" || rawGroup === "advanced-capabilities" ? rawGroup : "";
     const algorithm = (node.dataset.fieldAlgorithm ?? "core").trim();
 
     body.dataset.productFocus = product;
+    body.dataset.fieldProduct = product;
     body.dataset.groupFocus = group;
     body.dataset.algorithm = algorithm;
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
