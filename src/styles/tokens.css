@@ -3,7 +3,7 @@
   --font-body: "Avenir Next", "Neue Haas Grotesk Text", "Helvetica Neue", sans-serif;
   --font-tech: "IBM Plex Sans", "Avenir Next", "Helvetica Neue", sans-serif;
 
-  --fs-h1: clamp(2.2rem, 6.4vw, 4.25rem);
+  --fs-h1: clamp(2.24rem, 6.4vw, 4.28rem);
   --fs-body: 16px;
 
   --bg-base: #06080d;
@@ -32,17 +32,19 @@
   --space-24: 96px;
   --space-30: 120px;
 
-  --duration-fast: 150ms;
+  --duration-fast: 140ms;
   --duration-mid: 220ms;
 
-  --field-rest-alpha: 0.13;
-  --field-active-alpha: 0.19;
-  --field-focus-alpha: 0.23;
+  --field-rest-alpha: 0.11;
+  --field-active-alpha: 0.2;
+  --field-focus-alpha: 0.24;
 
-  --field-line-latent: rgba(230, 235, 242, 0.028);
-  --field-line-active: rgba(230, 235, 242, 0.12);
-  --field-dominant: rgba(230, 235, 242, 0.24);
-  --field-node-latent: rgba(230, 235, 242, 0.15);
-  --field-node-active: rgba(230, 235, 242, 0.34);
-  --field-node-dominant: rgba(230, 235, 242, 0.82);
+  --field-line-latent: rgba(230, 235, 242, 0.023);
+  --field-line-active: rgba(230, 235, 242, 0.11);
+  --field-dominant: rgba(109, 90, 178, 0.52);
+  --field-node-latent: rgba(230, 235, 242, 0.14);
+  --field-node-active: rgba(230, 235, 242, 0.35);
+  --field-node-dominant: rgba(133, 114, 212, 0.88);
+
+  --hero-shield: color-mix(in oklab, var(--bg-base) 96%, transparent);
 }

@@ -16,127 +16,137 @@ const { hero, blocks } = home_narrativa_ajustada;
     aria-label="Selector de algoritmos"
     hidden
   >
-    <section id="productos" class="products-wrap" aria-labelledby="products-group">
-      <p id="products-group" class="products-group-title">SISTEMA DE PRODUCTOS</p>
-      <ul class="products-list">
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="core"
-            data-group="motor-structural"
-            data-field-algorithm="core"
-          >
-            <span class="product-name">Core</span>
-            <p class="product-tech">Modelo base de dependencias para una decisión estructural.</p>
-            <p class="product-impact">Define la variable dominante antes de asignar capital.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="scenario"
-            data-group="motor-structural"
-            data-field-algorithm="scenario"
-          >
-            <span class="product-name">Scenario</span>
-            <p class="product-tech">Simula bifurcaciones con supuestos trazables y comparables.</p>
-            <p class="product-impact">Mide qué escenario preserva margen y velocidad de ejecución.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="risk"
-            data-group="motor-structural"
-            data-field-algorithm="risk"
-          >
-            <span class="product-name">Risk</span>
-            <p class="product-tech">Calcula concentración de fragilidad por nodo y por secuencia.</p>
-            <p class="product-impact">Reduce exposición antes de que el desvío sea irreversible.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="signal"
-            data-group="motor-structural"
-            data-field-algorithm="signal"
-          >
-            <span class="product-name">Signal</span>
-            <p class="product-tech">Filtra ruido operativo y prioriza señales con causalidad.</p>
-            <p class="product-impact">Acelera decisiones con foco en impacto verificable.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="ledger"
-            data-group="motor-structural"
-            data-field-algorithm="ledger"
-          >
-            <span class="product-name">Ledger</span>
-            <p class="product-tech">Registra hipótesis, umbrales y resultados en cadena auditable.</p>
-            <p class="product-impact">Sostiene accountability técnico entre equipos y ciclos.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="integration"
-            data-group="motor-structural"
-            data-field-algorithm="integration"
-          >
-            <span class="product-name">Integration</span>
-            <p class="product-tech">Sincroniza modelos, áreas y tiempos en un mismo marco.</p>
-            <p class="product-impact">Evita contradicciones y alinea ejecución con evidencia.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="counterfactual"
-            data-group="advanced-systems"
-            data-field-algorithm="scenario"
-          >
-            <span class="product-name">Counterfactual Engine™</span>
-            <p class="product-tech">Genera mundos alternos y estima desvíos contra la base.</p>
-            <p class="product-impact">Anticipa costo de oportunidad antes de ejecutar.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="regime"
-            data-group="advanced-systems"
-            data-field-algorithm="risk"
-          >
-            <span class="product-name">Regime Shift Detector™</span>
-            <p class="product-tech">Detecta cambios de régimen con rupturas de distribución.</p>
-            <p class="product-impact">Reconfigura estrategia cuando cambian las reglas del entorno.</p>
-          </button>
-        </li>
-        <li class="products-item">
-          <button
-            type="button"
-            class="product-trigger"
-            data-product="entropy"
-            data-group="advanced-systems"
-            data-field-algorithm="integration"
-          >
-            <span class="product-name">Decision Entropy Map™</span>
-            <p class="product-tech">Mapea entropía decisional y pérdida de información útil.</p>
-            <p class="product-impact">Recupera claridad donde la complejidad bloquea acción.</p>
-          </button>
-        </li>
-      </ul>
+    <section id="productos" class="products-wrap" aria-labelledby="products-heading-system">
+      <section class="products-group" aria-labelledby="products-heading-system">
+        <p id="products-heading-system" class="products-group-title">SYSTEM MODULES</p>
+        <p class="products-group-note">Módulos base para decisiones trazables en operación real.</p>
+        <ul class="products-list">
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="core"
+              data-group="system-modules"
+              data-field-algorithm="core"
+            >
+              <span class="product-name">Core</span>
+              <p class="product-tech">Modelo base de dependencias para una decisión estructural.</p>
+              <p class="product-impact">Define la variable dominante antes de asignar capital.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="scenario"
+              data-group="system-modules"
+              data-field-algorithm="scenario"
+            >
+              <span class="product-name">Scenario</span>
+              <p class="product-tech">Simula bifurcaciones con supuestos trazables y comparables.</p>
+              <p class="product-impact">Mide qué escenario preserva margen y velocidad de ejecución.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="risk"
+              data-group="system-modules"
+              data-field-algorithm="risk"
+            >
+              <span class="product-name">Risk</span>
+              <p class="product-tech">Calcula concentración de fragilidad por nodo y por secuencia.</p>
+              <p class="product-impact">Reduce exposición antes de que el desvío sea irreversible.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="signal"
+              data-group="system-modules"
+              data-field-algorithm="signal"
+            >
+              <span class="product-name">Signal</span>
+              <p class="product-tech">Filtra ruido operativo y prioriza señales con causalidad.</p>
+              <p class="product-impact">Acelera decisiones con foco en impacto verificable.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="ledger"
+              data-group="system-modules"
+              data-field-algorithm="ledger"
+            >
+              <span class="product-name">Ledger</span>
+              <p class="product-tech">Registra hipótesis, umbrales y resultados en cadena auditable.</p>
+              <p class="product-impact">Sostiene accountability técnico entre equipos y ciclos.</p>
+            </button>
+          </li>
+        </ul>
+      </section>
+
+      <section class="products-group" aria-labelledby="products-heading-advanced">
+        <p id="products-heading-advanced" class="products-group-title">ADVANCED CAPABILITIES</p>
+        <p class="products-group-note">Capas avanzadas para lectura de régimen y complejidad dinámica.</p>
+        <ul class="products-list">
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="counterfactual"
+              data-group="advanced-capabilities"
+              data-field-algorithm="scenario"
+            >
+              <span class="product-name">Counterfactual</span>
+              <p class="product-tech">Genera mundos alternos y estima desvíos contra la base.</p>
+              <p class="product-impact">Anticipa costo de oportunidad antes de ejecutar.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="regime"
+              data-group="advanced-capabilities"
+              data-field-algorithm="risk"
+            >
+              <span class="product-name">Regime</span>
+              <p class="product-tech">Detecta cambios de régimen con rupturas de distribución.</p>
+              <p class="product-impact">Reconfigura estrategia cuando cambian las reglas del entorno.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="entropy"
+              data-group="advanced-capabilities"
+              data-field-algorithm="integration"
+            >
+              <span class="product-name">Entropy</span>
+              <p class="product-tech">Mapea entropía decisional y pérdida de información útil.</p>
+              <p class="product-impact">Recupera claridad donde la complejidad bloquea acción.</p>
+            </button>
+          </li>
+          <li class="products-item">
+            <button
+              type="button"
+              class="product-trigger"
+              data-product="integration"
+              data-group="advanced-capabilities"
+              data-field-algorithm="integration"
+            >
+              <span class="product-name">Integration</span>
+              <p class="product-tech">Sincroniza modelos, áreas y tiempos en un mismo marco.</p>
+              <p class="product-impact">Evita contradicciones y alinea ejecución con evidencia.</p>
+            </button>
+          </li>
+        </ul>
+      </section>
     </section>
   </nav>
 

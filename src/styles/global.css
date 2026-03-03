@@ -40,20 +40,20 @@ a {
   height: 68px;
   padding: 0 var(--gutter);
   background: color-mix(in oklab, var(--bg-base) 97%, transparent);
-  border-bottom: 1px solid color-mix(in oklab, var(--line-soft) 45%, transparent);
+  border-bottom: 1px solid color-mix(in oklab, var(--line-soft) 46%, transparent);
 }
 
 .logo-lockup {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 24px;
+  gap: 6px;
+  line-height: 1;
   text-decoration: none;
 }
 
 .logo-symbol {
   width: auto;
-  height: 17px;
+  height: 1.05em;
   display: block;
   flex: 0 0 auto;
   object-fit: contain;
@@ -61,7 +61,7 @@ a {
 
 .logo-wordmark {
   color: #ffffff;
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1;
   font-weight: 620;
   letter-spacing: 0.08em;
@@ -84,7 +84,7 @@ a {
   color: color-mix(in oklab, var(--text-main) 92%, var(--text-dim) 8%);
   font-family: inherit;
   font-size: 0.9rem;
-  font-weight: 520;
+  font-weight: 530;
   letter-spacing: 0.01em;
   text-decoration: none;
   cursor: pointer;
@@ -94,7 +94,7 @@ a {
 .header-action:hover,
 .header-action:focus-visible,
 body[data-products-open="true"] [data-products-toggle] {
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .header-action:focus-visible {
@@ -103,7 +103,7 @@ body[data-products-open="true"] [data-products-toggle] {
 }
 
 .header-action-demo {
-  font-weight: 560;
+  font-weight: 570;
 }
 
 .decision-field-root {
@@ -113,13 +113,14 @@ body[data-products-open="true"] [data-products-toggle] {
   pointer-events: none;
   opacity: var(--field-rest-alpha);
   transition: opacity var(--duration-mid) linear;
+  clip-path: inset(38vh 0 0 0);
 }
 
 body[data-field-active="true"] .decision-field-root {
   opacity: var(--field-active-alpha);
 }
 
-body[data-product-focus] .decision-field-root {
+body[data-field-product] .decision-field-root {
   opacity: var(--field-focus-alpha);
 }
 
@@ -137,7 +138,7 @@ body[data-product-focus] .decision-field-root {
 }
 
 [data-page="home"] .home-column {
-  max-width: var(--container);
+  max-width: 80ch;
   margin-inline: auto;
   text-align: left;
 }
@@ -150,22 +151,36 @@ body[data-product-focus] .decision-field-root {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
-  max-width: 65ch;
-  padding-top: var(--space-8);
-  border-top: 1px solid color-mix(in oklab, var(--line-soft) 36%, transparent);
+  max-width: 64ch;
+  margin-inline: auto;
+  padding-top: var(--space-10);
+  border-top: 1px solid color-mix(in oklab, var(--line-soft) 35%, transparent);
 }
 
 [data-page="home"] .home-hero {
+  position: relative;
+  isolation: isolate;
   margin-top: var(--space-10);
   border-top: 0;
   padding-top: 0;
   gap: var(--space-10);
-  max-width: 64ch;
+  max-width: 63ch;
+  text-align: center;
+}
+
+[data-page="home"] .home-hero::before {
+  content: "";
+  position: absolute;
+  inset: -96px -72px -44px;
+  background: var(--hero-shield);
+  z-index: -1;
+  pointer-events: none;
 }
 
 [data-page="home"] .hero-title {
-  margin: 0;
-  max-width: 17ch;
+  margin: 0 auto;
+  max-width: 16ch;
+  font-family: var(--font-display);
   font-size: var(--fs-h1);
   font-weight: 560;
   line-height: 0.98;
@@ -176,11 +191,12 @@ body[data-product-focus] .decision-field-root {
   flex-direction: column;
   gap: var(--space-6);
   max-width: 62ch;
+  margin-inline: auto;
 }
 
 [data-page="home"] .declaration {
   margin: 0;
-  font-size: clamp(1.2rem, 2.3vw, 1.66rem);
+  font-size: clamp(1.16rem, 2.35vw, 1.66rem);
   line-height: 1.17;
   font-weight: 510;
   max-width: 63ch;
@@ -198,6 +214,7 @@ body[data-product-focus] .decision-field-root {
 [data-page="home"] .home-cta {
   display: inline-flex;
   align-items: center;
+  margin-inline: auto;
   width: fit-content;
   min-height: 34px;
   text-decoration: none;
@@ -222,9 +239,9 @@ body[data-product-focus] .decision-field-root {
 .products-menu {
   position: fixed;
   top: calc(68px + var(--space-6));
-  left: 50%;
+  left: calc(50% + 15vw);
   z-index: 55;
-  width: min(760px, calc(100vw - 32px));
+  width: min(760px, calc(100vw - 36px));
   transform: translateX(-50%);
   opacity: 0;
   pointer-events: none;
@@ -239,9 +256,16 @@ body[data-products-open="true"] .products-menu {
 .products-wrap {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-10);
+  max-width: 70ch;
+  border-top: 1px solid color-mix(in oklab, var(--line-soft) 40%, transparent);
   padding-top: var(--space-5);
-  border-top: 1px solid color-mix(in oklab, var(--line-soft) 45%, transparent);
+}
+
+.products-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .products-group-title {
@@ -250,7 +274,15 @@ body[data-products-open="true"] .products-menu {
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: color-mix(in oklab, var(--text-main) 80%, var(--text-dim) 20%);
+}
+
+.products-group-note {
+  margin: 0;
+  max-width: 66ch;
   color: var(--text-dim);
+  font-size: 0.84rem;
+  line-height: 1.32;
 }
 
 .products-list {
@@ -267,8 +299,8 @@ body[data-products-open="true"] .products-menu {
 }
 
 .products-item + .products-item {
-  padding-top: var(--space-5);
   border-top: 1px solid color-mix(in oklab, var(--line-soft) 32%, transparent);
+  padding-top: var(--space-5);
 }
 
 .product-trigger {
@@ -283,21 +315,26 @@ body[data-products-open="true"] .products-menu {
   background: transparent;
   color: inherit;
   cursor: pointer;
+  transition: transform var(--duration-fast) linear;
 }
 
 .product-name {
   font-size: 1.08rem;
   font-weight: 540;
   line-height: 1.2;
-  transition: color var(--duration-mid) linear;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  transition: color var(--duration-fast) linear, text-decoration-color var(--duration-fast) linear;
 }
 
 .product-tech,
 .product-impact {
   margin: 0;
   max-width: 72ch;
-  font-size: 0.91rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.38;
   color: var(--text-dim);
 }
 
@@ -305,9 +342,15 @@ body[data-products-open="true"] .products-menu {
   color: color-mix(in oklab, var(--text-main) 84%, var(--text-dim) 16%);
 }
 
+.product-trigger:hover,
+.product-trigger:focus-visible {
+  transform: translateX(2px);
+}
+
 .product-trigger:hover .product-name,
 .product-trigger:focus-visible .product-name {
   color: #ffffff;
+  text-decoration-color: color-mix(in oklab, #ffffff 64%, transparent);
 }
 
 .product-trigger:focus-visible {
@@ -317,7 +360,7 @@ body[data-products-open="true"] .products-menu {
 
 body[data-page="home"][data-field-block] [data-field-block] {
   transition: opacity var(--duration-fast) linear;
-  opacity: 0.9;
+  opacity: 0.88;
 }
 
 body[data-page="home"][data-field-block] [data-field-block][data-field-active="true"] {
@@ -326,11 +369,13 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
 
 @media (max-width: 900px) {
   .decision-field-root {
-    opacity: 0.08;
+    opacity: 0.07;
+    clip-path: inset(46vh 0 0 0);
   }
 
   .products-menu {
-    width: calc(100vw - 28px);
+    left: calc(50% + 8vw);
+    width: calc(100vw - 26px);
   }
 }
 
@@ -353,17 +398,23 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
   }
 
   [data-page="home"] .home-block {
+    max-width: 62ch;
     gap: var(--space-6);
   }
 
   [data-page="home"] .declaration {
-    font-size: clamp(1.1rem, 5.2vw, 1.42rem);
+    font-size: clamp(1.08rem, 5.1vw, 1.42rem);
     line-height: 1.18;
   }
 
   .products-menu {
     top: calc(64px + var(--space-5));
-    width: calc(100vw - 20px);
+    left: 50%;
+    width: calc(100vw - 18px);
+  }
+
+  .products-wrap {
+    max-width: 100%;
   }
 
   .decision-field-root {
@@ -391,14 +442,9 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
   .header-action,
   .home-cta,
   .product-name,
+  .product-trigger,
   .decision-field-root,
   body[data-page="home"][data-field-block] [data-field-block] {
     transition: none;
   }
-}
-
-/* vΩ hardkill: ocultar field detrás del HERO (HOME only) */
-[data-page=home] .decision-field-root{
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, black 78%, black 100%);
-  mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, black 78%, black 100%);
 }
