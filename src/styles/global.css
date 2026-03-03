@@ -48,20 +48,21 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  font-size: 1.125rem;
   text-decoration: none;
 }
 
 .logo-symbol {
-  width: 20px;
-  height: 20px;
+  height: 1em;
+  width: auto;
   display: block;
-  flex: 0 0 20px;
+  flex: 0 0 auto;
   object-fit: contain;
 }
 
 .logo-wordmark {
   color: #ffffff;
-  font-size: 1.12rem;
+  font-size: 1em;
   line-height: 1;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -323,8 +324,21 @@ body[data-products-open="true"] .products-menu {
 }
 
 [data-page="home"] .home-hero {
+  position: relative;
+  isolation: isolate;
   margin-top: var(--space-10);
   gap: var(--space-10);
+}
+
+[data-page="home"] .home-hero::before {
+  content: "";
+  position: absolute;
+  top: calc(-1 * (68px + var(--space-16) + 80px));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-base);
+  z-index: -1;
 }
 
 [data-page="home"] .hero-declarations {
