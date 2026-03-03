@@ -15,8 +15,8 @@ type ProductFocus =
   | "ledger"
   | "integration"
   | "counterfactual"
-  | "regime-shift"
-  | "decision-entropy"
+  | "regime"
+  | "entropy"
   | "";
 type GroupFocus = "motor-structural" | "advanced-systems" | "";
 
@@ -39,6 +39,16 @@ type RegimeConfig = {
   latentLineAlpha: number;
 };
 
+type ProductProfile = {
+  dominantBoost: number;
+  secondaryBoost: number;
+  latentBoost: number;
+  strokeBoost: number;
+  opacityBoost: number;
+  pullBoost: number;
+  densityShift: number;
+};
+
 const RAF_KEY = "__auroraDecisionField";
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 const STROKE_BASE = 0.9;
@@ -47,6 +57,16 @@ const STROKE_DOMINANT = 2.2;
 const INITIAL_SPREAD = 0.78;
 const SMOOTHING_FACTOR = 0.18;
 const SCROLL_DOMINANCE_MULTIPLIER = 0.85;
+const DEFAULT_TRANSITION_MS = 180;
+const BASE_PRODUCT_PROFILE: ProductProfile = {
+  dominantBoost: 0,
+  secondaryBoost: 0,
+  latentBoost: 0,
+  strokeBoost: 0,
+  opacityBoost: 0,
+  pullBoost: 0,
+  densityShift: 0,
+};
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -71,8 +91,8 @@ const VALID_PRODUCTS = new Set<ProductFocus>([
   "ledger",
   "integration",
   "counterfactual",
-  "regime-shift",
-  "decision-entropy",
+  "regime",
+  "entropy",
   "",
 ]);
 const VALID_GROUPS = new Set<GroupFocus>(["motor-structural", "advanced-systems", ""]);
@@ -140,6 +160,11 @@ class DecisionFieldController {
   private productFocus: ProductFocus = "";
   private groupFocus: GroupFocus = "";
   private productBlend = 0;
+  private targetProductBlend = 0;
+  private lastFrameTime = performance.now();
+  private fieldTransitionMs = DEFAULT_TRANSITION_MS;
+  private profileCurrent: ProductProfile = { ...BASE_PRODUCT_PROFILE };
+  private profileTarget: ProductProfile = { ...BASE_PRODUCT_PROFILE };
   private fieldProgress = 0;
   private smoothedProgress = 0;
   private fieldBlock = "hero";
@@ -247,6 +272,7 @@ class DecisionFieldController {
         "data-field-secondary-weight",
         "data-field-latent-weight",
         "data-field-block",
+        "data-field-transition-ms",
       ],
     });
   }
@@ -262,11 +288,25 @@ class DecisionFieldController {
       this.regime = nextRegime;
     }
 
+    const productChanged = nextProduct !== this.productFocus;
+    const groupChanged = nextGroup !== this.groupFocus;
+
     this.algorithm = nextAlgorithm;
     this.productFocus = nextProduct;
     this.groupFocus = nextGroup;
     this.fieldProgress = nextProgress;
     this.fieldBlock = this.readFieldBlock();
+    this.fieldTransitionMs = this.readFieldTransitionMs();
+    this.targetProductBlend = nextProduct ? 1 : 0;
+
+    if (productChanged && this.productFocus && nextProduct) {
+      this.productBlend = Math.min(this.productBlend, 0.42);
+    }
+
+    if (productChanged || groupChanged) {
+      this.profileTarget = this.resolveProductProfile(nextProduct, nextGroup);
+    }
+
     this.dominantWeight = this.readWeight("fieldDominantWeight", 1.2);
     this.secondaryWeight = this.readWeight("fieldSecondaryWeight", 1.1);
     this.latentWeight = this.readWeight("fieldLatentWeight", 0.85);
@@ -336,6 +376,12 @@ class DecisionFieldController {
     const raw = (document.body.dataset.fieldBlock ?? "hero").trim();
     if (!raw) return "hero";
     return raw;
+  }
+
+  private readFieldTransitionMs(): number {
+    const raw = Number.parseFloat(document.body.dataset.fieldTransitionMs ?? "");
+    if (!Number.isFinite(raw)) return DEFAULT_TRANSITION_MS;
+    return clamp(raw, 120, 480);
   }
 
   private syncSize(): void {
@@ -437,10 +483,109 @@ class DecisionFieldController {
     };
   }
 
-  private render(_time: number): void {
+  private easeOutStep(deltaMs: number, durationMs: number): number {
+    const ratio = clamp(deltaMs / Math.max(1, durationMs), 0, 1);
+    return 1 - Math.pow(1 - ratio, 3);
+  }
 
-    const productTarget = this.productFocus ? 1 : 0;
-    this.productBlend += (productTarget - this.productBlend) * SMOOTHING_FACTOR;
+  private mixValue(current: number, target: number, step: number): number {
+    return current + (target - current) * step;
+  }
+
+  private mixProfile(current: ProductProfile, target: ProductProfile, step: number): ProductProfile {
+    return {
+      dominantBoost: this.mixValue(current.dominantBoost, target.dominantBoost, step),
+      secondaryBoost: this.mixValue(current.secondaryBoost, target.secondaryBoost, step),
+      latentBoost: this.mixValue(current.latentBoost, target.latentBoost, step),
+      strokeBoost: this.mixValue(current.strokeBoost, target.strokeBoost, step),
+      opacityBoost: this.mixValue(current.opacityBoost, target.opacityBoost, step),
+      pullBoost: this.mixValue(current.pullBoost, target.pullBoost, step),
+      densityShift: this.mixValue(current.densityShift, target.densityShift, step),
+    };
+  }
+
+  private resolveProductProfile(product: ProductFocus, group: GroupFocus): ProductProfile {
+    const profile: ProductProfile = { ...BASE_PRODUCT_PROFILE };
+
+    switch (product) {
+      case "core":
+        profile.dominantBoost = 0.22;
+        profile.secondaryBoost = 0.08;
+        profile.latentBoost = -0.06;
+        profile.strokeBoost = 0.08;
+        profile.opacityBoost = 0.08;
+        profile.pullBoost = 0.002;
+        profile.densityShift = 8;
+        break;
+      case "scenario":
+      case "counterfactual":
+        profile.dominantBoost = 0.16;
+        profile.secondaryBoost = 0.12;
+        profile.latentBoost = -0.04;
+        profile.strokeBoost = 0.06;
+        profile.opacityBoost = 0.06;
+        profile.pullBoost = 0.003;
+        profile.densityShift = 4;
+        break;
+      case "risk":
+      case "regime":
+        profile.dominantBoost = 0.24;
+        profile.secondaryBoost = 0.1;
+        profile.latentBoost = -0.1;
+        profile.strokeBoost = 0.1;
+        profile.opacityBoost = 0.1;
+        profile.pullBoost = 0.004;
+        profile.densityShift = -6;
+        break;
+      case "signal":
+        profile.dominantBoost = 0.18;
+        profile.secondaryBoost = 0.14;
+        profile.latentBoost = -0.16;
+        profile.strokeBoost = 0.14;
+        profile.opacityBoost = 0.14;
+        profile.pullBoost = 0.003;
+        profile.densityShift = -12;
+        break;
+      case "ledger":
+        profile.dominantBoost = 0.14;
+        profile.secondaryBoost = 0.1;
+        profile.latentBoost = -0.05;
+        profile.strokeBoost = 0.05;
+        profile.opacityBoost = 0.03;
+        profile.pullBoost = 0.002;
+        profile.densityShift = 2;
+        break;
+      case "integration":
+      case "entropy":
+        profile.dominantBoost = 0.2;
+        profile.secondaryBoost = 0.15;
+        profile.latentBoost = -0.08;
+        profile.strokeBoost = 0.09;
+        profile.opacityBoost = 0.07;
+        profile.pullBoost = 0.004;
+        profile.densityShift = 6;
+        break;
+      default:
+        break;
+    }
+
+    if (group === "advanced-systems") {
+      profile.strokeBoost += 0.06;
+      profile.opacityBoost += 0.06;
+      profile.pullBoost += 0.001;
+      profile.densityShift -= 4;
+    }
+
+    return profile;
+  }
+
+  private render(time: number): void {
+    const frameDt = Math.max(1, time - this.lastFrameTime);
+    this.lastFrameTime = time;
+
+    const step = this.reducedMotion ? 1 : this.easeOutStep(frameDt, this.fieldTransitionMs);
+    this.productBlend = this.mixValue(this.productBlend, this.targetProductBlend, step);
+    this.profileCurrent = this.mixProfile(this.profileCurrent, this.profileTarget, step);
 
     if (this.reducedMotion) {
       this.smoothedProgress = this.fieldProgress;
@@ -470,7 +615,8 @@ class DecisionFieldController {
         : this.groupFocus === "motor-structural"
           ? 0.003
           : 0;
-    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * (0.004 + groupPull);
+    const profilePull = this.profileCurrent.pullBoost * this.productBlend;
+    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * (0.004 + groupPull) + profilePull;
 
     for (const node of this.nodes) {
       const target = this.nodeTarget(node, center, spreadRadius);
@@ -591,7 +737,8 @@ class DecisionFieldController {
 
     const focusCenter = this.focusCenter();
     if (focusCenter) {
-      const clusterBias = this.productBlend * (this.groupFocus === "advanced-systems" ? 0.28 : 0.2);
+      const profileClusterBias = this.profileCurrent.secondaryBoost * 0.08 * this.productBlend;
+      const clusterBias = this.productBlend * (this.groupFocus === "advanced-systems" ? 0.28 : 0.2) + profileClusterBias;
       targetX = targetX * (1 - clusterBias) + focusCenter.x * clusterBias;
       targetY = targetY * (1 - clusterBias) + focusCenter.y * clusterBias;
     }
@@ -606,7 +753,8 @@ class DecisionFieldController {
         : this.groupFocus === "motor-structural"
           ? 8
           : 0;
-    const threshold = cfg.lineDistance + groupDensityShift * this.productBlend - this.productBlend * 10;
+    const profileDensityShift = this.profileCurrent.densityShift * this.productBlend;
+    const threshold = cfg.lineDistance + groupDensityShift * this.productBlend - this.productBlend * 10 + profileDensityShift;
     const thresholdSq = threshold * threshold;
 
     for (const node of this.nodes) {
@@ -663,14 +811,14 @@ class DecisionFieldController {
       case "counterfactual":
         return clamp(4);
       case "risk":
-      case "regime-shift":
+      case "regime":
         return clamp(11);
       case "signal":
         return clamp(7);
       case "ledger":
         return clamp(15);
       case "integration":
-      case "decision-entropy":
+      case "entropy":
         return clamp(17);
       default:
         return clamp(10);
@@ -684,7 +832,7 @@ class DecisionFieldController {
       case "counterfactual":
       case "scenario":
         return { x: this.width * 0.32, y: this.height * 0.38 };
-      case "regime-shift":
+      case "regime":
       case "risk":
         return { x: this.width * 0.34, y: this.height * 0.58 };
       case "signal":
@@ -693,13 +841,16 @@ class DecisionFieldController {
         return { x: this.width * 0.68, y: this.height * 0.58 };
       case "integration":
       default:
-      case "decision-entropy":
+      case "entropy":
         return { x: this.width * 0.54, y: this.height * 0.62 };
     }
   }
 
   private drawConnections(cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance - this.productBlend * 16;
+    const threshold =
+      cfg.lineDistance -
+      this.productBlend * 16 +
+      this.profileCurrent.densityShift * this.productBlend * 0.4;
     const thresholdSq = threshold * threshold;
 
     for (let i = 0; i < this.nodes.length; i += 1) {
@@ -722,22 +873,36 @@ class DecisionFieldController {
         const isActive = aSecondary || bSecondary;
 
         const scrollDominance = clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65);
-        const dominantMultiplier = this.dominantWeight + scrollDominance;
-        let alpha = cfg.latentLineAlpha * t * this.latentWeight;
+        const dominantMultiplier =
+          this.dominantWeight +
+          scrollDominance +
+          this.profileCurrent.dominantBoost * this.productBlend;
+        let alpha =
+          cfg.latentLineAlpha *
+          t *
+          Math.max(0.12, this.latentWeight + this.profileCurrent.latentBoost * this.productBlend);
         let lineColor = this.fieldLineLatent;
-        const lineWidth = isDominant
-          ? STROKE_DOMINANT
-          : isActive
-            ? STROKE_ACTIVE
-            : STROKE_BASE;
+        const strokeBoost = this.profileCurrent.strokeBoost * this.productBlend;
+        const lineWidth =
+          (isDominant
+            ? STROKE_DOMINANT
+            : isActive
+              ? STROKE_ACTIVE
+              : STROKE_BASE) +
+          strokeBoost * (isDominant ? 1.1 : isActive ? 0.8 : 0.5);
 
         if (isDominant) {
           alpha = 0.4 * t * dominantMultiplier;
           lineColor = this.fieldDominant;
         } else if (isActive) {
-          alpha = 0.28 * t * this.secondaryWeight;
+          alpha =
+            0.28 *
+            t *
+            (this.secondaryWeight + this.profileCurrent.secondaryBoost * this.productBlend);
           lineColor = this.fieldLineActive;
         }
+
+        alpha *= 1 + this.profileCurrent.opacityBoost * this.productBlend;
 
         if (this.algorithm === "signal" && !isDominant && !isActive) {
           continue;
@@ -763,20 +928,24 @@ class DecisionFieldController {
 
       let radius = 1.8;
       let color = this.fieldNodeLatent;
-      let multiplier = this.latentWeight;
+      let multiplier = this.latentWeight + this.profileCurrent.latentBoost * this.productBlend;
       const baseWeight = 1;
 
       if (isDominant) {
         radius = 3.6;
         color = this.fieldNodeDominant;
-        multiplier = this.dominantWeight + clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65);
+        multiplier =
+          this.dominantWeight +
+          clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65) +
+          this.profileCurrent.dominantBoost * this.productBlend;
       } else if (isSecondary) {
         radius = 2.5;
         color = this.fieldNodeActive;
-        multiplier = this.secondaryWeight;
+        multiplier = this.secondaryWeight + this.profileCurrent.secondaryBoost * this.productBlend;
       }
 
-      const weight = baseWeight * multiplier;
+      radius += this.profileCurrent.strokeBoost * this.productBlend * (isDominant ? 1.2 : isSecondary ? 0.8 : 0.4);
+      const weight = baseWeight * multiplier * (1 + this.profileCurrent.opacityBoost * this.productBlend);
       this.ctx.globalAlpha = clamp(weight, 0, 1);
       this.ctx.fillStyle = color;
       this.ctx.beginPath();

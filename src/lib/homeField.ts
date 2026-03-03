@@ -115,19 +115,21 @@ export function mountHomeField(): () => void {
   };
 
   const setProductFocus = (node: HTMLElement): void => {
-    const product = node.dataset.product ?? "";
-    const group = node.dataset.group ?? "";
-    const algorithm = node.dataset.fieldAlgorithm ?? "core";
+    const product = (node.dataset.product ?? node.dataset.productFocus ?? "").trim();
+    const group = (node.dataset.group ?? "").trim();
+    const algorithm = (node.dataset.fieldAlgorithm ?? "core").trim();
 
     body.dataset.productFocus = product;
     body.dataset.groupFocus = group;
     body.dataset.algorithm = algorithm;
+    body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   };
 
   const clearProductFocus = (): void => {
     delete body.dataset.productFocus;
     delete body.dataset.groupFocus;
     body.dataset.algorithm = "core";
+    body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   };
 
   const writeFieldState = (progress: number): void => {
@@ -229,13 +231,15 @@ export function mountHomeField(): () => void {
     const onBlur = (): void => {
       window.setTimeout(onMenuLeave, 0);
     };
+    const onClick = (): void => setProductFocus(node);
 
-    return { node, onEnter, onBlur };
+    return { node, onEnter, onBlur, onClick };
   });
 
-  for (const { node, onEnter, onBlur } of nodeHandlers) {
+  for (const { node, onEnter, onBlur, onClick } of nodeHandlers) {
     node.addEventListener("pointerenter", onEnter);
     node.addEventListener("focus", onEnter);
+    node.addEventListener("click", onClick);
     node.addEventListener("pointerleave", onMenuLeave);
     node.addEventListener("blur", onBlur);
   }
@@ -249,6 +253,7 @@ export function mountHomeField(): () => void {
 
   body.dataset.productsOpen = "false";
   body.dataset.algorithm = body.dataset.algorithm ?? "core";
+  body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   refreshField();
 
   return () => {
@@ -259,9 +264,10 @@ export function mountHomeField(): () => void {
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
 
-    for (const { node, onEnter, onBlur } of nodeHandlers) {
+    for (const { node, onEnter, onBlur, onClick } of nodeHandlers) {
       node.removeEventListener("pointerenter", onEnter);
       node.removeEventListener("focus", onEnter);
+      node.removeEventListener("click", onClick);
       node.removeEventListener("pointerleave", onMenuLeave);
       node.removeEventListener("blur", onBlur);
     }
