@@ -426,8 +426,3 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
   transform: translateY(0.5px); /* micro ajuste óptico */
 }
 /* end vΩ brand lockup alignment */
-
-/* vΩ logo lockup: símbolo + AURORA misma altura óptica */
-.logo-lockup { display:flex; align-items:center; gap:12px; }
-.logo-symbol { color: #E8EDF5; flex: 0 0 auto; }
-.logo-wordmark { line-height: 1; }
