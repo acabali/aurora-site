@@ -616,12 +616,12 @@ class DecisionFieldController {
           ? 0.003
           : 0;
     const profilePull = this.profileCurrent.pullBoost * this.productBlend;
-    const pull = cfg.pull + velocityBias * 0.004 + this.productBlend * (0.004 + groupPull) + profilePull;
+    const pull = Math.min(cfg.pull + this.productBlend * 0.004, cfg.pull + 0.006);
 
     for (const node of this.nodes) {
       const target = this.nodeTarget(node, center, spreadRadius);
-      node.vx = node.vx * 0.78 + (target.x - node.x) * pull;
-      node.vy = node.vy * 0.78 + (target.y - node.y) * pull;
+      node.vx = node.vx * 0.65 + (target.x - node.x) * pull;
+      node.vy = node.vy * 0.65 + (target.y - node.y) * pull;
 
       node.x += node.vx;
       node.y += node.vy;
