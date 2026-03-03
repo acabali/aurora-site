@@ -92,3 +92,5 @@ export const homeContent = {
     }
   ]
 }
+
+export const home = homeContent;
