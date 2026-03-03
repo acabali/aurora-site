@@ -466,3 +466,6 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
 [data-page=home] .home-block + .home-block,
 .products-item + .products-item,
 .site-header { border-color: color-mix(in oklab, var(--line-soft) 35%, transparent) !important; }
+
+/* vΩ NUCLEAR: disable field on HOME if still visible */
+[data-page=home] .decision-field-root { display: none !important; }
