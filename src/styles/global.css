@@ -396,3 +396,9 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
     transition: none;
   }
 }
+
+/* vΩ hardkill: ocultar field detrás del HERO (HOME only) */
+[data-page=home] .decision-field-root{
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, black 78%, black 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, transparent 62%, black 78%, black 100%);
+}
