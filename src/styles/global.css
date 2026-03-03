@@ -403,3 +403,26 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
     transition: none;
   }
 }
+
+/* vΩ brand lockup alignment */
+.logo-lockup{
+  align-items: center; /* baseline -> center */
+}
+
+.logo-symbol{
+  width: 22px;
+  height: 22px;
+  display: block;
+  flex: 0 0 22px;
+}
+
+/* Wordmark: misma altura óptica que el símbolo */
+.logo-wordmark{
+  font-size: 22px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transform: translateY(0.5px); /* micro ajuste óptico */
+}
+/* end vΩ brand lockup alignment */
