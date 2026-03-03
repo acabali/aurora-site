@@ -5,11 +5,8 @@ type StagePoint = {
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const DOMINANT_MULTIPLIER = 1.45;
-const SECONDARY_MULTIPLIER = 1.18;
-const LATENT_MULTIPLIER = 0.65;
-const FIELD_TRANSITION_MS = 180;
-const SMOOTHING_FACTOR = 0.18;
+const FIELD_TRANSITION_MS = 160;
+const IDLE_MS = 1400;
 
 const regimeFromProgress = (progress: number): string => {
   if (progress < 0.16) return "unstable";
@@ -38,7 +35,6 @@ const readStagePoints = (stageNodes: HTMLElement[]): StagePoint[] => {
 const interpolateProgress = (points: StagePoint[], probe: number): number => {
   if (!points.length) return 0;
   if (points.length === 1) return points[0].value;
-
   if (probe <= points[0].top) return points[0].value;
 
   for (let index = 0; index < points.length - 1; index += 1) {
@@ -57,13 +53,12 @@ const interpolateProgress = (points: StagePoint[], probe: number): number => {
 const resolveActiveBlock = (points: StagePoint[], probe: number): string => {
   if (!points.length) return "hero";
   let active = points[0].block;
+
   for (const point of points) {
-    if (probe >= point.top) {
-      active = point.block;
-      continue;
-    }
-    break;
+    if (probe < point.top) break;
+    active = point.block;
   }
+
   return active;
 };
 
@@ -79,14 +74,38 @@ export function mountHomeField(): () => void {
   }
 
   let isMenuOpen = false;
-  let smoothedVelocity = 0;
-  let lastY = window.scrollY;
-  let lastT = Date.now();
   let stagePoints = readStagePoints(stageNodes);
+  let idleTimer = 0;
+
+  const clearIdleTimer = (): void => {
+    if (!idleTimer) return;
+    window.clearTimeout(idleTimer);
+    idleTimer = 0;
+  };
+
+  const scheduleIdle = (): void => {
+    clearIdleTimer();
+    idleTimer = window.setTimeout(() => {
+      const keepActive = Boolean(body.dataset.productFocus) || isMenuOpen;
+      body.dataset.fieldActive = keepActive ? "true" : "false";
+    }, IDLE_MS);
+  };
+
+  const markInteraction = (): void => {
+    body.dataset.fieldActive = "true";
+    scheduleIdle();
+  };
 
   const getFocusableMenuNodes = (): HTMLElement[] => {
     const buttons = Array.from(menu.querySelectorAll<HTMLButtonElement>(".product-trigger"));
     return [toggle, ...buttons].filter((node) => !node.hidden && !node.hasAttribute("disabled"));
+  };
+
+  const clearProductFocus = (): void => {
+    delete body.dataset.productFocus;
+    delete body.dataset.groupFocus;
+    body.dataset.algorithm = "core";
+    body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   };
 
   const closeMenu = (restoreFocus = false): void => {
@@ -96,9 +115,8 @@ export function mountHomeField(): () => void {
     toggle.setAttribute("aria-expanded", "false");
     menu.hidden = true;
     clearProductFocus();
-    if (restoreFocus) {
-      toggle.focus();
-    }
+    if (restoreFocus) toggle.focus();
+    scheduleIdle();
   };
 
   const openMenu = (): void => {
@@ -112,10 +130,12 @@ export function mountHomeField(): () => void {
     if (focusable.length > 1) {
       focusable[1].focus();
     }
+
+    markInteraction();
   };
 
   const setProductFocus = (node: HTMLElement): void => {
-    const product = (node.dataset.product ?? node.dataset.productFocus ?? "").trim();
+    const product = (node.dataset.product ?? "").trim();
     const group = (node.dataset.group ?? "").trim();
     const algorithm = (node.dataset.fieldAlgorithm ?? "core").trim();
 
@@ -123,34 +143,34 @@ export function mountHomeField(): () => void {
     body.dataset.groupFocus = group;
     body.dataset.algorithm = algorithm;
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
-  };
-
-  const clearProductFocus = (): void => {
-    delete body.dataset.productFocus;
-    delete body.dataset.groupFocus;
-    body.dataset.algorithm = "core";
-    body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
+    markInteraction();
   };
 
   const writeFieldState = (progress: number): void => {
     const bounded = clamp(progress, 0, 1);
+    const dominantWeight = 1.08 + bounded * 0.74;
+    const secondaryWeight = 0.96 + bounded * 0.42;
+    const latentWeight = 0.36 + bounded * 0.18;
+
     body.dataset.fieldProgress = bounded.toFixed(4);
     body.dataset.regime = regimeFromProgress(bounded);
-    body.dataset.scrollVelocity = clamp(smoothedVelocity, 0, 14).toFixed(3);
-    body.dataset.fieldDominantWeight = DOMINANT_MULTIPLIER.toFixed(2);
-    body.dataset.fieldSecondaryWeight = SECONDARY_MULTIPLIER.toFixed(2);
-    body.dataset.fieldLatentWeight = LATENT_MULTIPLIER.toFixed(2);
+    body.dataset.fieldDominantWeight = dominantWeight.toFixed(2);
+    body.dataset.fieldSecondaryWeight = secondaryWeight.toFixed(2);
+    body.dataset.fieldLatentWeight = latentWeight.toFixed(2);
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   };
 
   const refreshField = (): void => {
-    const probe = window.scrollY + window.innerHeight * 0.28;
+    const probe = window.scrollY + window.innerHeight * 0.34;
     const progress = interpolateProgress(stagePoints, probe);
     const activeBlock = resolveActiveBlock(stagePoints, probe);
+
     body.dataset.fieldBlock = activeBlock;
+
     for (const node of stageNodes) {
       node.dataset.fieldActive = node.dataset.fieldBlock === activeBlock ? "true" : "false";
     }
+
     writeFieldState(progress);
   };
 
@@ -172,6 +192,7 @@ export function mountHomeField(): () => void {
   const onMenuLeave = (): void => {
     if (document.activeElement && menu.contains(document.activeElement)) return;
     clearProductFocus();
+    scheduleIdle();
   };
 
   const onKeyDown = (event: KeyboardEvent): void => {
@@ -208,22 +229,14 @@ export function mountHomeField(): () => void {
   };
 
   const onScroll = (): void => {
-    const now = Date.now();
-    const dy = window.scrollY - lastY;
-    const dt = Math.max(1, now - lastT);
-
-    lastY = window.scrollY;
-    lastT = now;
-
-    const instantVelocity = clamp((Math.abs(dy) / dt) * 18, 0, 14);
-    smoothedVelocity += (instantVelocity - smoothedVelocity) * SMOOTHING_FACTOR;
-
+    markInteraction();
     refreshField();
   };
 
   const onResize = (): void => {
     stagePoints = readStagePoints(stageNodes);
     refreshField();
+    markInteraction();
   };
 
   const nodeHandlers = productNodes.map((node) => {
@@ -231,21 +244,21 @@ export function mountHomeField(): () => void {
     const onBlur = (): void => {
       window.setTimeout(onMenuLeave, 0);
     };
-    const onClick = (): void => setProductFocus(node);
 
-    return { node, onEnter, onBlur, onClick };
+    return { node, onEnter, onBlur };
   });
 
-  for (const { node, onEnter, onBlur, onClick } of nodeHandlers) {
+  for (const { node, onEnter, onBlur } of nodeHandlers) {
     node.addEventListener("pointerenter", onEnter);
     node.addEventListener("focus", onEnter);
-    node.addEventListener("click", onClick);
+    node.addEventListener("click", onEnter);
     node.addEventListener("pointerleave", onMenuLeave);
     node.addEventListener("blur", onBlur);
   }
 
   toggle.addEventListener("click", onToggleClick);
   menu.addEventListener("pointerleave", onMenuLeave);
+  menu.addEventListener("pointermove", markInteraction);
   document.addEventListener("pointerdown", onPointerDown);
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("scroll", onScroll, { passive: true });
@@ -254,25 +267,31 @@ export function mountHomeField(): () => void {
   body.dataset.productsOpen = "false";
   body.dataset.algorithm = body.dataset.algorithm ?? "core";
   body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
+  body.dataset.fieldActive = "false";
+
   refreshField();
+  scheduleIdle();
 
   return () => {
     toggle.removeEventListener("click", onToggleClick);
     menu.removeEventListener("pointerleave", onMenuLeave);
+    menu.removeEventListener("pointermove", markInteraction);
     document.removeEventListener("pointerdown", onPointerDown);
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("scroll", onScroll);
     window.removeEventListener("resize", onResize);
 
-    for (const { node, onEnter, onBlur, onClick } of nodeHandlers) {
+    for (const { node, onEnter, onBlur } of nodeHandlers) {
       node.removeEventListener("pointerenter", onEnter);
       node.removeEventListener("focus", onEnter);
-      node.removeEventListener("click", onClick);
+      node.removeEventListener("click", onEnter);
       node.removeEventListener("pointerleave", onMenuLeave);
       node.removeEventListener("blur", onBlur);
     }
 
+    clearIdleTimer();
     closeMenu();
     clearProductFocus();
+    body.dataset.fieldActive = "false";
   };
 }

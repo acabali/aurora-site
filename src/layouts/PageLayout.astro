@@ -19,8 +19,8 @@ const buildMarker =
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
   </head>
-  <body data-page={page} data-algorithm="core">
-    <header class="site-header">
+  <body data-page={page} data-algorithm="core" data-field-active="false">
+    <header class="site-header" data-header>
       <a href="/" class="logo-lockup" aria-label="Aurora">
         <img src="/aurora-mark.png" alt="" class="logo-symbol" loading="eager" decoding="async" />
         <span class="logo-wordmark">AURORA</span>
@@ -34,6 +34,7 @@ const buildMarker =
             data-products-toggle
             aria-controls="products-menu"
             aria-expanded="false"
+            aria-haspopup="true"
           >
             Productos
           </button>

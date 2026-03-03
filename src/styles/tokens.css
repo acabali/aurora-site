@@ -1,23 +1,21 @@
 :root {
-  --font-display: "Avenir Next", "Manrope", "Helvetica Neue", sans-serif;
-  --font-body: "Avenir Next", "Manrope", "Helvetica Neue", sans-serif;
-  --font-tech: "Avenir Next", "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  --font-display: "Avenir Next", "Neue Haas Grotesk Text", "Helvetica Neue", sans-serif;
+  --font-body: "Avenir Next", "Neue Haas Grotesk Text", "Helvetica Neue", sans-serif;
+  --font-tech: "IBM Plex Sans", "Avenir Next", "Helvetica Neue", sans-serif;
 
-  --fs-h1: clamp(2.1rem, 5.5vw, 42px);
+  --fs-h1: clamp(2.2rem, 6.4vw, 4.25rem);
   --fs-body: 16px;
 
-  --bg-base: #07090f;
-  --bg-deep: #0c111a;
-  --bg-layer: #131a24;
+  --bg-base: #06080d;
+  --bg-deep: #0a0f16;
+  --bg-layer: #101723;
 
-  --text-main: #e8edf5;
-  --text-dim: #9aa6b2;
+  --text-main: #e6ebf2;
+  --text-dim: #97a2af;
 
-  --line-soft: #1f2733;
+  --line-soft: #202b37;
 
-  --accent-primary: #4f3c8c;
-
-  --container: 68ch;
+  --container: 64ch;
   --gutter: 24px;
 
   --space-2: 8px;
@@ -34,14 +32,17 @@
   --space-24: 96px;
   --space-30: 120px;
 
-  --duration-fast: 180ms;
-  --duration-mid: 260ms;
-  --duration-field: 180ms;
+  --duration-fast: 150ms;
+  --duration-mid: 220ms;
 
-  --field-line-latent: rgba(232, 237, 245, 0.06);
-  --field-line-active: rgba(232, 237, 245, 0.2);
-  --field-dominant: rgba(232, 237, 245, 0.52);
-  --field-node-latent: rgba(232, 237, 245, 0.18);
-  --field-node-active: rgba(232, 237, 245, 0.4);
-  --field-node-dominant: rgba(74, 68, 116, 0.84);
+  --field-rest-alpha: 0.13;
+  --field-active-alpha: 0.19;
+  --field-focus-alpha: 0.23;
+
+  --field-line-latent: rgba(230, 235, 242, 0.028);
+  --field-line-active: rgba(230, 235, 242, 0.12);
+  --field-dominant: rgba(230, 235, 242, 0.24);
+  --field-node-latent: rgba(230, 235, 242, 0.15);
+  --field-node-active: rgba(230, 235, 242, 0.34);
+  --field-node-dominant: rgba(230, 235, 242, 0.82);
 }
