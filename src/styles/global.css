@@ -456,3 +456,13 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
   position: relative;
   z-index: 1;
 }
+
+/* vΩ HARDKILL: remove any visible mesh/lines */
+.decision-field-root { opacity: 0.14 !important; }
+.decision-field-canvas { opacity: 0.12 !important; mix-blend-mode: normal !important; filter: none !important; }
+
+/* if lines are borders/dividers, kill them too (safe on home) */
+[data-page=home] .home-divider,
+[data-page=home] .home-block + .home-block,
+.products-item + .products-item,
+.site-header { border-color: color-mix(in oklab, var(--line-soft) 35%, transparent) !important; }
