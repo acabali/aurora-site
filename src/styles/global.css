@@ -46,19 +46,26 @@ a {
 
 .logo-lockup {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
   text-decoration: none;
 }
 
-.logo-symbol { display:block; width:22px; height:22px; }
-
+.logo-symbol {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex: 0 0 20px;
+  object-fit: contain;
+}
 
 .logo-wordmark {
   color: #ffffff;
-  font-size: 1rem;
+  font-size: 1.12rem;
+  line-height: 1;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .site-nav {
@@ -403,26 +410,3 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
     transition: none;
   }
 }
-
-/* vΩ brand lockup alignment */
-.logo-lockup{
-  align-items: center; /* baseline -> center */
-}
-
-.logo-symbol{
-  width: 22px;
-  height: 22px;
-  display: block;
-  flex: 0 0 22px;
-}
-
-/* Wordmark: misma altura óptica que el símbolo */
-.logo-wordmark{
-  font-size: 22px;
-  line-height: 22px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  transform: translateY(0.5px); /* micro ajuste óptico */
-}
-/* end vΩ brand lockup alignment */
