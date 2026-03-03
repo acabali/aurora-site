@@ -41,6 +41,12 @@ type RegimeConfig = {
 
 const RAF_KEY = "__auroraDecisionField";
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
+const STROKE_BASE = 1.0;
+const STROKE_ACTIVE = 1.2;
+const STROKE_DOMINANT = 1.8;
+const INITIAL_SPREAD = 0.82;
+const REORDER_STEP = 0.18;
+const SCROLL_DOMINANCE_MULTIPLIER = 0.65;
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -139,13 +145,11 @@ class DecisionFieldController {
   private dominantWeight = 1.2;
   private secondaryWeight = 1.1;
   private latentWeight = 0.85;
-  private transitionMs = 180;
   private fieldLineLatent = "rgba(232, 237, 245, 0.1)";
   private fieldLineActive = "rgba(232, 237, 245, 0.22)";
   private fieldNodeLatent = "rgba(232, 237, 245, 0.12)";
   private fieldNodeActive = "rgba(232, 237, 245, 0.3)";
   private fieldDominant = "rgba(232, 237, 245, 0.42)";
-  private lastRenderAt = performance.now();
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   private readonly mutationObserver = new MutationObserver(() => this.syncState());
@@ -240,7 +244,6 @@ class DecisionFieldController {
         "data-field-dominant-weight",
         "data-field-secondary-weight",
         "data-field-latent-weight",
-        "data-field-transition-ms",
       ],
     });
   }
@@ -263,7 +266,6 @@ class DecisionFieldController {
     this.dominantWeight = this.readWeight("fieldDominantWeight", 1.2);
     this.secondaryWeight = this.readWeight("fieldSecondaryWeight", 1.1);
     this.latentWeight = this.readWeight("fieldLatentWeight", 0.85);
-    this.transitionMs = this.readTransitionMs();
   }
 
   private syncPalette(): void {
@@ -322,12 +324,6 @@ class DecisionFieldController {
     const raw = Number.parseFloat(document.body.dataset[key] ?? "");
     if (!Number.isFinite(raw)) return fallback;
     return clamp(raw, 0, 2);
-  }
-
-  private readTransitionMs(): number {
-    const raw = Number.parseFloat(document.body.dataset.fieldTransitionMs ?? "");
-    if (!Number.isFinite(raw)) return 180;
-    return clamp(raw, 60, 400);
   }
 
   private syncSize(): void {
@@ -429,20 +425,15 @@ class DecisionFieldController {
     };
   }
 
-  private render(time: number): void {
-    const delta = Math.max(0, Math.min(64, time - this.lastRenderAt));
-    this.lastRenderAt = time;
-
-    const easeOut = 1 - Math.exp(-delta / this.transitionMs);
-    const progressEase = 1 - Math.exp(-delta / this.transitionMs);
+  private render(_time: number): void {
 
     const productTarget = this.productFocus ? 1 : 0;
-    this.productBlend += (productTarget - this.productBlend) * easeOut;
+    this.productBlend += (productTarget - this.productBlend) * REORDER_STEP;
 
     if (this.reducedMotion) {
       this.smoothedProgress = this.fieldProgress;
     } else {
-      this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * progressEase;
+      this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * REORDER_STEP;
     }
 
     const cfg = this.resolveConfig(this.smoothedProgress);
@@ -458,7 +449,7 @@ class DecisionFieldController {
   private updateNodes(cfg: RegimeConfig, progress: number): void {
     const center = this.regimeCenter(progress);
     const minDimension = Math.min(this.width, this.height);
-    const spreadRadius = minDimension * cfg.spread;
+    const spreadRadius = minDimension * cfg.spread * INITIAL_SPREAD;
 
     const velocityBias = Math.min(1, Number.parseFloat(document.body.dataset.scrollVelocity ?? "0") / 14);
     const groupPull =
@@ -696,21 +687,28 @@ class DecisionFieldController {
         const bDominant = j === this.dominantIndex;
         const aSecondary = this.secondaryIndices.has(i);
         const bSecondary = this.secondaryIndices.has(j);
+        const isDominant = aDominant || bDominant;
+        const isActive = aSecondary || bSecondary;
 
+        const scrollDominance = clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65);
+        const dominantMultiplier = this.dominantWeight + scrollDominance;
         let alpha = cfg.latentLineAlpha * t * this.latentWeight;
         let lineColor = this.fieldLineLatent;
-        let lineWidth = 1;
+        const lineWidth = isDominant
+          ? STROKE_DOMINANT
+          : isActive
+            ? STROKE_ACTIVE
+            : STROKE_BASE;
 
-        if (aDominant || bDominant) {
-          alpha = 0.4 * t * this.dominantWeight;
+        if (isDominant) {
+          alpha = 0.4 * t * dominantMultiplier;
           lineColor = this.fieldDominant;
-          lineWidth = 1.5;
-        } else if (aSecondary || bSecondary) {
+        } else if (isActive) {
           alpha = 0.28 * t * this.secondaryWeight;
           lineColor = this.fieldLineActive;
         }
 
-        if (this.algorithm === "signal" && !aDominant && !bDominant && !aSecondary && !bSecondary) {
+        if (this.algorithm === "signal" && !isDominant && !isActive) {
           continue;
         }
 
@@ -734,19 +732,21 @@ class DecisionFieldController {
 
       let radius = 1.8;
       let color = this.fieldNodeLatent;
-      let alpha = this.latentWeight;
+      let multiplier = this.latentWeight;
+      const baseWeight = 1;
 
       if (isDominant) {
         radius = 3.6;
         color = this.fieldDominant;
-        alpha = this.dominantWeight;
+        multiplier = this.dominantWeight + clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65);
       } else if (isSecondary) {
         radius = 2.5;
         color = this.fieldNodeActive;
-        alpha = this.secondaryWeight;
+        multiplier = this.secondaryWeight;
       }
 
-      this.ctx.globalAlpha = clamp(alpha, 0, 1);
+      const weight = baseWeight * multiplier;
+      this.ctx.globalAlpha = clamp(weight, 0, 1);
       this.ctx.fillStyle = color;
       this.ctx.beginPath();
       this.ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
