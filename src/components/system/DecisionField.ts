@@ -580,6 +580,11 @@ class DecisionFieldController {
   }
 
   private render(time: number): void {
+    if (this.fieldBlock === "hero") {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      return;
+    }
+
     const frameDt = Math.max(1, time - this.lastFrameTime);
     this.lastFrameTime = time;
 
