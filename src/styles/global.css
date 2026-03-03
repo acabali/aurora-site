@@ -53,12 +53,6 @@ a {
 
 .logo-symbol { display:block; width:22px; height:22px; }
 
-.logo-symbol::after {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border: 1px solid var(--text-main);
-}
 
 .logo-wordmark {
   color: #ffffff;
