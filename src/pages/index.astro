@@ -78,9 +78,10 @@ const advancedSystems = [
         <p class="line-body">{binary.after}</p>
       </section>
 
-      <section id="productos" class="home-block" data-field-stage="0.90">
+      <section id="productos" class="home-block products-anchor" data-field-stage="0.90">
         <p class="micro-title">{capabilities.title}</p>
-        <p class="line-body">{demoCta.lead}</p>
+        <p class="declaration">{demoCta.lead}</p>
+        <p class="line-body">Selector de algoritmo operativo.</p>
       </section>
 
       <section class="home-block" data-field-stage="1.00">
@@ -92,7 +93,7 @@ const advancedSystems = [
   </main>
 
   <aside id="products-menu" class="products-menu" data-products-menu hidden>
-    <div class="products-wrap">
+    <div class="products-wrap" role="dialog" aria-label="Selector de algoritmo">
       <p class="products-group-title">MOTOR ESTRUCTURAL</p>
       <ul class="products-list">
         {motorGroup.items.map((item) => (

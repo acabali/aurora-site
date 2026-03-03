@@ -7,8 +7,8 @@
   --fs-body: 16px;
 
   --bg-base: #07090f;
-  --bg-deep: #07090f;
-  --bg-layer: #0f131d;
+  --bg-deep: #0c111a;
+  --bg-layer: #131a24;
 
   --text-main: #e8edf5;
   --text-dim: #9aa6b2;
@@ -40,7 +40,8 @@
 
   --field-line-latent: rgba(232, 237, 245, 0.08);
   --field-line-active: rgba(232, 237, 245, 0.22);
-  --field-node-latent: rgba(232, 237, 245, 0.12);
-  --field-node-active: rgba(232, 237, 245, 0.3);
-  --field-dominant: rgba(232, 237, 245, 0.48);
+  --field-dominant: rgba(232, 237, 245, 0.52);
+  --field-node-latent: rgba(232, 237, 245, 0.18);
+  --field-node-active: rgba(232, 237, 245, 0.4);
+  --field-node-dominant: rgba(79, 60, 140, 0.92);
 }
