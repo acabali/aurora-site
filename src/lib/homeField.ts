@@ -4,9 +4,9 @@ type StagePoint = {
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const FIELD_DOMINANT_WEIGHT = 1.2;
-const FIELD_SECONDARY_WEIGHT = 1.1;
-const FIELD_LATENT_WEIGHT = 0.85;
+const DOMINANT_MULTIPLIER = 1.28;
+const SECONDARY_MULTIPLIER = 1.12;
+const LATENT_MULTIPLIER = 0.75;
 const FIELD_TRANSITION_MS = 180;
 
 const regimeFromProgress = (progress: number): string => {
@@ -118,11 +118,10 @@ export function mountHomeField(): () => void {
     body.dataset.fieldProgress = bounded.toFixed(4);
     body.dataset.regime = regimeFromProgress(bounded);
     body.dataset.scrollVelocity = clamp(smoothedVelocity, 0, 14).toFixed(3);
-    body.dataset.fieldDominantWeight = FIELD_DOMINANT_WEIGHT.toFixed(2);
-    body.dataset.fieldSecondaryWeight = FIELD_SECONDARY_WEIGHT.toFixed(2);
-    body.dataset.fieldLatentWeight = FIELD_LATENT_WEIGHT.toFixed(2);
+    body.dataset.fieldDominantWeight = DOMINANT_MULTIPLIER.toFixed(2);
+    body.dataset.fieldSecondaryWeight = SECONDARY_MULTIPLIER.toFixed(2);
+    body.dataset.fieldLatentWeight = LATENT_MULTIPLIER.toFixed(2);
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
-    body.dataset.fieldTransitionEasing = "ease-out";
   };
 
   const refreshField = (): void => {

@@ -38,9 +38,9 @@
   --duration-mid: 260ms;
   --duration-field: 180ms;
 
-  --field-line-latent: rgba(232, 237, 245, 0.1);
+  --field-line-latent: rgba(232, 237, 245, 0.08);
   --field-line-active: rgba(232, 237, 245, 0.22);
   --field-node-latent: rgba(232, 237, 245, 0.12);
   --field-node-active: rgba(232, 237, 245, 0.3);
-  --field-dominant: rgba(232, 237, 245, 0.42);
+  --field-dominant: rgba(232, 237, 245, 0.48);
 }
