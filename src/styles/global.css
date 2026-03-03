@@ -438,3 +438,21 @@ body[data-page="home"][data-field-block] [data-field-block][data-field-active="t
     transition: none;
   }
 }
+
+/* vΩ: HARD KILL field lines under HERO (no mask heuristics) */
+[data-page=home] .home-hero {
+  position: relative;
+  isolation: isolate;
+}
+[data-page=home] .home-hero::after{
+  content:"";
+  position:absolute;
+  inset:-80px -24px -24px -24px;
+  background: var(--bg-base);
+  z-index: 0;
+  pointer-events:none;
+}
+[data-page=home] .home-hero > *{
+  position: relative;
+  z-index: 1;
+}
