@@ -57,7 +57,6 @@ const STROKE_DOMINANT = 2.2;
 const INITIAL_SPREAD = 0.78;
 const SMOOTHING_FACTOR = 0.18;
 const SCROLL_DOMINANCE_MULTIPLIER = 0.85;
-const DEFAULT_TRANSITION_MS = 180;
 const BASE_PRODUCT_PROFILE: ProductProfile = {
   dominantBoost: 0,
   secondaryBoost: 0,
@@ -161,8 +160,6 @@ class DecisionFieldController {
   private groupFocus: GroupFocus = "";
   private productBlend = 0;
   private targetProductBlend = 0;
-  private lastFrameTime = performance.now();
-  private fieldTransitionMs = DEFAULT_TRANSITION_MS;
   private profileCurrent: ProductProfile = { ...BASE_PRODUCT_PROFILE };
   private profileTarget: ProductProfile = { ...BASE_PRODUCT_PROFILE };
   private fieldProgress = 0;
@@ -179,37 +176,44 @@ class DecisionFieldController {
   private fieldDominant = "rgba(232, 237, 245, 0.42)";
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-  private readonly mutationObserver = new MutationObserver(() => this.syncState());
+  private readonly mutationObserver = new MutationObserver(() => {
+    this.syncState();
+    this.scheduleRender();
+  });
 
   private readonly onResize = () => {
     this.syncSize();
     this.syncPalette();
     this.ensureNodeCount();
     this.clampNodes();
-    this.render(performance.now());
+    this.render();
+    this.scheduleRender();
   };
 
   private readonly onVisibility = () => {
-    if (document.visibilityState === "visible") {
-      this.start();
-    } else {
+    if (document.visibilityState !== "visible") {
       this.stop();
+      return;
     }
+    this.render();
+    this.scheduleRender();
   };
 
   private readonly onReduceMotionChange = () => {
     this.reducedMotion = this.mediaQuery.matches;
     if (this.reducedMotion) {
       this.stop();
-      this.render(performance.now());
+      this.render();
       return;
     }
-    this.start();
+    this.render();
+    this.scheduleRender();
   };
 
-  private readonly frame = (time: number) => {
-    this.raf = window.requestAnimationFrame(this.frame);
-    this.render(time);
+  private readonly frame = () => {
+    this.raf = 0;
+    this.render();
+    this.scheduleRender();
   };
 
   constructor(root: HTMLElement) {
@@ -234,11 +238,8 @@ class DecisionFieldController {
     this.ensureNodeCount();
     this.bind();
 
-    if (!this.reducedMotion && document.visibilityState === "visible") {
-      this.start();
-    } else {
-      this.render(performance.now());
-    }
+    this.render();
+    this.scheduleRender();
   }
 
   destroy(): void {
@@ -272,7 +273,6 @@ class DecisionFieldController {
         "data-field-secondary-weight",
         "data-field-latent-weight",
         "data-field-block",
-        "data-field-transition-ms",
       ],
     });
   }
@@ -296,7 +296,6 @@ class DecisionFieldController {
     this.groupFocus = nextGroup;
     this.fieldProgress = nextProgress;
     this.fieldBlock = this.readFieldBlock();
-    this.fieldTransitionMs = this.readFieldTransitionMs();
     this.targetProductBlend = nextProduct ? 1 : 0;
 
     if (productChanged && this.productFocus && nextProduct) {
@@ -378,12 +377,6 @@ class DecisionFieldController {
     return raw;
   }
 
-  private readFieldTransitionMs(): number {
-    const raw = Number.parseFloat(document.body.dataset.fieldTransitionMs ?? "");
-    if (!Number.isFinite(raw)) return DEFAULT_TRANSITION_MS;
-    return clamp(raw, 120, 480);
-  }
-
   private syncSize(): void {
     this.width = Math.max(1, window.innerWidth);
     this.height = Math.max(1, window.innerHeight);
@@ -442,7 +435,7 @@ class DecisionFieldController {
   }
 
   private start(): void {
-    if (this.raf !== 0 || this.reducedMotion) return;
+    if (this.raf !== 0 || this.reducedMotion || document.visibilityState !== "visible") return;
     this.raf = window.requestAnimationFrame(this.frame);
   }
 
@@ -450,6 +443,45 @@ class DecisionFieldController {
     if (this.raf === 0) return;
     window.cancelAnimationFrame(this.raf);
     this.raf = 0;
+  }
+
+  private shouldAnimate(): boolean {
+    if (this.reducedMotion) return false;
+
+    if (Math.abs(this.productBlend - this.targetProductBlend) > 0.001) return true;
+    if (Math.abs(this.smoothedProgress - this.fieldProgress) > 0.0008) return true;
+
+    const profileKeys: Array<keyof ProductProfile> = [
+      "dominantBoost",
+      "secondaryBoost",
+      "latentBoost",
+      "strokeBoost",
+      "opacityBoost",
+      "pullBoost",
+      "densityShift",
+    ];
+
+    for (const key of profileKeys) {
+      if (Math.abs(this.profileCurrent[key] - this.profileTarget[key]) > 0.001) {
+        return true;
+      }
+    }
+
+    for (const node of this.nodes) {
+      if (Math.abs(node.vx) > 0.02 || Math.abs(node.vy) > 0.02) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private scheduleRender(): void {
+    if (this.shouldAnimate()) {
+      this.start();
+      return;
+    }
+    this.stop();
   }
 
   private regimeToProgress(regime: Regime): number {
@@ -481,11 +513,6 @@ class DecisionFieldController {
       secondaryCount: p >= 0.72 ? 3 : 4,
       latentLineAlpha: start.latentLineAlpha + (end.latentLineAlpha - start.latentLineAlpha) * p,
     };
-  }
-
-  private easeOutStep(deltaMs: number, durationMs: number): number {
-    const ratio = clamp(deltaMs / Math.max(1, durationMs), 0, 1);
-    return 1 - Math.pow(1 - ratio, 3);
   }
 
   private mixValue(current: number, target: number, step: number): number {
@@ -579,11 +606,8 @@ class DecisionFieldController {
     return profile;
   }
 
-  private render(time: number): void {
-    const frameDt = Math.max(1, time - this.lastFrameTime);
-    this.lastFrameTime = time;
-
-    const step = this.reducedMotion ? 1 : this.easeOutStep(frameDt, this.fieldTransitionMs);
+  private render(): void {
+    const step = this.reducedMotion ? 1 : SMOOTHING_FACTOR;
     this.productBlend = this.mixValue(this.productBlend, this.targetProductBlend, step);
     this.profileCurrent = this.mixProfile(this.profileCurrent, this.profileTarget, step);
 

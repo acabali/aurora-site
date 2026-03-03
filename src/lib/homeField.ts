@@ -81,7 +81,7 @@ export function mountHomeField(): () => void {
   let isMenuOpen = false;
   let smoothedVelocity = 0;
   let lastY = window.scrollY;
-  let lastT = performance.now();
+  let lastT = Date.now();
   let stagePoints = readStagePoints(stageNodes);
 
   const getFocusableMenuNodes = (): HTMLElement[] => {
@@ -208,7 +208,7 @@ export function mountHomeField(): () => void {
   };
 
   const onScroll = (): void => {
-    const now = performance.now();
+    const now = Date.now();
     const dy = window.scrollY - lastY;
     const dt = Math.max(1, now - lastT);
 
