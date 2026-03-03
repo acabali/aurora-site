@@ -42,11 +42,11 @@ type RegimeConfig = {
 const RAF_KEY = "__auroraDecisionField";
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
 const STROKE_BASE = 1.0;
-const STROKE_ACTIVE = 1.2;
-const STROKE_DOMINANT = 1.8;
-const INITIAL_SPREAD = 0.82;
-const REORDER_STEP = 0.18;
-const SCROLL_DOMINANCE_MULTIPLIER = 0.65;
+const STROKE_ACTIVE = 1.25;
+const STROKE_DOMINANT = 2.0;
+const INITIAL_SPREAD = 0.78;
+const SMOOTHING_FACTOR = 0.18;
+const SCROLL_DOMINANCE_MULTIPLIER = 0.75;
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -149,6 +149,7 @@ class DecisionFieldController {
   private fieldLineActive = "rgba(232, 237, 245, 0.22)";
   private fieldNodeLatent = "rgba(232, 237, 245, 0.12)";
   private fieldNodeActive = "rgba(232, 237, 245, 0.3)";
+  private fieldNodeDominant = "rgba(79, 60, 140, 0.92)";
   private fieldDominant = "rgba(232, 237, 245, 0.42)";
 
   private readonly mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -274,6 +275,8 @@ class DecisionFieldController {
     this.fieldLineActive = style.getPropertyValue("--field-line-active").trim() || this.fieldLineActive;
     this.fieldNodeLatent = style.getPropertyValue("--field-node-latent").trim() || this.fieldNodeLatent;
     this.fieldNodeActive = style.getPropertyValue("--field-node-active").trim() || this.fieldNodeActive;
+    this.fieldNodeDominant =
+      style.getPropertyValue("--field-node-dominant").trim() || this.fieldNodeDominant;
     this.fieldDominant = style.getPropertyValue("--field-dominant").trim() || this.fieldDominant;
   }
 
@@ -428,12 +431,12 @@ class DecisionFieldController {
   private render(_time: number): void {
 
     const productTarget = this.productFocus ? 1 : 0;
-    this.productBlend += (productTarget - this.productBlend) * REORDER_STEP;
+    this.productBlend += (productTarget - this.productBlend) * SMOOTHING_FACTOR;
 
     if (this.reducedMotion) {
       this.smoothedProgress = this.fieldProgress;
     } else {
-      this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * REORDER_STEP;
+      this.smoothedProgress += (this.fieldProgress - this.smoothedProgress) * SMOOTHING_FACTOR;
     }
 
     const cfg = this.resolveConfig(this.smoothedProgress);
@@ -737,7 +740,7 @@ class DecisionFieldController {
 
       if (isDominant) {
         radius = 3.6;
-        color = this.fieldDominant;
+        color = this.fieldNodeDominant;
         multiplier = this.dominantWeight + clamp(this.smoothedProgress * SCROLL_DOMINANCE_MULTIPLIER, 0, 0.65);
       } else if (isSecondary) {
         radius = 2.5;

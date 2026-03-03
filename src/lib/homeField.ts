@@ -4,10 +4,11 @@ type StagePoint = {
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const DOMINANT_MULTIPLIER = 1.28;
-const SECONDARY_MULTIPLIER = 1.12;
-const LATENT_MULTIPLIER = 0.75;
+const DOMINANT_MULTIPLIER = 1.35;
+const SECONDARY_MULTIPLIER = 1.15;
+const LATENT_MULTIPLIER = 0.7;
 const FIELD_TRANSITION_MS = 180;
+const SMOOTHING_FACTOR = 0.18;
 
 const regimeFromProgress = (progress: number): string => {
   if (progress < 0.16) return "unstable";
@@ -192,7 +193,7 @@ export function mountHomeField(): () => void {
     lastT = now;
 
     const instantVelocity = clamp((Math.abs(dy) / dt) * 18, 0, 14);
-    smoothedVelocity += (instantVelocity - smoothedVelocity) * 0.3;
+    smoothedVelocity += (instantVelocity - smoothedVelocity) * SMOOTHING_FACTOR;
 
     refreshField();
   };
