@@ -38,10 +38,10 @@
   --duration-mid: 260ms;
   --duration-field: 180ms;
 
-  --field-line-latent: rgba(232, 237, 245, 0.08);
-  --field-line-active: rgba(232, 237, 245, 0.22);
+  --field-line-latent: rgba(232, 237, 245, 0.06);
+  --field-line-active: rgba(232, 237, 245, 0.2);
   --field-dominant: rgba(232, 237, 245, 0.52);
   --field-node-latent: rgba(232, 237, 245, 0.18);
   --field-node-active: rgba(232, 237, 245, 0.4);
-  --field-node-dominant: rgba(79, 60, 140, 0.92);
+  --field-node-dominant: rgba(74, 68, 116, 0.84);
 }

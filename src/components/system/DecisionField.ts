@@ -41,12 +41,12 @@ type RegimeConfig = {
 
 const RAF_KEY = "__auroraDecisionField";
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const STROKE_BASE = 1.0;
-const STROKE_ACTIVE = 1.25;
-const STROKE_DOMINANT = 2.0;
+const STROKE_BASE = 0.9;
+const STROKE_ACTIVE = 1.35;
+const STROKE_DOMINANT = 2.2;
 const INITIAL_SPREAD = 0.78;
 const SMOOTHING_FACTOR = 0.18;
-const SCROLL_DOMINANCE_MULTIPLIER = 0.75;
+const SCROLL_DOMINANCE_MULTIPLIER = 0.85;
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
   "scenario",
@@ -142,6 +142,7 @@ class DecisionFieldController {
   private productBlend = 0;
   private fieldProgress = 0;
   private smoothedProgress = 0;
+  private fieldBlock = "hero";
   private dominantWeight = 1.2;
   private secondaryWeight = 1.1;
   private latentWeight = 0.85;
@@ -245,6 +246,7 @@ class DecisionFieldController {
         "data-field-dominant-weight",
         "data-field-secondary-weight",
         "data-field-latent-weight",
+        "data-field-block",
       ],
     });
   }
@@ -264,6 +266,7 @@ class DecisionFieldController {
     this.productFocus = nextProduct;
     this.groupFocus = nextGroup;
     this.fieldProgress = nextProgress;
+    this.fieldBlock = this.readFieldBlock();
     this.dominantWeight = this.readWeight("fieldDominantWeight", 1.2);
     this.secondaryWeight = this.readWeight("fieldSecondaryWeight", 1.1);
     this.latentWeight = this.readWeight("fieldLatentWeight", 0.85);
@@ -329,6 +332,12 @@ class DecisionFieldController {
     return clamp(raw, 0, 2);
   }
 
+  private readFieldBlock(): string {
+    const raw = (document.body.dataset.fieldBlock ?? "hero").trim();
+    if (!raw) return "hero";
+    return raw;
+  }
+
   private syncSize(): void {
     this.width = Math.max(1, window.innerWidth);
     this.height = Math.max(1, window.innerHeight);
@@ -342,7 +351,7 @@ class DecisionFieldController {
   }
 
   private targetNodeCount(): number {
-    return 22;
+    return 20;
   }
 
   private ensureNodeCount(): void {
@@ -495,10 +504,29 @@ class DecisionFieldController {
     const endX = this.width * 0.5;
     const startY = this.height * 0.48;
     const endY = this.height * 0.5;
-    return {
+    const base = {
       x: startX + (endX - startX) * p,
       y: startY + (endY - startY) * p,
     };
+    return this.applyBlockBias(base);
+  }
+
+  private applyBlockBias(center: { x: number; y: number }): { x: number; y: number } {
+    switch (this.fieldBlock) {
+      case "block-0":
+        return { x: center.x - this.width * 0.015, y: center.y - this.height * 0.01 };
+      case "block-1":
+        return { x: center.x + this.width * 0.01, y: center.y - this.height * 0.008 };
+      case "block-2":
+        return { x: center.x - this.width * 0.012, y: center.y + this.height * 0.008 };
+      case "block-3":
+        return { x: center.x + this.width * 0.012, y: center.y + this.height * 0.012 };
+      case "block-4":
+        return { x: center.x, y: center.y + this.height * 0.016 };
+      case "hero":
+      default:
+        return center;
+    }
   }
 
   private nodeTarget(

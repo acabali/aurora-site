@@ -11,16 +11,23 @@ const { hero, blocks } = home_narrativa_ajustada;
 
   <main class="home-main home-surface">
     <article class="home-column home-stack">
-      <section class="home-block home-hero" data-field-stage="0.08">
+      <section class="home-block home-hero" data-field-stage="0.08" data-field-block="hero" data-field-role="hero">
         <h1 class="hero-title">{hero.lines[0]}</h1>
-        {hero.lines.slice(1).map((line) => (
-          <p class="declaration">{line}</p>
-        ))}
+        <div class="hero-declarations" data-field-role="hero-lines">
+          {hero.lines.slice(1).map((line) => (
+            <p class="declaration">{line}</p>
+          ))}
+        </div>
         <a href="/demo" class="home-cta">{hero.cta}</a>
       </section>
 
       {blocks.map((block, index) => (
-        <section class={`home-block ${index === 0 ? "home-divider" : ""}`} data-field-stage={String(0.2 + index * 0.16)}>
+        <section
+          class={`home-block ${index === 0 ? "home-divider" : ""}`}
+          data-field-stage={String(0.2 + index * 0.16)}
+          data-field-block={`block-${index}`}
+          data-field-role="section"
+        >
           <p class="micro-title">{block.title}</p>
           {block.lines.map((line) => (
             <p class="declaration">{line}</p>

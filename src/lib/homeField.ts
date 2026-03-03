@@ -1,12 +1,13 @@
 type StagePoint = {
   top: number;
   value: number;
+  block: string;
 };
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const DOMINANT_MULTIPLIER = 1.35;
-const SECONDARY_MULTIPLIER = 1.15;
-const LATENT_MULTIPLIER = 0.7;
+const DOMINANT_MULTIPLIER = 1.45;
+const SECONDARY_MULTIPLIER = 1.18;
+const LATENT_MULTIPLIER = 0.65;
 const FIELD_TRANSITION_MS = 180;
 const SMOOTHING_FACTOR = 0.18;
 
@@ -24,9 +25,11 @@ const readStagePoints = (stageNodes: HTMLElement[]): StagePoint[] => {
     .map((node) => {
       const raw = Number.parseFloat(node.dataset.fieldStage ?? "0");
       const top = window.scrollY + node.getBoundingClientRect().top;
+      const block = (node.dataset.fieldBlock ?? "").trim() || "hero";
       return {
         top,
         value: Number.isFinite(raw) ? clamp(raw, 0, 1) : 0,
+        block,
       };
     })
     .sort((a, b) => a.top - b.top);
@@ -49,6 +52,19 @@ const interpolateProgress = (points: StagePoint[], probe: number): number => {
   }
 
   return points[points.length - 1].value;
+};
+
+const resolveActiveBlock = (points: StagePoint[], probe: number): string => {
+  if (!points.length) return "hero";
+  let active = points[0].block;
+  for (const point of points) {
+    if (probe >= point.top) {
+      active = point.block;
+      continue;
+    }
+    break;
+  }
+  return active;
 };
 
 export function mountHomeField(): () => void {
@@ -128,6 +144,11 @@ export function mountHomeField(): () => void {
   const refreshField = (): void => {
     const probe = window.scrollY + window.innerHeight * 0.28;
     const progress = interpolateProgress(stagePoints, probe);
+    const activeBlock = resolveActiveBlock(stagePoints, probe);
+    body.dataset.fieldBlock = activeBlock;
+    for (const node of stageNodes) {
+      node.dataset.fieldActive = node.dataset.fieldBlock === activeBlock ? "true" : "false";
+    }
     writeFieldState(progress);
   };
 

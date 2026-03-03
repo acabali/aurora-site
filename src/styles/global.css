@@ -40,8 +40,8 @@ a {
   min-height: 68px;
   padding: 16px var(--gutter);
   background: color-mix(in oklab, var(--bg-deep) 92%, transparent);
-  border-bottom: 1px solid var(--line-soft);
-  backdrop-filter: blur(4px);
+  border-bottom: 1px solid color-mix(in oklab, var(--line-soft) 82%, transparent);
+  backdrop-filter: blur(2px);
 }
 
 .logo-lockup {
@@ -85,14 +85,14 @@ a {
   position: relative;
   display: inline-flex;
   align-items: center;
-  min-height: 44px;
+  min-height: 42px;
   padding: 0;
   border: 0;
   background: transparent;
   color: var(--text-main);
   font-family: inherit;
-  font-size: 0.94rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 520;
   text-decoration: none;
   cursor: pointer;
   transition: color var(--duration-field) ease-out;
@@ -101,7 +101,7 @@ a {
 .header-action::before {
   content: "|";
   color: var(--text-dim);
-  margin-right: 12px;
+  margin-right: 9px;
 }
 
 .site-nav .header-action:first-child::before {
@@ -117,6 +117,11 @@ a {
 .header-action:focus-visible {
   outline: 1px solid var(--text-main);
   outline-offset: 6px;
+}
+
+.header-action-demo {
+  font-weight: 540;
+  letter-spacing: 0.01em;
 }
 
 .decision-field-root {
@@ -137,7 +142,7 @@ a {
   z-index: 12;
   overflow-x: clip;
   background: transparent;
-  padding: calc(68px + var(--space-12)) var(--gutter) var(--space-30);
+  padding: calc(68px + var(--space-16)) var(--gutter) var(--space-30);
 }
 
 [data-page="home"] .home-column {
@@ -147,21 +152,22 @@ a {
 }
 
 [data-page="home"] .home-stack > section + section {
-  margin-top: var(--space-30);
+  margin-top: var(--space-24);
 }
 
 [data-page="home"] .home-block {
   display: flex;
   flex-direction: column;
-  gap: var(--space-12);
+  gap: var(--space-8);
+  max-width: 65ch;
 }
 
 [data-page="home"] .hero-title {
   margin: 0;
-  max-width: 20ch;
-  font-size: var(--fs-h1);
-  font-weight: 500;
-  line-height: 1.1;
+  max-width: 17ch;
+  font-size: clamp(2.5rem, 6.6vw, 3.9rem);
+  font-weight: 550;
+  line-height: 1.02;
 }
 
 [data-page="home"] .hero-subtitle,
@@ -175,15 +181,16 @@ a {
 [data-page="home"] .declaration {
   margin: 0;
   font-size: clamp(1.18rem, 2.4vw, 1.7rem);
-  line-height: 1.18;
+  line-height: 1.13;
   font-weight: 500;
+  max-width: 62ch;
 }
 
 [data-page="home"] .micro-title {
   margin: 0;
   font-family: var(--font-tech);
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
+  font-size: 0.71rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-dim);
 }
@@ -192,14 +199,15 @@ a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 42px;
   width: fit-content;
   color: var(--text-main);
   text-decoration: none;
-  border-bottom: 1px solid var(--line-soft);
-  padding: 0;
-  font-size: 0.95rem;
-  font-weight: 500;
+  border: 1px solid var(--line-soft);
+  padding: 0 14px;
+  font-size: 0.89rem;
+  font-weight: 560;
+  letter-spacing: 0.015em;
   transition: color var(--duration-field) ease-out, border-color var(--duration-field) ease-out;
 }
 
@@ -322,12 +330,36 @@ body[data-products-open="true"] .products-menu {
 }
 
 [data-page="home"] .home-hero {
-  margin-top: var(--space-6);
+  margin-top: var(--space-10);
+  gap: var(--space-10);
+}
+
+[data-page="home"] .hero-declarations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
 [data-page="home"] .home-divider {
   border-top: 1px solid var(--line-soft);
-  padding-top: var(--space-12);
+  padding-top: var(--space-10);
+}
+
+[data-page="home"] .home-block + .home-block {
+  border-top: 1px solid color-mix(in oklab, var(--line-soft) 72%, transparent);
+  padding-top: var(--space-10);
+}
+
+body[data-page="home"][data-field-block] [data-field-block] {
+  transition: opacity var(--duration-fast) linear;
+}
+
+body[data-page="home"][data-field-block] [data-field-block] {
+  opacity: 0.88;
+}
+
+body[data-page="home"][data-field-block] [data-field-block][data-field-active="true"] {
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -349,11 +381,11 @@ body[data-products-open="true"] .products-menu {
   }
 
   [data-page="home"] .home-stack > section + section {
-    margin-top: var(--space-30);
+    margin-top: var(--space-20);
   }
 
   [data-page="home"] .home-block {
-    gap: var(--space-12);
+    gap: var(--space-8);
   }
 
   .products-menu {
