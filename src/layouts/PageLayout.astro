@@ -1,3 +1,4 @@
+import LogoSymbol from "@/components/brand/LogoSymbol.astro";
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
@@ -22,8 +23,8 @@ const buildMarker =
   <body data-page={page} data-algorithm="core">
     <header class="site-header">
       <a href="/" class="logo-lockup" aria-label="Aurora">
-        <img src="/aurora-logo.png" alt="" class="logo-symbol" width="22" height="22" loading="eager" decoding="async" />
-        <span class="logo-wordmark">AURORA</span>
+        <LogoSymbol />
+<span class="logo-wordmark">AURORA</span>
       </a>
 
       <nav class="site-nav" aria-label="Principal">
