@@ -97,6 +97,18 @@ sleep 6
 HTML=$(curl -fsSL "$ALIAS")
 
 # -----------------------------------
+# 8A Verificar headers de producción
+# -----------------------------------
+
+echo
+echo "== HEADERS CHECK =="
+HEADERS=$(curl -fsSI "$ALIAS/?bust=$(date +%s)")
+echo "$HEADERS" | rg -n "HTTP/|content-type:|cache-control:|x-vercel-id:|server:" || true
+echo "$HEADERS" | rg -qi "^content-type:" || { echo "❌ header faltante: content-type"; exit 1; }
+echo "$HEADERS" | rg -qi "^cache-control:" || { echo "❌ header faltante: cache-control"; exit 1; }
+echo "✔ headers críticos OK"
+
+# -----------------------------------
 # 9 Validar commit desplegado
 # -----------------------------------
 
@@ -123,9 +135,9 @@ echo "✔ build sincronizado"
 echo
 echo "== UI CHECK =="
 
-echo "$HTML" | rg "SYSTEM MODULES" >/dev/null || { echo "❌ marker faltante"; exit 1; }
+echo "$HTML" | rg "MÓDULOS DEL SISTEMA" >/dev/null || { echo "❌ marker faltante"; exit 1; }
 
-echo "$HTML" | rg "ADVANCED CAPABILITIES" >/dev/null || { echo "❌ marker faltante"; exit 1; }
+echo "$HTML" | rg "CAPACIDADES AVANZADAS" >/dev/null || { echo "❌ marker faltante"; exit 1; }
 
 echo "✔ UI markers OK"
 
