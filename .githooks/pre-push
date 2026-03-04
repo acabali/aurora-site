@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 set -e
 
-echo "Aurora Guard: verificando build..."
+echo "Aurora Safety Net: pre-push check"
 
-pnpm -s build >/dev/null
-
-if [ $? -ne 0 ]; then
-  echo "ABORT: build falla"
+# repo limpio
+if [ -n "$(git status --porcelain)" ]; then
+  echo "❌ ERROR: repo sucio"
   exit 1
 fi
 
-echo "OK: build válido"
+# build obligatorio
+echo "build test..."
+pnpm -s build >/dev/null
 
+echo "✔ build OK"

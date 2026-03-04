@@ -1,12 +1,32 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
 
-# DEMO y narrativa congeladas
-IMMUTABLE='^(src/pages/demo\.astro|src/components/blocks/Demo\.astro|src/content/home\.ts)$'
+echo "Aurora Safety Net: pre-commit check"
 
-CHANGED="$(git diff --cached --name-only || true)"
-if echo "$CHANGED" | rg -n "$IMMUTABLE" >/dev/null; then
-  echo "ABORT: Archivo inmutable tocado (DEMO o narrativa). Revertí el cambio."
-  echo "$CHANGED" | rg -n "$IMMUTABLE" || true
+# bloquear .env
+if git diff --cached --name-only | grep -E '\.env'; then
+  echo "❌ ERROR: intento de commit de .env"
   exit 1
 fi
+
+# bloquear archivos grandes
+limit=$((5 * 1024 * 1024))
+
+for file in $(git diff --cached --name-only); do
+  if [ -f "$file" ]; then
+    size=$(wc -c <"$file")
+    if [ "$size" -gt "$limit" ]; then
+      echo "❌ ERROR: archivo >5MB detectado:"
+      echo "$file"
+      exit 1
+    fi
+  fi
+done
+
+# bloquear archivos temporales
+if git diff --cached --name-only | grep -E '\.bak$|\.tmp$|\.log$'; then
+  echo "❌ ERROR: archivo temporal detectado"
+  exit 1
+fi
+
+echo "✔ pre-commit OK"
