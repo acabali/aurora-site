@@ -1,39 +1,32 @@
 ---
-import "../styles/tokens.css";
-import "../styles/global.css";
-
-interface Props {
-  title?: string;
-  page?: "home" | "demo" | "default";
-}
-
-const { title = "Aurora", page = "default" } = Astro.props;
-const buildMarker =
-  import.meta.env.VERCEL_GIT_COMMIT_SHA ||
-  import.meta.env.VERCEL_GITHUB_COMMIT_SHA ||
-  "local";
+const { title = "Aurora" } = Astro.props;
+const buildMarker = Date.now();
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{title}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
+
+    <link rel="stylesheet" href="/src/styles/tokens.css" />
+    <link rel="stylesheet" href="/src/styles/global.css" />
   </head>
-  <body data-page={page} data-build={buildMarker} data-story="AURORA-VOMEGA">
+
+  <body data-build={buildMarker} data-story="AURORA-VOMEGA">
+
     <header class="site-header" data-header>
       <div class="header-left">
         <a href="/" class="brand" aria-label="Aurora">
-        <img class="brand-logo" src="/aurora-logo.png" alt="" aria-hidden="true" />
-        <span class="brand-name">AURORA</span>
-      </a>
+          <img
+            src="/aurora-logo.png"
+            alt=""
+            class="brand-logo"
+            aria-hidden="true"
+          />
+          <span class="brand-name">AURORA</span>
+        </a>
       </div>
 
       <nav class="site-nav" aria-label="Principal">
@@ -48,6 +41,9 @@ const buildMarker =
       </div>
     </header>
 
-    <slot />
+    <main class="site-main">
+      <slot />
+    </main>
+
   </body>
 </html>
