@@ -1,191 +1,162 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
-import HeroDecisionField from "../components/HeroDecisionField.astro";
+import DecisionField from "../components/system/DecisionField.astro";
 ---
 
 <PageLayout title="Aurora vΩ" page="home">
-  <main class="aurora-main">
-    <HeroDecisionField />
+  <DecisionField />
 
-    <section id="capabilities" class="narrative-section stage-capabilities" data-stage="CAPABILITIES" data-reveal>
-      <header class="stage-head">
-        <p class="stage-kicker">CAPABILITIES</p>
-        <h2 class="stage-title">System capabilities designed for live decision pressure.</h2>
-      </header>
+  <main id="field" class="home-main">
+    <section class="section-block section-hero" id="hero" data-field-stage="0.00" data-field-block="hero">
+      <p class="section-id">01 HERO</p>
+      <h1>El límite humano ya no alcanza.</h1>
 
-      <div class="capability-grid">
-        <article class="capability-card panel" data-magnetic>
-          <h3>Counterfactual Generator</h3>
-          <p>Expands possible futures and ranks outcomes by capital efficiency.</p>
-        </article>
-        <article class="capability-card panel" data-magnetic>
-          <h3>Regime Detection</h3>
-          <p>Detects structural shifts before they cascade into operating losses.</p>
-        </article>
-        <article class="capability-card panel" data-magnetic>
-          <h3>Signal Compression</h3>
-          <p>Filters noise and elevates causal signals for immediate execution.</p>
-        </article>
+      <p>El mercado ya no compite con personas.</p>
+      <p>Compite con sistemas.</p>
+      <p>Quedarse en intuición</p>
+      <p>es quedar fuera del juego real.</p>
+      <p>Aurora no mejora decisiones.</p>
+      <p>Desplaza el límite humano por el cálculo permanente.</p>
+      <p>No es digitalización.</p>
+      <p>Es sustitución operativa.</p>
+
+      <a class="main-cta" href="/demo">Poner una decisión bajo evidencia</a>
+    </section>
+
+    <section class="section-block" id="change" data-field-stage="0.16" data-field-block="change">
+      <p class="section-id">02 QUÉ CAMBIÓ</p>
+      <h2>La forma de operar cambió.</h2>
+      <p>Validar antes de actuar ya es posible.</p>
+      <p>La validación previa no es mejora.</p>
+      <p>Es condición de entrada.</p>
+      <p>La precisión no optimiza.</p>
+      <p>Define quién compite.</p>
+    </section>
+
+    <section class="section-block" id="misfit" data-field-stage="0.34" data-field-block="misfit">
+      <p class="section-id">03 DESAJUSTE</p>
+      <p>
+        Hoy es más barato y más eficiente operar con capacidad algorítmica que con estructura inflada.
+      </p>
+      <p>La ventaja ya no está en crecer.</p>
+      <p>Está en procesar mejor.</p>
+      <p>
+        Seguir expandiendo capas humanas cuando el cálculo ya es superior no es cultura.
+      </p>
+      <p>Es desventaja.</p>
+      <p>El mercado premia cálculo.</p>
+      <p>Penaliza interpretación.</p>
+    </section>
+
+    <section class="section-block" id="rupture" data-field-stage="0.52" data-field-block="rupture">
+      <p class="section-id">04 RUPTURA</p>
+
+      <div class="state-split" aria-label="Ruptura de estándar operativo">
+        <div>
+          <p class="state-title">ANTES</p>
+          <ul>
+            <li>error absorbido</li>
+            <li>ajuste posterior</li>
+            <li>velocidad humana</li>
+          </ul>
+        </div>
+
+        <div>
+          <p class="state-title">HOY</p>
+          <ul>
+            <li>sistemas autónomos</li>
+            <li>automatización estratégica</li>
+            <li>cálculo continuo</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>No es transformación digital.</p>
+      <p>Es desplazamiento operativo.</p>
+      <p>No es evolución.</p>
+      <p>Es sustitución de estándar.</p>
+    </section>
+
+    <section class="section-block" id="what" data-field-stage="0.66" data-field-block="what">
+      <p class="section-id">05 QUÉ ES AURORA</p>
+      <p>Aurora es una capa de cálculo soberano.</p>
+      <p>No acompaña.</p>
+      <p>Divide.</p>
+      <p>Divide a quienes operan desde límite humano</p>
+      <p>de quienes operan con potencia algorítmica.</p>
+      <p>Actuar solo con intuición no es identidad.</p>
+      <p>Es inferioridad estructural.</p>
+    </section>
+
+    <section class="section-block" id="modules" data-field-stage="0.82" data-field-block="system">
+      <p class="section-id">06 SISTEMA AURORA</p>
+      <h2>SISTEMA AURORA</h2>
+
+      <div class="system-console" aria-label="PRODUCT SYSTEM CONSOLE">
+        <p class="console-title">PRODUCT SYSTEM CONSOLE</p>
+        <p class="console-line">DECISION FIELD CANVAS</p>
+        <p class="console-line">SYSTEM MODULES</p>
+        <p class="console-line">DECISION ENGINE</p>
+
+        <div class="console-group">
+          <p class="console-subtitle">Aurora Field</p>
+        </div>
+
+        <div class="console-group">
+          <p class="console-subtitle">SYSTEM MODULES</p>
+          <ul class="module-list">
+            <li>
+              <button type="button" data-field-product="scenario" data-field-algorithm="scenario">
+                Scenario Engine
+              </button>
+            </li>
+            <li>
+              <button type="button" data-field-product="risk" data-field-algorithm="risk">
+                Risk Analysis
+              </button>
+            </li>
+            <li>
+              <button type="button" data-field-product="signal" data-field-algorithm="signal">
+                Signal Detector
+              </button>
+            </li>
+            <li>
+              <button type="button" data-field-product="ledger" data-field-algorithm="ledger">
+                Decision Ledger
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div id="engine" class="console-group">
+          <p class="console-subtitle">DECISION ENGINE</p>
+          <ul class="engine-list">
+            <li>Decision Graph</li>
+            <li>Probability Waves</li>
+            <li>Risk Simulation</li>
+          </ul>
+        </div>
       </div>
     </section>
 
-    <section id="modules" class="narrative-section stage-modules" data-stage="SYSTEM MODULES" data-reveal>
-      <header class="stage-head">
-        <p class="stage-kicker">SYSTEM MODULES</p>
-        <h2 class="stage-title">Each module is an active subsystem, not a marketing card.</h2>
-      </header>
-
-      <div class="module-matrix panel">
-        <div class="module-track">
-          <p>INPUT FEED</p>
-          <span></span>
-          <p>SCENARIO ENGINE</p>
-        </div>
-        <div class="module-track">
-          <p>SCENARIO ENGINE</p>
-          <span></span>
-          <p>RISK ANALYSIS</p>
-        </div>
-        <div class="module-track">
-          <p>RISK ANALYSIS</p>
-          <span></span>
-          <p>SIGNAL DETECTOR</p>
-        </div>
-        <div class="module-track">
-          <p>SIGNAL DETECTOR</p>
-          <span></span>
-          <p>DECISION LEDGER</p>
-        </div>
-      </div>
-    </section>
-
-    <section id="engine" class="narrative-section stage-engine" data-stage="DECISION ENGINE" data-reveal>
-      <header class="stage-head">
-        <p class="stage-kicker">DECISION ENGINE</p>
-        <h2 class="stage-title">Real visualizations: decision graph, probability waves, risk simulation.</h2>
-      </header>
-
-      <div class="visual-grid">
-        <article class="viz-panel panel" data-magnetic>
-          <h3>Decision Graph</h3>
-          <svg class="engine-graph" data-decision-graph viewBox="0 0 640 240" aria-label="Decision graph">
-            <path data-graph-fill fill="rgba(108,77,255,0.20)"></path>
-            <polyline data-graph-line fill="none" stroke="#00FFA3" stroke-width="2"></polyline>
-          </svg>
-        </article>
-
-        <article class="viz-panel panel" data-magnetic>
-          <h3>Probability Waves</h3>
-          <canvas class="engine-canvas" data-wave-canvas width="640" height="240" aria-label="Probability waves"></canvas>
-        </article>
-
-        <article class="viz-panel panel" data-magnetic>
-          <h3>Risk Simulation</h3>
-          <canvas class="engine-canvas" data-risk-canvas width="640" height="240" aria-label="Risk simulation"></canvas>
-        </article>
-      </div>
-    </section>
-
-    <section id="demo" class="narrative-section stage-demo" data-stage="DEMO" data-reveal>
-      <header class="stage-head">
-        <p class="stage-kicker">DEMO</p>
-        <h2 class="stage-title">Run one decision through Aurora and inspect the evidence chain.</h2>
-        <a href="/demo" class="system-cta" data-magnetic>Launch Decision Demo</a>
-      </header>
+    <section class="section-block" id="demo-cta" data-field-stage="1.00" data-field-block="demo">
+      <p class="section-id">07 DEMO CTA</p>
+      <p>Pon tu próximo movimiento bajo evidencia.</p>
+      <p>Aurora no opina.</p>
+      <p>Calcula.</p>
+      <p>Detecta la interacción dominante.</p>
+      <p>Expone la vulnerabilidad central.</p>
+      <a class="main-cta" href="/demo">Poner una decisión bajo evidencia</a>
     </section>
   </main>
 
   <script>
-    import { mountMotionLayer } from "../motion/MotionLayer";
+    import { mountHomeField } from "../lib/homeField";
 
-    let cleanupMotion;
-    let cleanupVisuals;
-
-    const drawWave = (ctx, w, h, t) => {
-      ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = "rgba(108,77,255,0.5)";
-      ctx.lineWidth = 1.4;
-      for (let k = 0; k < 3; k += 1) {
-        const amp = 16 + k * 8;
-        const speed = 0.8 + k * 0.4;
-        ctx.beginPath();
-        for (let x = 0; x <= w; x += 5) {
-          const y = h * 0.5 + Math.sin(x * (0.02 + k * 0.005) + t * speed) * amp;
-          if (x === 0) ctx.moveTo(x, y);
-          else ctx.lineTo(x, y);
-        }
-        ctx.strokeStyle = k === 1 ? "rgba(0,255,163,0.6)" : "rgba(108,77,255,0.45)";
-        ctx.stroke();
-      }
-    };
-
-    const drawRisk = (ctx, w, h, t) => {
-      ctx.clearRect(0, 0, w, h);
-      const bars = 28;
-      const gap = 4;
-      const barW = (w - gap * (bars - 1)) / bars;
-      for (let i = 0; i < bars; i += 1) {
-        const level = (Math.sin(t * 2 + i * 0.6) + 1) * 0.5;
-        const val = 24 + level * (h * 0.65);
-        const x = i * (barW + gap);
-        const y = h - val;
-        const g = Math.round(130 + level * 125);
-        ctx.fillStyle = `rgba(${108 + Math.round(level * 70)}, ${g}, ${255 - Math.round(level * 50)}, 0.78)`;
-        ctx.fillRect(x, y, barW, val);
-      }
-    };
-
-    const mountVisualPanels = () => {
-      const graphLine = document.querySelector("[data-graph-line]");
-      const graphFill = document.querySelector("[data-graph-fill]");
-      const waveCanvas = document.querySelector("[data-wave-canvas]");
-      const riskCanvas = document.querySelector("[data-risk-canvas]");
-
-      if (!(graphLine instanceof SVGPolylineElement)) return () => {};
-      if (!(graphFill instanceof SVGPathElement)) return () => {};
-      if (!(waveCanvas instanceof HTMLCanvasElement)) return () => {};
-      if (!(riskCanvas instanceof HTMLCanvasElement)) return () => {};
-
-      const waveCtx = waveCanvas.getContext("2d");
-      const riskCtx = riskCanvas.getContext("2d");
-      if (!waveCtx || !riskCtx) return () => {};
-
-      const w = 640;
-      const h = 240;
-      let frame = 0;
-      let raf = 0;
-
-      const tick = () => {
-        frame += 1;
-        const t = frame * 0.015;
-
-        const points = [];
-        for (let i = 0; i < 16; i += 1) {
-          const x = (i / 15) * w;
-          const y = h * 0.55 + Math.sin(t * 2 + i * 0.72) * 52 + Math.cos(t + i * 0.45) * 10;
-          points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
-        }
-        graphLine.setAttribute("points", points.join(" "));
-
-        const areaPath = `M0 ${h} L${points.join(" L")} L${w} ${h} Z`;
-        graphFill.setAttribute("d", areaPath);
-
-        drawWave(waveCtx, w, h, t);
-        drawRisk(riskCtx, w, h, t);
-
-        raf = window.requestAnimationFrame(tick);
-      };
-
-      tick();
-
-      return () => {
-        window.cancelAnimationFrame(raf);
-      };
-    };
+    let cleanup;
 
     const boot = () => {
-      cleanupMotion = mountMotionLayer();
-      cleanupVisuals = mountVisualPanels();
+      cleanup = mountHomeField();
     };
 
     if (document.readyState === "loading") {
@@ -197,8 +168,7 @@ import HeroDecisionField from "../components/HeroDecisionField.astro";
     window.addEventListener(
       "pagehide",
       () => {
-        if (typeof cleanupMotion === "function") cleanupMotion();
-        if (typeof cleanupVisuals === "function") cleanupVisuals();
+        if (typeof cleanup === "function") cleanup();
       },
       { once: true }
     );

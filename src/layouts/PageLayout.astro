@@ -1,7 +1,6 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
-import "../styles/aurora-system.css";
 
 interface Props {
   title?: string;
@@ -9,7 +8,6 @@ interface Props {
 }
 
 const { title = "Aurora", page = "default" } = Astro.props;
-const homeNav = page === "home";
 const buildMarker =
   import.meta.env.VERCEL_GIT_COMMIT_SHA || import.meta.env.VERCEL_GITHUB_COMMIT_SHA || "local";
 ---
@@ -22,28 +20,22 @@ const buildMarker =
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
   </head>
-  <body data-page={page} data-build={buildMarker} data-story="FIELD">
+  <body data-page={page} data-build={buildMarker} data-story="AURORA-VOMEGA">
     <header class="site-header" data-header>
-      <a href="/" class="logo-lockup" aria-label="Aurora">
-        <img src="/aurora-mark.png" alt="" class="logo-symbol" loading="eager" decoding="async" />
-        <span class="logo-wordmark">AURORA vΩ</span>
+      <a href="/" class="brand" aria-label="Aurora vΩ">
+        <span class="brand-mark">A</span>
+        <span class="brand-name">Aurora vΩ</span>
       </a>
 
       <nav class="site-nav" aria-label="Principal">
-        {homeNav ? (
-          <>
-            <a href="/#field" class="header-action">Field</a>
-            <a href="/#modules" class="header-action">Modules</a>
-            <a href="/#engine" class="header-action">Engine</a>
-          </>
-        ) : (
-          <a href="/" class="header-action">System</a>
-        )}
-        <a href="/demo" class="header-action header-action-demo">Demo</a>
+        <a href="/#field" class="header-link">FIELD</a>
+        <a href="/#modules" class="header-link">MODULES</a>
+        <a href="/#engine" class="header-link">ENGINE</a>
+        <a href="/demo" class="header-link">DEMO</a>
       </nav>
     </header>
 

@@ -1,50 +1,40 @@
 :root {
-  --font-display: "Inter", "Segoe UI", sans-serif;
-  --font-body: "Inter", "Segoe UI", sans-serif;
-  --font-tech: "JetBrains Mono", "SFMono-Regular", monospace;
+  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
+  --font-tech: "IBM Plex Mono", "SFMono-Regular", monospace;
 
-  --fs-h1: clamp(2.42rem, 6.8vw, 5.3rem);
-  --fs-body: 16px;
+  --bg-0: #000000;
+  --bg-1: #070707;
+  --line: #1b1b1b;
+  --line-strong: #313131;
 
-  --bg-base: #050507;
-  --bg-deep: #090914;
-  --bg-layer: #111122;
+  --text-0: #ffffff;
+  --text-1: #c8c8c8;
+  --text-2: #959595;
 
-  --text-main: #ffffff;
-  --text-dim: #7f83a3;
-
-  --line-soft: #232334;
-
-  --container: 65ch;
-  --gutter: 24px;
-
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-14: 56px;
-  --space-16: 64px;
-  --space-20: 80px;
-  --space-24: 96px;
-  --space-30: 120px;
-
-  --duration-fast: 120ms;
-  --duration-mid: 170ms;
-
-  --field-rest-alpha: 0.028;
-  --field-active-alpha: 0.115;
-  --field-focus-alpha: 0.168;
+  --signal-green: #00ff7f;
+  --signal-violet: #7b2cff;
 
   --field-line-latent: rgba(255, 255, 255, 0.08);
-  --field-line-active: rgba(0, 255, 163, 0.28);
-  --field-dominant: rgba(108, 77, 255, 0.84);
-  --field-node-latent: rgba(255, 255, 255, 0.24);
-  --field-node-active: rgba(255, 255, 255, 0.48);
-  --field-node-dominant: rgba(0, 255, 163, 0.9);
+  --field-line-active: rgba(0, 255, 127, 0.28);
+  --field-dominant: rgba(123, 44, 255, 0.78);
+  --field-node-latent: rgba(255, 255, 255, 0.3);
+  --field-node-active: rgba(0, 255, 127, 0.82);
+  --field-node-dominant: rgba(123, 44, 255, 0.94);
 
-  --hero-mask-fill: rgba(5, 5, 7, 0.96);
+  --header-h: 64px;
+  --container-w: 1040px;
+
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 20px;
+  --s6: 24px;
+  --s8: 32px;
+  --s10: 40px;
+  --s12: 48px;
+  --s16: 64px;
+  --s20: 80px;
+
+  --t-fast: 120ms;
 }
