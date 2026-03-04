@@ -1,29 +1,29 @@
 :root {
-  --font-display: "Space Grotesk", "Segoe UI", sans-serif;
-  --font-body: "Space Grotesk", "Segoe UI", sans-serif;
-  --font-tech: "IBM Plex Mono", "SFMono-Regular", monospace;
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-tech: "IBM Plex Mono", "SF Mono", "Consolas", monospace;
 
-  --bg-0: #000000;
-  --bg-1: #070707;
+  --bg-0: #0A0A0A;
+  --bg-1: #0A0A0A;
   --line: #1b1b1b;
   --line-strong: #313131;
 
-  --text-0: #ffffff;
+  --text-0: #EDEDED;
   --text-1: #c8c8c8;
   --text-2: #959595;
 
-  --signal-green: #00ff7f;
-  --signal-violet: #7b2cff;
+  --signal-green: #2EFF7B;
+  --signal-violet: #7C5CFF;
 
-  --field-line-latent: rgba(255, 255, 255, 0.08);
-  --field-line-active: rgba(0, 255, 127, 0.28);
-  --field-dominant: rgba(123, 44, 255, 0.78);
-  --field-node-latent: rgba(255, 255, 255, 0.3);
-  --field-node-active: rgba(0, 255, 127, 0.82);
-  --field-node-dominant: rgba(123, 44, 255, 0.94);
+  --field-line-latent: rgba(237, 237, 237, 0.08);
+  --field-line-active: rgba(46, 255, 123, 0.28);
+  --field-dominant: rgba(124, 92, 255, 0.78);
+  --field-node-latent: rgba(237, 237, 237, 0.3);
+  --field-node-active: rgba(46, 255, 123, 0.82);
+  --field-node-dominant: rgba(124, 92, 255, 0.94);
 
   --header-h: 64px;
-  --container-w: 1040px;
+  --container-w: 620px;
 
   --s2: 8px;
   --s3: 12px;
@@ -37,4 +37,5 @@
   --s20: 80px;
 
   --t-fast: 120ms;
+  --t-reveal: 600ms;
 }

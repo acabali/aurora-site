@@ -3,7 +3,7 @@ import PageLayout from "../layouts/PageLayout.astro";
 import DecisionField from "../components/system/DecisionField.astro";
 ---
 
-<PageLayout title="Aurora vΩ" page="home">
+<PageLayout title="Aurora" page="home">
   <DecisionField />
 
   <main id="field" class="home-main">
@@ -88,48 +88,19 @@ import DecisionField from "../components/system/DecisionField.astro";
       <p>Es inferioridad estructural.</p>
     </section>
 
-    <section class="section-block" id="demo" data-field-stage="1.00" data-field-block="demo">
-      <p class="section-id">06 DEMO</p>
-      <h2>MÓDULOS DEL SISTEMA</h2>
-
-      <div class="system-console" aria-label="MÓDULOS DEL SISTEMA">
-        <p class="console-title">MÓDULOS DEL SISTEMA</p>
-        <p class="console-line">DECISION FIELD CANVAS</p>
-        <p class="console-line">MÓDULOS DEL SISTEMA</p>
-        <p class="console-line">CAPACIDADES AVANZADAS</p>
-
-        <div class="console-group">
-          <p class="console-subtitle">Campo Aurora</p>
-        </div>
-
-        <div class="console-group">
-          <p class="console-subtitle">MÓDULOS DEL SISTEMA</p>
-          <ul class="module-list">
-            <li>
-              <button type="button" data-field-product="scenario" data-field-algorithm="scenario">
-                Motor de escenarios
-              </button>
-            </li>
-            <li>
-              <button type="button" data-field-product="risk" data-field-algorithm="risk">
-                Análisis de riesgo
-              </button>
-            </li>
-            <li>
-              <button type="button" data-field-product="signal" data-field-algorithm="signal">
-                Detector de señales
-              </button>
-            </li>
-            <li>
-              <button type="button" data-field-product="ledger" data-field-algorithm="ledger">
-                Registro de decisiones
-              </button>
-            </li>
+    <section class="section-block section-system" id="system" data-field-stage="0.80" data-field-block="system">
+      <div class="system-console-panels">
+        <div class="console-panel">
+          <p class="console-label">SYSTEM MODULES</p>
+          <ul class="system-module-list">
+            <li>Scenario Engine</li>
+            <li>Risk Analysis</li>
+            <li>Signal Detector</li>
+            <li>Decision Ledger</li>
           </ul>
         </div>
-
-        <div id="engine" class="console-group">
-          <p class="console-subtitle">CAPACIDADES AVANZADAS</p>
+        <div class="console-panel" id="engine">
+          <p class="console-label">DECISION ENGINE</p>
           <ul class="engine-list">
             <li>Grafo de decisión</li>
             <li>Ondas de probabilidad</li>
@@ -137,7 +108,10 @@ import DecisionField from "../components/system/DecisionField.astro";
           </ul>
         </div>
       </div>
+    </section>
 
+    <section class="section-block section-demo" id="demo" data-field-stage="1.00" data-field-block="demo">
+      <p class="section-id">06 DEMO</p>
       <p>Pon tu próximo movimiento bajo evidencia.</p>
       <p>Aurora no opina.</p>
       <p>Calcula.</p>
@@ -169,5 +143,21 @@ import DecisionField from "../components/system/DecisionField.astro";
       },
       { once: true }
     );
+  </script>
+
+  <script>
+    const sections = document.querySelectorAll(".section-block");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: "0px 0px -10% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
   </script>
 </PageLayout>
