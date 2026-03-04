@@ -647,6 +647,10 @@ class DecisionFieldController {
 }
 
 export function mountDecisionField(root: HTMLElement): () => void {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    return () => {};
+  }
+
   const scope = window as Window & {
     [RAF_KEY]?: DecisionFieldController;
   };
