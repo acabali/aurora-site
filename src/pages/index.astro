@@ -16,7 +16,7 @@ const { hero, blocks } = home_narrativa_ajustada;
     aria-label="Selector de algoritmos"
     hidden
   >
-    <section id="productos" class="products-wrap" aria-labelledby="products-heading-system">
+    <section id="productos" class="products-console" aria-labelledby="products-heading-system">
       <section class="products-group" aria-labelledby="products-heading-system">
         <p id="products-heading-system" class="products-group-title">SYSTEM MODULES</p>
         <p class="products-group-note">Módulos base para decisiones trazables en operación real.</p>
@@ -152,20 +152,28 @@ const { hero, blocks } = home_narrativa_ajustada;
 
   <main class="home-main home-surface">
     <article class="home-column home-stack">
-      <section class="home-block home-hero" data-field-stage="0.08" data-field-block="hero" data-field-role="hero">
-        <h1 class="hero-title">{hero.lines[0]}</h1>
-        <div class="hero-declarations" data-field-role="hero-lines">
-          {hero.lines.slice(1).map((line) => (
-            <p class="declaration">{line}</p>
-          ))}
+      <section class="home-block home-hero" data-field-stage="0.05" data-field-block="hero" data-field-role="hero">
+        <div class="hero-occluder" aria-hidden="true"></div>
+        <div class="hero-body">
+          <h1 class="hero-title">{hero.lines[0]}</h1>
+          <div class="hero-declarations" data-field-role="hero-lines">
+            {hero.lines.slice(1).map((line) => (
+              <p class="declaration">{line}</p>
+            ))}
+          </div>
+          <ul class="hero-instrumentation" aria-label="Instrumentación del sistema">
+            <li><span>signal latency</span><span>7.4ms</span></li>
+            <li><span>regime drift</span><span>0.29 sigma</span></li>
+            <li><span>decision trace</span><span>184 nodes</span></li>
+          </ul>
+          <a href="/demo" class="home-cta">{hero.cta}</a>
         </div>
-        <a href="/demo" class="home-cta">{hero.cta}</a>
       </section>
 
       {blocks.map((block, index) => (
         <section
           class="home-block"
-          data-field-stage={String(0.2 + index * 0.16)}
+          data-field-stage={String(0.18 + index * 0.15)}
           data-field-block={`block-${index}`}
           data-field-role="section"
         >
