@@ -63,11 +63,14 @@ a {
 
 .brand {
   display: inline-flex;
-  align-items: center;
-  gap: var(--s3);
+  align-items: baseline;
+  gap: var(--s2);
+  font-size: 0.9rem;
+  line-height: 1;
   text-decoration: none;
-  font-size: 14px;
 }
+
+
 
 .brand-logo {
   display: block;
@@ -79,12 +82,13 @@ a {
 
 .brand-name {
   font-family: var(--font-tech);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  color: var(--text-0);
+  font-size: 1em;
   line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
+
+
 
 .sys-status {
   font-family: var(--font-tech);
