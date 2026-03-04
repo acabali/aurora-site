@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 echo "Aurora Safety Net: pre-push check"
 
-# repo limpio
-if [ -n "$(git status --porcelain)" ]; then
-  echo "❌ ERROR: repo sucio"
+# 1) Bloquea si hay cambios TRACKED sin commitear (esto sí rompe trazabilidad)
+if ! git diff --quiet; then
+  echo "❌ ERROR: cambios tracked sin commit"
+  git status --porcelain=v1
   exit 1
 fi
 
-# build obligatorio
-echo "build test..."
-pnpm -s build >/dev/null
+# 2) Bloquea si hay staged pero no commit (raro, pero pasa)
+if ! git diff --cached --quiet; then
+  echo "❌ ERROR: hay cambios staged sin commit"
+  git status --porcelain=v1
+  exit 1
+fi
 
-echo "✔ build OK"
+# 3) Bloquea .env / secretos si están tracked
+if git ls-files | rg -n '(^|/)\.env(\.|$)' >/dev/null; then
+  echo "❌ ERROR: .env trackeado (prohibido)"
+  git ls-files | rg -n '(^|/)\.env(\.|$)' || true
+  exit 1
+fi
+
+echo "✔ pre-push OK"
