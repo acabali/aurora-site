@@ -287,8 +287,7 @@ body[data-field-block="change"] #change,
 body[data-field-block="misfit"] #misfit,
 body[data-field-block="rupture"] #rupture,
 body[data-field-block="what"] #what,
-body[data-field-block="system"] #modules,
-body[data-field-block="demo"] #demo-cta {
+body[data-field-block="demo"] #demo {
   opacity: 1;
 }
 
