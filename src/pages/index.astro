@@ -2,14 +2,11 @@
 import PageLayout from "../layouts/PageLayout.astro";
 ---
 
-<PageLayout title="Aurora">
-
-<main id="field" class="home-main">
-
-<section class="section-block hero">
-<p class="section-id">01 HERO</p>
-
-<p>El límite humano ya no alcanza.</p>
+<PageLayout title="Aurora" page="home">
+  <main id="field" class="home-main">
+    <section class="section-block section-hero" id="hero">
+      <p class="section-id" aria-hidden="true">01</p>
+      <h1>El límite humano ya no alcanza.</h1>
 
 <p>El mercado ya no compite con personas.</p>
 <p>Compite con sistemas.</p>
@@ -25,15 +22,12 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 <p>Es sustitución operativa.</p>
 
-<a href="#demo" class="cta-primary">Poner una decisión bajo evidencia</a>
-</section>
+      <a href="#demo" class="cta-primary">Poner una decisión bajo evidencia</a>
+    </section>
 
-
-
-<section class="section-block">
-<p class="section-id">02 QUÉ CAMBIÓ</p>
-
-<p>La forma de operar cambió.</p>
+    <section class="section-block" id="system">
+      <p class="section-id" aria-hidden="true">02</p>
+      <p>La forma de operar cambió.</p>
 
 <p>Validar antes de actuar ya es posible.</p>
 
@@ -41,14 +35,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es condición de entrada.</p>
 
 <p>La precisión no optimiza.</p>
-<p>Define quién compite.</p>
+      <p>Define quién compite.</p>
+    </section>
 
-</section>
-
-
-
-<section class="section-block" id="misfit">
-<p class="section-id">03 DESAJUSTE</p>
+    <section class="section-block" id="misfit">
+      <p class="section-id" aria-hidden="true">03</p>
 
 <p>Hoy es más barato y más eficiente operar con capacidad algorítmica que con estructura inflada.</p>
 
@@ -63,14 +54,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es desventaja.</p>
 
 <p>El mercado premia cálculo.</p>
-<p>Penaliza interpretación.</p>
+      <p>Penaliza interpretación.</p>
+    </section>
 
-</section>
-
-
-
-<section class="section-block">
-<p class="section-id">04 RUPTURA</p>
+    <section class="section-block" id="engine">
+      <p class="section-id" aria-hidden="true">04</p>
 
 <p>Antes:</p>
 
@@ -91,14 +79,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es desplazamiento operativo.</p>
 
 <p>No es evolución.</p>
-<p>Es sustitución de estándar.</p>
+      <p>Es sustitución de estándar.</p>
+    </section>
 
-</section>
-
-
-
-<section class="section-block">
-<p class="section-id">05 QUÉ ES AURORA</p>
+    <section class="section-block" id="what">
+      <p class="section-id" aria-hidden="true">05</p>
 
 <p>Aurora es una capa de cálculo soberano.</p>
 
@@ -127,14 +112,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 <p>Con cálculo soberano, marcas el ritmo.</p>
 
-<p>Sin él, lo persigues.</p>
+      <p>Sin él, lo persigues.</p>
+    </section>
 
-</section>
-
-
-
-<section class="section-block section-demo" id="demo">
-<p class="section-id">06 DEMO</p>
+    <section class="section-block section-demo" id="demo">
+      <p class="section-id" aria-hidden="true">06</p>
 
 <p>Pon tu próximo movimiento bajo evidencia.</p>
 
@@ -147,10 +129,20 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Una señal.</p>
 <p>Un movimiento correcto.</p>
 
-<a href="/demo" class="cta-primary">Abrir demo</a>
+      <a href="/demo" class="cta-primary">Abrir demo</a>
+    </section>
+  </main>
 
-</section>
-
-</main>
-
+  <script>
+    const sections = document.querySelectorAll(".section-block");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) entry.target.classList.add("revealed");
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+    );
+    sections.forEach((s) => observer.observe(s));
+  </script>
 </PageLayout>
