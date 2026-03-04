@@ -59,8 +59,8 @@ echo "prod data-build: ${PROD_BUILD:-MISSING}"
 
 echo "--- prod markers ---"
 for s in \
-  "SYSTEM MODULES" \
-  "ADVANCED CAPABILITIES" \
+  "MÓDULOS DEL SISTEMA" \
+  "CAPACIDADES AVANZADAS" \
   "Productos"
 do
   if rg -n --fixed-strings "$s" "$tmp/prod.html" >/dev/null; then
@@ -77,8 +77,8 @@ if curl -fsSL "$LOCAL_URL" > "$tmp/local.html" 2>/dev/null; then
   echo "local data-build: ${LOCAL_BUILD:-MISSING}"
   echo "--- local markers ---"
   for s in \
-    "SYSTEM MODULES" \
-    "ADVANCED CAPABILITIES" \
+    "MÓDULOS DEL SISTEMA" \
+    "CAPACIDADES AVANZADAS" \
     "Productos"
   do
     if rg -n --fixed-strings "$s" "$tmp/local.html" >/dev/null; then
