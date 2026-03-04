@@ -1,21 +1,31 @@
 ---
-const { title = "Aurora" } = Astro.props;
-const buildMarker = Date.now();
+import "../styles/tokens.css";
+import "../styles/global.css";
+
+const { title = "Aurora", page = "home" } = Astro.props;
+
+const buildMarker =
+  import.meta.env?.VERCEL_GIT_COMMIT_SHA ??
+  process.env?.VERCEL_GIT_COMMIT_SHA ??
+  `${Date.now()}`;
 ---
 
 <!doctype html>
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
 
-    <link rel="stylesheet" href="/src/styles/tokens.css" />
-    <link rel="stylesheet" href="/src/styles/global.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
-  <body data-build={buildMarker} data-story="AURORA-VOMEGA">
-
+  <body data-page={page} data-build={buildMarker} data-story="AURORA-VOMEGA">
     <header class="site-header" data-header>
       <div class="header-left">
         <a href="/" class="brand" aria-label="Aurora">
@@ -23,6 +33,8 @@ const buildMarker = Date.now();
             src="/aurora-logo.png"
             alt=""
             class="brand-logo"
+            width="14"
+            height="14"
             aria-hidden="true"
           />
           <span class="brand-name">AURORA</span>
@@ -41,9 +53,8 @@ const buildMarker = Date.now();
       </div>
     </header>
 
-    <main class="site-main">
+    <div class="site-main">
       <slot />
-    </main>
-
+    </div>
   </body>
 </html>
