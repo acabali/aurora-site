@@ -1,198 +1,191 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
-import DecisionField from "../components/system/DecisionField.astro";
-import { home_narrativa_ajustada } from "../content/home";
-
-const { hero, blocks } = home_narrativa_ajustada;
+import HeroDecisionField from "../components/HeroDecisionField.astro";
 ---
 
-<PageLayout title="Aurora" page="home">
-  <DecisionField />
+<PageLayout title="Aurora vΩ" page="home">
+  <main class="aurora-main">
+    <HeroDecisionField />
 
-  <nav
-    id="products-menu"
-    class="products-menu"
-    data-products-menu
-    aria-label="Selector de algoritmos"
-    hidden
-  >
-    <section id="productos" class="products-console" aria-labelledby="products-heading-system">
-      <section class="products-group" aria-labelledby="products-heading-system">
-        <p id="products-heading-system" class="products-group-title">SYSTEM MODULES</p>
-        <p class="products-group-note">Módulos base para decisiones trazables en operación real.</p>
-        <ul class="products-list">
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="core"
-              data-group="system-modules"
-              data-field-algorithm="core"
-            >
-              <span class="product-name">Core</span>
-              <p class="product-tech">Modelo base de dependencias para una decisión estructural.</p>
-              <p class="product-impact">Define la variable dominante antes de asignar capital.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="scenario"
-              data-group="system-modules"
-              data-field-algorithm="scenario"
-            >
-              <span class="product-name">Scenario</span>
-              <p class="product-tech">Simula bifurcaciones con supuestos trazables y comparables.</p>
-              <p class="product-impact">Mide qué escenario preserva margen y velocidad de ejecución.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="risk"
-              data-group="system-modules"
-              data-field-algorithm="risk"
-            >
-              <span class="product-name">Risk</span>
-              <p class="product-tech">Calcula concentración de fragilidad por nodo y por secuencia.</p>
-              <p class="product-impact">Reduce exposición antes de que el desvío sea irreversible.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="signal"
-              data-group="system-modules"
-              data-field-algorithm="signal"
-            >
-              <span class="product-name">Signal</span>
-              <p class="product-tech">Filtra ruido operativo y prioriza señales con causalidad.</p>
-              <p class="product-impact">Acelera decisiones con foco en impacto verificable.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="ledger"
-              data-group="system-modules"
-              data-field-algorithm="ledger"
-            >
-              <span class="product-name">Ledger</span>
-              <p class="product-tech">Registra hipótesis, umbrales y resultados en cadena auditable.</p>
-              <p class="product-impact">Sostiene accountability técnico entre equipos y ciclos.</p>
-            </button>
-          </li>
-        </ul>
-      </section>
+    <section id="capabilities" class="narrative-section stage-capabilities" data-stage="CAPABILITIES" data-reveal>
+      <header class="stage-head">
+        <p class="stage-kicker">CAPABILITIES</p>
+        <h2 class="stage-title">System capabilities designed for live decision pressure.</h2>
+      </header>
 
-      <section class="products-group" aria-labelledby="products-heading-advanced">
-        <p id="products-heading-advanced" class="products-group-title">ADVANCED CAPABILITIES</p>
-        <p class="products-group-note">Capas avanzadas para lectura de régimen y complejidad dinámica.</p>
-        <ul class="products-list">
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="counterfactual"
-              data-group="advanced-capabilities"
-              data-field-algorithm="scenario"
-            >
-              <span class="product-name">Counterfactual</span>
-              <p class="product-tech">Genera mundos alternos y estima desvíos contra la base.</p>
-              <p class="product-impact">Anticipa costo de oportunidad antes de ejecutar.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="regime"
-              data-group="advanced-capabilities"
-              data-field-algorithm="risk"
-            >
-              <span class="product-name">Regime</span>
-              <p class="product-tech">Detecta cambios de régimen con rupturas de distribución.</p>
-              <p class="product-impact">Reconfigura estrategia cuando cambian las reglas del entorno.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="entropy"
-              data-group="advanced-capabilities"
-              data-field-algorithm="integration"
-            >
-              <span class="product-name">Entropy</span>
-              <p class="product-tech">Mapea entropía decisional y pérdida de información útil.</p>
-              <p class="product-impact">Recupera claridad donde la complejidad bloquea acción.</p>
-            </button>
-          </li>
-          <li class="products-item">
-            <button
-              type="button"
-              class="product-trigger"
-              data-product="integration"
-              data-group="advanced-capabilities"
-              data-field-algorithm="integration"
-            >
-              <span class="product-name">Integration</span>
-              <p class="product-tech">Sincroniza modelos, áreas y tiempos en un mismo marco.</p>
-              <p class="product-impact">Evita contradicciones y alinea ejecución con evidencia.</p>
-            </button>
-          </li>
-        </ul>
-      </section>
+      <div class="capability-grid">
+        <article class="capability-card panel" data-magnetic>
+          <h3>Counterfactual Generator</h3>
+          <p>Expands possible futures and ranks outcomes by capital efficiency.</p>
+        </article>
+        <article class="capability-card panel" data-magnetic>
+          <h3>Regime Detection</h3>
+          <p>Detects structural shifts before they cascade into operating losses.</p>
+        </article>
+        <article class="capability-card panel" data-magnetic>
+          <h3>Signal Compression</h3>
+          <p>Filters noise and elevates causal signals for immediate execution.</p>
+        </article>
+      </div>
     </section>
-  </nav>
 
-  <main class="home-main home-surface">
-    <article class="home-column home-stack">
-      <section class="home-block home-hero" data-field-stage="0.05" data-field-block="hero" data-field-role="hero">
-        <div class="hero-occluder" aria-hidden="true"></div>
-        <div class="hero-body">
-          <h1 class="hero-title">{hero.lines[0]}</h1>
-          <div class="hero-declarations" data-field-role="hero-lines">
-            {hero.lines.slice(1).map((line) => (
-              <p class="declaration">{line}</p>
-            ))}
-          </div>
-          <ul class="hero-instrumentation" aria-label="Instrumentación del sistema">
-            <li><span>signal latency</span><span>7.4ms</span></li>
-            <li><span>regime drift</span><span>0.29 sigma</span></li>
-            <li><span>decision trace</span><span>184 nodes</span></li>
-          </ul>
-          <a href="/demo" class="home-cta">{hero.cta}</a>
+    <section id="modules" class="narrative-section stage-modules" data-stage="SYSTEM MODULES" data-reveal>
+      <header class="stage-head">
+        <p class="stage-kicker">SYSTEM MODULES</p>
+        <h2 class="stage-title">Each module is an active subsystem, not a marketing card.</h2>
+      </header>
+
+      <div class="module-matrix panel">
+        <div class="module-track">
+          <p>INPUT FEED</p>
+          <span></span>
+          <p>SCENARIO ENGINE</p>
         </div>
-      </section>
+        <div class="module-track">
+          <p>SCENARIO ENGINE</p>
+          <span></span>
+          <p>RISK ANALYSIS</p>
+        </div>
+        <div class="module-track">
+          <p>RISK ANALYSIS</p>
+          <span></span>
+          <p>SIGNAL DETECTOR</p>
+        </div>
+        <div class="module-track">
+          <p>SIGNAL DETECTOR</p>
+          <span></span>
+          <p>DECISION LEDGER</p>
+        </div>
+      </div>
+    </section>
 
-      {blocks.map((block, index) => (
-        <section
-          class="home-block"
-          data-field-stage={String(0.18 + index * 0.15)}
-          data-field-block={`block-${index}`}
-          data-field-role="section"
-        >
-          <p class="micro-title">{block.title}</p>
-          {block.lines.map((line) => (
-            <p class="declaration">{line}</p>
-          ))}
-        </section>
-      ))}
-    </article>
+    <section id="engine" class="narrative-section stage-engine" data-stage="DECISION ENGINE" data-reveal>
+      <header class="stage-head">
+        <p class="stage-kicker">DECISION ENGINE</p>
+        <h2 class="stage-title">Real visualizations: decision graph, probability waves, risk simulation.</h2>
+      </header>
+
+      <div class="visual-grid">
+        <article class="viz-panel panel" data-magnetic>
+          <h3>Decision Graph</h3>
+          <svg class="engine-graph" data-decision-graph viewBox="0 0 640 240" aria-label="Decision graph">
+            <path data-graph-fill fill="rgba(108,77,255,0.20)"></path>
+            <polyline data-graph-line fill="none" stroke="#00FFA3" stroke-width="2"></polyline>
+          </svg>
+        </article>
+
+        <article class="viz-panel panel" data-magnetic>
+          <h3>Probability Waves</h3>
+          <canvas class="engine-canvas" data-wave-canvas width="640" height="240" aria-label="Probability waves"></canvas>
+        </article>
+
+        <article class="viz-panel panel" data-magnetic>
+          <h3>Risk Simulation</h3>
+          <canvas class="engine-canvas" data-risk-canvas width="640" height="240" aria-label="Risk simulation"></canvas>
+        </article>
+      </div>
+    </section>
+
+    <section id="demo" class="narrative-section stage-demo" data-stage="DEMO" data-reveal>
+      <header class="stage-head">
+        <p class="stage-kicker">DEMO</p>
+        <h2 class="stage-title">Run one decision through Aurora and inspect the evidence chain.</h2>
+        <a href="/demo" class="system-cta" data-magnetic>Launch Decision Demo</a>
+      </header>
+    </section>
   </main>
 
   <script>
-    import { mountHomeField } from "../lib/homeField";
+    import { mountMotionLayer } from "../motion/MotionLayer";
 
-    let cleanup;
+    let cleanupMotion;
+    let cleanupVisuals;
+
+    const drawWave = (ctx, w, h, t) => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.strokeStyle = "rgba(108,77,255,0.5)";
+      ctx.lineWidth = 1.4;
+      for (let k = 0; k < 3; k += 1) {
+        const amp = 16 + k * 8;
+        const speed = 0.8 + k * 0.4;
+        ctx.beginPath();
+        for (let x = 0; x <= w; x += 5) {
+          const y = h * 0.5 + Math.sin(x * (0.02 + k * 0.005) + t * speed) * amp;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = k === 1 ? "rgba(0,255,163,0.6)" : "rgba(108,77,255,0.45)";
+        ctx.stroke();
+      }
+    };
+
+    const drawRisk = (ctx, w, h, t) => {
+      ctx.clearRect(0, 0, w, h);
+      const bars = 28;
+      const gap = 4;
+      const barW = (w - gap * (bars - 1)) / bars;
+      for (let i = 0; i < bars; i += 1) {
+        const level = (Math.sin(t * 2 + i * 0.6) + 1) * 0.5;
+        const val = 24 + level * (h * 0.65);
+        const x = i * (barW + gap);
+        const y = h - val;
+        const g = Math.round(130 + level * 125);
+        ctx.fillStyle = `rgba(${108 + Math.round(level * 70)}, ${g}, ${255 - Math.round(level * 50)}, 0.78)`;
+        ctx.fillRect(x, y, barW, val);
+      }
+    };
+
+    const mountVisualPanels = () => {
+      const graphLine = document.querySelector("[data-graph-line]");
+      const graphFill = document.querySelector("[data-graph-fill]");
+      const waveCanvas = document.querySelector("[data-wave-canvas]");
+      const riskCanvas = document.querySelector("[data-risk-canvas]");
+
+      if (!(graphLine instanceof SVGPolylineElement)) return () => {};
+      if (!(graphFill instanceof SVGPathElement)) return () => {};
+      if (!(waveCanvas instanceof HTMLCanvasElement)) return () => {};
+      if (!(riskCanvas instanceof HTMLCanvasElement)) return () => {};
+
+      const waveCtx = waveCanvas.getContext("2d");
+      const riskCtx = riskCanvas.getContext("2d");
+      if (!waveCtx || !riskCtx) return () => {};
+
+      const w = 640;
+      const h = 240;
+      let frame = 0;
+      let raf = 0;
+
+      const tick = () => {
+        frame += 1;
+        const t = frame * 0.015;
+
+        const points = [];
+        for (let i = 0; i < 16; i += 1) {
+          const x = (i / 15) * w;
+          const y = h * 0.55 + Math.sin(t * 2 + i * 0.72) * 52 + Math.cos(t + i * 0.45) * 10;
+          points.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+        }
+        graphLine.setAttribute("points", points.join(" "));
+
+        const areaPath = `M0 ${h} L${points.join(" L")} L${w} ${h} Z`;
+        graphFill.setAttribute("d", areaPath);
+
+        drawWave(waveCtx, w, h, t);
+        drawRisk(riskCtx, w, h, t);
+
+        raf = window.requestAnimationFrame(tick);
+      };
+
+      tick();
+
+      return () => {
+        window.cancelAnimationFrame(raf);
+      };
+    };
 
     const boot = () => {
-      cleanup = mountHomeField();
+      cleanupMotion = mountMotionLayer();
+      cleanupVisuals = mountVisualPanels();
     };
 
     if (document.readyState === "loading") {
@@ -204,7 +197,8 @@ const { hero, blocks } = home_narrativa_ajustada;
     window.addEventListener(
       "pagehide",
       () => {
-        if (typeof cleanup === "function") cleanup();
+        if (typeof cleanupMotion === "function") cleanupMotion();
+        if (typeof cleanupVisuals === "function") cleanupVisuals();
       },
       { once: true }
     );

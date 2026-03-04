@@ -1,0 +1,30 @@
+---
+const modules = [
+  { name: "SCENARIO ENGINE", state: "ACTIVE", latency: "2.8ms" },
+  { name: "RISK ANALYSIS", state: "ACTIVE", latency: "3.4ms" },
+  { name: "SIGNAL DETECTOR", state: "WATCHING", latency: "1.7ms" },
+  { name: "DECISION LEDGER", state: "SYNCED", latency: "4.2ms" }
+];
+---
+<aside class="product-console panel" data-magnetic aria-label="Product system console">
+  <header class="console-head">
+    <p class="console-kicker">PRODUCT SYSTEM CONSOLE</p>
+    <p class="console-note">Runtime / Decision Layer</p>
+  </header>
+
+  <ul class="console-modules" role="list">
+    {modules.map((module) => (
+      <li class="console-module" tabindex="0">
+        <span class="console-led" aria-hidden="true">●</span>
+        <span class="console-label">{module.name}</span>
+        <span class="console-meta">{module.state} · {module.latency}</span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="console-telemetry" aria-label="System telemetry">
+    <p><span>decision throughput</span><span>184/s</span></p>
+    <p><span>probability drift</span><span>0.27σ</span></p>
+    <p><span>risk pressure</span><span>moderate</span></p>
+  </div>
+</aside>

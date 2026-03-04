@@ -1,6 +1,7 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
+import "../styles/aurora-system.css";
 
 interface Props {
   title?: string;
@@ -8,38 +9,39 @@ interface Props {
 }
 
 const { title = "Aurora", page = "default" } = Astro.props;
-const showProductsToggle = page === "home";
+const homeNav = page === "home";
 const buildMarker =
   import.meta.env.VERCEL_GIT_COMMIT_SHA || import.meta.env.VERCEL_GITHUB_COMMIT_SHA || "local";
 ---
 <!DOCTYPE html>
-<html lang="es" data-build={buildMarker}>
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
-  <body data-page={page} data-algorithm="core" data-field-active="false">
+  <body data-page={page} data-build={buildMarker} data-story="FIELD">
     <header class="site-header" data-header>
       <a href="/" class="logo-lockup" aria-label="Aurora">
         <img src="/aurora-mark.png" alt="" class="logo-symbol" loading="eager" decoding="async" />
-        <span class="logo-wordmark">AURORA</span>
+        <span class="logo-wordmark">AURORA vΩ</span>
       </a>
 
       <nav class="site-nav" aria-label="Principal">
-        {showProductsToggle ? (
-          <button
-            type="button"
-            class="header-action"
-            data-products-toggle
-            aria-controls="products-menu"
-            aria-expanded="false"
-            aria-haspopup="true"
-          >
-            Productos
-          </button>
+        {homeNav ? (
+          <>
+            <a href="/#field" class="header-action">Field</a>
+            <a href="/#modules" class="header-action">Modules</a>
+            <a href="/#engine" class="header-action">Engine</a>
+          </>
         ) : (
-          <a href="/#productos" class="header-action">Productos</a>
+          <a href="/" class="header-action">System</a>
         )}
         <a href="/demo" class="header-action header-action-demo">Demo</a>
       </nav>

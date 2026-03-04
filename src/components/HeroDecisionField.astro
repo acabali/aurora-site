@@ -1,0 +1,52 @@
+---
+import ProductConsole from "./ProductConsole.astro";
+---
+<section id="field" class="narrative-section stage-field" data-stage="FIELD" data-reveal>
+  <header class="stage-head">
+    <p class="stage-kicker">DECISION FIELD</p>
+    <h1 class="stage-title">Aurora is a decision infrastructure, not a landing page.</h1>
+    <p class="stage-copy">
+      Real-time system state, simulation signals, and execution pressure converge in one operating surface.
+    </p>
+  </header>
+
+  <div class="hero-system-grid">
+    <div class="decision-canvas-shell panel" data-magnetic>
+      <p class="panel-label">DECISION FIELD CANVAS</p>
+      <canvas class="decision-field-canvas" data-decision-canvas aria-label="Decision field canvas"></canvas>
+      <div class="canvas-readout" aria-label="Decision field telemetry">
+        <p><span>live nodes</span><span>18</span></p>
+        <p><span>link density</span><span>0.64</span></p>
+        <p><span>scenario spread</span><span>4.2σ</span></p>
+      </div>
+    </div>
+
+    <ProductConsole />
+  </div>
+</section>
+
+<script>
+  import { mountDecisionFieldCanvas } from "./DecisionFieldCanvas";
+
+  let cleanup;
+
+  const boot = () => {
+    const canvas = document.querySelector("[data-decision-canvas]");
+    if (!(canvas instanceof HTMLCanvasElement)) return;
+    cleanup = mountDecisionFieldCanvas(canvas);
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot, { once: true });
+  } else {
+    boot();
+  }
+
+  window.addEventListener(
+    "pagehide",
+    () => {
+      if (typeof cleanup === "function") cleanup();
+    },
+    { once: true }
+  );
+</script>

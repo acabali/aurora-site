@@ -1,19 +1,19 @@
 :root {
-  --font-display: "Space Grotesk", "Avenir Next", "Neue Haas Grotesk Text", sans-serif;
-  --font-body: "Avenir Next", "Neue Haas Grotesk Text", "Helvetica Neue", sans-serif;
-  --font-tech: "IBM Plex Sans", "Avenir Next", "Helvetica Neue", sans-serif;
+  --font-display: "Inter", "Segoe UI", sans-serif;
+  --font-body: "Inter", "Segoe UI", sans-serif;
+  --font-tech: "JetBrains Mono", "SFMono-Regular", monospace;
 
   --fs-h1: clamp(2.42rem, 6.8vw, 5.3rem);
   --fs-body: 16px;
 
-  --bg-base: #05080f;
-  --bg-deep: #09101a;
-  --bg-layer: #111c2a;
+  --bg-base: #050507;
+  --bg-deep: #090914;
+  --bg-layer: #111122;
 
-  --text-main: #e6edf8;
-  --text-dim: #94a1b2;
+  --text-main: #ffffff;
+  --text-dim: #7f83a3;
 
-  --line-soft: #213045;
+  --line-soft: #232334;
 
   --container: 65ch;
   --gutter: 24px;
@@ -39,12 +39,12 @@
   --field-active-alpha: 0.115;
   --field-focus-alpha: 0.168;
 
-  --field-line-latent: rgba(230, 237, 248, 0.032);
-  --field-line-active: rgba(230, 237, 248, 0.152);
-  --field-dominant: rgba(155, 175, 214, 0.82);
-  --field-node-latent: rgba(230, 237, 248, 0.21);
-  --field-node-active: rgba(230, 237, 248, 0.42);
-  --field-node-dominant: rgba(193, 210, 238, 0.94);
+  --field-line-latent: rgba(255, 255, 255, 0.08);
+  --field-line-active: rgba(0, 255, 163, 0.28);
+  --field-dominant: rgba(108, 77, 255, 0.84);
+  --field-node-latent: rgba(255, 255, 255, 0.24);
+  --field-node-active: rgba(255, 255, 255, 0.48);
+  --field-node-dominant: rgba(0, 255, 163, 0.9);
 
-  --hero-mask-fill: rgba(5, 8, 15, 0.964);
+  --hero-mask-fill: rgba(5, 5, 7, 0.96);
 }
