@@ -1,38 +1,86 @@
-# dependencies and package-manager caches
+# =========================
+# AURORA WEB vΩ .gitignore
+# =========================
+
+# Node
 node_modules/
-.pnpm-store/
-
-# build and framework outputs
-dist/
-.astro/
-.vercel/
-coverage/
-playwright-report/
-test-results/
-.playwright-cli/
-
-# logs and transient editor files
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.out/
+.cache/
+.astro/
+
+# Vercel
+.vercel
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
 *.log
-*.bak
-*.tmp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
 *.swp
 *.swo
-*~
 
-# local environment files
-.env
-.env.production
-.env*.local
+# Temporary
+tmp/
+temp/
 
-# IDE and OS files
-.DS_Store
+# Coverage / tests
+coverage/
+
+# Local dev artifacts
+*.local
+
+# Aurora ops runtime artifacts
+ops/*.log
+ops/tmp/
+ops/cache/
+
+# Ignore generated audit files
+aurora_root_audit.log
+aurora_deploy.log
+
+# Ignore large assets not meant for repo
+*.mp4
+*.mov
+*.zip
+*.tar.gz
+
+# Ignore system caches
+.cache-loader
+.eslintcache
+
+# Ignore service workers build artifacts
+sw.js
+sw.js.map
+
+# Mac extended attributes
 ._*
-.idea/
 
-# local ops backup artifacts
-.ops_backups/
-.vercel
+# Vercel build cache
+.vercel/cache
+
+# Astro generated types
+src/env.d.ts
+
+# Ignore local CLI artifacts
+*.pid
+*.seed
+*.pid.lock

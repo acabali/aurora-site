@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+echo "Aurora Guard: verificando build..."
+
+pnpm -s build >/dev/null
+
+if [ $? -ne 0 ]; then
+  echo "ABORT: build falla"
+  exit 1
+fi
+
+echo "OK: build válido"
+

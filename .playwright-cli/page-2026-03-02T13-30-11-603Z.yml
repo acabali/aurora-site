@@ -1,0 +1,8 @@
+- main [ref=e2]:
+  - generic [ref=e3]:
+    - heading "Infraestructura decisional. No software." [level=1] [ref=e4]:
+      - text: Infraestructura decisional.
+      - text: No software.
+    - paragraph [ref=e5]: Aurora expone el efecto real de una decisión antes de ejecutar.
+    - link "Ver cómo funciona" [ref=e6] [cursor=pointer]:
+      - /url: /demo
