@@ -9,8 +9,11 @@ interface Props {
 
 const { title = "Aurora", page = "default" } = Astro.props;
 const buildMarker =
-  import.meta.env.VERCEL_GIT_COMMIT_SHA || import.meta.env.VERCEL_GITHUB_COMMIT_SHA || "local";
+  import.meta.env.VERCEL_GIT_COMMIT_SHA ||
+  import.meta.env.VERCEL_GITHUB_COMMIT_SHA ||
+  "local";
 ---
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -26,10 +29,18 @@ const buildMarker =
   </head>
   <body data-page={page} data-build={buildMarker} data-story="AURORA-VOMEGA">
     <header class="site-header" data-header>
-      <a href="/" class="brand" aria-label="Aurora">
-        <img src="/aurora-logo.png" alt="" class="brand-logo" width="28" height="28" />
-        <span class="brand-name">AURORA</span>
-      </a>
+      <div class="header-left">
+        <a href="/" class="brand" aria-label="Aurora">
+          <img
+            src="/aurora-logo.png"
+            alt=""
+            class="brand-logo"
+            width="28"
+            height="28"
+          />
+          <span class="brand-name">AURORA</span>
+        </a>
+      </div>
 
       <nav class="site-nav" aria-label="Principal">
         <a href="/#field" class="header-link">FIELD</a>
@@ -37,6 +48,10 @@ const buildMarker =
         <a href="/#engine" class="header-link">ENGINE</a>
         <a href="/#demo" class="header-link">DEMO</a>
       </nav>
+
+      <div class="header-right">
+        <span class="sys-status">SYS.ONLINE</span>
+      </div>
     </header>
 
     <slot />

@@ -3,27 +3,28 @@
   --font-body: "Inter", system-ui, sans-serif;
   --font-tech: "IBM Plex Mono", "SF Mono", "Consolas", monospace;
 
-  --bg-0: #0A0A0A;
+  --bg-0: #040404;
   --bg-1: #0A0A0A;
-  --line: #1b1b1b;
-  --line-strong: #313131;
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.25);
 
-  --text-0: #EDEDED;
-  --text-1: #c8c8c8;
-  --text-2: #959595;
+  --text-0: #FFFFFF;
+  --text-1: #999999;
+  --text-2: #555555;
 
   --signal-green: #2EFF7B;
+  --signal-cyan: #00F0FF;
   --signal-violet: #7C5CFF;
 
-  --field-line-latent: rgba(237, 237, 237, 0.08);
-  --field-line-active: rgba(46, 255, 123, 0.28);
-  --field-dominant: rgba(124, 92, 255, 0.78);
-  --field-node-latent: rgba(237, 237, 237, 0.3);
-  --field-node-active: rgba(46, 255, 123, 0.82);
-  --field-node-dominant: rgba(124, 92, 255, 0.94);
+  --field-line-latent: rgba(255, 255, 255, 0.04);
+  --field-line-active: rgba(46, 255, 123, 0.2);
+  --field-dominant: rgba(124, 92, 255, 0.6);
+  --field-node-latent: rgba(255, 255, 255, 0.15);
+  --field-node-active: #2EFF7B;
+  --field-node-dominant: #7C5CFF;
 
   --header-h: 64px;
-  --container-w: 620px;
+  --container-w: 680px;
 
   --s2: 8px;
   --s3: 12px;
@@ -36,6 +37,6 @@
   --s16: 64px;
   --s20: 80px;
 
-  --t-fast: 120ms;
-  --t-reveal: 600ms;
+  --t-fast: 150ms;
+  --t-reveal: 800ms;
 }
