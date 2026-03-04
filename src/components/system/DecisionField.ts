@@ -42,6 +42,7 @@ type RegimeConfig = {
 
 const RAF_KEY = "__auroraDecisionField";
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
+const FIELD_LABELS = ["cost", "demand", "channel", "regulation", "liquidity"] as const;
 
 const VALID_ALGORITHMS = new Set<FieldAlgorithm>([
   "core",
@@ -85,7 +86,7 @@ class DecisionFieldController {
   private width = 0;
   private height = 0;
   private dpr = 1;
-  private mobileMuted = false;
+  private compact = false;
 
   private regime: Regime = "unstable";
   private algorithm: FieldAlgorithm = "core";
@@ -101,12 +102,12 @@ class DecisionFieldController {
   private dominantIndex = 0;
   private secondaryIndices = new Set<number>();
 
-  private fieldLineLatent = "rgba(230, 235, 242, 0.023)";
-  private fieldLineActive = "rgba(230, 235, 242, 0.11)";
-  private fieldDominant = "rgba(109, 90, 178, 0.52)";
-  private fieldNodeLatent = "rgba(230, 235, 242, 0.14)";
-  private fieldNodeActive = "rgba(230, 235, 242, 0.35)";
-  private fieldNodeDominant = "rgba(133, 114, 212, 0.88)";
+  private fieldLineLatent = "rgba(230, 237, 248, 0.032)";
+  private fieldLineActive = "rgba(230, 237, 248, 0.152)";
+  private fieldDominant = "rgba(155, 175, 214, 0.82)";
+  private fieldNodeLatent = "rgba(230, 237, 248, 0.21)";
+  private fieldNodeActive = "rgba(230, 237, 248, 0.42)";
+  private fieldNodeDominant = "rgba(193, 210, 238, 0.94)";
 
   private raf = 0;
 
@@ -255,7 +256,7 @@ class DecisionFieldController {
   ): number {
     const raw = Number.parseFloat(document.body.dataset[key] ?? "");
     if (!Number.isFinite(raw)) return fallback;
-    return clamp(raw, 0, 2);
+    return clamp(raw, 0, 2.8);
   }
 
   private readFieldBlock(): string {
@@ -268,7 +269,7 @@ class DecisionFieldController {
     this.width = Math.max(1, window.innerWidth);
     this.height = Math.max(1, window.innerHeight);
     this.dpr = Math.min(2, window.devicePixelRatio || 1);
-    this.mobileMuted = this.width <= 768;
+    this.compact = this.width <= 768;
 
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
@@ -278,9 +279,10 @@ class DecisionFieldController {
   }
 
   private targetNodeCount(): number {
-    if (this.mobileMuted) return 0;
-    if (this.width <= 900) return 8;
-    if (this.width <= 1200) return 12;
+    if (this.width <= 480) return 5;
+    if (this.width <= 768) return 6;
+    if (this.width <= 1024) return 8;
+    if (this.width <= 1400) return 12;
     return 16;
   }
 
@@ -298,8 +300,8 @@ class DecisionFieldController {
   }
 
   private createNode(index: number): NodePoint {
-    const baseX = 0.15 + this.seed(index, 0.37) * 0.7;
-    const baseY = 0.2 + this.seed(index, 0.83) * 0.6;
+    const baseX = 0.1 + this.seed(index, 0.37) * 0.8;
+    const baseY = 0.16 + this.seed(index, 0.83) * 0.66;
 
     return {
       index,
@@ -336,18 +338,18 @@ class DecisionFieldController {
     const p = clamp(progress, 0, 1);
 
     return {
-      spread: 0.56 - p * 0.33,
-      lineDistance: 212 - p * 62,
+      spread: 0.64 - p * 0.26,
+      lineDistance: 250 - p * 82,
       secondaryCount: p > 0.72 ? 3 : 4,
-      latentLineAlpha: 0.05 - p * 0.02,
+      latentLineAlpha: 0.038 - p * 0.012,
     };
   }
 
   private resolveCenter(progress: number): { x: number; y: number } {
     const p = clamp(progress, 0, 1);
     const base = {
-      x: this.width * (0.56 - p * 0.06),
-      y: this.height * (0.47 + p * 0.05),
+      x: this.width * (0.52 - p * 0.04),
+      y: this.height * (0.5 + p * 0.02),
     };
 
     return this.applyBlockBias(base);
@@ -356,15 +358,15 @@ class DecisionFieldController {
   private applyBlockBias(center: { x: number; y: number }): { x: number; y: number } {
     switch (this.fieldBlock) {
       case "block-0":
-        return { x: center.x - this.width * 0.014, y: center.y - this.height * 0.01 };
+        return { x: center.x - this.width * 0.01, y: center.y - this.height * 0.01 };
       case "block-1":
-        return { x: center.x + this.width * 0.009, y: center.y - this.height * 0.008 };
+        return { x: center.x + this.width * 0.008, y: center.y - this.height * 0.008 };
       case "block-2":
-        return { x: center.x - this.width * 0.012, y: center.y + this.height * 0.01 };
+        return { x: center.x - this.width * 0.01, y: center.y + this.height * 0.011 };
       case "block-3":
-        return { x: center.x + this.width * 0.012, y: center.y + this.height * 0.013 };
+        return { x: center.x + this.width * 0.01, y: center.y + this.height * 0.013 };
       case "block-4":
-        return { x: center.x, y: center.y + this.height * 0.018 };
+        return { x: center.x, y: center.y + this.height * 0.016 };
       case "hero":
       default:
         return center;
@@ -377,17 +379,17 @@ class DecisionFieldController {
         return { x: this.width * 0.5, y: this.height * 0.52 };
       case "counterfactual":
       case "scenario":
-        return { x: this.width * 0.32, y: this.height * 0.4 };
+        return { x: this.width * 0.33, y: this.height * 0.4 };
       case "regime":
       case "risk":
-        return { x: this.width * 0.34, y: this.height * 0.58 };
+        return { x: this.width * 0.34, y: this.height * 0.6 };
       case "signal":
-        return { x: this.width * 0.6, y: this.height * 0.34 };
+        return { x: this.width * 0.62, y: this.height * 0.34 };
       case "ledger":
-        return { x: this.width * 0.67, y: this.height * 0.58 };
+        return { x: this.width * 0.7, y: this.height * 0.58 };
       case "integration":
       case "entropy":
-        return { x: this.width * 0.56, y: this.height * 0.62 };
+        return { x: this.width * 0.57, y: this.height * 0.64 };
       default:
         return null;
     }
@@ -396,52 +398,49 @@ class DecisionFieldController {
   private resolvePoints(cfg: RegimeConfig): PositionedNode[] {
     const center = this.resolveCenter(this.fieldProgress);
     const focus = this.focusCenter();
-    const focusBlend = this.productFocus ? (this.groupFocus === "advanced-capabilities" ? 0.28 : 0.22) : 0;
+    const focusBlend = this.productFocus ? (this.groupFocus === "advanced-capabilities" ? 0.27 : 0.2) : 0;
     const spreadRadius = Math.min(this.width, this.height) * cfg.spread;
 
     return this.nodes.map((node) => {
-      let x = center.x + (node.baseX - 0.5) * spreadRadius * 1.62;
-      let y = center.y + (node.baseY - 0.5) * spreadRadius * 1.62;
+      let x = center.x + (node.baseX - 0.5) * spreadRadius * 1.54;
+      let y = center.y + (node.baseY - 0.5) * spreadRadius * 1.54;
 
       if (this.algorithm === "core") {
-        x = x * 0.84 + center.x * 0.16;
-        y = y * 0.84 + center.y * 0.16;
+        x = x * 0.86 + center.x * 0.14;
+        y = y * 0.86 + center.y * 0.14;
       }
 
       if (this.algorithm === "scenario") {
-        const pivots = [
-          { x: this.width * 0.3, y: this.height * 0.4 },
-          { x: this.width * 0.7, y: this.height * 0.42 },
-          { x: this.width * 0.52, y: this.height * 0.69 },
-        ];
-        const pivot = pivots[node.index % pivots.length];
-        x = x * 0.48 + pivot.x * 0.52;
-        y = y * 0.48 + pivot.y * 0.52;
+        const t = this.nodes.length > 1 ? node.index / (this.nodes.length - 1) : 0;
+        const curveX = this.width * (0.2 + t * 0.62);
+        const arc = Math.sin(t * Math.PI) * this.height * 0.14;
+        x = x * 0.42 + curveX * 0.58;
+        y = y * 0.42 + (this.height * 0.35 + arc) * 0.58;
       }
 
       if (this.algorithm === "risk") {
-        const zone = { x: this.width * 0.34, y: this.height * 0.58 };
+        const zone = { x: this.width * 0.35, y: this.height * 0.58 };
         if (node.index % 3 !== 0) {
-          x = x * 0.34 + zone.x * 0.66;
-          y = y * 0.34 + zone.y * 0.66;
+          x = x * 0.28 + zone.x * 0.72;
+          y = y * 0.28 + zone.y * 0.72;
         }
       }
 
       if (this.algorithm === "signal") {
-        x = x * 0.62 + center.x * 0.38;
-        y = y * 0.62 + center.y * 0.38;
+        x = x * 0.64 + center.x * 0.36;
+        y = y * 0.64 + center.y * 0.36;
       }
 
       if (this.algorithm === "ledger") {
         const t = this.nodes.length > 1 ? node.index / (this.nodes.length - 1) : 0;
-        x = this.width * (0.2 + t * 0.6);
-        y = center.y + ((node.index % 4) - 1.5) * Math.max(14, this.height * 0.018);
+        x = this.width * (0.16 + t * 0.68);
+        y = this.height * (0.5 + ((node.index % 3) - 1) * 0.022);
       }
 
       if (this.algorithm === "integration") {
         const t = this.nodes.length > 1 ? node.index / (this.nodes.length - 1) : 0;
-        x = this.width * (0.2 + t * 0.6);
-        y = this.height * (0.24 + (1 - t) * 0.5);
+        x = this.width * (0.18 + t * 0.64);
+        y = this.height * (0.28 + (1 - t) * 0.46);
       }
 
       if (focus) {
@@ -464,27 +463,27 @@ class DecisionFieldController {
 
     switch (this.productFocus) {
       case "core":
-        return fit(8);
+        return fit(2);
       case "scenario":
       case "counterfactual":
-        return fit(3);
+        return fit(1);
       case "risk":
       case "regime":
-        return fit(7);
+        return fit(3);
       case "signal":
-        return fit(5);
+        return fit(4);
       case "ledger":
-        return fit(10);
+        return fit(Math.floor(length * 0.78));
       case "integration":
       case "entropy":
-        return fit(12);
+        return fit(Math.floor(length * 0.64));
       default:
-        return fit(8);
+        return fit(Math.floor(length * 0.4));
     }
   }
 
   private updateTopology(points: PositionedNode[], cfg: RegimeConfig): void {
-    const threshold = cfg.lineDistance + (this.groupFocus === "advanced-capabilities" ? -10 : 0);
+    const threshold = cfg.lineDistance + (this.groupFocus === "advanced-capabilities" ? -12 : 0);
     const thresholdSq = threshold * threshold;
 
     for (const node of this.nodes) {
@@ -526,13 +525,41 @@ class DecisionFieldController {
     this.secondaryIndices = new Set(ranked);
   }
 
+  private drawLine(a: PositionedNode, b: PositionedNode, width: number, color: string, alpha: number): void {
+    this.ctx.globalAlpha = clamp(alpha, 0, 1);
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = width;
+    this.ctx.beginPath();
+
+    if (this.algorithm === "scenario") {
+      const mx = (a.x + b.x) * 0.5;
+      const my = (a.y + b.y) * 0.5;
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      const normX = dist > 0 ? -dy / dist : 0;
+      const normY = dist > 0 ? dx / dist : 0;
+      const curve = clamp(10 + dist * 0.08, 10, 38);
+      const cx = mx + normX * curve;
+      const cy = my + normY * curve;
+      this.ctx.moveTo(a.x, a.y);
+      this.ctx.quadraticCurveTo(cx, cy, b.x, b.y);
+    } else {
+      this.ctx.moveTo(a.x, a.y);
+      this.ctx.lineTo(b.x, b.y);
+    }
+
+    this.ctx.stroke();
+  }
+
   private drawConnections(points: PositionedNode[], cfg: RegimeConfig): void {
     const threshold = cfg.lineDistance;
     const thresholdSq = threshold * threshold;
-    const restFactor = this.fieldActive ? 1 : 0.24;
-    const focusFactor = this.productFocus ? 1.18 : 1;
-    const mobileFactor = this.width <= 900 ? 0.78 : 1;
-    const dominantBoost = clamp(this.dominantWeight + this.fieldProgress * 0.42, 0.8, 2);
+    const restFactor = this.fieldActive ? 1 : 0.18;
+    const focusFactor = this.productFocus ? 1.15 : 1;
+    const dominantBoost = clamp(this.dominantWeight + this.fieldProgress * 0.48, 0.8, 2.5);
+    const riskBoost = this.algorithm === "risk" ? 1.36 : 1;
+    const signalAttenuation = this.algorithm === "signal" ? 0.54 : 1;
 
     for (let i = 0; i < points.length; i += 1) {
       const a = points[i];
@@ -554,31 +581,36 @@ class DecisionFieldController {
         const isDominant = aDominant || bDominant;
         const isSecondary = aSecondary || bSecondary;
 
-        let lineWidth = clamp(0.34 + this.fieldProgress * 0.08, 0.3, 0.75);
-        let alpha = cfg.latentLineAlpha * t * this.latentWeight * restFactor * mobileFactor;
+        let lineWidth = clamp(0.36 + this.fieldProgress * 0.1, 0.3, 0.9);
+        let alpha = cfg.latentLineAlpha * t * this.latentWeight * restFactor;
         let color = this.fieldLineLatent;
 
         if (isDominant) {
-          lineWidth = clamp(1.46 + this.fieldProgress * 0.34, 0.8, 2);
-          alpha = (0.1 + this.fieldProgress * 0.16) * t * focusFactor * dominantBoost * 0.52 * restFactor;
+          lineWidth = clamp((1.18 + this.fieldProgress * 0.5) * riskBoost, 0.8, 2.1);
+          alpha = (0.12 + this.fieldProgress * 0.19) * t * focusFactor * dominantBoost * 0.45 * restFactor;
           color = this.fieldDominant;
         } else if (isSecondary) {
-          lineWidth = clamp(0.88 + this.fieldProgress * 0.2, 0.5, 1.3);
-          alpha = (0.08 + this.fieldProgress * 0.1) * t * this.secondaryWeight * restFactor;
+          lineWidth = clamp((0.82 + this.fieldProgress * 0.3) * riskBoost, 0.5, 1.42);
+          alpha = (0.082 + this.fieldProgress * 0.12) * t * this.secondaryWeight * restFactor;
           color = this.fieldLineActive;
         }
 
-        if (this.algorithm === "signal" && !isDominant && !isSecondary) {
-          continue;
+        if (this.algorithm === "signal") {
+          if (!isDominant && !isSecondary) {
+            alpha *= signalAttenuation * 0.4;
+          } else {
+            alpha *= signalAttenuation;
+          }
         }
 
-        this.ctx.globalAlpha = clamp(alpha, 0, 1);
-        this.ctx.strokeStyle = color;
-        this.ctx.lineWidth = lineWidth;
-        this.ctx.beginPath();
-        this.ctx.moveTo(a.x, a.y);
-        this.ctx.lineTo(b.x, b.y);
-        this.ctx.stroke();
+        if (this.compact) {
+          lineWidth = Math.min(lineWidth, 1.2);
+          alpha *= 0.78;
+        }
+
+        if (alpha <= 0.001) continue;
+
+        this.drawLine(a, b, lineWidth, color, alpha);
       }
     }
 
@@ -586,30 +618,30 @@ class DecisionFieldController {
   }
 
   private drawNodes(points: PositionedNode[]): void {
-    const restFactor = this.fieldActive ? 1 : 0.22;
-    const focusFactor = this.productFocus ? 1.16 : 1;
+    const restFactor = this.fieldActive ? 1 : 0.2;
+    const focusFactor = this.productFocus ? 1.14 : 1;
 
     for (let i = 0; i < points.length; i += 1) {
       const point = points[i];
       const isDominant = i === this.dominantIndex;
       const isSecondary = this.secondaryIndices.has(i);
 
-      let radius = 1.3;
+      let radius = 1.22;
       let alpha = 0.14 * this.latentWeight * restFactor;
       let color = this.fieldNodeLatent;
 
       if (isDominant) {
-        radius = 3;
-        alpha = clamp(0.34 * this.dominantWeight * focusFactor * restFactor, 0.06, 1);
+        radius = 2.8;
+        alpha = clamp(0.34 * this.dominantWeight * focusFactor * restFactor, 0.05, 1);
         color = this.fieldNodeDominant;
       } else if (isSecondary) {
-        radius = 2.05;
-        alpha = clamp(0.26 * this.secondaryWeight * restFactor, 0.05, 1);
+        radius = 1.95;
+        alpha = clamp(0.24 * this.secondaryWeight * restFactor, 0.05, 1);
         color = this.fieldNodeActive;
       }
 
-      if (this.width <= 900) {
-        radius *= 0.88;
+      if (this.compact) {
+        radius *= 0.82;
         alpha *= 0.78;
       }
 
@@ -623,13 +655,81 @@ class DecisionFieldController {
     this.ctx.globalAlpha = 1;
   }
 
+  private resolveLabelNodes(length: number): number[] {
+    if (!length) return [];
+    if (length <= 5) return Array.from({ length }, (_, i) => i);
+
+    return [
+      0,
+      Math.floor(length * 0.22),
+      Math.floor(length * 0.44),
+      Math.floor(length * 0.66),
+      Math.max(0, Math.min(length - 1, Math.floor(length * 0.88))),
+    ];
+  }
+
+  private drawSemanticNodes(points: PositionedNode[]): void {
+    const indices = this.resolveLabelNodes(points.length);
+    if (!indices.length) return;
+
+    this.ctx.save();
+    this.ctx.font = "10px 'IBM Plex Sans', sans-serif";
+    this.ctx.textAlign = "left";
+    this.ctx.textBaseline = "middle";
+
+    for (let i = 0; i < indices.length; i += 1) {
+      const point = points[indices[i]];
+      if (!point) continue;
+
+      const label = FIELD_LABELS[i] ?? FIELD_LABELS[FIELD_LABELS.length - 1];
+      const labelAlpha = this.compact ? 0.32 : 0.46;
+
+      this.ctx.globalAlpha = labelAlpha;
+      this.ctx.fillStyle = this.fieldNodeActive;
+      this.ctx.beginPath();
+      this.ctx.arc(point.x, point.y, this.compact ? 1.3 : 1.8, 0, Math.PI * 2);
+      this.ctx.fill();
+
+      this.ctx.globalAlpha = labelAlpha * 0.94;
+      this.ctx.fillStyle = this.fieldLineActive;
+      this.ctx.fillText(label, point.x + 8, point.y);
+    }
+
+    this.ctx.restore();
+    this.ctx.globalAlpha = 1;
+  }
+
+  private drawLedgerTicks(points: PositionedNode[]): void {
+    if (this.algorithm !== "ledger" || points.length < 2) return;
+
+    const sorted = [...points].sort((a, b) => a.x - b.x);
+    const tickHeight = this.compact ? 6 : 9;
+
+    this.ctx.save();
+    this.ctx.strokeStyle = this.fieldLineActive;
+    this.ctx.lineWidth = this.compact ? 1 : 1.2;
+    this.ctx.globalAlpha = this.compact ? 0.22 : 0.28;
+
+    for (let i = 0; i < sorted.length; i += 1) {
+      const point = sorted[i];
+      if (i % 2 !== 0 && !this.compact) continue;
+      this.ctx.beginPath();
+      this.ctx.moveTo(point.x, point.y - tickHeight);
+      this.ctx.lineTo(point.x, point.y + tickHeight);
+      this.ctx.stroke();
+    }
+
+    this.ctx.restore();
+    this.ctx.globalAlpha = 1;
+  }
+
   private render(): void {
     this.syncState();
     this.syncPalette();
 
     this.ctx.clearRect(0, 0, this.width, this.height);
 
-    if (this.mobileMuted || document.visibilityState !== "visible") {
+    if (document.visibilityState !== "visible") {
       return;
     }
 
@@ -643,6 +743,8 @@ class DecisionFieldController {
     this.updateTopology(points, cfg);
     this.drawConnections(points, cfg);
     this.drawNodes(points);
+    this.drawSemanticNodes(points);
+    this.drawLedgerTicks(points);
   }
 }
 

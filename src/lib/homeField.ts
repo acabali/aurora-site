@@ -7,8 +7,8 @@ type StagePoint = {
 type GroupFocus = "system-modules" | "advanced-capabilities" | "";
 
 const clamp = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value));
-const FIELD_TRANSITION_MS = 160;
-const IDLE_MS = 1400;
+const FIELD_TRANSITION_MS = 140;
+const IDLE_MS = 1200;
 
 const regimeFromProgress = (progress: number): string => {
   if (progress < 0.16) return "unstable";
@@ -79,6 +79,13 @@ export function mountHomeField(): () => void {
   let stagePoints = readStagePoints(stageNodes);
   let idleTimer = 0;
 
+  const setExpanded = (value: boolean): void => {
+    const next = value ? "true" : "false";
+    toggle.setAttribute("aria-expanded", next);
+    menu.setAttribute("aria-expanded", next);
+    menu.setAttribute("aria-hidden", value ? "false" : "true");
+  };
+
   const clearIdleTimer = (): void => {
     if (!idleTimer) return;
     window.clearTimeout(idleTimer);
@@ -109,14 +116,18 @@ export function mountHomeField(): () => void {
     delete body.dataset.groupFocus;
     body.dataset.algorithm = "core";
     body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
+
+    for (const node of productNodes) {
+      node.removeAttribute("aria-current");
+    }
   };
 
   const closeMenu = (restoreFocus = false): void => {
     if (!isMenuOpen) return;
     isMenuOpen = false;
     body.dataset.productsOpen = "false";
-    toggle.setAttribute("aria-expanded", "false");
     menu.hidden = true;
+    setExpanded(false);
     clearProductFocus();
     if (restoreFocus) toggle.focus();
     scheduleIdle();
@@ -127,7 +138,7 @@ export function mountHomeField(): () => void {
     isMenuOpen = true;
     menu.hidden = false;
     body.dataset.productsOpen = "true";
-    toggle.setAttribute("aria-expanded", "true");
+    setExpanded(true);
 
     const focusable = getFocusableMenuNodes();
     if (focusable.length > 1) {
@@ -144,6 +155,11 @@ export function mountHomeField(): () => void {
       rawGroup === "system-modules" || rawGroup === "advanced-capabilities" ? rawGroup : "";
     const algorithm = (node.dataset.fieldAlgorithm ?? "core").trim();
 
+    for (const entry of productNodes) {
+      entry.removeAttribute("aria-current");
+    }
+
+    node.setAttribute("aria-current", "true");
     body.dataset.productFocus = product;
     body.dataset.fieldProduct = product;
     body.dataset.groupFocus = group;
@@ -154,11 +170,12 @@ export function mountHomeField(): () => void {
 
   const writeFieldState = (progress: number): void => {
     const bounded = clamp(progress, 0, 1);
-    const dominantWeight = 1.08 + bounded * 0.74;
-    const secondaryWeight = 0.96 + bounded * 0.42;
-    const latentWeight = 0.36 + bounded * 0.18;
+    const dominantWeight = 1 + bounded * 0.92;
+    const secondaryWeight = 0.88 + bounded * 0.52;
+    const latentWeight = 0.3 + bounded * 0.22;
 
     body.dataset.fieldProgress = bounded.toFixed(4);
+    body.dataset.fieldStage = bounded.toFixed(4);
     body.dataset.regime = regimeFromProgress(bounded);
     body.dataset.fieldDominantWeight = dominantWeight.toFixed(2);
     body.dataset.fieldSecondaryWeight = secondaryWeight.toFixed(2);
@@ -167,7 +184,7 @@ export function mountHomeField(): () => void {
   };
 
   const refreshField = (): void => {
-    const probe = window.scrollY + window.innerHeight * 0.34;
+    const probe = window.scrollY + window.innerHeight * 0.36;
     const progress = interpolateProgress(stagePoints, probe);
     const activeBlock = resolveActiveBlock(stagePoints, probe);
 
@@ -274,6 +291,7 @@ export function mountHomeField(): () => void {
   body.dataset.algorithm = body.dataset.algorithm ?? "core";
   body.dataset.fieldTransitionMs = String(FIELD_TRANSITION_MS);
   body.dataset.fieldActive = "false";
+  setExpanded(false);
 
   refreshField();
   scheduleIdle();
