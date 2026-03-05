@@ -163,3 +163,17 @@ height:100%;
 display:block;
 }
 
+
+.aurora-field{
+position:fixed;
+inset:0;
+z-index:0;
+pointer-events:none;
+}
+
+.aurora-field-canvas{
+width:100vw;
+height:100vh;
+display:block;
+}
+

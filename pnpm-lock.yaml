@@ -21,7 +21,7 @@ importers:
         specifier: ^3.12.5
         version: 3.14.2
       three:
-        specifier: ^0.160.0
+        specifier: 0.160.0
         version: 0.160.0
 
 packages:

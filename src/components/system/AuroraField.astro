@@ -1,16 +1,10 @@
----
----
-
 <div class="aurora-field" data-aurora-field aria-hidden="true">
-  <canvas class="aurora-field-canvas" data-aurora-canvas></canvas>
+<canvas class="aurora-field-canvas" data-aurora-canvas></canvas>
 </div>
 
 <script type="module">
-
-import("/src/lib/homeField.ts").then(({ mountAuroraField }) => {
-  const root = document.querySelector("[data-aurora-field]")
-  if (root) mountAuroraField(root)
+import("/src/lib/homeField.ts").then(({mountAuroraField})=>{
+const root=document.querySelector("[data-aurora-field]")
+if(root)mountAuroraField(root)
 })
-
 </script>
-

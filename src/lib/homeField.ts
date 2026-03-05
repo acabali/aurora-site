@@ -1,13 +1,10 @@
-import { AuroraEngine } from "./auroraEngine/engine"
+import { AuroraProEngine } from "./auroraEngine/proEngine"
 
 export function mountAuroraField(root:HTMLElement){
 
-  const canvas = root.querySelector(
-    "[data-aurora-canvas]"
-  ) as HTMLCanvasElement
+const canvas=root.querySelector("[data-aurora-canvas]") as HTMLCanvasElement
+if(!canvas)return
 
-  if(!canvas) return
-
-  new AuroraEngine(canvas)
+new AuroraProEngine(canvas)
 
 }
