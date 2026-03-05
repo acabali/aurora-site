@@ -1,19 +1,16 @@
 ---
-import { mountAuroraField } from "../../lib/homeField"
 ---
 
 <div class="aurora-field" data-aurora-field aria-hidden="true">
   <canvas class="aurora-field-canvas" data-aurora-canvas></canvas>
 </div>
 
-<script type="module" client:load>
+<script type="module">
 
-import { mountAuroraField } from "../../lib/homeField"
-
-const root = document.querySelector("[data-aurora-field]")
-
-if (root) {
-  mountAuroraField(root)
-}
+import("/src/lib/homeField.ts").then(({ mountAuroraField }) => {
+  const root = document.querySelector("[data-aurora-field]")
+  if (root) mountAuroraField(root)
+})
 
 </script>
+
