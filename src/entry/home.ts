@@ -1,5 +1,6 @@
-import { initAuroraField } from "../lib/homeField"
+import { initHomeSystem } from "../lib/homeField";
 
-document.addEventListener("DOMContentLoaded", () => {
-  initAuroraField()
-})
+if (typeof window !== "undefined") {
+  if (document.readyState !== "loading") initHomeSystem();
+  else document.addEventListener("DOMContentLoaded", () => initHomeSystem(), { once: true });
+}

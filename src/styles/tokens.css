@@ -1,14 +1,21 @@
 :root{
+  --aurora-bg:#050607;
+  --aurora-fg:#ECEFF3;
+  --aurora-white:#FFFFFF;
 
---aurora-bg:#05070c;
---aurora-fg:#e6edf6;
+  --aurora-muted:rgba(236,239,243,.62);
+  --aurora-line:rgba(236,239,243,.14);
+  --aurora-line-soft:rgba(236,239,243,.10);
 
---aurora-accent:#4da3ff;
---aurora-accent-soft:#9cc7ff;
+  --aurora-green:#00C389;     /* evidencia */
+  --aurora-blue:#2E5BFF;      /* estructura */
+  --aurora-red:#FF3D3D;       /* tensión */
+  --aurora-violet:#9B6BFF;    /* premium */
 
---aurora-line:#1b2230;
---aurora-muted:#6b7280;
+  --content-max:1100px;
 
---content-max:1180px;
+  --motion-fast:140ms;
+  --motion-base:260ms;
 
+  --hero-occlusion:rgba(0,0,0,.72);
 }

@@ -1,54 +1,24 @@
 ---
-import AuroraField from "../components/system/AuroraField.astro"
-import "../styles/global.css"
+import ProductsMenu from "../components/ProductsMenu.astro";
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+
+import Hero from "../components/sections/Hero.astro"
+import Problem from "../components/sections/Problem.astro"
+import System from "../components/sections/System.astro"
+import Products from "../components/sections/Products.astro"
+import Premium from "../components/sections/Premium.astro"
+import Close from "../components/sections/Close.astro"
 ---
 
-<AuroraField />
+<Header />
 
-<section class="section hero">
- <div>
-  <h1>La era de construir con evidencia.</h1>
-  <p>Las empresas ya no se improvisan. Se diseñan.</p>
- </div>
-</section>
+<Hero />
+<Problem />
+<System />
+<Products />
+<Premium />
+<Close />
 
-<section class="section">
- <div>
-  <h2>Arquitectura de Decisiones</h2>
-  <p>Reducir arbitrariedad. Aumentar capacidad.</p>
- </div>
-</section>
+<Footer />
 
-<section class="section">
- <div>
-  <h2>Capacidad multinacional para cualquier empresa</h2>
- </div>
-</section>
-
-<section class="section">
- <div>
-  <h2>Productos</h2>
-  <div class="products">
-   <div class="product">Core</div>
-   <div class="product">Scenario</div>
-   <div class="product">Risk</div>
-   <div class="product">Signal</div>
-   <div class="product">Ledger</div>
-  </div>
- </div>
-</section>
-
-<section class="section">
- <div>
-  <h2>Simulación de decisiones</h2>
-  <p>Impacto · Riesgo · Reversibilidad</p>
- </div>
-</section>
-
-<section class="section">
- <div>
-  <h2>Nuevo estándar empresarial</h2>
- </div>
-</section>
-
-<script type="module" src="/src/entry/home.ts"></script>
