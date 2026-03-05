@@ -1,24 +1,21 @@
 ---
-import ProductsMenu from "../components/ProductsMenu.astro";
-import Header from "../components/Header.astro"
-import Footer from "../components/Footer.astro"
+import Layout from "../layouts/MainLayout.astro"
 
 import Hero from "../components/sections/Hero.astro"
-import Problem from "../components/sections/Problem.astro"
+import Rupture from "../components/sections/Rupture.astro"
 import System from "../components/sections/System.astro"
 import Products from "../components/sections/Products.astro"
 import Premium from "../components/sections/Premium.astro"
 import Close from "../components/sections/Close.astro"
 ---
 
-<Header />
+<Layout>
 
 <Hero />
-<Problem />
+<Rupture />
 <System />
 <Products />
 <Premium />
 <Close />
 
-<Footer />
-
+</Layout>
