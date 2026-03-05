@@ -7,7 +7,8 @@ const { title = "Aurora", page = "home" } = Astro.props;
 const buildMarker =
   import.meta.env?.VERCEL_GIT_COMMIT_SHA ??
   process.env?.VERCEL_GIT_COMMIT_SHA ??
-  `${Date.now()}`;
+  process.env?.GIT_COMMIT_SHA ??
+  "dev";
 ---
 
 <!doctype html>
@@ -20,34 +21,30 @@ const buildMarker =
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
 
   <body data-page={page} data-build={buildMarker} data-story="AURORA-VOMEGA">
     <header class="site-header" data-header>
-      <div class="header-left">
-        <a href="/" class="brand" aria-label="Aurora">
+      <div class="header-instrument">
+        <a href="/" class="brand-lockup" aria-label="Aurora home">
           <img
             src="/aurora-logo.png"
             alt=""
-            class="brand-logo"
+            class="brand-mark"
             width="14"
             height="14"
             aria-hidden="true"
           />
           <span class="brand-name">AURORA</span>
         </a>
+        <p class="header-readout" aria-hidden="true">SYSTEM INTERFACE</p>
       </div>
 
-      <nav class="site-nav" aria-label="Principal">
-        <a href="/#hero" class="header-link">inicio</a>
-        <a href="/#demo" class="header-link">demo</a>
-      </nav>
-
-      <div class="header-right">
-        <span class="sys-status">SYS.ONLINE</span>
+      <div class="header-controls">
+        <a href="/demo" class="header-link">DEMO</a>
       </div>
     </header>
 
