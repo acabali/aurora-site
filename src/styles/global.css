@@ -1,3 +1,4 @@
+@import "./tokens.css";
 /* =========================================================
    AURORA GLOBAL STYLES vΩ
    Base + Grid + Field visibility (NUCLEAR SAFE PATCH)
@@ -194,4 +195,32 @@ outline:2px solid red;
 body[data-debug="1"] .system-rail{
 outline:1px dashed cyan;
 }
+
+
+/* Aurora depth & focus */
+.aurora-depth{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:1;
+background:var(--aurora-fog);
+}
+
+.aurora-focus{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:2;
+background:var(--aurora-focus);
+mix-blend-mode:screen;
+opacity:.85;
+}
+
+/* Canvas stays below UI but above bg */
+.aurora-field{ z-index:0; }
+.site-shell{ position:relative; z-index:3; }
+
+/* Debug */
+body[data-debug="1"] .aurora-field-canvas{ outline:2px solid red; }
+body[data-debug="1"] .aurora-depth{ outline:1px dashed cyan; }
 
