@@ -4,11 +4,7 @@ import "../styles/global.css";
 
 const { title = "Aurora", page = "home" } = Astro.props;
 
-const buildMarker =
-  import.meta.env?.VERCEL_GIT_COMMIT_SHA ??
-  process.env?.VERCEL_GIT_COMMIT_SHA ??
-  process.env?.GIT_COMMIT_SHA ??
-  "dev";
+const buildMarker = import.meta.env.VERCEL_GIT_COMMIT_SHA || "dev";
 ---
 
 <!doctype html>
