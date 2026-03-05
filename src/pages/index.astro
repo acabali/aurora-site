@@ -1,12 +1,15 @@
 ---
+import AuroraField from "../components/system/AuroraField.astro";
+import SystemRail from "../components/system/SystemRail.astro";
 import PageLayout from "../layouts/PageLayout.astro";
-import DecisionField from "../components/system/DecisionField.astro";
+// import DecisionField from "../components/system/DecisionField.astro";
 ---
 
 <PageLayout title="Aurora" page="home">
-  <div class="home-system-shell" data-home-shell>
-    <DecisionField />
-
+  <AuroraField />
+  <SystemRail />
+<div class="home-system-shell" data-home-shell>
+  <!-- DecisionField disabled: AuroraField is the single engine -->
     <main id="field" class="home-main" data-home-main>
       <section class="section-block section-hero" id="hero" data-home-section data-field-state="hero">
         <p class="section-id" aria-hidden="true">01</p>
@@ -178,27 +181,5 @@ import DecisionField from "../components/system/DecisionField.astro";
     </main>
   </div>
 
-  <script type="module">
-    import { initHomeSystem } from "../lib/homeField";
-
-    let cleanup;
-
-    const boot = () => {
-      cleanup = initHomeSystem();
-    };
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", boot, { once: true });
-    } else {
-      boot();
-    }
-
-    window.addEventListener(
-      "pagehide",
-      () => {
-        if (typeof cleanup === "function") cleanup();
-      },
-      { once: true }
-    );
-  </script>
+  <script type="module" src="/src/entry/home.ts"></script>
 </PageLayout>
