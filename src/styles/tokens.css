@@ -1,22 +1,17 @@
 :root{
+
 --aurora-bg:#050608;
---aurora-grid:rgba(255,255,255,.05);
 --aurora-blue:#2E5BFF;
 --aurora-green:#00C389;
 --aurora-violet:#7C5CFF;
 
---aurora-fog: radial-gradient(ellipse at center, rgba(5,6,8,0) 0%, rgba(5,6,8,.65) 55%, rgba(5,6,8,.95) 85%);
---aurora-focus: radial-gradient(circle at 50% 40%, rgba(46,91,255,.08), transparent 55%);
-
---space-2:8px;
---space-3:12px;
---space-4:16px;
---space-6:24px;
---space-8:32px;
+--aurora-energy:#4f7bff;
+--aurora-depth:#030405;
 
 --motion-fast:.14s;
 --motion-base:.36s;
---motion-reveal:.64s;
+--motion-slow:.8s;
 
 --container:640px;
+
 }
