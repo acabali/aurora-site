@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+FILES=$(git diff --name-only)
+
+if echo "$FILES" | grep -E "astro.config|vercel|routes"; then
+echo "INFRA CHANGE DETECTED"
+exit 1
+fi
+
+echo "INFRA OK"

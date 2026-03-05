@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "== AURORA READY CHECK =="
+
+git rev-parse --is-inside-work-tree >/dev/null && echo "Repo OK"
+
+pnpm build >/dev/null && echo "Build OK"
+
+ops/tests/web_smoke.sh
+
+echo "SYSTEM READY FOR CODEX"

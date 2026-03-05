@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "== AURORA PROD PIPELINE =="
+
+pnpm build
+
+ops/bin/aurora-guard
+ops/bin/aurora-audit
+ops/tests/web_smoke.sh
+
+vercel --prod --yes
+
+echo "DEPLOY COMPLETE"

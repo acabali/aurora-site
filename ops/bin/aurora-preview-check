@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pnpm build >/dev/null
+
+URL=$(vercel --yes 2>/dev/null | grep https://)
+
+echo "Preview URL:"
+echo "$URL"
+
+curl -fsSL "$URL" | grep data-aurora-canvas >/dev/null && echo "Canvas OK" || echo "Canvas FAIL"
