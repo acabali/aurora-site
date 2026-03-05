@@ -1,0 +1,18 @@
+<script type="module">
+
+import {mountGraph} from "/src/lib/auroraEngine/graphEngine.ts"
+import {mountCursorGravity} from "/src/lib/auroraEngine/cursorGravity.ts"
+import {mountFPS} from "/src/lib/auroraPerf/fps.ts"
+
+const canvas=document.querySelector("[data-aurora-canvas]")
+
+if(canvas){
+
+mountGraph(canvas)
+mountCursorGravity(canvas)
+
+}
+
+mountFPS()
+
+</script>

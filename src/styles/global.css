@@ -224,3 +224,18 @@ opacity:.85;
 body[data-debug="1"] .aurora-field-canvas{ outline:2px solid red; }
 body[data-debug="1"] .aurora-depth{ outline:1px dashed cyan; }
 
+
+.aurora-space{
+
+position:fixed;
+inset:0;
+pointer-events:none;
+
+background:
+radial-gradient(circle at center,rgba(46,91,255,.12),transparent 60%),
+radial-gradient(circle at bottom,rgba(0,195,137,.08),transparent 70%);
+
+mix-blend-mode:screen;
+
+}
+

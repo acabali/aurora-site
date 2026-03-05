@@ -10,10 +10,14 @@
     "verify:prod": "bash ops/verify_prod.sh"
   },
   "dependencies": {
+    "3d-force-graph": "^1.79.1",
     "@astrojs/vercel": "^9.0.4",
     "astro": "^5.17.1",
+    "d3-force": "^3.0.0",
     "googleapis": "^171.4.0",
     "gsap": "^3.12.5",
-    "three": "0.160.0"
+    "stats.js": "^0.17.0",
+    "three": "0.160.0",
+    "tone": "^15.1.22"
   }
 }

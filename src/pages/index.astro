@@ -1,3 +1,5 @@
+import SystemRail from "../components/system/SystemRail.astro"
+import AuroraField from "../components/system/AuroraField.astro"
 import AuroraEnhancements from "../components/system/AuroraEnhancements.astro"
 ---
 import PageLayout from "../layouts/PageLayout.astro";
@@ -11,7 +13,9 @@ import SystemRail from "../components/system/SystemRail.astro";
 <AuroraEnhancements />
     <SystemRail />
 
-    <main id="field" class="home-main" data-home-main>
+    <AuroraField />
+<SystemRail />
+<main id="field" class="home-main" data-home-main>
       <section class="section-block section-hero" id="hero" data-home-section data-field-state="hero">
         <p class="section-id" aria-hidden="true">01</p>
         <h1>El límite humano ya no alcanza.</h1>
