@@ -1,12 +1,18 @@
 ---
 import PageLayout from "../layouts/PageLayout.astro";
+import AuroraField from "../components/system/AuroraField.astro";
+import SystemRail from "../components/system/SystemRail.astro";
 ---
 
 <PageLayout title="Aurora" page="home">
-  <main id="field" class="home-main">
-    <section class="section-block section-hero" id="hero">
-      <p class="section-id" aria-hidden="true">01</p>
-      <h1>El límite humano ya no alcanza.</h1>
+  <div class="home-system-shell">
+    <AuroraField />
+    <SystemRail />
+
+    <main id="field" class="home-main" data-home-main>
+      <section class="section-block section-hero" id="hero" data-home-section data-field-state="hero">
+        <p class="section-id" aria-hidden="true">01</p>
+        <h1>El límite humano ya no alcanza.</h1>
 
 <p>El mercado ya no compite con personas.</p>
 <p>Compite con sistemas.</p>
@@ -22,12 +28,12 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 <p>Es sustitución operativa.</p>
 
-      <a href="#demo" class="cta-primary">Poner una decisión bajo evidencia</a>
-    </section>
+        <a href="#demo" class="cta-primary">Poner una decisión bajo evidencia</a>
+      </section>
 
-    <section class="section-block" id="system">
-      <p class="section-id" aria-hidden="true">02</p>
-      <p>La forma de operar cambió.</p>
+      <section class="section-block" id="system" data-home-section data-field-state="system">
+        <p class="section-id" aria-hidden="true">02</p>
+        <p>La forma de operar cambió.</p>
 
 <p>Validar antes de actuar ya es posible.</p>
 
@@ -35,11 +41,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es condición de entrada.</p>
 
 <p>La precisión no optimiza.</p>
-      <p>Define quién compite.</p>
-    </section>
+        <p>Define quién compite.</p>
+      </section>
 
-    <section class="section-block" id="misfit">
-      <p class="section-id" aria-hidden="true">03</p>
+      <section class="section-block" id="misfit" data-home-section data-field-state="misfit">
+        <p class="section-id" aria-hidden="true">03</p>
 
 <p>Hoy es más barato y más eficiente operar con capacidad algorítmica que con estructura inflada.</p>
 
@@ -54,11 +60,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es desventaja.</p>
 
 <p>El mercado premia cálculo.</p>
-      <p>Penaliza interpretación.</p>
-    </section>
+        <p>Penaliza interpretación.</p>
+      </section>
 
-    <section class="section-block" id="engine">
-      <p class="section-id" aria-hidden="true">04</p>
+      <section class="section-block" id="engine" data-home-section data-field-state="engine">
+        <p class="section-id" aria-hidden="true">04</p>
 
 <p>Antes:</p>
 
@@ -79,11 +85,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Es desplazamiento operativo.</p>
 
 <p>No es evolución.</p>
-      <p>Es sustitución de estándar.</p>
-    </section>
+        <p>Es sustitución de estándar.</p>
+      </section>
 
-    <section class="section-block" id="what">
-      <p class="section-id" aria-hidden="true">05</p>
+      <section class="section-block" id="what" data-home-section data-field-state="what">
+        <p class="section-id" aria-hidden="true">05</p>
 
 <p>Aurora es una capa de cálculo soberano.</p>
 
@@ -112,11 +118,11 @@ import PageLayout from "../layouts/PageLayout.astro";
 
 <p>Con cálculo soberano, marcas el ritmo.</p>
 
-      <p>Sin él, lo persigues.</p>
-    </section>
+        <p>Sin él, lo persigues.</p>
+      </section>
 
-    <section class="section-block section-demo" id="demo">
-      <p class="section-id" aria-hidden="true">06</p>
+      <section class="section-block section-demo" id="demo" data-home-section data-field-state="demo">
+        <p class="section-id" aria-hidden="true">06</p>
 
 <p>Pon tu próximo movimiento bajo evidencia.</p>
 
@@ -129,20 +135,32 @@ import PageLayout from "../layouts/PageLayout.astro";
 <p>Una señal.</p>
 <p>Un movimiento correcto.</p>
 
-      <a href="/demo" class="cta-primary">Abrir demo</a>
-    </section>
-  </main>
+        <a href="/demo" class="cta-primary">Abrir demo</a>
+      </section>
+    </main>
+  </div>
 
-  <script>
-    const sections = document.querySelectorAll(".section-block");
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("revealed");
-        });
+  <script type="module">
+    import { initHomeSystem } from "../lib/homeField";
+
+    let cleanup;
+
+    const boot = () => {
+      cleanup = initHomeSystem();
+    };
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", boot, { once: true });
+    } else {
+      boot();
+    }
+
+    window.addEventListener(
+      "pagehide",
+      () => {
+        if (typeof cleanup === "function") cleanup();
       },
-      { threshold: 0.12, rootMargin: "0px 0px -8% 0px" }
+      { once: true }
     );
-    sections.forEach((s) => observer.observe(s));
   </script>
 </PageLayout>
