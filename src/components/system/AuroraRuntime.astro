@@ -1,18 +1,22 @@
 <script type="module">
 
-import {mountGraph} from "/src/lib/auroraEngine/graphEngine.ts"
-import {mountCursorGravity} from "/src/lib/auroraEngine/cursorGravity.ts"
-import {mountFPS} from "/src/lib/auroraPerf/fps.ts"
+import {mountNeuralBackground} from "/src/lib/aurora/neural/background.ts"
+import {mountCursorGravity} from "/src/lib/aurora/gravity/cursorGravity.ts"
+import {mountTimeline} from "/src/lib/aurora/temporal/replay.ts"
+import {ripple} from "/src/lib/aurora/ripple/ripple.ts"
 
 const canvas=document.querySelector("[data-aurora-canvas]")
 
+mountNeuralBackground()
+
 if(canvas){
-
-mountGraph(canvas)
 mountCursorGravity(canvas)
-
 }
 
-mountFPS()
+mountTimeline(document.body)
+
+window.addEventListener("click",e=>{
+ripple(e.clientX,e.clientY)
+})
 
 </script>
