@@ -177,3 +177,12 @@ height:100vh;
 display:block;
 }
 
+
+body[data-debug="1"] .aurora-field-canvas{
+outline:2px solid red;
+}
+
+body[data-debug="1"] .system-rail{
+background:rgba(255,0,0,.05);
+}
+

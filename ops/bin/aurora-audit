@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+URL="https://aurora-site-brown.vercel.app"
+
+echo "== PROD AUDIT =="
+
+STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+echo "HTTP: $STATUS"
+
+curl -fsSL "$URL" | rg "data-aurora-canvas" >/dev/null && echo "canvas OK" || echo "canvas FAIL"
+curl -fsSL "$URL" | rg "aurora-field" >/dev/null && echo "field OK" || echo "field FAIL"
+
+echo "AUDIT DONE"

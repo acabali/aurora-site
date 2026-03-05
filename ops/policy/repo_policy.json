@@ -1,0 +1,9 @@
+{
+  "canonical_repo": "aurora-site",
+  "allowed_branch": "main",
+  "forbidden_paths": [
+    "Documents/New project/aurora-site-exec",
+    "aurora-site_backup"
+  ],
+  "prod_domain": "aurora-site-brown.vercel.app"
+}

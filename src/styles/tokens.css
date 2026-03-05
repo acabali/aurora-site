@@ -1,43 +1,21 @@
-:root {
-  --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-tech: "IBM Plex Mono", "SF Mono", "Consolas", monospace;
+:root{
 
-  --bg-0: #0B0B0C;
-  --bg-1: #121315;
-  --line: rgba(191, 194, 199, 0.24);
-  --line-strong: rgba(191, 194, 199, 0.5);
+--aurora-bg:#050608;
+--aurora-grid:rgba(255,255,255,.05);
 
-  --text-0: #F7F7F5;
-  --text-1: #BFC2C7;
-  --text-2: #767B82;
+--aurora-blue:#2E5BFF;
+--aurora-green:#00C389;
+--aurora-violet:#7C5CFF;
 
-  --signal-blue: #2E5BFF;
-  --signal-green: #00C389;
-  --signal-violet: #7C5CFF;
+--space-2:8px;
+--space-3:12px;
+--space-4:16px;
+--space-6:24px;
+--space-8:32px;
 
-  --field-line-latent: rgba(191, 194, 199, 0.22);
-  --field-line-active: rgba(0, 195, 137, 0.42);
-  --field-dominant: rgba(46, 91, 255, 0.74);
-  --field-node-latent: rgba(191, 194, 199, 0.38);
-  --field-node-active: #00C389;
-  --field-node-dominant: #2E5BFF;
+--motion-fast:.14s;
+--motion-reveal:.64s;
 
-  --header-h: 64px;
-  --container-w: 620px;
+--container:620px;
 
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 20px;
-  --s6: 24px;
-  --s8: 32px;
-  --s10: 40px;
-  --s12: 48px;
-  --s16: 64px;
-  --s20: 80px;
-
-  --t-fast: 140ms;
-  --t-reveal: 640ms;
-  --ease-reveal: cubic-bezier(0.22, 0.73, 0.16, 1);
 }

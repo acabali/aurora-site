@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "== AURORA DEPLOY GATE =="
+
+pnpm build
+ops/bin/aurora-audit
+ops/bin/aurora-guard
+
+vercel --prod --yes

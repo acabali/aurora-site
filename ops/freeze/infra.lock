@@ -1,0 +1,15 @@
+INFRASTRUCTURE LOCK
+
+Do not modify without version bump:
+
+astro
+vercel
+routes
+demo
+repo structure
+
+Allowed changes:
+
+visual engine
+css
+content

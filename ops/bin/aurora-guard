@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$HOME/aurora-site"
+cd "$ROOT"
+
+echo "== AURORA GUARD =="
+
+git rev-parse --is-inside-work-tree >/dev/null
+
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" != "main" ]; then
+  echo "ABORT: branch must be main"
+  exit 1
+fi
+
+HEAD=$(git rev-parse HEAD)
+PROD=$(vercel inspect https://aurora-site-brown.vercel.app --json 2>/dev/null | rg '"commit"' -o || true)
+
+echo "HEAD: $HEAD"
+echo "✔ repo OK"
