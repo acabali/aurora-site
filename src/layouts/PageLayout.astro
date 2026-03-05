@@ -1,4 +1,5 @@
 ---
+import AuroraField from "../components/system/AuroraField.astro";
 import "../styles/tokens.css";
 import "../styles/global.css";
 
@@ -45,7 +46,9 @@ const buildMarker = import.meta.env.VERCEL_GIT_COMMIT_SHA || "dev";
     </header>
 
     <div class="site-shell">
-      <slot />
+      
+  <AuroraField />
+<slot />
     </div>
   </body>
 </html>
