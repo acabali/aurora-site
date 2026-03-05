@@ -1,17 +1,13 @@
 ---
-/**
- * AuroraField vΩ
- * Canvas-only. Engine lives in /src/lib/auroraFieldThree.ts
- * Must not affect narrative text.
- */
 ---
-<div class="aurora-field" aria-hidden="true" data-aurora-field>
+
+<div class="aurora-field" data-aurora-field aria-hidden="true">
   <canvas class="aurora-field-canvas" data-aurora-canvas></canvas>
 </div>
 
 <script type="module">
-  import { mountAuroraField } from "../../lib/auroraFieldThree";
+  import { mountAuroraField } from "/src/lib/homeField.ts";
+
   const root = document.querySelector("[data-aurora-field]");
-  const canvas = root?.querySelector("[data-aurora-canvas]");
-  if (root && canvas) mountAuroraField({ root, canvas });
+  if (root) mountAuroraField(root);
 </script>
