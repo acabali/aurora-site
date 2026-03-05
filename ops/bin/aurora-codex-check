@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "== AURORA CODEX CHECK =="
+
+git rev-parse --is-inside-work-tree >/dev/null
+
+echo "Repo OK"
+
+pnpm build >/dev/null
+
+echo "Build OK"
+
+echo "Verificando canvas"
+
+curl -fsSL https://aurora-site-brown.vercel.app | grep data-aurora-canvas >/dev/null && echo "Canvas OK" || echo "Canvas FAIL"
+
+echo "Sistema listo para CODEX"

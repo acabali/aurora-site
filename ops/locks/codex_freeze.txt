@@ -1,0 +1,4 @@
+src/pages/index.astro
+src/layouts/PageLayout.astro
+src/lib/auroraEngine
+astro.config.mjs
