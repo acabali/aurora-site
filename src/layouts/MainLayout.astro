@@ -1,0 +1,29 @@
+---
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+---
+
+<html lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<title>Aurora</title>
+
+<link rel="stylesheet" href="/src/styles/global.css"/>
+
+</head>
+
+<body>
+
+<Header />
+
+<slot />
+
+<Footer />
+
+</body>
+
+</html>

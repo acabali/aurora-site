@@ -1,26 +1,14 @@
-:root {
-  --aurora-black: #000000;
-  --aurora-white: #ffffff;
-  --aurora-green: #00ff9c;
-  --aurora-violet: #6a5cff;
+:root{
 
-  --aurora-bg: var(--aurora-black);
-  --aurora-fg: rgba(255, 255, 255, 0.94);
-  --aurora-muted: rgba(255, 255, 255, 0.64);
-  --aurora-line: rgba(255, 255, 255, 0.2);
-  --aurora-line-soft: rgba(255, 255, 255, 0.1);
+--aurora-bg:#05070c;
+--aurora-fg:#e6edf6;
 
-  --field-line-latent: rgba(255, 255, 255, 0.08);
-  --field-line-active: rgba(0, 255, 156, 0.35);
-  --field-dominant: rgba(106, 92, 255, 0.78);
-  --field-node-latent: rgba(255, 255, 255, 0.28);
-  --field-node-active: rgba(0, 255, 156, 0.9);
-  --field-node-dominant: rgba(106, 92, 255, 0.96);
+--aurora-accent:#4da3ff;
+--aurora-accent-soft:#9cc7ff;
 
-  --stroke-max: 2px;
-  --hero-occlusion: rgba(0, 0, 0, 0.92);
-  --content-max: 1180px;
+--aurora-line:#1b2230;
+--aurora-muted:#6b7280;
 
-  --motion-fast: 120ms;
-  --motion-base: 220ms;
+--content-max:1180px;
+
 }
