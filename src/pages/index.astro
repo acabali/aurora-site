@@ -656,248 +656,107 @@ body {
 
 <!-- ===== SCRIPTS: THREE.JS + GSAP + LENIS ===== -->
 <script>
-  import * as THREE from 'three';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  console.log('[AURORA] Script iniciando...');
 
-  gsap.registerPlugin(ScrollTrigger);
-
-  // LENIS SMOOTH SCROLL (OPCIONAL - Fallback si no está disponible)
-  async function setupLenis() {
-    try {
-      const Lenis = (await import('@studio-freight/lenis')).default;
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        smooth: true,
-        smoothTouch: false,
-        touchMultiplier: 2,
-      });
-
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
-      }
-
-      requestAnimationFrame(raf);
-    } catch (e) {
-      console.log('Lenis no disponible - scroll estándar activo');
-    }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAurora);
+  } else {
+    initAurora();
   }
 
-  setupLenis();
+  function initAurora() {
+    console.log('[AURORA] DOM ready, inicializando...');
 
-  // ===== THREE.JS NETWORK EMERGENCE =====
-  const canvas = document.getElementById('network-canvas');
-  if (canvas) {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      precision: 'highp',
-    });
+    Promise.all([
+      import('three'),
+      import('gsap'),
+      import('gsap/ScrollTrigger')
+    ]).then(([THREE, gsapModule, ScrollTrigger]) => {
+      console.log('[AURORA] Módulos cargados ✅');
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x0B0B0C, 1);
-    renderer.sortObjects = false;
-    camera.position.z = 8;
+      const gsap = gsapModule.default;
+      gsap.registerPlugin(ScrollTrigger.default);
 
-    // ===== FASE 1: EMERGENCE (0-3 segundos) =====
-    const nodeCount = 15;
-    const positions = [];
-    const nodes = [];
+      const canvas = document.getElementById('network-canvas');
+      console.log('[AURORA] Canvas:', canvas ? '✅ FOUND' : '❌ NOT FOUND');
 
-    for (let i = 0; i < nodeCount; i++) {
-      const theta = (i / nodeCount) * Math.PI * 2;
-      const r = 3 + Math.random() * 2;
-      const x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.5;
-      const y = (Math.random() - 0.5) * 4;
-      const z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.5;
-      positions.push(x, y, z);
-      nodes.push({ x, y, z });
-    }
+      if (!canvas) return;
 
-    // Nodos
-    const nodeGeometry = new THREE.BufferGeometry();
-    nodeGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(positions), 3)
-    );
+      try {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
 
-    const nodeMaterial = new THREE.PointsMaterial({
-      color: 0x2E5BFF,
-      size: 0.15,
-      sizeAttenuation: true,
-      fog: false,
-    });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x0B0B0C, 1);
+        camera.position.z = 8;
 
-    const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
-    scene.add(pointsMesh);
+        const nodeCount = 15;
+        const positions = [];
+        const nodes = [];
 
-    // Líneas
-    const linePositions = [];
-    for (let i = 0; i < nodeCount; i++) {
-      const neighborCount = 2 + Math.floor(Math.random() * 2);
-      for (let j = 0; j < neighborCount; j++) {
-        const neighborIdx = (i + 1 + j) % nodeCount;
-        if (linePositions.length < 150) {
-          linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
-          linePositions.push(
-            nodes[neighborIdx].x,
-            nodes[neighborIdx].y,
-            nodes[neighborIdx].z
-          );
+        for (let i = 0; i < nodeCount; i++) {
+          const theta = (i / nodeCount) * Math.PI * 2;
+          const r = 3 + Math.random() * 2;
+          const x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.5;
+          const y = (Math.random() - 0.5) * 4;
+          const z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.5;
+          positions.push(x, y, z);
+          nodes.push({ x, y, z });
         }
+
+        const nodeGeometry = new THREE.BufferGeometry();
+        nodeGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+
+        const nodeMaterial = new THREE.PointsMaterial({
+          color: 0x2E5BFF,
+          size: 0.15,
+          sizeAttenuation: true,
+        });
+
+        const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
+        scene.add(pointsMesh);
+
+        const linePositions = [];
+        for (let i = 0; i < nodeCount; i++) {
+          const neighborCount = 2 + Math.floor(Math.random() * 2);
+          for (let j = 0; j < neighborCount; j++) {
+            const neighborIdx = (i + 1 + j) % nodeCount;
+            if (linePositions.length < 150) {
+              linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
+              linePositions.push(nodes[neighborIdx].x, nodes[neighborIdx].y, nodes[neighborIdx].z);
+            }
+          }
+        }
+
+        const lineGeometry = new THREE.BufferGeometry();
+        lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xBFC2C7, transparent: true, opacity: 0.6 });
+        const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+        scene.add(linesMesh);
+
+        const group = new THREE.Group();
+        group.add(pointsMesh);
+        group.add(linesMesh);
+        scene.add(group);
+
+        function animate() {
+          requestAnimationFrame(animate);
+          group.rotation.x += 0.0002;
+          group.rotation.y += 0.0003;
+          renderer.render(scene, camera);
+        }
+        animate();
+
+        console.log('[AURORA] Three.js inicializado ✅');
+
+      } catch (err) {
+        console.error('[AURORA] Error:', err);
       }
-    }
-
-    const lineGeometry = new THREE.BufferGeometry();
-    lineGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(linePositions), 3)
-    );
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0xBFC2C7,
-      transparent: true,
-      opacity: 0.6,
-      fog: false,
+    }).catch(err => {
+      console.error('[AURORA] Error cargando módulos:', err);
     });
-    const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(linesMesh);
-
-    const group = new THREE.Group();
-    group.add(pointsMesh);
-    group.add(linesMesh);
-    scene.add(group);
-
-    // ===== EMERGENCIA ANIMATION (T=0-3s) =====
-    gsap.fromTo(
-      nodeMaterial,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.3, delay: 0.3 }
-    );
-    gsap.fromTo(
-      lineMaterial,
-      { opacity: 0 },
-      { opacity: 0.6, duration: 0.8, delay: 0.8 }
-    );
-
-    // ===== SCROLL BINDING =====
-    gsap.to(group.rotation, {
-      scrollTrigger: {
-        trigger: 'body',
-        scrub: 1,
-        markers: false,
-      },
-      z: Math.PI * 2,
-      duration: 10,
-    });
-
-    // ===== SCROLL REACTIVE COLORS =====
-    let lastScrollY = 0;
-    window.addEventListener('scroll', () => {
-      const scrollVelocity = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
-
-      const colorValue = Math.min(1, Math.abs(scrollVelocity) / 20);
-      const hslColor = new THREE.Color(
-        THREE.MathUtils.lerp(0xBFC2C7, 0x2E5BFF, colorValue)
-      );
-
-      lineMaterial.color.set(hslColor);
-      nodeMaterial.opacity = 0.6 + colorValue * 0.4;
-      group.rotation.z += (scrollVelocity / 1000) * 0.1;
-    });
-
-    // ===== RESIZE HANDLER =====
-    window.addEventListener('resize', () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-
-    // ===== ANIMATION LOOP =====
-    function animate() {
-      requestAnimationFrame(animate);
-      group.rotation.x += 0.0002;
-      group.rotation.y += 0.0003;
-      renderer.render(scene, camera);
-    }
-
-    animate();
   }
-
-  // ===== GSAP SECTION ANIMATIONS =====
-  gsap.to('.section-1 h2', {
-    scrollTrigger: {
-      trigger: '.section-1',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  gsap.to('.section-2 h2', {
-    scrollTrigger: {
-      trigger: '.section-2',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  gsap.to('.section-3 h2', {
-    scrollTrigger: {
-      trigger: '.section-3',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  // ===== RUPTURA BINARIA SCROLL BINDING =====
-  gsap.to('.rupture-container', {
-    scrollTrigger: {
-      trigger: '.section-rupture',
-      start: 'top 60%',
-      end: 'center 30%',
-      scrub: 1.2,
-    },
-    backgroundImage:
-      'linear-gradient(90deg, rgba(255,61,61,0.15) 0%, rgba(0,195,137,0.15) 100%)',
-    duration: 2,
-  });
-
-  // ===== MÓDULOS CASCADA =====
-  document.querySelectorAll('.module-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 80%',
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.6,
-      delay: i * 0.1,
-    });
-  });
 </script>
 </MainLayout>
