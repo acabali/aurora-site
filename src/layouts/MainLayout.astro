@@ -1,17 +1,27 @@
 ---
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Aurora",
+  description = "Aurora: arquitectura de decisiones y cálculo soberano.",
+} = Astro.props;
 ---
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aurora</title>
-    <link rel="stylesheet" href="/src/styles/global.css" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
-    <header>AURORA</header>
-    <main>
-      <slot />
-    </main>
+    <slot />
   </body>
 </html>
