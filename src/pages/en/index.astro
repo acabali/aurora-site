@@ -1,12 +1,64 @@
 ---
 import MainLayout from "../../layouts/MainLayout.astro";
 import AuroraLanding from "../../components/AuroraLanding.astro";
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Aurora",
+  description: "Infraestructura decisional",
+  url: "https://aurora-site.com",
+  logo: "https://aurora-site.com/aurora-logo.png",
+};
+
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "¿Qué es Aurora?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Aurora prueba decisiones antes de ejecutarlas. Infraestructura decisional que integra datos, simula escenarios y ejecuta bajo umbrales controlados.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Cuál es la diferencia con BI?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "BI mira atrás (reportes). Aurora mira adelante (simula futuros). BI descriptivo. Aurora predictivo y ejecutable.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "¿Qué es ejecución bajo umbrales?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Defines umbrales de riesgo. Si < umbral, Aurora ejecuta automático. Si > umbral, requiere aprobación.",
+      },
+    },
+  ],
+};
 ---
 
 <MainLayout
-  lang="en"
-  title="Aurora | Aurora tests decisions before you execute them"
-  description="Decision infrastructure that integrates data, simulates scenarios and executes under thresholds you control."
+  lang="es"
+  title="Aurora | Infraestructura Decisional | Prueba Decisiones Antes de Ejecutarlas"
+  description="Aurora prueba decisiones antes de ejecutarlas. Infraestructura decisional que integra datos, simula escenarios y ejecuta bajo umbrales. Para PYME y emprendedores."
 >
-  <AuroraLanding lang="en" />
+  <Fragment slot="head">
+    <meta name="keywords" content="Infrastructure decisional, Decision Intelligence, evaluador de decisiones, cálculo de riesgo empresarial, decisiones bajo evidencia" />
+    <meta property="og:title" content="Aurora | Infraestructura Decisional" />
+    <meta property="og:description" content="Prueba decisiones antes de ejecutarlas." />
+    <meta property="og:image" content="https://aurora-site.com/aurora-og-image.png" />
+    <meta property="og:url" content="https://aurora-site.com" />
+    <link rel="canonical" href="https://aurora-site.com" />
+    <link rel="alternate" hreflang="es" href="https://aurora-site.com" />
+    <link rel="alternate" hreflang="en" href="https://aurora-site.com/en" />
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+  </Fragment>
+  <AuroraLanding />
 </MainLayout>
