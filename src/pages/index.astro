@@ -1,10 +1,216 @@
 ---
-layout: ../layouts/MainLayout.astro
+layout: ../layouts/PageLayout.astro
 title: Aurora — Era Experience
 ---
 
-<!-- CODEX implementará aquí -->
-<section style="padding: 10rem 2rem; text-align: center;">
-  <h1>Aurora Era Experience</h1>
-  <p>CODEX en construcción...</p>
+<style>
+.hero{min-height:100vh;display:flex;align-items:center;padding:2rem;background:var(--color-bg);position:relative}.hero-canvas{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0}.hero-content{position:relative;z-index:10;max-width:90%;margin-top:100px}.hero h1{font-size:clamp(2.5rem,8vw,4rem);font-weight:700;margin-bottom:2rem;color:var(--color-text)}.hero-subtitle{font-size:1.25rem;color:var(--color-text-secondary);margin-bottom:3rem;max-width:600px;line-height:1.6}.cta-button{display:inline-block;padding:1rem 2rem;background:var(--color-accent-blue);color:var(--color-bg);border-radius:32px;font-weight:600;text-decoration:none;transition:all 250ms cubic-bezier(.6,0,.4,1);text-transform:uppercase;font-size:.95rem;letter-spacing:.05em;border:2px solid transparent}.cta-button:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(46,91,255,.3)}.cta-button-secondary{background:transparent;border-color:var(--color-accent-blue);color:var(--color-accent-blue)}.cta-button-secondary:hover{background:rgba(46,91,255,.1)}section{padding:6rem 4rem;position:relative;z-index:5;min-height:50vh;display:flex;align-items:center;justify-content:flex-start;max-width:1400px;margin:0 auto}section h2{font-size:clamp(1.875rem,5vw,3rem);font-weight:700;margin-bottom:2rem;line-height:1.2;color:var(--color-text)}section p{font-size:1.125rem;color:var(--color-text-secondary);line-height:1.7;margin-bottom:1.5rem;max-width:800px}.secondary{font-style:italic;margin-top:2rem;color:var(--color-text-secondary)}strong{color:var(--color-accent-blue);font-weight:700}.section-rupture{background:rgba(46,91,255,.02)}.rupture-container{display:grid;grid-template-columns:1fr auto 1fr;gap:4rem;align-items:center;margin:3rem 0;padding:3rem;background:rgba(46,91,255,.05);border-radius:12px}.rupture-before h3,.rupture-after h3{font-size:1.5rem;font-weight:700;margin-bottom:1.5rem}.rupture-before h3{color:var(--color-accent-red)}.rupture-after h3{color:var(--color-accent-green)}.rupture-list{list-style:none;margin-bottom:1.5rem}.rupture-list li{padding:.5rem 0;font-size:1.1rem;font-weight:600;margin-bottom:.5rem}.rupture-before .rupture-list li{color:var(--color-accent-red)}.rupture-after .rupture-list li{color:var(--color-accent-green)}.rupture-divider{width:1px;height:120px;background:linear-gradient(to bottom,var(--color-accent-red),var(--color-accent-blue),var(--color-accent-green))}.rupture-conclusion{margin-top:3rem;font-size:1.25rem;font-weight:600;line-height:1.8;max-width:900px;color:var(--color-text)}.definition-block{padding:3rem;background:rgba(46,91,255,.03);border-left:3px solid var(--color-accent-blue);margin:3rem 0;border-radius:8px}.definition-text{font-size:1.125rem;line-height:1.8;margin-bottom:2rem;color:var(--color-text)}.definition-emphasis{font-size:1.25rem;font-weight:600;margin:2rem 0;color:var(--color-accent-green)}.definition-finale{font-size:1.125rem;font-weight:600;line-height:1.8;margin-top:2rem;color:var(--color-text-secondary)}.demo-narrative{margin:3rem 0;padding:2rem;background:rgba(0,195,137,.03);border-radius:8px}.demo-statement{font-size:1.25rem;font-weight:600;margin-bottom:1.5rem;color:var(--color-accent-green)}.demo-action{font-size:1.125rem;line-height:1.8;margin-bottom:1.5rem;color:var(--color-text-secondary)}.demo-result{font-size:1.125rem;font-weight:600;color:var(--color-text)}@media(max-width:1024px){.rupture-container{grid-template-columns:1fr;gap:2rem}.rupture-divider{width:100%;height:1px;background:linear-gradient(to right,var(--color-accent-red),var(--color-accent-blue),var(--color-accent-green))}}@media(max-width:768px){.hero{min-height:auto;padding:1rem}.hero-content{margin-top:60px;padding:0 1rem}.hero h1{margin-bottom:1.5rem}section{padding:3rem 1rem}.definition-block,.demo-narrative{padding:1.5rem}.cta-button{width:100%;text-align:center;display:block}}
+</style>
+
+<section class="hero" data-era-section data-era-phase="unstable">
+  <canvas id="network-canvas" class="hero-canvas"></canvas>
+  <div class="hero-content">
+    <h1>La era<br>de construir<br>con evidencia.</h1>
+    <p class="hero-subtitle">Aurora transforma decisiones en arquitectura verificable.</p>
+    <a href="/demo" class="cta-button">Poner una decisión bajo evidencia</a>
+  </div>
 </section>
+
+<section data-era-section data-era-phase="compressing">
+  <div style="width:100%;max-width:900px">
+    <h2>La forma de operar cambió.</h2>
+    <p>Validar antes de actuar ya es posible.</p>
+    <p class="secondary">La validación previa no es mejora.<br><strong>Es condición de entrada.</strong></p>
+    <p class="secondary">La precisión no optimiza.<br><strong>Define quién compite.</strong></p>
+  </div>
+</section>
+
+<section data-era-section data-era-phase="collision">
+  <div style="width:100%;max-width:900px">
+    <h2>Hoy es más barato operar con cálculo.</h2>
+    <p>La ventaja ya no está en crecer.<br>Está en procesar mejor.</p>
+    <p class="secondary">Seguir expandiendo capas humanas<br>cuando el cálculo ya es superior<br>no es cultura.<br><strong>Es desventaja.</strong></p>
+    <p class="secondary">El mercado premia cálculo.<br>Penaliza interpretación.</p>
+  </div>
+</section>
+
+<section data-era-section data-era-phase="rupture">
+  <div style="width:100%;max-width:900px">
+    <h2>La capacidad algorítmica define el juego.</h2>
+    <p>El entorno ya está gobernado por datos en tiempo real, automatización y modelos autónomos.</p>
+    <p class="secondary">Actuar solo con intuición<br>no es identidad.<br><strong>Es inferioridad estructural.</strong></p>
+  </div>
+</section>
+
+<section class="section-rupture" data-era-section data-era-phase="rupture" data-binary-boundary>
+  <div style="width:100%">
+    <h2>Antes se reaccionaba.</h2>
+    <h2>Hoy se ejecuta con ventaja informacional.</h2>
+    <div class="rupture-container">
+      <div>
+        <h3>ANTES</h3>
+        <ul class="rupture-list">
+          <li>El error se absorbía</li>
+          <li>El ajuste era posterior</li>
+          <li>La velocidad era humana</li>
+        </ul>
+      </div>
+      <div class="rupture-divider"></div>
+      <div>
+        <h3>HOY</h3>
+        <ul class="rupture-list">
+          <li>El mercado opera con sistemas autónomos</li>
+          <li>Automatización estratégica</li>
+          <li>Cálculo continuo</li>
+        </ul>
+      </div>
+    </div>
+    <p class="rupture-conclusion">No es transformación digital.<br><strong>Es desplazamiento operativo.</strong><br><br>No es evolución.<br><strong>Es sustitución de estándar.</strong></p>
+  </div>
+</section>
+
+<section data-era-section data-era-phase="reordering">
+  <div style="width:100%">
+    <h2>Aurora es una capa de cálculo soberano.</h2>
+    <p>No acompaña. Divide.</p>
+    <p class="secondary">Divide a quienes operan desde límite humano de quienes operan con potencia algorítmica.</p>
+    <div class="definition-block">
+      <p class="definition-text">Cálculo soberano significa <strong>autonomía frente al error recurrente.</strong><br>Significa <strong>procesar complejidad sin reducirla.</strong><br>Significa <strong>tener ventaja antes de que el mercado entienda el movimiento.</strong></p>
+      <p class="definition-emphasis">No es mejora.<br><strong>Es reemplazo.</strong></p>
+      <p class="definition-finale">Con cálculo soberano, marcas el ritmo.<br>Sin él, lo persigues.</p>
+    </div>
+  </div>
+</section>
+
+<section data-era-section data-era-phase="stabilized">
+  <div style="width:100%">
+    <h2>Pon tu próximo movimiento bajo evidencia.</h2>
+    <div class="demo-narrative">
+      <p class="demo-statement"><strong>Aurora no opina.</strong> Calcula.</p>
+      <p class="demo-action">Detecta la interacción dominante.<br>Expone la vulnerabilidad central.</p>
+      <p class="demo-result">Una señal. Un movimiento correcto.</p>
+    </div>
+    <div style="margin-top:3rem;display:flex;gap:2rem;flex-wrap:wrap">
+      <a href="/demo" class="cta-button">Abrir Demo Interactivo</a>
+      <a href="mailto:hola@aurora.io" class="cta-button cta-button-secondary">Contactar Equipo</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  import * as THREE from 'three';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const canvas = document.getElementById('network-canvas');
+  if (canvas) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x0B0B0C, 1);
+    camera.position.z = 8;
+
+    const nodeCount = 15;
+    const positions = [];
+    const nodes = [];
+
+    for (let i = 0; i < nodeCount; i++) {
+      const theta = (i / nodeCount) * Math.PI * 2;
+      const r = 3 + Math.random() * 2;
+      const x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.5;
+      const y = (Math.random() - 0.5) * 4;
+      const z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.5;
+
+      positions.push(x, y, z);
+      nodes.push({ x, y, z });
+    }
+
+    const nodeGeometry = new THREE.BufferGeometry();
+    nodeGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+
+    const nodeMaterial = new THREE.PointsMaterial({
+      color: 0x2E5BFF,
+      size: 0.15,
+      sizeAttenuation: true,
+    });
+
+    const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
+    scene.add(pointsMesh);
+
+    const linePositions = [];
+    for (let i = 0; i < nodeCount; i++) {
+      const neighborCount = 2 + Math.floor(Math.random() * 2);
+      for (let j = 0; j < neighborCount; j++) {
+        const neighborIdx = (i + 1 + j) % nodeCount;
+        if (linePositions.length < 150) {
+          linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
+          linePositions.push(nodes[neighborIdx].x, nodes[neighborIdx].y, nodes[neighborIdx].z);
+        }
+      }
+    }
+
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0xBFC2C7,
+      transparent: true,
+      opacity: 0.6,
+    });
+    const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
+    scene.add(linesMesh);
+
+    const group = new THREE.Group();
+    group.add(pointsMesh);
+    group.add(linesMesh);
+    scene.add(group);
+
+    gsap.fromTo(nodeMaterial, { opacity: 0 }, { opacity: 1, duration: 0.3, delay: 0.3 });
+
+    gsap.to(group.rotation, {
+      scrollTrigger: {
+        trigger: 'body',
+        scrub: 1,
+        markers: false,
+      },
+      z: Math.PI * 2,
+      duration: 10,
+    });
+
+    let lastScrollY = 0;
+    window.addEventListener('scroll', () => {
+      const scrollVelocity = window.scrollY - lastScrollY;
+      lastScrollY = window.scrollY;
+
+      const colorValue = Math.min(1, Math.abs(scrollVelocity) / 20);
+      const hslColor = new THREE.Color(
+        THREE.MathUtils.lerp(0xBFC2C7, 0x2E5BFF, colorValue)
+      );
+
+      lineMaterial.color.set(hslColor);
+      nodeMaterial.opacity = 0.6 + colorValue * 0.4;
+      group.rotation.z += (scrollVelocity / 1000) * 0.1;
+    });
+
+    window.addEventListener('resize', () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      group.rotation.x += 0.0002;
+      group.rotation.y += 0.0003;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  }
+</script>
