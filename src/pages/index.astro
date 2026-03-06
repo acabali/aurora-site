@@ -1,916 +1,1453 @@
 ---
-layout: ../layouts/PageLayout.astro
-title: Aurora — Era Experience
-description: Aurora: Infraestructura de decisiones. Cálculo soberano para operación empresarial superior.
+import MainLayout from "../layouts/MainLayout.astro";
+
+const ruptureBefore = [
+  {
+    stat: "3",
+    suffix: " consultoras",
+    title: "Capas externas",
+    body: "La decisión se fragmenta entre estrategia, narrativa y análisis sin una memoria compartida.",
+  },
+  {
+    stat: "72",
+    suffix: " h",
+    title: "Ajuste tardío",
+    body: "La validación aparece después del movimiento, cuando el error ya tocó caja, pricing y operación.",
+  },
+  {
+    stat: "500",
+    suffix: "k/mes",
+    title: "Costo absorbido",
+    body: "El sistema humano absorbe coordinación, interpretación y pérdida de contexto como si fueran inevitables.",
+  },
+] as const;
+
+const ruptureNow = [
+  {
+    stat: "12",
+    suffix: " min",
+    title: "Simulación previa",
+    body: "La decisión se prueba con contexto, sensibilidad y vulnerabilidad central antes de ejecutarse.",
+  },
+  {
+    stat: "1",
+    suffix: " sistema",
+    title: "Contexto continuo",
+    body: "Narrativa, señales, riesgo y memoria operan en simultáneo sobre la misma estructura causal.",
+  },
+  {
+    stat: "24",
+    suffix: "/7",
+    title: "Cálculo persistente",
+    body: "El mercado ya premia a quien recalcula antes de reaccionar, no a quien interpreta más fuerte.",
+  },
+] as const;
+
+const systemProducts = [
+  {
+    name: "Decision Engine",
+    description: "Modela la interacción entre precio, volumen, margen y caja antes de mover una sola variable.",
+    example: "Ejemplo: subís precio 12% y ves de inmediato si el margen mejora o si destruís demanda útil.",
+  },
+  {
+    name: "Scenario Modeling",
+    description: "Ejecuta escenarios comparables con umbrales de ruptura, sensibilidad y trayectorias posibles.",
+    example: "Ejemplo: evaluás abrir una unidad nueva con 12 rangos de alquiler, CAC y demanda realista.",
+  },
+  {
+    name: "Risk Assessment",
+    description: "Encuentra exposición, puntos de no retorno y deterioro probable antes de comprometer capital.",
+    example: "Ejemplo: detectás cuándo una expansión deja de ser apuesta y pasa a ser vulnerabilidad estructural.",
+  },
+  {
+    name: "Pattern Detection",
+    description: "Aísla la variable dominante detrás del resultado cuando varias señales compiten entre sí.",
+    example: "Ejemplo: ventas -18%. Aurora separa si el daño viene de canal, pricing, mix o estacionalidad.",
+  },
+  {
+    name: "Decision Ledger",
+    description: "Registra contexto, hipótesis, movimiento y resultado para acumular aprendizaje operativo real.",
+    example: "Ejemplo: 12 meses después sabés qué decisiones ganaron por timing, sistema o ejecución.",
+  },
+  {
+    name: "Autonomous Command",
+    description: "Orquesta alertas, simulaciones y señales en simultáneo para que la aprobación humana llegue al final.",
+    example: "Ejemplo: el sistema sugiere el movimiento correcto y vos intervenís solo en el umbral crítico.",
+  },
+] as const;
+
+const applicationProducts = [
+  {
+    name: "Market Demand",
+    description: "Detecta dónde nace la demanda y cuál es el driver real que sostiene conversión y repetición.",
+    example: "Ejemplo: distingue si el crecimiento viene por producto, canal, timing o una anomalía transitoria.",
+  },
+  {
+    name: "Cost Structure",
+    description: "Expone qué costo sostiene el sistema y cuál solo maquilla la operación hasta romperla.",
+    example: "Ejemplo: identifica qué costo fijo deja de ser palanca y pasa a ser rigidez peligrosa.",
+  },
+  {
+    name: "Growth Strategy",
+    description: "Prioriza qué variable escalar primero para crecer sin perder coherencia operativa.",
+    example: "Ejemplo: compara expansión comercial contra mejora de producto y muestra cuál cambia la trayectoria.",
+  },
+  {
+    name: "Capital Decisions",
+    description: "Calcula si una inversión modifica el resultado o solo compra tiempo antes del mismo problema.",
+    example: "Ejemplo: muestra si la inyección de capital arregla la ecuación o posterga el punto de ruptura.",
+  },
+  {
+    name: "Cash Flow",
+    description: "Proyecta tiempo real de caja, estrés operativo y elasticidad frente a shocks de mercado.",
+    example: "Ejemplo: sabés cuántos meses útiles tiene el negocio bajo tres escenarios de presión distintos.",
+  },
+  {
+    name: "Business Trajectory",
+    description: "Evalúa si una decisión corrige curso, acelera deriva o redefine por completo la posición competitiva.",
+    example: "Ejemplo: determina si una nueva unidad mejora la empresa o distrae del motor principal.",
+  },
+] as const;
+
+const premiumProducts = [
+  {
+    name: "Full Autonomy",
+    description: "Sistema autónomo operando con alertas, simulaciones y ejecución guiada por umbrales verificables.",
+    example: "Vos aprobás. Aurora ya corrió el cálculo, filtró ruido y dejó visible la decisión de máximo impacto.",
+  },
+  {
+    name: "Predictive Edge",
+    description: "Aprende el negocio mes a mes y detecta cambios de régimen antes de que el mercado los haga obvios.",
+    example: "Encuentra señales débiles, actualiza supuestos y entrega ventaja antes de que el resto vea el cambio.",
+  },
+] as const;
 ---
 
-<style is:global>
-:root {
-  /* Colors - Design Tokens */
-  --color-bg: #0B0B0C;
-  --color-text: #F7F7F5;
-  --color-text-secondary: #BFC2C7;
-  --color-accent-blue: #2E5BFF;
-  --color-accent-green: #00C389;
-  --color-accent-red: #FF3D3D;
-  
-  /* Motion */
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 350ms;
-  --easing-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --easing-snappy: cubic-bezier(0.6, 0, 0.4, 1);
-}
+<MainLayout
+  title="Aurora | El límite humano ya no alcanza"
+  description="Aurora convierte estrategia, narrativa, datos y memoria operativa en un sistema de cálculo soberano."
+>
+  <div class="aurora-page">
+    <header class="home-header" id="top">
+      <div class="home-header__inner">
+        <a href="#top" class="home-brand" aria-label="Aurora home">
+          <svg class="home-brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+            <path d="M16 32a16 16 0 0 1 32 0" fill="none" pathLength="1" />
+            <path d="M48 32a16 16 0 0 1-16 16" fill="none" pathLength="1" />
+          </svg>
+          <span class="home-brand__word">AURORA</span>
+        </a>
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+        <nav class="home-nav" aria-label="Primary navigation">
+          <a href="#top">Home</a>
+          <a href="/demo">Demo</a>
+          <a href="#contacto">Contacto</a>
+        </nav>
+      </div>
+    </header>
 
-html {
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+    <main>
+      <section class="hero-shell" id="hero" data-theme="hero">
+        <canvas id="network-canvas" class="hero-shell__canvas" aria-hidden="true"></canvas>
+        <div class="hero-shell__halo hero-shell__halo--left" aria-hidden="true"></div>
+        <div class="hero-shell__halo hero-shell__halo--right" aria-hidden="true"></div>
 
-body {
-  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.7;
-  overflow-x: hidden;
-}
+        <div class="hero-shell__content section-frame">
+          <p class="section-label hero-shell__scroll" data-hero-scroll>
+            <span></span>
+            Scroll para continuar
+          </p>
 
-/* Keyframes */
-@keyframes reveal-bottom {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+          <h1 class="hero-headline" aria-label="El límite humano ya no alcanza.">
+            <span data-hero-word>El</span>
+            <span data-hero-word>límite</span>
+            <span data-hero-word>humano</span>
+            <br />
+            <span data-hero-word>ya no</span>
+            <span data-hero-word>alcanza.</span>
+          </h1>
 
-@keyframes point-emerge {
-  from {
-    opacity: 0;
-    scale: 0.5;
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-  }
-}
+          <p class="hero-shell__lede" data-reveal>
+            El mercado compite con sistemas, no personas. Aurora reemplaza interpretación dispersa por cálculo continuo.
+          </p>
 
-.reveal {
-  animation: reveal-bottom 0.6s var(--easing-smooth) forwards;
-  opacity: 0;
-}
+          <p class="hero-shell__body" data-reveal>
+            Estrategia, narrativa, riesgo y memoria operativa se prueban antes de tocar la realidad. No es optimización. Es condición de entrada.
+          </p>
 
-.reveal:nth-child(1) { animation-delay: 0.05s; }
-.reveal:nth-child(2) { animation-delay: 0.15s; }
-.reveal:nth-child(3) { animation-delay: 0.25s; }
-.reveal:nth-child(4) { animation-delay: 0.35s; }
-.reveal:nth-child(5) { animation-delay: 0.45s; }
-.reveal:nth-child(6) { animation-delay: 0.55s; }
-.reveal:nth-child(7) { animation-delay: 0.65s; }
-.reveal:nth-child(8) { animation-delay: 0.75s; }
+          <div class="hero-shell__actions" data-reveal>
+            <a href="/demo" class="cta cta--primary">Poner una decisión bajo evidencia</a>
+            <p class="hero-shell__caption">Decisión Infrastructure para operar con ventaja informacional.</p>
+          </div>
+        </div>
+      </section>
 
-/* Typography */
-h1, h2, h3 {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
+      <section class="aurora-section" id="problema">
+        <div class="section-frame section-copy" data-reveal-group>
+          <p class="section-label" data-reveal>Problema</p>
+          <h2 data-reveal>Las decisiones se toman fragmentadas.</h2>
+          <p data-reveal>
+            Las empresas operan con información dispersa, procesos sin integración y contextos silenciados justo donde más importa decidir.
+          </p>
+          <p data-reveal>
+            El resultado no es solo lentitud. Es una arquitectura de decisión incapaz de ver el sistema completo a tiempo.
+          </p>
+          <p class="copy-highlight" data-reveal>
+            El costo de no ver el sistema completo crece exponencialmente.
+          </p>
+        </div>
+      </section>
 
-h1 {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-}
+      <section class="aurora-section aurora-section--tinted" id="cambio">
+        <div class="section-frame section-copy" data-reveal-group>
+          <p class="section-label" data-reveal>Cambio</p>
+          <h2 data-reveal>El mercado ya opera con cálculo.</h2>
+          <p data-reveal>
+            Validar antes de actuar ya es posible. La diferencia entre modelar y reaccionar dejó de ser una mejora incremental.
+          </p>
+          <p class="copy-highlight" data-reveal>Es condición de entrada.</p>
+          <p data-reveal>
+            La precisión no optimiza. Define quién compite, quién absorbe error y quién queda corriendo detrás del sistema.
+          </p>
+        </div>
+      </section>
 
-h2 {
-  font-size: clamp(1.875rem, 5vw, 3rem);
-}
+      <section class="aurora-section" id="desajuste">
+        <div class="section-frame section-copy" data-reveal-group>
+          <p class="section-label" data-reveal>Desajuste</p>
+          <h2 data-reveal>Hoy es más barato operar con cálculo.</h2>
+          <p data-reveal>
+            Seguir expandiendo capas humanas cuando el cálculo ya es superior no es cultura ni sofisticación. Es un desfase operativo.
+          </p>
+          <p class="copy-warning" data-reveal>Es desventaja.</p>
+          <p data-reveal>El mercado premia cálculo. Penaliza interpretación.</p>
+        </div>
+      </section>
 
-h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
+      <section class="aurora-section aurora-section--rupture" id="ruptura">
+        <div class="section-frame" data-reveal-group>
+          <p class="section-label" data-reveal>Ruptura Binaria</p>
+          <h2 data-reveal>La forma de operar cambió.</h2>
+          <p class="rupture-intro" data-reveal>
+            Antes se reaccionaba. Hoy se ejecuta con ventaja informacional.
+          </p>
 
-p {
-  font-size: 1.125rem;
-  line-height: 1.8;
-}
+          <div class="rupture-grid" data-rupture-surface>
+            <div class="rupture-column rupture-column--before" data-reveal>
+              <p class="rupture-column__eyebrow">Antes</p>
+              {ruptureBefore.map((item) => (
+                <article class="rupture-metric">
+                  <p class="rupture-metric__value">
+                    <span data-counter data-target={item.stat}>{item.stat}</span>{item.suffix}
+                  </p>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
 
-/* Responsive */
-@media (max-width: 768px) {
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.125rem; }
-  p { font-size: 1rem; }
-}
-</style>
+            <div class="rupture-divider" aria-hidden="true">
+              <span></span>
+            </div>
 
-<!-- HEADER STICKY -->
-<header class="header">
-  <a href="/" class="logo-link" aria-label="Aurora home">
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="14" stroke="var(--color-accent-blue)" stroke-width="2"/>
-      <path d="M16 4 A12 12 0 0 1 28 16" stroke="var(--color-accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    </svg>
-  </a>
-  <nav class="nav">
-    <a href="/" class="nav-link active">Home</a>
-    <a href="/demo" class="nav-link">Demo</a>
-    <a href="mailto:hola@aurora.io" class="nav-link">Contact</a>
-  </nav>
-</header>
+            <div class="rupture-column rupture-column--now" data-reveal>
+              <p class="rupture-column__eyebrow">Hoy</p>
+              {ruptureNow.map((item) => (
+                <article class="rupture-metric">
+                  <p class="rupture-metric__value">
+                    <span data-counter data-target={item.stat}>{item.stat}</span>{item.suffix}
+                  </p>
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </div>
 
-<style>
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
-  background: rgba(11, 11, 12, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(46, 91, 255, 0.1);
-}
+          <p class="rupture-closure" data-reveal>
+            No es transformación digital. <span>Es desplazamiento operativo.</span>
+          </p>
+        </div>
+      </section>
 
-.logo-link {
-  text-decoration: none;
-  transition: transform var(--duration-normal) var(--easing-smooth);
-}
+      <section class="aurora-section aurora-section--definition" id="que-es">
+        <div class="section-frame" data-reveal-group>
+          <p class="section-label" data-reveal>Qué Es Aurora</p>
+          <h2 data-reveal>Aurora es cálculo soberano.</h2>
+          <div class="three-card-grid">
+            <article class="value-card" data-reveal>
+              <p class="value-card__title">No acompaña</p>
+              <p>Divide a quienes todavía interpretan desde límite humano de quienes ya operan con evidencia sistemática.</p>
+            </article>
+            <article class="value-card" data-reveal>
+              <p class="value-card__title">Procesa complejidad</p>
+              <p>Sin reducir contexto, sin perder interacción causal y sin esconder la variable que realmente mueve el resultado.</p>
+            </article>
+            <article class="value-card" data-reveal>
+              <p class="value-card__title">Ventaja antes</p>
+              <p>Entrega ventaja informacional antes de que el mercado entienda el movimiento y cuando todavía importa actuar.</p>
+            </article>
+          </div>
+          <p class="definition-closure" data-reveal>Marcás el ritmo o lo perseguís.</p>
+        </div>
+      </section>
 
-.logo-link:hover {
-  transform: rotate(10deg);
-}
+      <section class="aurora-section" id="sistema">
+        <div class="section-frame" data-reveal-group>
+          <p class="section-label" data-reveal>Sistema</p>
+          <h2 data-reveal>Seis productos para operar con contexto total.</h2>
+          <p class="section-intro" data-reveal>
+            Cada módulo calcula una capa distinta del problema, pero todos comparten la misma memoria causal.
+          </p>
 
-.nav {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-}
+          <div class="product-grid product-grid--system">
+            {systemProducts.map((item) => (
+              <article class="product-card" data-reveal tabindex="0">
+                <div class="product-card__header">
+                  <p class="product-card__name">{item.name}</p>
+                  <span class="product-card__plus" aria-hidden="true">+</span>
+                </div>
+                <p class="product-card__description">{item.description}</p>
+                <div class="product-card__detail">
+                  <p>{item.example}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-.nav-link {
-  text-decoration: none;
-  color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color var(--duration-normal) var(--easing-smooth);
-}
+      <section class="aurora-section aurora-section--applications" id="aplicaciones">
+        <div class="section-frame" data-reveal-group>
+          <p class="section-label" data-reveal>Aplicaciones</p>
+          <h2 data-reveal>Problemas reales, tratados como sistemas.</h2>
+          <p class="section-intro" data-reveal>
+            Demanda, estructura de costos, capital, caja y trayectoria dejan de ser áreas sueltas para volverse una sola ecuación operativa.
+          </p>
 
-.nav-link:hover,
-.nav-link.active {
-  color: var(--color-accent-blue);
-}
+          <div class="product-grid product-grid--applications">
+            {applicationProducts.map((item) => (
+              <article class="product-card product-card--application" data-reveal tabindex="0">
+                <div class="product-card__header">
+                  <p class="product-card__name">{item.name}</p>
+                  <span class="product-card__plus" aria-hidden="true">+</span>
+                </div>
+                <p class="product-card__description">{item.description}</p>
+                <div class="product-card__detail">
+                  <p>{item.example}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-@media (max-width: 768px) {
-  .header {
-    padding: 1rem 1.5rem;
-  }
-  .nav {
-    gap: 1rem;
-  }
-  .nav-link {
-    font-size: 0.85rem;
-  }
-}
-</style>
+      <section class="aurora-section aurora-section--premium" id="avanzado">
+        <div class="section-frame" data-reveal-group>
+          <p class="section-label" data-reveal>Avanzado</p>
+          <h2 data-reveal>Capas premium para operación total.</h2>
 
-<!-- SECTION 1: HERO CON THREE.JS EMERGENCE -->
-<section class="hero" data-section="hero">
-  <canvas id="network-canvas" class="hero-canvas"></canvas>
-  <div class="hero-content">
-    <h1>
-      <span class="reveal">El límite humano</span><br>
-      <span class="reveal">ya no alcanza.</span>
-    </h1>
-    <p class="reveal" style="margin-top: 1.5rem; color: var(--color-text-secondary);">
-      El mercado ya no compite con personas.<br>
-      Compite con sistemas.
-    </p>
-    <p class="reveal" style="margin-top: 1rem; color: var(--color-text-secondary);">
-      Quedarse en intuición<br>
-      es quedar fuera del juego real.
-    </p>
-    <p class="reveal" style="margin-top: 2rem; font-weight: 600; color: var(--color-text);">
-      Aurora no mejora decisiones.
-    </p>
-    <p class="reveal" style="color: var(--color-text-secondary);">
-      Desplaza el límite humano por el cálculo permanente.
-    </p>
-    <p class="reveal" style="margin-top: 2rem; color: var(--color-text-secondary);">
-      No es digitalización.
-    </p>
-    <p class="reveal" style="font-weight: 600; color: var(--color-text);">
-      Es sustitución operativa.
-    </p>
-    <a href="/demo" class="cta-button reveal" style="margin-top: 2rem;">
-      Poner una decisión bajo evidencia
-    </a>
+          <div class="premium-grid">
+            {premiumProducts.map((item) => (
+              <article class="premium-card" data-reveal>
+                <p class="premium-card__eyebrow">Elite Layer</p>
+                <h3>{item.name}</h3>
+                <p>{item.description}</p>
+                <p class="premium-card__example">{item.example}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section class="aurora-section aurora-section--final" id="demo">
+        <div class="section-frame final-cta" data-reveal-group>
+          <p class="section-label" data-reveal>Acción</p>
+          <h2 data-reveal>Aurora prueba un plan antes de ejecutarlo.</h2>
+          <div class="final-cta__panel" data-reveal>
+            <p>Pon tu próxima decisión bajo evidencia.</p>
+            <p>Aurora no opina. Calcula.</p>
+            <p>Detecta la interacción dominante. Expone la vulnerabilidad central.</p>
+            <p>Una señal. Un movimiento correcto.</p>
+          </div>
+          <div class="final-cta__actions" data-reveal>
+            <a href="/demo" class="cta cta--primary">Acceder a Demo</a>
+            <p>Los que calculan ya se movieron.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="home-footer" id="contacto">
+      <div class="section-frame home-footer__inner">
+        <p class="home-footer__quote">El mercado premia cálculo. Penaliza interpretación.</p>
+        <div class="home-footer__links">
+          <a href="https://twitter.com/auroratech" target="_blank" rel="noreferrer">Twitter</a>
+          <a href="https://linkedin.com/company/auroratech" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a href="mailto:hola@aurora.io">Email</a>
+        </div>
+        <p class="home-footer__copy">© 2026 Aurora. Decision Infrastructure para operar con cálculo soberano.</p>
+      </div>
+    </footer>
   </div>
-</section>
 
-<style>
-.hero {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 2rem;
-  background: var(--color-bg);
-  position: relative;
-  overflow: hidden;
-}
+  <style is:global>
+    @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700;800&display=swap");
 
-.hero-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-  pointer-events: none;
-}
+    :root {
+      --aurora-bg: #0b0b0c;
+      --aurora-text: #f7f7f5;
+      --aurora-muted: #bfc2c7;
+      --aurora-blue: #2e5bff;
+      --aurora-green: #00c389;
+      --aurora-red: #ff3d3d;
+      --aurora-amber: #f5a24c;
+      --aurora-panel: rgba(247, 247, 245, 0.05);
+      --aurora-panel-strong: rgba(247, 247, 245, 0.08);
+      --aurora-line: rgba(191, 194, 199, 0.18);
+      --aurora-shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+      --aurora-fast: 150ms;
+      --aurora-normal: 250ms;
+      --aurora-slow: 350ms;
+      --aurora-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+      --aurora-container: min(1180px, calc(100vw - 48px));
+      --aurora-section-space: clamp(5rem, 11vw, 8rem);
+    }
 
-.hero-content {
-  position: relative;
-  z-index: 10;
-  max-width: 700px;
-  margin-top: 100px;
-}
+    html {
+      background: var(--aurora-bg);
+      scroll-behavior: smooth;
+    }
 
-.hero h1 {
-  line-height: 1.1;
-  color: var(--color-text);
-  margin-bottom: 0;
-}
+    body {
+      margin: 0;
+      padding-top: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(46, 91, 255, 0.14), transparent 24%),
+        radial-gradient(circle at 86% 18%, rgba(0, 195, 137, 0.1), transparent 22%),
+        linear-gradient(180deg, #050506 0%, #0b0b0c 22%, #090a11 100%);
+      color: var(--aurora-text);
+      font-family: "DM Sans", sans-serif;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
 
-.cta-button {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: var(--color-accent-blue);
-  color: var(--color-bg);
-  border-radius: 32px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all var(--duration-normal) var(--easing-snappy);
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  border: 2px solid var(--color-accent-blue);
-  cursor: pointer;
-}
+    main {
+      display: block;
+    }
 
-.cta-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(46, 91, 255, 0.3);
-}
+    .aurora-page {
+      position: relative;
+      min-height: 100vh;
+      isolation: isolate;
+    }
 
-.cta-button:focus {
-  outline: 2px solid var(--color-accent-blue);
-  outline-offset: 2px;
-}
+    .section-frame {
+      width: var(--aurora-container);
+      margin: 0 auto;
+    }
 
-@media (max-width: 768px) {
-  .hero {
-    min-height: auto;
-    padding: 1rem;
-    padding-top: 5rem;
-  }
-  .hero-content {
-    margin-top: 40px;
-  }
-  .hero h1 {
-    font-size: 2rem;
-  }
-  .cta-button {
-    width: 100%;
-    text-align: center;
-    display: block;
-  }
-}
-</style>
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.8rem;
+      margin: 0 0 1.5rem;
+      color: rgba(247, 247, 245, 0.74);
+      font-family: "DM Mono", monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
 
-<!-- SECTION 2: PROBLEMA -->
-<section class="section section-1" data-section="problem">
-  <div class="section-inner">
-    <h2>Las decisiones se toman fragmentadas.</h2>
-    <p>Las empresas toman decisiones sin ver todas las variables juntas. Información dispersa, procesos sin integración, contextos silenciados.</p>
-    <p style="color: var(--color-accent-blue); font-weight: 600; margin-top: 1.5rem;">El costo de no ver el sistema completo crece exponencialmente.</p>
-  </div>
-</section>
+    .section-label::before {
+      content: "";
+      width: 2.8rem;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(247, 247, 245, 0.25), rgba(46, 91, 255, 0.72));
+    }
 
-<!-- SECTION 3: CAMBIO -->
-<section class="section section-2" data-section="change">
-  <div class="section-inner">
-    <h2>El mercado ya opera con cálculo.</h2>
-    <p>Validar antes de actuar ya es posible. La validación previa no es mejora.</p>
-    <p style="color: var(--color-accent-blue); font-weight: 600; margin-top: 1.5rem;">Es condición de entrada.</p>
-    <p style="margin-top: 1rem;">La precisión no optimiza. Define quién compite.</p>
-  </div>
-</section>
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
 
-<!-- SECTION 4: DESAJUSTE -->
-<section class="section section-3" data-section="mismatch">
-  <div class="section-inner">
-    <h2>Hoy es más barato operar con cálculo.</h2>
-    <p>La ventaja ya no está en crecer. Está en procesar mejor.</p>
-    <p style="margin-top: 1.5rem;">Seguir expandiendo capas humanas cuando el cálculo ya es superior no es cultura.</p>
-    <p style="color: var(--color-accent-red); font-weight: 600;">Es desventaja.</p>
-    <p style="margin-top: 1rem;">El mercado premia cálculo. Penaliza interpretación.</p>
-  </div>
-</section>
+    h1,
+    h2 {
+      letter-spacing: -0.02em;
+    }
 
-<!-- SECTION 5: RUPTURA BINARIA -->
-<section class="section section-rupture" data-section="rupture">
-  <div class="section-inner">
-    <h2>La forma de operar cambió.</h2>
-    <h2 style="margin-top: 1rem; font-size: 1.5rem;">Antes se reaccionaba. Hoy se ejecuta con ventaja informacional.</h2>
-    
-    <div class="rupture-container">
-      <div class="rupture-before">
-        <h3>Antes</h3>
-        <ul class="rupture-list">
-          <li>El error se absorbía</li>
-          <li>El ajuste era posterior</li>
-          <li>La velocidad era humana</li>
-        </ul>
-      </div>
-      <div class="rupture-divider"></div>
-      <div class="rupture-after">
-        <h3>Hoy</h3>
-        <ul class="rupture-list">
-          <li>El mercado opera con sistemas autónomos</li>
-          <li>Automatización estratégica</li>
-          <li>Cálculo continuo</li>
-        </ul>
-      </div>
-    </div>
-    
-    <p style="margin-top: 2rem; font-weight: 600;">No es transformación digital.</p>
-    <p style="color: var(--color-accent-blue); font-weight: 600;">Es desplazamiento operativo.</p>
-  </div>
-</section>
+    h1 {
+      font-size: clamp(3.8rem, 8vw, 7rem);
+      line-height: 0.96;
+      max-width: 12ch;
+    }
 
-<style>
-.section {
-  padding: var(--section-padding, 6rem 2rem);
-  background: var(--color-bg);
-  border-top: 1px solid rgba(46, 91, 255, 0.05);
-}
+    h2 {
+      font-size: clamp(2.3rem, 4.8vw, 4.5rem);
+      line-height: 0.98;
+      max-width: 11ch;
+    }
 
-.section-inner {
-  max-width: 900px;
-  margin: 0 auto;
-}
+    h3 {
+      font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+      line-height: 1.15;
+    }
 
-.section h2 {
-  margin-bottom: 2rem;
-  color: var(--color-text);
-}
+    p {
+      font-size: clamp(1rem, 1.2vw, 1.12rem);
+      color: rgba(247, 247, 245, 0.78);
+    }
 
-.section p {
-  margin-bottom: 1.5rem;
-  color: var(--color-text-secondary);
-  max-width: 800px;
-}
+    a {
+      color: inherit;
+    }
 
-/* Rupture Container */
-.rupture-container {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 2rem;
-  margin: 3rem 0;
-  padding: 2rem;
-  background: rgba(46, 91, 255, 0.02);
-  border-radius: 8px;
-  transition: all var(--duration-slow) var(--easing-smooth);
-}
+    .home-header {
+      position: fixed;
+      inset: 0 0 auto;
+      z-index: 40;
+      padding: 1.25rem 0;
+      transition:
+        background-color var(--aurora-normal) ease,
+        border-color var(--aurora-normal) ease,
+        backdrop-filter var(--aurora-normal) ease,
+        transform var(--aurora-normal) ease;
+    }
 
-.rupture-before,
-.rupture-after {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
+    .home-header.is-scrolled {
+      background: rgba(8, 8, 10, 0.78);
+      border-bottom: 1px solid rgba(46, 91, 255, 0.12);
+      backdrop-filter: blur(16px);
+    }
 
-.rupture-before h3 {
-  color: var(--color-accent-red);
-}
+    .home-header__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      width: var(--aurora-container);
+      margin: 0 auto;
+    }
 
-.rupture-after h3 {
-  color: var(--color-accent-green);
-}
+    .home-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.9rem;
+      text-decoration: none;
+    }
 
-.rupture-divider {
-  width: 1px;
-  background: linear-gradient(180deg, transparent, var(--color-accent-blue), transparent);
-  margin: 0 1rem;
-}
+    .home-brand__mark {
+      width: 2rem;
+      height: 2rem;
+      overflow: visible;
+    }
 
-.rupture-list {
-  list-style: none;
-}
+    .home-brand__mark path {
+      stroke: var(--aurora-text);
+      stroke-width: 6;
+      stroke-linecap: square;
+    }
 
-.rupture-list li {
-  padding-left: 1.5rem;
-  position: relative;
-  line-height: 1.8;
-  font-size: 1rem;
-}
+    .home-brand__word {
+      font-family: "DM Mono", monospace;
+      font-size: 0.92rem;
+      letter-spacing: 0.24em;
+    }
 
-.rupture-list li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-  font-weight: 600;
-}
+    .home-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.4rem;
+    }
 
-.rupture-before .rupture-list li::before {
-  color: var(--color-accent-red);
-}
+    .home-nav a {
+      position: relative;
+      text-decoration: none;
+      font-family: "DM Mono", monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(247, 247, 245, 0.72);
+      transition: color var(--aurora-fast) ease;
+    }
 
-.rupture-after .rupture-list li::before {
-  color: var(--color-accent-green);
-}
+    .home-nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.45rem;
+      width: 100%;
+      height: 1px;
+      transform: scaleX(0);
+      transform-origin: left center;
+      background: var(--aurora-blue);
+      transition: transform var(--aurora-normal) var(--aurora-ease);
+    }
 
-@media (max-width: 768px) {
-  .rupture-container {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  .rupture-divider {
-    display: none;
-  }
-  .rupture-before,
-  .rupture-after {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(46, 91, 255, 0.1);
-  }
-}
-</style>
+    .home-nav a:hover,
+    .home-nav a:focus-visible {
+      color: var(--aurora-text);
+    }
 
-<!-- SECTION 6: QUÉ ES AURORA -->
-<section class="section section-definition" data-section="definition">
-  <div class="section-inner">
-    <h2>Aurora es cálculo soberano.</h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem;">
-      <div class="definition-card">
-        <p style="font-weight: 600; color: var(--color-accent-blue); margin-bottom: 1rem;">No acompaña</p>
-        <p>Divide a quienes operan desde límite humano de quienes operan con potencia algorítmica.</p>
-      </div>
-      <div class="definition-card">
-        <p style="font-weight: 600; color: var(--color-accent-blue); margin-bottom: 1rem;">Procesa complejidad</p>
-        <p>Sin reducirla. Sin perder contexto. Sin omitir variables críticas.</p>
-      </div>
-      <div class="definition-card">
-        <p style="font-weight: 600; color: var(--color-accent-blue); margin-bottom: 1rem;">Ventaja antes</p>
-        <p>Tienes ventaja informacional antes de que el mercado entienda el movimiento.</p>
-      </div>
-    </div>
-    <p style="margin-top: 3rem; font-size: 1.25rem; color: var(--color-accent-blue); font-weight: 600;">Con cálculo soberano, marcás el ritmo. Sin él, lo perseguís.</p>
-  </div>
-</section>
+    .home-nav a:hover::after,
+    .home-nav a:focus-visible::after {
+      transform: scaleX(1);
+    }
 
-<style>
-.section-definition {
-  background: rgba(46, 91, 255, 0.01);
-}
+    .hero-shell {
+      position: relative;
+      min-height: 100vh;
+      display: grid;
+      align-items: center;
+      padding: 7.5rem 0 4rem;
+      overflow: clip;
+    }
 
-.definition-card {
-  padding: 1.5rem;
-  background: rgba(46, 91, 255, 0.03);
-  border: 1px solid rgba(46, 91, 255, 0.1);
-  border-radius: 8px;
-  transition: all var(--duration-normal) var(--easing-smooth);
-}
+    .hero-shell__canvas,
+    .hero-shell__halo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
 
-.definition-card:hover {
-  background: rgba(46, 91, 255, 0.05);
-  border-color: rgba(46, 91, 255, 0.2);
-  transform: translateY(-4px);
-}
+    .hero-shell__canvas {
+      opacity: 0.9;
+    }
 
-.definition-card p {
-  margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-}
-</style>
+    .hero-shell__halo {
+      filter: blur(90px);
+      opacity: 0.48;
+    }
 
-<!-- SECTION 7: PRODUCTOS (Sistema) -->
-<section class="section section-products" data-section="sistema">
-  <div class="section-inner">
-    <h2>Sistema — Motor Interno</h2>
-    <p style="margin-bottom: 3rem; font-size: 1.125rem;">Aurora prueba un plan antes de ejecutarlo.</p>
-    
-    <div class="products-grid">
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-blue);">Aurora Core</h3>
-        <p>Ve cómo cada parte del negocio afecta a las otras. Subís el precio 20%. Core muestra qué pasa con volumen, caja y margen al mismo tiempo, antes de subirlo.</p>
-      </div>
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-blue);">Aurora Scenario</h3>
-        <p>Simula decisiones antes de ejecutarlas. Querés abrir un segundo local. Simulá 12 versiones con distintos alquileres y demanda. Ves en cuáles sobrevivís.</p>
-      </div>
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-blue);">Aurora Risk</h3>
-        <p>Calcula exposición y puntos de no retorno. Te ofrecen una franquicia. Risk te muestra exactamente cuánto podés perder y en qué punto no hay vuelta atrás.</p>
-      </div>
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-blue);">Aurora Signal</h3>
-        <p>Detecta qué variable está moviendo el resultado. Tus ventas bajaron 18%. ¿Es el precio, el canal o la temporada? Signal lo identifica inmediatamente.</p>
-      </div>
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-blue);">Aurora Ledger</h3>
-        <p>Registra cada decisión con contexto y resultado. En 12 meses sabés exactamente por qué funcionó o falló cada movimiento. Aprendizaje acumulado.</p>
-      </div>
-      <div class="module-card">
-        <h3 style="font-size: 1.125rem; letter-spacing: 0; text-transform: none; font-weight: 600; margin-bottom: 1rem; color: var(--color-accent-green);">Aurora Command</h3>
-        <p>Todo el sistema operando en simultáneo. Alertas, señales, simulaciones sin pedirlo. Vos solo aprobás movimientos. Control total, decisión humana preservada.</p>
-      </div>
-    </div>
-  </div>
-</section>
+    .hero-shell__halo--left {
+      background: radial-gradient(circle, rgba(46, 91, 255, 0.18) 0%, transparent 62%);
+      transform: translate(-18%, -20%);
+    }
 
-<style>
-.section-products {
-  background: rgba(46, 91, 255, 0.01);
-}
+    .hero-shell__halo--right {
+      background: radial-gradient(circle, rgba(0, 195, 137, 0.12) 0%, transparent 58%);
+      transform: translate(44%, 18%);
+    }
 
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
+    .hero-shell__content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 1.6rem;
+      padding-block: 4rem 2rem;
+    }
 
-.module-card {
-  padding: 1.5rem;
-  background: rgba(46, 91, 255, 0.03);
-  border: 1px solid rgba(46, 91, 255, 0.1);
-  border-radius: 8px;
-  transition: all var(--duration-normal) var(--easing-smooth);
-}
+    .hero-shell__scroll {
+      color: rgba(247, 247, 245, 0.62);
+    }
 
-.module-card:hover {
-  background: rgba(46, 91, 255, 0.05);
-  border-color: var(--color-accent-blue);
-  box-shadow: 0 12px 32px rgba(46, 91, 255, 0.15);
-  transform: translateY(-4px);
-}
+    .hero-shell__scroll span {
+      display: inline-block;
+      width: 0.8rem;
+      height: 0.8rem;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(45deg) translateY(-0.1rem);
+      animation: auroraScroll 1.6s ease-in-out infinite;
+    }
 
-.module-card p {
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-}
-</style>
+    .hero-headline {
+      max-width: 10ch;
+    }
 
-<!-- SECTION 8: DEMO CTA -->
-<section class="section section-cta" data-section="cta">
-  <div class="section-inner">
-    <h2 style="text-align: center;">Aurora prueba un plan antes de ejecutarlo.</h2>
-    <div class="demo-narrative">
-      <p style="font-size: 1.125rem; font-weight: 500;">Pon tu próxima decisión bajo evidencia.</p>
-      <p style="color: var(--color-text);">Aurora no opina. Calcula. Detecta la interacción dominante. Expone la vulnerabilidad central. Una señal. Un movimiento correcto.</p>
-    </div>
-    <div style="text-align: center; margin-top: 3rem;">
-      <a href="/demo" class="cta-button">Acceder a Demo</a>
-      <p style="margin-top: 1rem; color: var(--color-text-secondary);">
-        Los que calculan ya se movieron.
-      </p>
-    </div>
-  </div>
-</section>
+    .hero-headline span {
+      display: inline-block;
+      margin-right: 0.24em;
+    }
 
-<style>
-.section-cta {
-  background: rgba(46, 91, 255, 0.02);
-  text-align: center;
-}
+    .hero-shell__lede {
+      max-width: 40rem;
+      font-size: clamp(1.18rem, 1.8vw, 1.4rem);
+      color: rgba(247, 247, 245, 0.88);
+    }
 
-.demo-narrative {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(0, 195, 137, 0.03);
-  border-left: 4px solid var(--color-accent-green);
-  border-radius: 4px;
-}
+    .hero-shell__body,
+    .hero-shell__caption {
+      max-width: 36rem;
+    }
 
-.demo-narrative p {
-  margin-bottom: 1rem;
-  text-align: left;
-}
+    .hero-shell__actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem 1.5rem;
+      margin-top: 0.4rem;
+    }
 
-.demo-narrative p:last-child {
-  margin-bottom: 0;
-}
+    .cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.5rem;
+      padding: 0.9rem 1.45rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      transition:
+        transform var(--aurora-fast) ease,
+        box-shadow var(--aurora-fast) ease,
+        background-color var(--aurora-fast) ease;
+    }
 
-.section-cta h2 {
-  margin-bottom: 2rem;
-}
-</style>
+    .cta--primary {
+      background: var(--aurora-blue);
+      color: var(--aurora-text);
+      box-shadow: 0 18px 44px rgba(46, 91, 255, 0.34);
+    }
 
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="section-inner" style="text-align: center;">
-    <p style="margin-bottom: 1.5rem; font-size: 0.95rem;">El mercado premia cálculo. Penaliza interpretación.</p>
-    <div class="footer-links">
-      <a href="https://twitter.com/auroratech" target="_blank" rel="noopener">Twitter</a>
-      <a href="https://linkedin.com/company/auroratech" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="mailto:hola@aurora.io">Email</a>
-    </div>
-    <p style="margin-top: 2rem; font-size: 0.85rem; color: var(--color-text-secondary);">&copy; 2026 Aurora. Cálculo soberano para decisiones empresariales.</p>
-  </div>
-</footer>
+    .cta:hover,
+    .cta:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 22px 48px rgba(46, 91, 255, 0.38);
+    }
 
-<style>
-.footer {
-  padding: 3rem 2rem;
-  border-top: 1px solid rgba(46, 91, 255, 0.1);
-  color: var(--color-text-secondary);
-  background: rgba(46, 91, 255, 0.01);
-}
+    .aurora-section {
+      position: relative;
+      padding: var(--aurora-section-space) 0;
+      border-top: 1px solid rgba(191, 194, 199, 0.08);
+      background: linear-gradient(180deg, rgba(247, 247, 245, 0.01), transparent 70%);
+    }
 
-.footer-links {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
+    .aurora-section--tinted {
+      background:
+        linear-gradient(180deg, rgba(46, 91, 255, 0.08), rgba(46, 91, 255, 0.02) 52%, transparent 100%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.01), transparent 70%);
+    }
 
-.footer-links a {
-  color: var(--color-text-secondary);
-  text-decoration: none;
-  transition: color var(--duration-normal) var(--easing-smooth);
-  font-size: 0.95rem;
-}
+    .aurora-section--rupture {
+      background:
+        radial-gradient(circle at 18% 32%, rgba(255, 61, 61, 0.08), transparent 22%),
+        radial-gradient(circle at 76% 68%, rgba(0, 195, 137, 0.08), transparent 24%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.02), transparent 72%);
+    }
 
-.footer-links a:hover {
-  color: var(--color-accent-blue);
-}
+    .aurora-section--definition {
+      background:
+        linear-gradient(180deg, rgba(46, 91, 255, 0.06), rgba(46, 91, 255, 0.015) 54%, transparent 100%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.01), transparent 70%);
+    }
 
-@media (max-width: 768px) {
-  .footer {
-    padding: 2rem 1rem;
-  }
-  .footer-links {
-    gap: 1rem;
-  }
-}
-</style>
+    .aurora-section--applications {
+      background:
+        linear-gradient(180deg, rgba(0, 195, 137, 0.06), rgba(0, 195, 137, 0.015) 54%, transparent 100%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.01), transparent 70%);
+    }
 
-<!-- SCRIPTS -->
-<script>
-  import * as THREE from 'three';
-  import gsap from 'gsap';
-  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    .aurora-section--premium {
+      background:
+        linear-gradient(180deg, rgba(245, 162, 76, 0.06), rgba(245, 162, 76, 0.015) 54%, transparent 100%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.01), transparent 70%);
+    }
 
-  gsap.registerPlugin(ScrollTrigger);
+    .aurora-section--final {
+      padding-bottom: calc(var(--aurora-section-space) + 2rem);
+      background:
+        radial-gradient(circle at 50% 18%, rgba(46, 91, 255, 0.1), transparent 28%),
+        linear-gradient(180deg, rgba(247, 247, 245, 0.02), transparent 72%);
+    }
 
-  // ===== LENIS SMOOTH SCROLL =====
-  async function setupLenis() {
-    try {
-      const Lenis = (await import('@studio-freight/lenis')).default;
-      const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        direction: 'vertical',
-        smooth: true,
-        smoothTouch: false,
-        touchMultiplier: 2,
-      });
+    .section-copy {
+      display: grid;
+      gap: 1.15rem;
+      max-width: 52rem;
+    }
 
-      function raf(time) {
-        lenis.raf(time);
-        requestAnimationFrame(raf);
+    .section-copy h2,
+    .section-copy .copy-highlight,
+    .section-copy .copy-warning {
+      max-width: 12ch;
+    }
+
+    .copy-highlight {
+      color: var(--aurora-blue);
+      font-weight: 700;
+    }
+
+    .copy-warning {
+      color: var(--aurora-red);
+      font-weight: 700;
+    }
+
+    .rupture-intro,
+    .section-intro {
+      margin-top: 1.1rem;
+      max-width: 42rem;
+      font-size: 1.08rem;
+      color: rgba(247, 247, 245, 0.84);
+    }
+
+    .rupture-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: clamp(1.2rem, 3vw, 2.25rem);
+      align-items: stretch;
+      margin-top: 3rem;
+      padding: clamp(1.4rem, 2.8vw, 2rem);
+      border: 1px solid rgba(247, 247, 245, 0.08);
+      border-radius: 2rem;
+      background: rgba(10, 12, 16, 0.6);
+      box-shadow: var(--aurora-shadow);
+      overflow: hidden;
+    }
+
+    .rupture-column {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .rupture-column__eyebrow {
+      font-family: "DM Mono", monospace;
+      font-size: 0.84rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .rupture-column--before .rupture-column__eyebrow,
+    .rupture-column--before .rupture-metric__value {
+      color: var(--aurora-red);
+    }
+
+    .rupture-column--now .rupture-column__eyebrow,
+    .rupture-column--now .rupture-metric__value {
+      color: var(--aurora-green);
+    }
+
+    .rupture-divider {
+      width: 1px;
+      min-height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rupture-divider span {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 61, 61, 0.14), rgba(46, 91, 255, 0.56), rgba(0, 195, 137, 0.14));
+    }
+
+    .rupture-metric {
+      padding: 1.15rem 1.2rem;
+      border-radius: 1.15rem;
+      background: rgba(247, 247, 245, 0.03);
+      border: 1px solid rgba(247, 247, 245, 0.05);
+    }
+
+    .rupture-metric__value {
+      font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+      line-height: 1;
+      font-weight: 800;
+      margin-bottom: 0.7rem;
+    }
+
+    .rupture-metric h3 {
+      margin-bottom: 0.55rem;
+    }
+
+    .rupture-closure {
+      margin-top: 1.8rem;
+      font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+      color: rgba(247, 247, 245, 0.9);
+    }
+
+    .rupture-closure span,
+    .definition-closure {
+      color: var(--aurora-blue);
+      font-weight: 700;
+    }
+
+    .three-card-grid,
+    .product-grid,
+    .premium-grid {
+      display: grid;
+      gap: 1.25rem;
+      margin-top: 2.4rem;
+    }
+
+    .three-card-grid,
+    .product-grid--system,
+    .product-grid--applications {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .premium-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .value-card,
+    .product-card,
+    .premium-card,
+    .final-cta__panel {
+      position: relative;
+      padding: 1.45rem;
+      border-radius: 1.35rem;
+      border: 1px solid rgba(247, 247, 245, 0.08);
+      background: linear-gradient(180deg, rgba(247, 247, 245, 0.06), rgba(247, 247, 245, 0.03));
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.18);
+    }
+
+    .value-card__title,
+    .definition-closure,
+    .product-card__name,
+    .premium-card__eyebrow {
+      font-family: "DM Mono", monospace;
+    }
+
+    .value-card__title {
+      margin-bottom: 0.85rem;
+      color: var(--aurora-blue);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+
+    .definition-closure {
+      margin-top: 2rem;
+      font-size: clamp(1.05rem, 2vw, 1.45rem);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .product-card {
+      display: grid;
+      gap: 1rem;
+      min-height: 100%;
+      transition:
+        transform var(--aurora-normal) var(--aurora-ease),
+        border-color var(--aurora-normal) ease,
+        box-shadow var(--aurora-normal) ease,
+        background-color var(--aurora-normal) ease;
+    }
+
+    .product-card:hover,
+    .product-card:focus-visible,
+    .premium-card:hover,
+    .premium-card:focus-within,
+    .value-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(46, 91, 255, 0.42);
+      box-shadow: 0 22px 64px rgba(0, 0, 0, 0.3);
+    }
+
+    .product-card--application:hover,
+    .product-card--application:focus-visible {
+      border-color: rgba(0, 195, 137, 0.42);
+    }
+
+    .product-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .product-card__name {
+      font-size: 0.92rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(247, 247, 245, 0.94);
+    }
+
+    .product-card__plus {
+      color: rgba(247, 247, 245, 0.36);
+      font-size: 1.3rem;
+      transition: transform var(--aurora-normal) var(--aurora-ease), color var(--aurora-normal) ease;
+    }
+
+    .product-card__detail {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows var(--aurora-normal) var(--aurora-ease);
+    }
+
+    .product-card__detail p {
+      overflow: hidden;
+      color: rgba(247, 247, 245, 0.68);
+    }
+
+    .product-card:hover .product-card__detail,
+    .product-card:focus-visible .product-card__detail {
+      grid-template-rows: 1fr;
+    }
+
+    .product-card:hover .product-card__plus,
+    .product-card:focus-visible .product-card__plus {
+      transform: rotate(45deg);
+      color: rgba(247, 247, 245, 0.82);
+    }
+
+    .premium-card {
+      display: grid;
+      gap: 0.9rem;
+      background: linear-gradient(180deg, rgba(245, 162, 76, 0.13), rgba(247, 247, 245, 0.03));
+    }
+
+    .premium-card__eyebrow {
+      color: rgba(245, 162, 76, 0.82);
+      font-size: 0.82rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .premium-card__example {
+      color: rgba(247, 247, 245, 0.88);
+    }
+
+    .final-cta {
+      text-align: center;
+    }
+
+    .final-cta h2 {
+      margin-inline: auto;
+    }
+
+    .final-cta__panel {
+      width: min(100%, 44rem);
+      margin: 2.4rem auto 0;
+      display: grid;
+      gap: 0.9rem;
+      text-align: left;
+      background: linear-gradient(180deg, rgba(46, 91, 255, 0.14), rgba(247, 247, 245, 0.03));
+    }
+
+    .final-cta__panel p:first-child,
+    .final-cta__panel p:nth-child(2) {
+      color: rgba(247, 247, 245, 0.94);
+      font-weight: 700;
+    }
+
+    .final-cta__actions {
+      margin-top: 2rem;
+      display: grid;
+      justify-items: center;
+      gap: 0.9rem;
+    }
+
+    .home-footer {
+      border-top: 1px solid rgba(191, 194, 199, 0.08);
+      padding: 2rem 0 3rem;
+      background: rgba(4, 4, 6, 0.72);
+    }
+
+    .home-footer__inner {
+      display: grid;
+      gap: 1rem;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .home-footer__quote {
+      color: rgba(247, 247, 245, 0.9);
+    }
+
+    .home-footer__links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+    }
+
+    .home-footer__links a {
+      text-decoration: none;
+      color: rgba(247, 247, 245, 0.74);
+    }
+
+    .home-footer__links a:hover,
+    .home-footer__links a:focus-visible {
+      color: var(--aurora-text);
+    }
+
+    .home-footer__copy {
+      font-size: 0.92rem;
+      color: rgba(247, 247, 245, 0.54);
+    }
+
+    [data-reveal] {
+      will-change: transform, opacity;
+    }
+
+    @keyframes auroraScroll {
+      0%,
+      100% {
+        transform: rotate(45deg) translateY(-0.1rem);
+        opacity: 0.55;
+      }
+      50% {
+        transform: rotate(45deg) translate(0.18rem, 0.22rem);
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 980px) {
+      .three-card-grid,
+      .product-grid--system,
+      .product-grid--applications,
+      .premium-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      :root {
+        --aurora-container: min(100vw - 28px, 100% - 28px);
       }
 
-      requestAnimationFrame(raf);
-    } catch (e) {
-      console.log('Lenis no disponible - scroll estándar activo');
+      .home-header {
+        padding: 1rem 0;
+      }
+
+      .home-header__inner,
+      .hero-shell__actions {
+        align-items: flex-start;
+      }
+
+      .home-header__inner {
+        flex-direction: column;
+      }
+
+      .home-nav {
+        flex-wrap: wrap;
+        gap: 0.9rem 1rem;
+      }
+
+      .hero-shell {
+        padding-top: 8rem;
+      }
+
+      .hero-shell__content {
+        gap: 1.25rem;
+      }
+
+      .cta {
+        width: 100%;
+      }
+
+      .hero-shell__caption {
+        max-width: none;
+      }
+
+      .rupture-grid,
+      .three-card-grid,
+      .product-grid--system,
+      .product-grid--applications,
+      .premium-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .rupture-divider {
+        width: 100%;
+        min-height: 1px;
+      }
+
+      .rupture-divider span {
+        background: linear-gradient(90deg, rgba(255, 61, 61, 0.14), rgba(46, 91, 255, 0.56), rgba(0, 195, 137, 0.14));
+      }
+
+      .product-card__detail {
+        grid-template-rows: 1fr;
+      }
+
+      .product-card__plus {
+        transform: rotate(45deg);
+      }
     }
-  }
+  </style>
 
-  setupLenis();
+  <script>
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const header = document.querySelector(".home-header");
+    const scrollIndicator = document.querySelector("[data-hero-scroll]");
+    const cleanup = [];
 
-  // ===== THREE.JS NETWORK EMERGENCE =====
-  const canvas = document.getElementById('network-canvas');
-  if (canvas) {
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      precision: 'highp',
-    });
+    const syncHeader = () => {
+      if (!header) return;
+      header.classList.toggle("is-scrolled", window.scrollY > 36);
+    };
 
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setClearColor(0x0B0B0C, 1);
-    renderer.sortObjects = false;
-    camera.position.z = 8;
+    syncHeader();
+    window.addEventListener("scroll", syncHeader, { passive: true });
 
-    // Node positions
-    const nodeCount = 15;
-    const positions = [];
-    const nodes = [];
+    const boot = async () => {
+      try {
+        const [{ default: gsap }, { ScrollTrigger }, THREE] = await Promise.all([
+          import("gsap"),
+          import("gsap/ScrollTrigger"),
+          import("three"),
+        ]);
 
-    for (let i = 0; i < nodeCount; i++) {
-      const theta = (i / nodeCount) * Math.PI * 2;
-      const r = 3 + Math.random() * 2;
-      const x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.5;
-      const y = (Math.random() - 0.5) * 4;
-      const z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.5;
-      positions.push(x, y, z);
-      nodes.push({ x, y, z });
-    }
+        gsap.registerPlugin(ScrollTrigger);
 
-    // Nodes
-    const nodeGeometry = new THREE.BufferGeometry();
-    nodeGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(positions), 3)
-    );
+        if (!prefersReducedMotion) {
+          const heroWords = Array.from(document.querySelectorAll("[data-hero-word]"));
+          if (heroWords.length) {
+            gsap.from(heroWords, {
+              opacity: 0,
+              yPercent: 110,
+              duration: 0.7,
+              ease: "power3.out",
+              stagger: 0.1,
+            });
+          }
 
-    const nodeMaterial = new THREE.PointsMaterial({
-      color: 0x2E5BFF,
-      size: 0.15,
-      sizeAttenuation: true,
-      fog: false,
-    });
+          if (scrollIndicator) {
+            gsap.from(scrollIndicator, {
+              opacity: 0,
+              y: -18,
+              duration: 0.8,
+              delay: 0.2,
+              ease: "power2.out",
+            });
+          }
 
-    const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
-    scene.add(pointsMesh);
+          gsap.utils.toArray("[data-reveal-group]").forEach((group) => {
+            const items = group.querySelectorAll("[data-reveal]");
+            if (!items.length) return;
 
-    // Lines
-    const linePositions = [];
-    for (let i = 0; i < nodeCount; i++) {
-      const neighborCount = 2 + Math.floor(Math.random() * 2);
-      for (let j = 0; j < neighborCount; j++) {
-        const neighborIdx = (i + 1 + j) % nodeCount;
-        if (linePositions.length < 150) {
-          linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
-          linePositions.push(
-            nodes[neighborIdx].x,
-            nodes[neighborIdx].y,
-            nodes[neighborIdx].z
-          );
+            gsap.from(items, {
+              opacity: 0,
+              y: 32,
+              duration: 0.8,
+              ease: "power3.out",
+              stagger: 0.1,
+              scrollTrigger: {
+                trigger: group,
+                start: "top 80%",
+                toggleActions: "play none none reverse",
+              },
+            });
+          });
+
+          const ruptureSurface = document.querySelector("[data-rupture-surface]");
+          if (ruptureSurface) {
+            gsap.to(ruptureSurface, {
+              backgroundImage:
+                "linear-gradient(90deg, rgba(255, 61, 61, 0.14) 0%, rgba(46, 91, 255, 0.12) 50%, rgba(0, 195, 137, 0.14) 100%)",
+              ease: "none",
+              scrollTrigger: {
+                trigger: ruptureSurface,
+                start: "top 72%",
+                end: "bottom 35%",
+                scrub: 1.2,
+              },
+            });
+          }
+
+          gsap.utils.toArray("[data-counter]").forEach((node) => {
+            const target = Number(node.dataset.target || 0);
+            const state = { value: 0 };
+
+            gsap.to(state, {
+              value: target,
+              duration: 1.4,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: node,
+                start: "top 85%",
+                once: true,
+              },
+              onUpdate: () => {
+                node.textContent = String(Math.round(state.value));
+              },
+            });
+          });
         }
+
+        const canvas = document.getElementById("network-canvas");
+
+        if (canvas && !prefersReducedMotion) {
+          const scene = new THREE.Scene();
+          const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+          camera.position.z = 12;
+
+          const renderer = new THREE.WebGLRenderer({
+            canvas,
+            antialias: true,
+            alpha: true,
+            powerPreference: "high-performance",
+          });
+
+          renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+          renderer.setSize(window.innerWidth, window.innerHeight);
+
+          const group = new THREE.Group();
+          scene.add(group);
+
+          const nodeCount = 22;
+          const basePositions = [];
+          const lineSegments = [];
+
+          for (let index = 0; index < nodeCount; index += 1) {
+            const angle = (index / nodeCount) * Math.PI * 2;
+            const radius = 3.4 + Math.sin(index * 0.72) * 1.1 + Math.random() * 0.45;
+            basePositions.push(
+              Math.cos(angle) * radius + (Math.random() - 0.5) * 0.7,
+              Math.sin(index * 0.44) * 1.8 + (Math.random() - 0.5) * 1.6,
+              Math.sin(angle) * radius * 0.72
+            );
+          }
+
+          const livePositions = new Float32Array(basePositions.map((value) => value * 0.28));
+          const pointGeometry = new THREE.BufferGeometry();
+          pointGeometry.setAttribute("position", new THREE.BufferAttribute(livePositions, 3));
+
+          const pointMaterial = new THREE.PointsMaterial({
+            color: 0xbfc2c7,
+            size: 0.14,
+            transparent: true,
+            opacity: 0.2,
+            sizeAttenuation: true,
+          });
+
+          for (let index = 0; index < nodeCount; index += 1) {
+            const current = new THREE.Vector3(
+              basePositions[index * 3],
+              basePositions[index * 3 + 1],
+              basePositions[index * 3 + 2]
+            );
+
+            const distances = [];
+            for (let compareIndex = 0; compareIndex < nodeCount; compareIndex += 1) {
+              if (compareIndex === index) continue;
+              const compare = new THREE.Vector3(
+                basePositions[compareIndex * 3],
+                basePositions[compareIndex * 3 + 1],
+                basePositions[compareIndex * 3 + 2]
+              );
+              distances.push({ compareIndex, distance: current.distanceTo(compare) });
+            }
+
+            distances
+              .sort((left, right) => left.distance - right.distance)
+              .slice(0, 2)
+              .forEach(({ compareIndex }) => {
+                if (compareIndex < index) return;
+                lineSegments.push(
+                  basePositions[index * 3],
+                  basePositions[index * 3 + 1],
+                  basePositions[index * 3 + 2],
+                  basePositions[compareIndex * 3],
+                  basePositions[compareIndex * 3 + 1],
+                  basePositions[compareIndex * 3 + 2]
+                );
+              });
+          }
+
+          const liveLinePositions = new Float32Array(lineSegments.map((value) => value * 0.28));
+          const lineGeometry = new THREE.BufferGeometry();
+          lineGeometry.setAttribute("position", new THREE.BufferAttribute(liveLinePositions, 3));
+
+          const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0xbfc2c7,
+            transparent: true,
+            opacity: 0.08,
+          });
+
+          const points = new THREE.Points(pointGeometry, pointMaterial);
+          const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+          group.add(lines);
+          group.add(points);
+
+          const emergence = { progress: 0.18, mix: 0 };
+          const blue = new THREE.Color(0x2e5bff);
+          const gray = new THREE.Color(0xbfc2c7);
+
+          const syncNetwork = () => {
+            for (let index = 0; index < basePositions.length; index += 1) {
+              livePositions[index] = basePositions[index] * emergence.progress;
+            }
+            for (let index = 0; index < lineSegments.length; index += 1) {
+              liveLinePositions[index] = lineSegments[index] * emergence.progress;
+            }
+            pointGeometry.attributes.position.needsUpdate = true;
+            lineGeometry.attributes.position.needsUpdate = true;
+
+            pointMaterial.opacity = 0.22 + emergence.progress * 0.42;
+            lineMaterial.opacity = 0.04 + emergence.progress * 0.18;
+            pointMaterial.color.copy(gray).lerp(blue, emergence.mix);
+            lineMaterial.color.copy(gray).lerp(blue, emergence.mix * 0.92);
+          };
+
+          syncNetwork();
+
+          const emergenceTween = gsap.to(emergence, {
+            progress: 1,
+            duration: 4,
+            ease: "power2.out",
+            onUpdate: syncNetwork,
+          });
+
+          const colorTween = gsap.to(emergence, {
+            mix: 1,
+            ease: "none",
+            onUpdate: syncNetwork,
+            scrollTrigger: {
+              trigger: document.body,
+              start: "top top",
+              end: "bottom bottom",
+              scrub: 1,
+            },
+          });
+
+          group.rotation.x = -0.34;
+          group.rotation.y = 0.28;
+
+          const tick = () => {
+            group.rotation.y += 0.0012;
+            group.rotation.z += 0.0006;
+            renderer.render(scene, camera);
+          };
+
+          gsap.ticker.add(tick);
+
+          const onResize = () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+          };
+
+          window.addEventListener("resize", onResize, { passive: true });
+
+          cleanup.push(() => {
+            emergenceTween.kill();
+            colorTween.kill();
+            gsap.ticker.remove(tick);
+            window.removeEventListener("resize", onResize);
+            pointGeometry.dispose();
+            lineGeometry.dispose();
+            pointMaterial.dispose();
+            lineMaterial.dispose();
+            renderer.dispose();
+          });
+        }
+
+        cleanup.push(() => {
+          ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        });
+      } catch (error) {
+        console.error("Aurora home runtime failed", error);
       }
-    }
+    };
 
-    const lineGeometry = new THREE.BufferGeometry();
-    lineGeometry.setAttribute(
-      'position',
-      new THREE.BufferAttribute(new Float32Array(linePositions), 3)
-    );
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0xBFC2C7,
-      transparent: true,
-      opacity: 0.6,
-      fog: false,
-    });
-    const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(linesMesh);
+    boot();
 
-    const group = new THREE.Group();
-    group.add(pointsMesh);
-    group.add(linesMesh);
-    scene.add(group);
-
-    // Emergence animation (0-3s)
-    gsap.fromTo(
-      nodeMaterial,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.3, delay: 0.3 }
-    );
-    gsap.fromTo(
-      lineMaterial,
-      { opacity: 0 },
-      { opacity: 0.6, duration: 0.8, delay: 0.8 }
-    );
-
-    // Scroll binding
-    gsap.to(group.rotation, {
-      scrollTrigger: {
-        trigger: 'body',
-        scrub: 1,
-        markers: false,
+    window.addEventListener(
+      "pagehide",
+      () => {
+        cleanup.forEach((fn) => fn());
+        window.removeEventListener("scroll", syncHeader);
       },
-      z: Math.PI * 2,
-      duration: 10,
-    });
-
-    // Scroll reactive colors
-    let lastScrollY = 0;
-    window.addEventListener('scroll', () => {
-      const scrollVelocity = window.scrollY - lastScrollY;
-      lastScrollY = window.scrollY;
-
-      const colorValue = Math.min(1, Math.abs(scrollVelocity) / 20);
-      const hslColor = new THREE.Color(
-        THREE.MathUtils.lerp(0xBFC2C7, 0x2E5BFF, colorValue)
-      );
-
-      lineMaterial.color.set(hslColor);
-      nodeMaterial.opacity = 0.6 + colorValue * 0.4;
-      group.rotation.z += (scrollVelocity / 1000) * 0.1;
-    });
-
-    // Resize handler
-    window.addEventListener('resize', () => {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-
-    // Animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-      group.rotation.x += 0.0002;
-      group.rotation.y += 0.0003;
-      renderer.render(scene, camera);
-    }
-
-    animate();
-  }
-
-  // ===== GSAP SECTION ANIMATIONS =====
-  gsap.to('.section-1 h2', {
-    scrollTrigger: {
-      trigger: '.section-1',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  gsap.to('.section-2 h2', {
-    scrollTrigger: {
-      trigger: '.section-2',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  gsap.to('.section-3 h2', {
-    scrollTrigger: {
-      trigger: '.section-3',
-      start: 'top 80%',
-      end: 'top 20%',
-    },
-    opacity: [0, 1],
-    y: [40, 0],
-    duration: 0.8,
-  });
-
-  // ===== RUPTURA BINARIA SCROLL BINDING =====
-  gsap.to('.rupture-container', {
-    scrollTrigger: {
-      trigger: '.section-rupture',
-      start: 'top 60%',
-      end: 'center 30%',
-      scrub: 1.2,
-    },
-    backgroundImage:
-      'linear-gradient(90deg, rgba(255,61,61,0.15) 0%, rgba(0,195,137,0.15) 100%)',
-    duration: 2,
-  });
-
-  // ===== MÓDULOS CASCADA =====
-  document.querySelectorAll('.module-card').forEach((card, i) => {
-    gsap.from(card, {
-      scrollTrigger: {
-        trigger: card,
-        start: 'top 80%',
-      },
-      opacity: 0,
-      y: 30,
-      duration: 0.6,
-      delay: i * 0.1,
-    });
-  });
-</script>
+      { once: true }
+    );
+  </script>
+</MainLayout>
