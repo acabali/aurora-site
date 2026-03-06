@@ -1,64 +1,258 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import AuroraLanding from "../components/AuroraLanding.astro";
-
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "Aurora",
-  description: "Infraestructura decisional",
-  url: "https://aurora-site.com",
-  logo: "https://aurora-site.com/aurora-logo.png",
-};
-
-const faqSchema = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "¿Qué es Aurora?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Aurora prueba decisiones antes de ejecutarlas. Infraestructura decisional que integra datos, simula escenarios y ejecuta bajo umbrales controlados.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "¿Cuál es la diferencia con BI?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "BI mira atrás (reportes). Aurora mira adelante (simula futuros). BI descriptivo. Aurora predictivo y ejecutable.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "¿Qué es ejecución bajo umbrales?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Defines umbrales de riesgo. Si < umbral, Aurora ejecuta automático. Si > umbral, requiere aprobación.",
-      },
-    },
-  ],
-};
 ---
 
-<MainLayout
-  lang="es"
-  title="Aurora | Infraestructura Decisional | Prueba Decisiones Antes de Ejecutarlas"
-  description="Aurora prueba decisiones antes de ejecutarlas. Infraestructura decisional que integra datos, simula escenarios y ejecuta bajo umbrales. Para PYME y emprendedores."
->
-  <Fragment slot="head">
-    <meta name="keywords" content="Infrastructure decisional, Decision Intelligence, evaluador de decisiones, cálculo de riesgo empresarial, decisiones bajo evidencia" />
-    <meta property="og:title" content="Aurora | Infraestructura Decisional" />
-    <meta property="og:description" content="Prueba decisiones antes de ejecutarlas." />
-    <meta property="og:image" content="https://aurora-site.com/aurora-og-image.png" />
-    <meta property="og:url" content="https://aurora-site.com" />
-    <link rel="canonical" href="https://aurora-site.com" />
-    <link rel="alternate" hreflang="es" href="https://aurora-site.com" />
-    <link rel="alternate" hreflang="en" href="https://aurora-site.com/en" />
-    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)}></script>
-    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
-  </Fragment>
-  <AuroraLanding />
+<MainLayout>
+  <!-- SECCIÓN 01: NARRATIVA HERO -->
+  <section class="hero">
+    <p style="text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 24px;">01</p>
+    <h1>El límite humano ya no alcanza.</h1>
+    <p style="margin-bottom: 24px;">El mercado ya no compite con personas.<br />Compite con sistemas.</p>
+    <p style="margin-bottom: 24px;">Quedarse en intuición<br />es quedar fuera del juego real.</p>
+    <p style="margin-bottom: 24px;">Aurora no mejora decisiones.<br />Desplaza el límite humano por el cálculo permanente.</p>
+    <p style="margin-bottom: 24px;">No es digitalización.<br />Es sustitución operativa.</p>
+    <div class="buttons-group">
+      <a href="#demo" class="btn btn-primary">Poner una decisión bajo evidencia</a>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 02: NARRATIVA -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">02</p>
+    <h2>La forma de operar cambió.</h2>
+    <p>Validar antes de actuar ya es posible.</p>
+    <p style="margin-bottom: 24px;">La validación previa no es mejora.<br />Es condición de entrada.</p>
+    <p style="margin-bottom: 24px;">La precisión no optimiza.<br />Define quién compite.</p>
+  </section>
+
+  <!-- SECCIÓN 03: NARRATIVA -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">03</p>
+    <h2>Hoy es más barato operar con capacidad algorítmica.</h2>
+    <p>La ventaja ya no está en crecer.<br />Está en procesar mejor.</p>
+    <p style="margin-bottom: 24px;">Seguir expandiendo capas humanas<br />cuando el cálculo ya es superior<br />no es cultura.<br />Es desventaja.</p>
+    <p style="margin-bottom: 24px;">El mercado premia cálculo.<br />Penaliza interpretación.</p>
+  </section>
+
+  <!-- SECCIÓN 04: NARRATIVA -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">04</p>
+    <h2>No es evolución. Es sustitución de estándar.</h2>
+    <p><strong>Antes</strong></p>
+    <p style="margin-bottom: 24px;">El error se absorbía.<br />El ajuste era posterior.<br />La velocidad era humana.</p>
+    <p><strong>Hoy</strong></p>
+    <p style="margin-bottom: 24px;">El mercado opera con sistemas autónomos.<br />Automatización estratégica.<br />Cálculo continuo.</p>
+    <p style="margin-bottom: 24px;">Antes se reaccionaba.<br />Hoy se ejecuta con ventaja informacional.</p>
+  </section>
+
+  <!-- SECCIÓN 05: NARRATIVA -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">05</p>
+    <h2>Aurora es una capa de cálculo soberano.</h2>
+    <p>No acompaña.<br />Divide.</p>
+    <p style="margin-bottom: 24px;">Divide a quienes operan desde límite humano<br />de quienes operan con potencia algorítmica.</p>
+    <p style="margin-bottom: 24px;">Autonomía frente al error recurrente.</p>
+    <p style="margin-bottom: 24px;">Procesar complejidad sin reducirla.</p>
+    <p style="margin-bottom: 24px;">Ventaja antes de que el mercado entienda el movimiento.</p>
+    <p style="margin-bottom: 24px;">Con cálculo soberano, marcás el ritmo.<br />Sin él, lo perseguís.</p>
+  </section>
+
+  <!-- SECCIÓN 06: NARRATIVA -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">06</p>
+    <h2>Pon tu próximo movimiento bajo evidencia.</h2>
+    <p>Aurora no opina.<br />Calcula.</p>
+    <p style="margin-bottom: 24px;">Detecta la interacción dominante.<br />Expone la vulnerabilidad central.</p>
+    <p style="margin-bottom: 24px;">Una señal.<br />Un movimiento correcto.</p>
+  </section>
+
+  <!-- SECCIÓN 07: SISTEMA (5 módulos) -->
+  <section id="sistema">
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">SISTEMA</p>
+    <h2>Cinco módulos, un solo sistema decisional</h2>
+    <p style="margin-bottom: 48px;">La ejecución bajo umbrales es una capacidad del sistema, no un producto aparte.</p>
+
+    <div class="grid-3">
+      <div class="card">
+        <div class="card-icon">📊</div>
+        <h3 class="card-title">Calculadora Estratégica</h3>
+        <p class="card-desc">Ve cómo interactúan todas las variables de tu negocio</p>
+        <p class="card-example">Precio +20% → Volumen -15% → Margen +5% → Caja +X%</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔮</div>
+        <h3 class="card-title">Simulador de Futuros</h3>
+        <p class="card-desc">Prueba múltiples escenarios antes de mover capital, equipo o timing</p>
+        <p class="card-example">Compara 12 versiones de expansión con distintos costos, mercados y plazos</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔍</div>
+        <h3 class="card-title">Detector de Grietas</h3>
+        <p class="card-desc">Identifica exactamente dónde puede fallar un plan y su punto de ruptura</p>
+        <p class="card-example">Tu plan quiebra si el volumen cae por debajo de 40% vs baseline</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💡</div>
+        <h3 class="card-title">Revelador de Causas</h3>
+        <p class="card-desc">Detecta qué variable causa realmente tu problema</p>
+        <p class="card-example">Ventas -18%. No es precio, no es canal. Es temporada + competencia nueva</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📚</div>
+        <h3 class="card-title">Memoria Corporativa</h3>
+        <p class="card-desc">Registra cada decisión con contexto, inputs, outputs y resultado real</p>
+        <p class="card-example">12 meses después: sabés exactamente por qué cada decisión ganó o perdió</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 08: EXECUTION UNDER THRESHOLDS -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">EJECUCIÓN</p>
+    <h2>Ejecución bajo umbrales definidos</h2>
+    <p style="margin-bottom: 48px;">Capacidad del sistema, no un producto aparte</p>
+
+    <div class="diagram">
+      INPUT<br />
+      ↓<br />
+      Aurora evalúa<br />
+      ↓<br />
+      ¿Riesgo &lt; Umbral?<br />
+      ↙&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↘<br />
+      SÍ&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NO<br />
+      ↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓<br />
+      EJECUTA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;REQUIERE<br />
+      AUTOMÁTICAMENTE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;APROBACIÓN
+    </div>
+
+    <p style="text-align: center; margin-top: 32px;">
+      Defines umbrales de riesgo (ej: 15%). Aurora evalúa decisión. Si riesgo &lt; 15%, ejecuta automáticamente.<br />
+      Si &gt; 15%, requiere aprobación tuya. <span class="accent-green">Human guardrails + automatización.</span>
+    </p>
+  </section>
+
+  <!-- SECCIÓN 09: APLICACIONES (6 casos) -->
+  <section id="aplicaciones">
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">APLICACIONES</p>
+    <h2>Seis lecturas operativas del mismo núcleo</h2>
+    <p style="margin-bottom: 48px;">Aurora se manifiesta en decisiones de...</p>
+
+    <div class="grid-2x3">
+      <div class="card">
+        <div class="card-icon">💰</div>
+        <h3 class="card-title">Evaluador de Inversiones</h3>
+        <p class="card-desc">¿Esa inversión realmente retorna?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Inversión + timeline → ROI + break-even</p>
+        <p class="card-example" style="margin-top: 8px;">¿Franquicia $80k es viable o quiebro?</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🚨</div>
+        <h3 class="card-title">Detector de Fugas de Caja</h3>
+        <p class="card-desc">¿Cuándo exactamente se acaba el dinero?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Histórico gasto → "Caja se acaba en X días"</p>
+        <p class="card-example" style="margin-top: 8px;">Caja para 4 meses. ¿Contratas ahora o esperas?</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3 class="card-title">Validador de Expansiones</h3>
+        <p class="card-desc">¿Esta expansión es viable?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Parámetros sucursal nueva → Viabilidad + escenarios</p>
+        <p class="card-example" style="margin-top: 8px;">Abrir segundo local. ¿Con qué alquiler sobrevivo?</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">💳</div>
+        <h3 class="card-title">Decisor de Pricing</h3>
+        <p class="card-desc">¿Cuál es el precio óptimo?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Precio actual + elasticidad → Precio óptimo + ROAS</p>
+        <p class="card-example" style="margin-top: 8px;">Subes 12%. Aurora te dice si ganas margen o destruyes volumen</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📢</div>
+        <h3 class="card-title">Decisor de Marketing</h3>
+        <p class="card-desc">¿Este gasto en marketing genera ROI?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Gasto por canal → Costo/adquisición + ROAS</p>
+        <p class="card-example" style="margin-top: 8px;">$5k/mes Instagram. ¿Genera ventas o solo ruido?</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <h3 class="card-title">Decisor de Contratación</h3>
+        <p class="card-desc">¿Contratar mejora o daña?</p>
+        <p class="card-example"><strong>Entrada→Salida:</strong> Empleado + salario → Impacto en margen + break-even</p>
+        <p class="card-example" style="margin-top: 8px;">¿Contratar 2 personas destruye el margen o lo sostiene?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN 10: GOVERNANCE -->
+  <section>
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">GOBERNANZA</p>
+    <h2>Full governance nativo</h2>
+    <p style="margin-bottom: 48px;">Decisiones auditables, no amontonadas. Governance es parte del sistema, no un agregado.</p>
+
+    <div class="governance-cards">
+      <div class="card-governance">
+        <div class="card-governance-label">DECISION_ID</div>
+        <div class="card-governance-text">Cada decisión tiene ID único para identificación y seguimiento</div>
+      </div>
+      <div class="card-governance">
+        <div class="card-governance-label">DECISION_HASH</div>
+        <div class="card-governance-text">Validación criptográfica que garantiza auditabilidad inmutable</div>
+      </div>
+      <div class="card-governance">
+        <div class="card-governance-label">LEDGER + AUDIT TRAIL</div>
+        <div class="card-governance-text">Registro completo: quién, qué, cuándo, por qué, resultado real</div>
+      </div>
+    </div>
+
+    <p style="margin-top: 48px; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted);">Ejemplo de decisión auditada</p>
+
+    <div class="governance-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Quién</th>
+            <th>Acción</th>
+            <th>Estado</th>
+            <th>Hash</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>DEC-001</td>
+            <td>Aurora + CFO</td>
+            <td>Pricing update</td>
+            <td>Aprobada</td>
+            <td>8fa3c2d9</td>
+          </tr>
+          <tr>
+            <td>DEC-002</td>
+            <td>Aurora + COO</td>
+            <td>Expansion check</td>
+            <td>Requiere aprobación</td>
+            <td>1cd77ab4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p style="text-align: center; margin-top: 32px; color: var(--accent-red);">
+      Full compliance ready (GDPR, SOX). Gobernanza integrada, no posterior.
+    </p>
+  </section>
+
+  <!-- SECCIÓN 11: DEMO -->
+  <section id="demo">
+    <p style="text-transform: uppercase; letter-spacing: 0.15em;">DEMO</p>
+    <h2 style="margin-bottom: 48px;">Prueba Aurora ahora</h2>
+
+    <div class="buttons-group" style="flex-direction: column; align-items: center;">
+      <a href="/demo" class="btn btn-primary">Acceder a demo interactiva</a>
+      <a href="https://calendly.com/aurora" class="btn btn-secondary" target="_blank" rel="noopener">Hablar con equipo Aurora</a>
+    </div>
+
+    <p style="text-align: center; margin-top: 32px; color: var(--text-muted);">
+      Los que calculan ya se movieron.
+    </p>
+  </section>
 </MainLayout>
