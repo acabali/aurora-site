@@ -8,755 +8,1906 @@ import MainLayout from "../layouts/MainLayout.astro";
 >
 
 <style is:global>
-:root {
-  --color-bg: #0B0B0C;
-  --color-text: #F7F7F5;
-  --color-text-secondary: #BFC2C7;
-  --color-accent-blue: #2E5BFF;
-  --color-accent-green: #00C389;
-  --color-accent-red: #FF3D3D;
-  --duration-fast: 150ms;
-  --duration-normal: 250ms;
-  --duration-slow: 350ms;
-  --easing-smooth: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --easing-snappy: cubic-bezier(0.6, 0, 0.4, 1);
-}
+  /* ===========================
+     AURORA DESIGN TOKENS
+  =========================== */
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+  :root {
+    /* Colors */
+    --color-bg:               #0B0B0C;
+    --color-bg-layer:         #0E0E10;
+    --color-text:             #F7F7F5;
+    --color-text-secondary:   #8A8E97;
+    --color-text-muted:       #4A4D54;
+    --color-accent-blue:      #2E5BFF;
+    --color-accent-blue-dim:  rgba(46, 91, 255, 0.12);
+    --color-accent-green:     #00C389;
+    --color-accent-green-dim: rgba(0, 195, 137, 0.1);
+    --color-accent-red:       #FF3D3D;
+    --color-accent-red-dim:   rgba(255, 61, 61, 0.1);
+    --color-border:           rgba(255, 255, 255, 0.06);
+    --color-border-blue:      rgba(46, 91, 255, 0.15);
 
-html {
-  scroll-behavior: smooth;
-}
+    /* Typography */
+    --font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'DM Mono', 'Courier New', monospace;
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.7;
-  overflow-x: hidden;
-}
+    /* Motion */
+    --duration-fast:    150ms;
+    --duration-normal:  300ms;
+    --duration-slow:    600ms;
+    --duration-xslow:   1200ms;
+    --easing-smooth:    cubic-bezier(0.34, 1.56, 0.64, 1);
+    --easing-snappy:    cubic-bezier(0.6, 0, 0.4, 1);
+    --easing-out:       cubic-bezier(0.16, 1, 0.3, 1);
 
-@keyframes reveal-bottom {
-  from {
+    /* Layout */
+    --max-width: 1200px;
+    --section-padding: clamp(4rem, 8vw, 8rem);
+    --section-padding-x: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  *, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: auto; /* Lenis maneja esto */
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ===========================
+     KEYFRAMES
+  =========================== */
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  @keyframes line-draw {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0% 0 0); }
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  @keyframes scan-line {
+    from { transform: translateY(-100%); }
+    to   { transform: translateY(100vh); }
+  }
+
+  /* ===========================
+     REVEAL SYSTEM
+  =========================== */
+  .reveal {
     opacity: 0;
-    transform: translateY(40px);
+    animation: fade-up var(--duration-slow) var(--easing-out) forwards;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes point-emerge {
-  from {
-    opacity: 0;
-    scale: 0.5;
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
-.reveal {
-  animation: reveal-bottom 0.6s var(--easing-smooth) forwards;
-  opacity: 0;
-}
-
-.reveal:nth-child(1) { animation-delay: 0.05s; }
-.reveal:nth-child(2) { animation-delay: 0.15s; }
-.reveal:nth-child(3) { animation-delay: 0.25s; }
-.reveal:nth-child(4) { animation-delay: 0.35s; }
-.reveal:nth-child(5) { animation-delay: 0.45s; }
-.reveal:nth-child(6) { animation-delay: 0.55s; }
-.reveal:nth-child(7) { animation-delay: 0.65s; }
-.reveal:nth-child(8) { animation-delay: 0.75s; }
+  .reveal-delay-1  { animation-delay: 0.05s; }
+  .reveal-delay-2  { animation-delay: 0.15s; }
+  .reveal-delay-3  { animation-delay: 0.28s; }
+  .reveal-delay-4  { animation-delay: 0.42s; }
+  .reveal-delay-5  { animation-delay: 0.58s; }
+  .reveal-delay-6  { animation-delay: 0.72s; }
+  .reveal-delay-7  { animation-delay: 0.88s; }
+  .reveal-delay-8  { animation-delay: 1.05s; }
 </style>
 
-<!-- HEADER STICKY -->
-<header class="header">
-  <a href="/" class="logo-link">
-    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="16" cy="16" r="14" stroke="var(--color-accent-blue)" stroke-width="2"/>
-      <path d="M16 4 A12 12 0 0 1 28 16" stroke="var(--color-accent-blue)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-    </svg>
+<!-- ===========================
+     HEADER STICKY
+=========================== -->
+<header class="header" id="header">
+  <a href="/" class="logo-link" aria-label="Aurora Home">
+    <div class="logo-mark">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="12" stroke="var(--color-accent-blue)" stroke-width="1.5" opacity="0.3"/>
+        <path d="M14 3 A11 11 0 0 1 25 14" stroke="var(--color-accent-blue)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <circle cx="14" cy="14" r="3" fill="var(--color-accent-blue)" opacity="0.8"/>
+        <circle cx="25" cy="14" r="1.5" fill="var(--color-accent-blue)"/>
+        <circle cx="14" cy="3" r="1.5" fill="var(--color-accent-blue)" opacity="0.6"/>
+      </svg>
+      <span class="logo-text">AURORA</span>
+    </div>
   </a>
-  <nav class="nav">
+  <nav class="nav" aria-label="Main navigation">
     <a href="/" class="nav-link active">Home</a>
     <a href="/demo" class="nav-link">Demo</a>
-    <a href="mailto:hola@aurora.io" class="nav-link">Contact</a>
+    <a href="mailto:hola@aurora.io" class="nav-link nav-link--cta">Contactar</a>
   </nav>
 </header>
 
 <style>
 .header {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 100;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 2rem;
+  padding: 1.25rem var(--section-padding-x);
+  background: rgba(11, 11, 12, 0.8);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--color-border);
+  transition: border-color var(--duration-normal) ease,
+              background var(--duration-normal) ease;
+}
+
+.header.scrolled {
   background: rgba(11, 11, 12, 0.95);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(46, 91, 255, 0.1);
+  border-color: var(--color-border-blue);
 }
 
 .logo-link {
   text-decoration: none;
-  transition: transform var(--duration-normal) var(--easing-smooth);
+  transition: opacity var(--duration-normal) ease;
+}
+.logo-link:hover { opacity: 0.7; }
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
-.logo-link:hover {
-  transform: rotate(10deg);
+.logo-text {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  color: var(--color-text-secondary);
 }
 
 .nav {
   display: flex;
+  align-items: center;
   gap: 2rem;
 }
 
 .nav-link {
   text-decoration: none;
   color: var(--color-text-secondary);
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: color var(--duration-normal) var(--easing-smooth);
+  font-size: 0.875rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color var(--duration-fast) ease;
+  position: relative;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-accent-blue);
+  transform: scaleX(0);
+  transition: transform var(--duration-normal) var(--easing-snappy);
+  transform-origin: left;
 }
 
 .nav-link:hover,
 .nav-link.active {
-  color: var(--color-accent-blue);
+  color: var(--color-text);
 }
 
-@media (max-width: 768px) {
-  .header {
-    padding: 1rem 1.5rem;
-  }
-  .nav {
-    gap: 1rem;
-  }
-  .nav-link {
-    font-size: 0.85rem;
-  }
+.nav-link:hover::after,
+.nav-link.active::after {
+  transform: scaleX(1);
+}
+
+.nav-link--cta {
+  padding: 0.5rem 1.25rem;
+  background: var(--color-accent-blue-dim);
+  border: 1px solid var(--color-border-blue);
+  border-radius: 4px;
+  color: var(--color-accent-blue);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+}
+
+.nav-link--cta::after { display: none; }
+
+.nav-link--cta:hover {
+  background: rgba(46, 91, 255, 0.2);
+  color: var(--color-accent-blue);
+  border-color: rgba(46, 91, 255, 0.4);
+}
+
+@media (max-width: 640px) {
+  .header { padding: 1rem 1.25rem; }
+  .nav { gap: 1rem; }
+  .nav-link { font-size: 0.8rem; }
+  .nav-link--cta { display: none; }
 }
 </style>
 
-<!-- ===== HERO CON THREE.JS EMERGENCIA ===== -->
-<section class="hero" data-era-section data-era-phase="unstable">
-  <canvas id="network-canvas" class="hero-canvas"></canvas>
+<!-- ===========================
+     HERO: THREE.JS + REVEAL
+=========================== -->
+<section class="hero" id="hero">
+  <!-- Three.js canvas -->
+  <canvas id="network-canvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+  <!-- Grain overlay -->
+  <div class="hero-grain" aria-hidden="true"></div>
+
+  <!-- Scan line effect -->
+  <div class="hero-scan" aria-hidden="true"></div>
+
+  <!-- Content -->
   <div class="hero-content">
-    <h1>
-      <span class="reveal">El límite humano</span><br>
-      <span class="reveal">ya no alcanza.</span>
+    <!-- Live status indicator -->
+    <div class="status-badge reveal reveal-delay-1">
+      <span class="status-dot" aria-hidden="true"></span>
+      <span>Sistema activo</span>
+    </div>
+
+    <h1 class="hero-h1">
+      <span class="hero-line reveal reveal-delay-2">El límite humano</span>
+      <span class="hero-line reveal reveal-delay-3">ya no alcanza.</span>
     </h1>
-    <p class="reveal" style="margin-top:1.5rem;font-size:1.125rem">
-      El mercado ya no compite con personas.<br>
-      Compite con sistemas.
-    </p>
-    <p class="reveal" style="margin-top:1rem;font-size:1.125rem">
-      Quedarse en intuición<br>
-      es quedar fuera del juego real.
-    </p>
-    <p class="reveal" style="margin-top:2rem;font-size:1.125rem;font-weight:600">
-      Aurora no mejora decisiones.
-    </p>
-    <p class="reveal" style="font-size:1.125rem">
-      Desplaza el límite humano por el cálculo permanente.
-    </p>
-    <p class="reveal" style="margin-top:2rem;font-size:1.125rem">
-      No es digitalización.
-    </p>
-    <p class="reveal" style="font-size:1.125rem;font-weight:600">
-      Es sustitución operativa.
-    </p>
-    <a href="/demo" class="cta-button reveal" style="margin-top:2rem">
-      Poner una decisión bajo evidencia
-    </a>
+
+    <div class="hero-body">
+      <p class="reveal reveal-delay-4">
+        El mercado ya no compite con personas.<br>
+        <strong>Compite con sistemas.</strong>
+      </p>
+      <p class="reveal reveal-delay-5">
+        Quedarse en intuición es quedar<br>fuera del juego real.
+      </p>
+    </div>
+
+    <div class="hero-statement reveal reveal-delay-6">
+      <p class="statement-main">Aurora no mejora decisiones.</p>
+      <p class="statement-main statement-main--accent">Desplaza el límite humano por el cálculo permanente.</p>
+    </div>
+
+    <div class="hero-footnote reveal reveal-delay-7">
+      <span class="footnote-label">No es digitalización.</span>
+      <span class="footnote-divider" aria-hidden="true">—</span>
+      <span class="footnote-value">Es sustitución operativa.</span>
+    </div>
+
+    <div class="hero-cta reveal reveal-delay-8">
+      <a href="/demo" class="btn btn-primary">
+        Poner una decisión bajo evidencia
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="#problema" class="btn btn-ghost">Ver el problema</a>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator reveal reveal-delay-8" aria-hidden="true">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
   </div>
 </section>
 
 <style>
 .hero {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 2rem;
-  background: var(--color-bg);
-  position: relative;
+  padding: calc(80px + 4rem) var(--section-padding-x) 4rem;
   overflow: hidden;
+  background: var(--color-bg);
 }
 
 .hero-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   z-index: 0;
 }
 
+.hero-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none;
+}
+
+.hero-scan {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-scan::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(46,91,255,0.3), transparent);
+  animation: scan-line 8s linear infinite;
+  animation-delay: 3s;
+}
+
 .hero-content {
   position: relative;
   z-index: 10;
-  max-width: 700px;
-  margin-top: 100px;
+  max-width: 780px;
 }
 
-.hero h1 {
-  font-size: clamp(2.5rem, 8vw, 4rem);
-  font-weight: 700;
-  margin-bottom: 0;
-  line-height: 1.1;
-  color: var(--color-text);
-  letter-spacing: -0.02em;
-}
-
-.hero p {
-  font-size: 1.125rem;
+/* Status badge */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  background: var(--color-bg-layer);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
   color: var(--color-text-secondary);
-  line-height: 1.8;
-  margin-bottom: 1rem;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
 }
 
-.cta-button {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background: var(--color-accent-blue);
-  color: var(--color-bg);
-  border-radius: 32px;
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-green);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* H1 */
+.hero-h1 {
+  display: flex;
+  flex-direction: column;
+  font-size: clamp(2.8rem, 7.5vw, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: var(--color-text);
+  margin-bottom: 2.5rem;
+}
+
+.hero-line {
+  display: block;
+}
+
+/* Body text */
+.hero-body {
+  margin-bottom: 2.5rem;
+}
+
+.hero-body p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.hero-body strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+/* Statement */
+.hero-statement {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(46, 91, 255, 0.04);
+  border-left: 2px solid var(--color-accent-blue);
+  border-radius: 0 4px 4px 0;
+}
+
+.statement-main {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.statement-main--accent {
+  color: var(--color-text);
+  margin-top: 0.25rem;
+}
+
+/* Footnote */
+.hero-footnote {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+
+.footnote-label {
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+}
+
+.footnote-divider {
+  color: var(--color-text-muted);
+}
+
+.footnote-value {
+  color: var(--color-accent-blue);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+/* CTAs */
+.hero-cta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
   font-weight: 600;
   text-decoration: none;
-  transition: all var(--duration-normal) var(--easing-snappy);
-  text-transform: uppercase;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
-  border: 2px solid var(--color-accent-blue);
+  border-radius: 4px;
+  transition: all var(--duration-normal) var(--easing-out);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 }
 
-.cta-button:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(46, 91, 255, 0.3);
+.btn-primary {
+  padding: 0.875rem 1.75rem;
+  background: var(--color-accent-blue);
+  color: #fff;
+  border: 1px solid var(--color-accent-blue);
+}
+
+.btn-primary:hover {
+  background: #1e45e8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(46, 91, 255, 0.35);
+}
+
+.btn-ghost {
+  padding: 0.875rem 1.75rem;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+}
+
+.btn-ghost:hover {
+  color: var(--color-text);
+  border-color: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+}
+
+/* Scroll indicator */
+.scroll-indicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: var(--section-padding-x);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--color-text-muted), transparent);
+  animation: fade-in 1s ease 2s both;
 }
 
 @media (max-width: 768px) {
-  .hero {
-    min-height: auto;
-    padding: 1rem;
-  }
-  .hero-content {
-    margin-top: 40px;
-  }
-  .hero h1 {
-    font-size: 2rem;
-  }
-  .cta-button {
-    width: 100%;
-    text-align: center;
-    display: block;
-  }
+  .hero { padding: calc(70px + 2.5rem) 1.25rem 3rem; }
+  .scroll-indicator { display: none; }
+  .hero-statement { padding: 1.25rem; }
+}
+
+@media (max-width: 480px) {
+  .hero-cta { flex-direction: column; }
+  .btn-primary, .btn-ghost { width: 100%; justify-content: center; }
 }
 </style>
 
-<!-- ===== SECCIÓN 1: PROBLEMA ===== -->
-<section class="section section-1">
-  <div style="width:100%;max-width:900px">
-    <h2>Las decisiones se toman fragmentadas.</h2>
-    <p>Las empresas toman decisiones sin ver todas las variables juntas. Información dispersa, procesos sin integración, contextos silenciados.</p>
-    <p style="color:var(--color-accent-blue);font-weight:600;margin-top:1.5rem">El costo de no ver el sistema completo crece exponencialmente.</p>
-  </div>
-</section>
-
-<!-- ===== SECCIÓN 2: CAMBIO ===== -->
-<section class="section section-2">
-  <div style="width:100%;max-width:900px">
-    <h2>El mercado ya opera con cálculo.</h2>
-    <p>Validar antes de actuar ya es posible. La validación previa no es mejora.</p>
-    <p style="color:var(--color-accent-blue);font-weight:600;margin-top:1.5rem">Es condición de entrada.</p>
-    <p style="margin-top:1rem">La precisión no optimiza. Define quién compite.</p>
-  </div>
-</section>
-
-<!-- ===== SECCIÓN 3: DESAJUSTE ===== -->
-<section class="section section-3">
-  <div style="width:100%;max-width:900px">
-    <h2>Hoy es más barato operar con cálculo.</h2>
-    <p>La ventaja ya no está en crecer. Está en procesar mejor.</p>
-    <p style="margin-top:1.5rem">Seguir expandiendo capas humanas cuando el cálculo ya es superior no es cultura.</p>
-    <p style="color:var(--color-accent-red);font-weight:600">Es desventaja.</p>
-    <p style="margin-top:1rem">El mercado premia cálculo. Penaliza interpretación.</p>
-  </div>
-</section>
-
-<!-- ===== SECCIÓN 4: RUPTURA BINARIA (CRÍTICA) ===== -->
-<section class="section section-rupture" data-binary-boundary>
-  <div style="width:100%">
-    <h2>La forma de operar cambió.</h2>
-    <h2 style="margin-top:1rem">Antes se reaccionaba. Hoy se ejecuta con ventaja informacional.</h2>
-    <div class="rupture-container">
-      <div class="rupture-before">
-        <h3>ANTES</h3>
-        <ul class="rupture-list">
-          <li>El error se absorbía</li>
-          <li>El ajuste era posterior</li>
-          <li>La velocidad era humana</li>
-        </ul>
+<!-- ===========================
+     SECCIÓN 1: PROBLEMA
+=========================== -->
+<section class="section section-1" id="problema" data-section="1">
+  <div class="section-inner">
+    <div class="section-label">01 — El problema</div>
+    <h2 class="section-h2">Las decisiones se toman<br>fragmentadas.</h2>
+    <div class="section-body">
+      <p>Las empresas toman decisiones sin ver todas las variables juntas. Información dispersa, procesos sin integración, contextos silenciados.</p>
+      <p class="highlight-blue">El costo de no ver el sistema completo<br>crece exponencialmente.</p>
+    </div>
+    <div class="metric-row">
+      <div class="metric">
+        <span class="metric-value">73%</span>
+        <span class="metric-label">de decisiones críticas se toman sin datos completos</span>
       </div>
-      <div class="rupture-divider"></div>
-      <div class="rupture-after">
-        <h3>HOY</h3>
-        <ul class="rupture-list">
-          <li>El mercado opera con sistemas autónomos</li>
-          <li>Automatización estratégica</li>
-          <li>Cálculo continuo</li>
-        </ul>
+      <div class="metric">
+        <span class="metric-value">4.2×</span>
+        <span class="metric-label">más errores en empresas sin cálculo integrado</span>
+      </div>
+      <div class="metric">
+        <span class="metric-value">18m</span>
+        <span class="metric-label">tiempo promedio hasta detectar una decisión incorrecta</span>
       </div>
     </div>
-    <p class="rupture-conclusion">No es transformación digital.</p>
-    <p style="color:var(--color-accent-blue);font-weight:600">Es desplazamiento operativo.</p>
-    <p class="rupture-conclusion" style="margin-top:2rem">No es evolución.</p>
-    <p style="color:var(--color-accent-blue);font-weight:600">Es sustitución de estándar.</p>
+  </div>
+</section>
+
+<!-- ===========================
+     SECCIÓN 2: CAMBIO
+=========================== -->
+<section class="section section-2" data-section="2">
+  <div class="section-inner">
+    <div class="section-label">02 — El cambio</div>
+    <h2 class="section-h2">El mercado ya opera<br>con cálculo.</h2>
+    <div class="section-body">
+      <p>Validar antes de actuar ya es posible. La validación previa no es mejora.</p>
+      <p class="highlight-blue" style="font-size: 1.3rem; font-weight: 700;">Es condición de entrada.</p>
+      <p>La precisión no optimiza. <strong>Define quién compite.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================
+     SECCIÓN 3: DESAJUSTE
+=========================== -->
+<section class="section section-3" data-section="3">
+  <div class="section-inner">
+    <div class="section-label">03 — El desajuste</div>
+    <h2 class="section-h2">Hoy es más barato<br>operar con cálculo.</h2>
+    <div class="section-body">
+      <p>La ventaja ya no está en crecer. Está en procesar mejor.</p>
+      <p>Seguir expandiendo capas humanas cuando el cálculo ya es superior no es cultura.</p>
+      <p class="highlight-red">Es desventaja.</p>
+      <p>El mercado premia cálculo. <strong>Penaliza interpretación.</strong></p>
+    </div>
   </div>
 </section>
 
 <style>
+/* ===== SECTIONS BASE ===== */
 .section {
-  padding: 6rem 4rem;
+  padding: var(--section-padding) var(--section-padding-x);
   position: relative;
-  z-index: 5;
-  min-height: 50vh;
-  display: flex;
-  align-items: center;
-  max-width: 1400px;
+  overflow: hidden;
+}
+
+.section-inner {
+  max-width: var(--max-width);
   margin: 0 auto;
 }
 
-.section h2 {
-  font-size: clamp(1.875rem, 5vw, 3rem);
-  font-weight: 700;
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
   margin-bottom: 2rem;
-  line-height: 1.2;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section.in-view .section-label {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
   color: var(--color-text);
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s var(--easing-out) 0.1s,
+              transform 0.7s var(--easing-out) 0.1s;
+}
+
+.section.in-view .section-h2 {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-body {
+  max-width: 640px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--easing-out) 0.2s,
+              transform 0.7s var(--easing-out) 0.2s;
+}
+
+.section.in-view .section-body {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-body p {
+  font-size: clamp(1rem, 2vw, 1.125rem);
+  color: var(--color-text-secondary);
+  line-height: 1.85;
+  margin-bottom: 1.25rem;
+}
+
+.section-body strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.highlight-blue {
+  color: var(--color-accent-blue) !important;
+  font-weight: 600 !important;
+}
+
+.highlight-red {
+  color: var(--color-accent-red) !important;
+  font-weight: 600 !important;
+}
+
+/* Metrics */
+.metric-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3.5rem;
+  padding-top: 3rem;
+  border-top: 1px solid var(--color-border);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s var(--easing-out) 0.35s,
+              transform 0.7s var(--easing-out) 0.35s;
+}
+
+.section.in-view .metric-row {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-value {
+  font-family: var(--font-mono);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 500;
+  color: var(--color-accent-blue);
   letter-spacing: -0.02em;
 }
 
-.section p {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  line-height: 1.8;
-  margin-bottom: 1.5rem;
+.metric-label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
 }
 
+/* Section backgrounds */
+.section-1 { background: var(--color-bg); }
+.section-2 {
+  background: linear-gradient(180deg, var(--color-bg) 0%, rgba(46,91,255,0.025) 100%);
+}
+.section-3 {
+  background: linear-gradient(180deg, rgba(46,91,255,0.015) 0%, rgba(255,61,61,0.02) 100%);
+}
+
+@media (max-width: 768px) {
+  .metric-row { grid-template-columns: 1fr; gap: 2rem; }
+}
+</style>
+
+<!-- ===========================
+     SECCIÓN 4: RUPTURA BINARIA (CRÍTICA)
+=========================== -->
+<section class="section section-rupture" id="ruptura" data-section="rupture" data-binary-boundary>
+  <div class="section-inner rupture-inner">
+    <div class="section-label">04 — La ruptura</div>
+
+    <h2 class="section-h2" style="max-width: 800px">
+      La forma de operar cambió.<br>
+      <span class="rupture-h2-sub">Antes se reaccionaba. Hoy se ejecuta con ventaja informacional.</span>
+    </h2>
+
+    <!-- La pieza central: ANTES / HOY -->
+    <div class="rupture-container" id="rupture-container">
+      <!-- ANTES -->
+      <div class="rupture-side rupture-before">
+        <div class="rupture-era-label">
+          <span class="era-tag era-tag--before">ANTES</span>
+        </div>
+        <ul class="rupture-items">
+          <li class="rupture-item">
+            <span class="rupture-item-icon" aria-hidden="true">×</span>
+            <span>El error se absorbía</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon" aria-hidden="true">×</span>
+            <span>El ajuste era posterior</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon" aria-hidden="true">×</span>
+            <span>La velocidad era humana</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon" aria-hidden="true">×</span>
+            <span>Intuición como base de decisión</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Divisor animado -->
+      <div class="rupture-axis" aria-hidden="true">
+        <div class="axis-line"></div>
+        <div class="axis-node">→</div>
+      </div>
+
+      <!-- HOY -->
+      <div class="rupture-side rupture-after">
+        <div class="rupture-era-label">
+          <span class="era-tag era-tag--after">HOY</span>
+        </div>
+        <ul class="rupture-items">
+          <li class="rupture-item">
+            <span class="rupture-item-icon rupture-item-icon--after" aria-hidden="true">✓</span>
+            <span>El mercado opera con sistemas autónomos</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon rupture-item-icon--after" aria-hidden="true">✓</span>
+            <span>Automatización estratégica</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon rupture-item-icon--after" aria-hidden="true">✓</span>
+            <span>Cálculo continuo</span>
+          </li>
+          <li class="rupture-item">
+            <span class="rupture-item-icon rupture-item-icon--after" aria-hidden="true">✓</span>
+            <span>Ventaja informacional permanente</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Conclusión -->
+    <div class="rupture-conclusion">
+      <p>No es evolución.</p>
+      <p class="highlight-blue">Es sustitución de estándar.</p>
+    </div>
+  </div>
+</section>
+
+<style>
 .section-rupture {
-  background: rgba(46, 91, 255, 0.02);
+  background: var(--color-bg);
+  padding-bottom: calc(var(--section-padding) * 1.2);
+}
+
+.rupture-h2-sub {
+  display: block;
+  font-size: 0.6em;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  margin-top: 0.5rem;
+  letter-spacing: 0;
 }
 
 .rupture-container {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 4rem;
-  align-items: flex-start;
+  grid-template-columns: 1fr 80px 1fr;
+  gap: 0;
+  align-items: start;
   margin: 3rem 0;
-  padding: 3rem;
-  background: rgba(46, 91, 255, 0.05);
-  border-radius: 12px;
-  transition: background 1s var(--easing-smooth);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 1s ease, background 1s ease;
 }
 
-.rupture-before h3 {
+.rupture-container.activated {
+  border-color: rgba(46, 91, 255, 0.2);
+  background: linear-gradient(90deg,
+    rgba(255, 61, 61, 0.04) 0%,
+    rgba(46, 91, 255, 0.02) 50%,
+    rgba(0, 195, 137, 0.04) 100%
+  );
+}
+
+.rupture-side {
+  padding: 3rem 2.5rem;
+  opacity: 0;
+  transition: opacity 0.8s var(--easing-out);
+}
+
+.section-rupture.in-view .rupture-side {
+  opacity: 1;
+}
+
+.rupture-before {
+  border-right: 1px solid var(--color-border);
+  transition-delay: 0.2s;
+}
+
+.rupture-after {
+  transition-delay: 0.4s;
+}
+
+.rupture-era-label {
+  margin-bottom: 2rem;
+}
+
+.era-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  padding: 0.35rem 0.8rem;
+  border-radius: 2px;
+}
+
+.era-tag--before {
+  background: var(--color-accent-red-dim);
   color: var(--color-accent-red);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  border: 1px solid rgba(255, 61, 61, 0.2);
 }
 
-.rupture-after h3 {
+.era-tag--after {
+  background: var(--color-accent-green-dim);
   color: var(--color-accent-green);
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  border: 1px solid rgba(0, 195, 137, 0.2);
 }
 
-.rupture-list {
+.rupture-items {
   list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.rupture-list li {
-  padding: 0.5rem 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+.rupture-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  transform: translateX(-12px);
+  opacity: 0;
+  transition: transform 0.6s var(--easing-out), opacity 0.6s ease;
+}
+
+.rupture-after .rupture-item {
+  transform: translateX(12px);
+}
+
+.section-rupture.in-view .rupture-item {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.section-rupture.in-view .rupture-items li:nth-child(1) { transition-delay: 0.3s; }
+.section-rupture.in-view .rupture-items li:nth-child(2) { transition-delay: 0.45s; }
+.section-rupture.in-view .rupture-items li:nth-child(3) { transition-delay: 0.6s; }
+.section-rupture.in-view .rupture-items li:nth-child(4) { transition-delay: 0.75s; }
+
+.rupture-item-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-accent-red);
+  font-family: var(--font-mono);
+  margin-top: 1px;
+}
+
+.rupture-item-icon--after {
+  color: var(--color-accent-green);
+}
+
+/* Axis / Divisor */
+.rupture-axis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 0;
+  gap: 1rem;
+}
+
+.axis-line {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(to bottom,
+    transparent,
+    var(--color-accent-red),
+    var(--color-accent-blue),
+    var(--color-accent-green),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 1s ease 0.5s;
+}
+
+.section-rupture.in-view .axis-line {
+  opacity: 1;
+}
+
+.axis-node {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-family: var(--font-mono);
+}
+
+/* Conclusion */
+.rupture-conclusion {
+  margin-top: 2rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--easing-out) 0.8s,
+              transform 0.7s var(--easing-out) 0.8s;
+}
+
+.section-rupture.in-view .rupture-conclusion {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rupture-conclusion p {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.6;
   margin-bottom: 0.5rem;
 }
 
-.rupture-before .rupture-list li {
-  color: var(--color-accent-red);
-}
-
-.rupture-after .rupture-list li {
-  color: var(--color-accent-green);
-}
-
-.rupture-divider {
-  width: 1px;
-  height: 140px;
-  background: linear-gradient(to bottom, var(--color-accent-red), var(--color-accent-blue), var(--color-accent-green));
-}
-
-.rupture-conclusion {
-  margin-top: 2rem;
-  font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.8;
-  color: var(--color-text);
-}
-
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
   .rupture-container {
     grid-template-columns: 1fr;
-    gap: 2rem;
   }
-  .rupture-divider {
-    width: 100%;
-    height: 1px;
-    background: linear-gradient(to right, var(--color-accent-red), var(--color-accent-blue), var(--color-accent-green));
-  }
-}
 
-@media (max-width: 768px) {
-  .section {
-    padding: 3rem 1rem;
+  .rupture-axis {
+    flex-direction: row;
+    padding: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
   }
-  .section h2 {
-    font-size: 1.5rem;
+
+  .axis-line {
+    height: 1px;
+    width: auto;
+    flex: 1;
+    background: linear-gradient(to right,
+      transparent, var(--color-accent-red),
+      var(--color-accent-blue), var(--color-accent-green), transparent
+    );
   }
+
+  .rupture-before { border-right: none; border-bottom: none; }
+  .rupture-side { padding: 2rem 1.5rem; }
 }
 </style>
 
-<!-- ===== SECCIÓN 5: DEFINICIÓN ===== -->
-<section class="section section-definition">
-  <div style="width:100%">
-    <h2>Aurora es una capa de cálculo soberano.</h2>
-    <p style="margin-top:1rem">No acompaña. <strong style="color:var(--color-accent-blue)">Divide.</strong></p>
-    <p>Divide a quienes operan desde límite humano de quienes operan con potencia algorítmica.</p>
-    <p style="margin-top:2rem">El entorno ya está gobernado por datos en tiempo real, automatización y modelos autónomos.</p>
-    <p>Actuar solo con intuición no es identidad. <strong style="color:var(--color-accent-red)">Es inferioridad estructural.</strong></p>
-    
-    <div class="definition-block">
-      <p>Cálculo soberano significa <strong style="color:var(--color-accent-blue)">autonomía frente al error recurrente.</strong></p>
-      <p>Significa <strong style="color:var(--color-accent-blue)">procesar complejidad sin reducirla.</strong></p>
-      <p>Significa <strong style="color:var(--color-accent-blue)">tener ventaja antes de que el mercado entienda el movimiento.</strong></p>
-      <p style="margin-top:1.5rem;color:var(--color-accent-green);font-weight:600">No es mejora.</p>
-      <p style="color:var(--color-accent-green);font-weight:600">Es reemplazo.</p>
-      <p style="margin-top:1.5rem;font-weight:600">Con cálculo soberano, marcas el ritmo.<br>Sin él, lo persigues.</p>
+<!-- ===========================
+     SECCIÓN 5: DEFINICIÓN
+=========================== -->
+<section class="section section-definition" data-section="5">
+  <div class="section-inner">
+    <div class="section-label">05 — La definición</div>
+    <h2 class="section-h2">Aurora es una capa<br>de cálculo soberano.</h2>
+
+    <div class="section-body">
+      <p>No acompaña. <strong class="highlight-blue">Divide.</strong></p>
+      <p>Divide a quienes operan desde límite humano de quienes operan con potencia algorítmica.</p>
+      <p>El entorno ya está gobernado por datos en tiempo real, automatización y modelos autónomos.</p>
+      <p>Actuar solo con intuición no es identidad. <strong class="highlight-red">Es inferioridad estructural.</strong></p>
+    </div>
+
+    <div class="definition-manifesto">
+      <div class="manifesto-item">
+        <div class="manifesto-dash" aria-hidden="true"></div>
+        <p>Cálculo soberano significa <strong>autonomía frente al error recurrente.</strong></p>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-dash" aria-hidden="true"></div>
+        <p>Significa <strong>procesar complejidad sin reducirla.</strong></p>
+      </div>
+      <div class="manifesto-item">
+        <div class="manifesto-dash" aria-hidden="true"></div>
+        <p>Significa <strong>tener ventaja antes de que el mercado entienda el movimiento.</strong></p>
+      </div>
+    </div>
+
+    <div class="definition-closer">
+      <p class="closer-no highlight-green">No es mejora. Es reemplazo.</p>
+      <p class="closer-statement">Con cálculo soberano, marcas el ritmo.<br>Sin él, lo persigues.</p>
     </div>
   </div>
 </section>
 
 <style>
-.definition-block {
-  padding: 2.5rem;
-  background: rgba(46, 91, 255, 0.03);
-  border-left: 3px solid var(--color-accent-blue);
-  margin: 3rem 0;
-  border-radius: 8px;
+.section-definition {
+  background: linear-gradient(180deg, rgba(255,61,61,0.015) 0%, var(--color-bg) 40%);
 }
 
-.definition-block p {
+.manifesto-item {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--color-border);
+  opacity: 0;
+  transform: translateX(-16px);
+  transition: opacity 0.6s ease, transform 0.6s var(--easing-out);
+}
+
+.section-definition.in-view .manifesto-item:nth-child(1) { opacity: 1; transform: none; transition-delay: 0.2s; }
+.section-definition.in-view .manifesto-item:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.35s; }
+.section-definition.in-view .manifesto-item:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.5s; }
+
+.manifesto-item:first-child { border-top: 1px solid var(--color-border); }
+
+.manifesto-dash {
+  width: 16px;
+  height: 1px;
+  background: var(--color-accent-blue);
+  margin-top: 0.75rem;
+}
+
+.manifesto-item p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.manifesto-item strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.definition-manifesto {
+  margin-top: 3rem;
+  max-width: 720px;
+}
+
+.definition-closer {
+  margin-top: 3.5rem;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s ease 0.6s, transform 0.7s ease 0.6s;
+}
+
+.section-definition.in-view .definition-closer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.closer-no {
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  font-weight: 700;
   margin-bottom: 1rem;
-  font-size: 1.125rem;
-  line-height: 1.8;
+}
+
+.highlight-green {
+  color: var(--color-accent-green) !important;
+}
+
+.closer-statement {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--color-text);
+  font-weight: 600;
+  line-height: 1.7;
 }
 </style>
 
-<!-- ===== SECCIÓN 6: MÓDULOS GRID (6 CARDS) ===== -->
-<section class="section section-modules">
-  <div style="width:100%">
-    <h2>Capacidades de Aurora.</h2>
+<!-- ===========================
+     SECCIÓN 6: MÓDULOS (6 CARDS)
+=========================== -->
+<section class="section section-modules" data-section="6">
+  <div class="section-inner">
+    <div class="section-label">06 — Capacidades</div>
+    <h2 class="section-h2">Aurora en operación.</h2>
+
     <div class="modules-grid">
-      <div class="module-card">
-        <div class="module-icon">⚡</div>
+      <article class="module-card" data-module="0">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2v4M10 14v4M2 10h4M14 10h4M4.93 4.93l2.83 2.83M12.24 12.24l2.83 2.83M4.93 15.07l2.83-2.83M12.24 7.76l2.83-2.83" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active">
+            <span></span>
+          </div>
+        </div>
         <h4>Scenario Engine</h4>
-        <p>Evalúa decisiones en tiempo real bajo múltiples condiciones</p>
-      </div>
-      <div class="module-card">
-        <div class="module-icon">🔄</div>
+        <p>Evalúa decisiones en tiempo real bajo múltiples condiciones simultáneas</p>
+      </article>
+
+      <article class="module-card" data-module="1">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="10" r="7" stroke="var(--color-accent-blue)" stroke-width="1.5"/>
+              <path d="M10 7v3l2 2" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active"><span></span></div>
+        </div>
         <h4>Regime Shift Detector</h4>
-        <p>Detecta cambios de contexto antes que la competencia</p>
-      </div>
-      <div class="module-card">
-        <div class="module-icon">📊</div>
+        <p>Detecta cambios de contexto antes que la competencia los perciba</p>
+      </article>
+
+      <article class="module-card" data-module="2">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M3 15l4-6 3 4 3-7 4 9" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active"><span></span></div>
+        </div>
         <h4>Decision Entropy</h4>
-        <p>Mide complejidad y riesgo de cada decisión</p>
-      </div>
-      <div class="module-card">
-        <div class="module-icon">🎯</div>
+        <p>Mide la complejidad y el riesgo estructural de cada decisión</p>
+      </article>
+
+      <article class="module-card" data-module="3">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 3a7 7 0 1 0 0 14A7 7 0 0 0 10 3z" stroke="var(--color-accent-blue)" stroke-width="1.5"/>
+              <path d="M10 7v3l2.5 1.5" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active"><span></span></div>
+        </div>
         <h4>Autonomous Tuning</h4>
-        <p>Ajusta parámetros sin intervención humana</p>
-      </div>
-      <div class="module-card">
-        <div class="module-icon">✓</div>
+        <p>Ajusta parámetros operativos sin intervención humana requerida</p>
+      </article>
+
+      <article class="module-card" data-module="4">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M4 10l4 4 8-8" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active"><span></span></div>
+        </div>
         <h4>Verification Protocol</h4>
-        <p>Valida resultados con auditoría completa</p>
-      </div>
-      <div class="module-card">
-        <div class="module-icon">⚙️</div>
+        <p>Valida resultados con auditoría completa y trazabilidad total</p>
+      </article>
+
+      <article class="module-card" data-module="5">
+        <div class="module-header">
+          <div class="module-icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <path d="M10 4v4h4" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round"/>
+              <circle cx="10" cy="10" r="7" stroke="var(--color-accent-blue)" stroke-width="1.5"/>
+              <path d="M7 10l1.5 1.5L13 7" stroke="var(--color-accent-blue)" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="module-status" aria-label="Active"><span></span></div>
+        </div>
         <h4>Calibration Core</h4>
-        <p>Optimiza continuamente basado en feedback</p>
-      </div>
+        <p>Optimiza continuamente el modelo basado en feedback operativo</p>
+      </article>
     </div>
   </div>
 </section>
 
 <style>
 .section-modules {
-  background: rgba(46, 91, 255, 0.01);
+  background: linear-gradient(180deg, var(--color-bg) 0%, rgba(46,91,255,0.02) 100%);
 }
 
 .modules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
   margin-top: 3rem;
+  background: var(--color-border);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .module-card {
-  padding: 2rem;
-  background: rgba(46, 91, 255, 0.03);
-  border: 1px solid rgba(46, 91, 255, 0.1);
-  border-radius: 12px;
-  transition: all var(--duration-normal) var(--easing-smooth);
+  background: var(--color-bg);
+  padding: 2.25rem 2rem;
+  transition: background var(--duration-normal) ease;
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s var(--easing-out),
+              background var(--duration-normal) ease;
+}
+
+.module-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.module-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent-blue-dim);
+  opacity: 0;
+  transition: opacity var(--duration-normal) ease;
 }
 
 .module-card:hover {
-  background: rgba(46, 91, 255, 0.08);
-  border-color: rgba(46, 91, 255, 0.3);
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(46, 91, 255, 0.15);
+  background: var(--color-bg-layer);
+}
+
+.module-card:hover::before {
+  opacity: 1;
+}
+
+.module-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
 }
 
 .module-icon {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  display: inline-block;
+  width: 40px;
+  height: 40px;
+  background: var(--color-accent-blue-dim);
+  border: 1px solid var(--color-border-blue);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--duration-normal) ease,
+              background var(--duration-normal) ease;
 }
 
+.module-card:hover .module-icon {
+  background: rgba(46, 91, 255, 0.15);
+  border-color: rgba(46, 91, 255, 0.3);
+}
+
+.module-status {
+  width: 8px;
+  height: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.module-status span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent-green);
+  opacity: 0.6;
+  animation: pulse-dot 3s ease-in-out infinite;
+}
+
+.module-card[data-module="1"] .module-status span { animation-delay: 0.5s; }
+.module-card[data-module="2"] .module-status span { animation-delay: 1s; }
+.module-card[data-module="3"] .module-status span { animation-delay: 1.5s; }
+.module-card[data-module="4"] .module-status span { animation-delay: 2s; }
+.module-card[data-module="5"] .module-status span { animation-delay: 2.5s; }
+
 .module-card h4 {
-  font-size: 1.25rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
-  color: var(--color-accent-blue);
+  color: var(--color-text);
+  margin-bottom: 0.6rem;
+  letter-spacing: -0.01em;
 }
 
 .module-card p {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
-  margin-bottom: 0;
-  line-height: 1.6;
+  line-height: 1.65;
+  margin: 0;
 }
 
-@media (max-width: 768px) {
-  .modules-grid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 900px) {
+  .modules-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .modules-grid { grid-template-columns: 1fr; }
+  .module-card { padding: 1.75rem 1.5rem; }
 }
 </style>
 
-<!-- ===== SECCIÓN 7: CTA FINAL ===== -->
-<section class="section section-cta">
-  <div style="width:100%;max-width:900px">
-    <h2>Pon tu próximo movimiento bajo evidencia.</h2>
-    <div class="demo-narrative">
-      <p style="font-size:1.125rem;font-weight:600;color:var(--color-accent-green);margin-bottom:1rem"><strong>Aurora no opina.</strong> Calcula.</p>
-      <p style="font-size:1.125rem;margin-bottom:1rem">Detecta la interacción dominante.<br>Expone la vulnerabilidad central.</p>
-      <p style="font-size:1.125rem;font-weight:600"><strong>Una señal.</strong><br>Un movimiento correcto.</p>
-    </div>
-    <div style="margin-top:2rem;display:flex;gap:2rem;flex-wrap:wrap">
-      <a href="/demo" class="cta-button">Abrir Demo</a>
-      <a href="mailto:hola@aurora.io" class="cta-button" style="background:transparent;color:var(--color-accent-blue)">Contactar</a>
+<!-- ===========================
+     SECCIÓN 7: CTA FINAL
+=========================== -->
+<section class="section section-cta" data-section="7">
+  <div class="section-inner cta-inner">
+    <div class="section-label">07 — Acción</div>
+    <h2 class="section-h2" style="max-width: 640px">
+      Pon tu próximo movimiento<br>bajo evidencia.
+    </h2>
+
+    <div class="cta-block">
+      <div class="cta-text">
+        <p><strong class="highlight-green">Aurora no opina.</strong> Calcula.</p>
+        <p>Detecta la interacción dominante.<br>Expone la vulnerabilidad central.</p>
+        <p class="cta-final-line"><strong>Una señal. Un movimiento correcto.</strong></p>
+      </div>
+
+      <div class="cta-actions">
+        <a href="/demo" class="btn btn-primary btn-large">
+          Abrir Demo
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="mailto:hola@aurora.io" class="btn btn-outline">
+          Contactar equipo
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
 .section-cta {
-  background: rgba(46, 91, 255, 0.01);
+  background: linear-gradient(180deg, rgba(46,91,255,0.015) 0%, var(--color-bg) 100%);
+  padding-bottom: calc(var(--section-padding) * 1.5);
 }
 
-.demo-narrative {
-  margin: 3rem 0;
-  padding: 2rem;
-  background: rgba(0, 195, 137, 0.03);
+.cta-block {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4rem;
+  align-items: center;
+  margin-top: 3rem;
+  padding: 3rem;
+  background: var(--color-bg-layer);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
+  max-width: 900px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease 0.2s, transform 0.7s var(--easing-out) 0.2s;
 }
 
-.demo-narrative p {
-  margin-bottom: 1rem;
+.section-cta.in-view .cta-block {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cta-text p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.75;
+  margin-bottom: 0.75rem;
+}
+
+.cta-text strong {
+  font-weight: 600;
+}
+
+.cta-final-line {
+  color: var(--color-text) !important;
+  margin-top: 0.5rem;
+}
+
+.cta-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.btn-large {
+  padding: 1rem 2rem;
+  font-size: 0.95rem;
+}
+
+.btn-outline {
+  padding: 0.875rem 1.75rem;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  text-align: center;
+  transition: all var(--duration-normal) ease;
+  letter-spacing: 0.02em;
+}
+
+.btn-outline:hover {
+  color: var(--color-accent-blue);
+  border-color: var(--color-border-blue);
+}
+
+@media (max-width: 768px) {
+  .cta-block {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 1.5rem;
+  }
+  .cta-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 </style>
 
-<!-- ===== FOOTER ===== -->
+<!-- ===========================
+     FOOTER
+=========================== -->
 <footer class="footer">
-  <p>&copy; 2026 Aurora. Cálculo soberano para decisiones empresariales.</p>
-  <div class="footer-links">
-    <a href="https://twitter.com/auroratech">Twitter</a>
-    <a href="https://linkedin.com/company/auroratech">LinkedIn</a>
-    <a href="mailto:hola@aurora.io">Email</a>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <div class="logo-mark" style="margin-bottom: 0.75rem;">
+        <svg width="22" height="22" viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="12" stroke="var(--color-accent-blue)" stroke-width="1.5" opacity="0.3"/>
+          <path d="M14 3 A11 11 0 0 1 25 14" stroke="var(--color-accent-blue)" stroke-width="2" fill="none" stroke-linecap="round"/>
+          <circle cx="14" cy="14" r="3" fill="var(--color-accent-blue)" opacity="0.8"/>
+        </svg>
+        <span class="logo-text">AURORA</span>
+      </div>
+      <p class="footer-tagline">Cálculo soberano para decisiones empresariales.</p>
+      <p class="footer-copy">&copy; 2026 Aurora</p>
+    </div>
+    <div class="footer-right">
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="/">Home</a>
+        <a href="/demo">Demo</a>
+        <a href="https://twitter.com/auroratech" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://linkedin.com/company/auroratech" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="mailto:hola@aurora.io">Email</a>
+      </nav>
+    </div>
   </div>
 </footer>
 
 <style>
 .footer {
-  padding: 3rem 2rem;
-  text-align: center;
-  border-top: 1px solid rgba(46, 91, 255, 0.1);
-  color: var(--color-text-secondary);
-  background: rgba(46, 91, 255, 0.01);
+  border-top: 1px solid var(--color-border);
+  padding: 3rem var(--section-padding-x);
+  background: var(--color-bg);
 }
 
-.footer p {
-  margin-bottom: 1.5rem;
-  font-size: 0.95rem;
-}
-
-.footer-links {
+.footer-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: flex-end;
   gap: 2rem;
   flex-wrap: wrap;
 }
 
-.footer-links a {
+.footer-tagline {
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 0.5rem;
+}
+
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.footer-nav {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.footer-nav a {
   text-decoration: none;
-  transition: color var(--duration-normal) var(--easing-smooth);
-  font-size: 0.95rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  transition: color var(--duration-fast) ease;
+  letter-spacing: 0.02em;
 }
 
-.footer-links a:hover {
-  color: var(--color-accent-blue);
+.footer-nav a:hover {
+  color: var(--color-text-secondary);
 }
 
-@media (max-width: 768px) {
-  .footer {
-    padding: 2rem 1rem;
-  }
-  .footer-links {
-    gap: 1rem;
-  }
+@media (max-width: 640px) {
+  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .footer-nav { justify-content: flex-start; }
 }
 </style>
 
-<!-- ===== SCRIPTS: THREE.JS + GSAP + LENIS ===== -->
+<!-- ===========================
+     SCRIPTS: THREE.JS + GSAP + SCROLL
+=========================== -->
 <script>
-  console.log('[AURORA] Script iniciando...');
+  import * as THREE from 'three';
+  import gsap from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initAurora);
-  } else {
-    initAurora();
+  gsap.registerPlugin(ScrollTrigger);
+
+  // ===== LENIS SMOOTH SCROLL =====
+  async function setupLenis() {
+    try {
+      const LenisModule = await import('@studio-freight/lenis');
+      const Lenis = LenisModule.default;
+      const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        smooth: true,
+        smoothTouch: false,
+        touchMultiplier: 2,
+      });
+
+      lenis.on('scroll', ScrollTrigger.update);
+
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+
+      gsap.ticker.lagSmoothing(0);
+
+      console.log('[Aurora] Lenis activo');
+    } catch (e) {
+      console.log('[Aurora] Lenis no disponible — scroll estándar activo');
+    }
   }
 
-  function initAurora() {
-    console.log('[AURORA] DOM ready, inicializando...');
+  setupLenis();
 
-    Promise.all([
-      import('three'),
-      import('gsap'),
-      import('gsap/ScrollTrigger')
-    ]).then(([THREE, gsapModule, ScrollTrigger]) => {
-      console.log('[AURORA] Módulos cargados ✅');
+  // ===== HEADER SCROLL STATE =====
+  const header = document.getElementById('header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+  }
 
-      const gsap = gsapModule.default;
-      gsap.registerPlugin(ScrollTrigger.default);
+  // ===========================
+  // THREE.JS NETWORK EMERGENCE
+  // ===========================
+  const canvas = document.getElementById('network-canvas');
+  if (canvas) {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      65,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 9;
 
-      const canvas = document.getElementById('network-canvas');
-      console.log('[AURORA] Canvas:', canvas ? '✅ FOUND' : '❌ NOT FOUND');
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      precision: 'highp',
+    });
 
-      if (!canvas) return;
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x0B0B0C, 1);
+    renderer.sortObjects = false;
 
-      try {
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    // ─── NODOS ───
+    const NODE_COUNT = 22;
+    const nodePositions = [];
+    const nodeData = [];
 
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.setClearColor(0x0B0B0C, 1);
-        camera.position.z = 8;
+    for (let i = 0; i < NODE_COUNT; i++) {
+      const theta = (i / NODE_COUNT) * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const r = 2.5 + Math.random() * 2.8;
 
-        const nodeCount = 15;
-        const positions = [];
-        const nodes = [];
+      const x = r * Math.sin(phi) * Math.cos(theta);
+      const y = (Math.random() - 0.5) * 5;
+      const z = r * Math.sin(phi) * Math.sin(theta);
 
-        for (let i = 0; i < nodeCount; i++) {
-          const theta = (i / nodeCount) * Math.PI * 2;
-          const r = 3 + Math.random() * 2;
-          const x = Math.cos(theta) * r + (Math.random() - 0.5) * 0.5;
-          const y = (Math.random() - 0.5) * 4;
-          const z = Math.sin(theta) * r + (Math.random() - 0.5) * 0.5;
-          positions.push(x, y, z);
-          nodes.push({ x, y, z });
+      nodePositions.push(x, y, z);
+      nodeData.push({ x, y, z, origX: x, origY: y, origZ: z });
+    }
+
+    const nodeGeometry = new THREE.BufferGeometry();
+    nodeGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(nodePositions), 3)
+    );
+
+    const nodeMaterial = new THREE.PointsMaterial({
+      color: 0x2E5BFF,
+      size: 0.18,
+      sizeAttenuation: true,
+      fog: false,
+      transparent: true,
+      opacity: 0,
+    });
+
+    const points = new THREE.Points(nodeGeometry, nodeMaterial);
+
+    // ─── LÍNEAS ───
+    const linePositions = [];
+    for (let i = 0; i < NODE_COUNT; i++) {
+      const connectionCount = 2 + Math.floor(Math.random() * 3);
+      for (let j = 1; j <= connectionCount; j++) {
+        const targetIdx = (i + j) % NODE_COUNT;
+        if (linePositions.length < 200) {
+          linePositions.push(
+            nodeData[i].x, nodeData[i].y, nodeData[i].z,
+            nodeData[targetIdx].x, nodeData[targetIdx].y, nodeData[targetIdx].z
+          );
         }
-
-        const nodeGeometry = new THREE.BufferGeometry();
-        nodeGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-
-        const nodeMaterial = new THREE.PointsMaterial({
-          color: 0x2E5BFF,
-          size: 0.15,
-          sizeAttenuation: true,
-        });
-
-        const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
-        scene.add(pointsMesh);
-
-        const linePositions = [];
-        for (let i = 0; i < nodeCount; i++) {
-          const neighborCount = 2 + Math.floor(Math.random() * 2);
-          for (let j = 0; j < neighborCount; j++) {
-            const neighborIdx = (i + 1 + j) % nodeCount;
-            if (linePositions.length < 150) {
-              linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
-              linePositions.push(nodes[neighborIdx].x, nodes[neighborIdx].y, nodes[neighborIdx].z);
-            }
-          }
-        }
-
-        const lineGeometry = new THREE.BufferGeometry();
-        lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
-        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xBFC2C7, transparent: true, opacity: 0.6 });
-        const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
-        scene.add(linesMesh);
-
-        const group = new THREE.Group();
-        group.add(pointsMesh);
-        group.add(linesMesh);
-        scene.add(group);
-
-        function animate() {
-          requestAnimationFrame(animate);
-          group.rotation.x += 0.0002;
-          group.rotation.y += 0.0003;
-          renderer.render(scene, camera);
-        }
-        animate();
-
-        console.log('[AURORA] Three.js inicializado ✅');
-
-      } catch (err) {
-        console.error('[AURORA] Error:', err);
       }
-    }).catch(err => {
-      console.error('[AURORA] Error cargando módulos:', err);
+    }
+
+    const lineGeometry = new THREE.BufferGeometry();
+    lineGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(linePositions), 3)
+    );
+
+    const lineMaterial = new THREE.LineBasicMaterial({
+      color: 0x3A3F52,
+      transparent: true,
+      opacity: 0,
+      fog: false,
+    });
+
+    const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+
+    // ─── GRUPO PRINCIPAL ───
+    const networkGroup = new THREE.Group();
+    networkGroup.add(points);
+    networkGroup.add(lines);
+    scene.add(networkGroup);
+
+    // ─── EMERGENCE ANIMATION (T=0-3s) ───
+    // Fase 1: nodos emergen (T=0.3s)
+    gsap.to(nodeMaterial, {
+      opacity: 1,
+      duration: 0.5,
+      delay: 0.3,
+      ease: 'power2.inOut'
+    });
+
+    // Fase 2: líneas draw (T=0.8s)
+    gsap.to(lineMaterial, {
+      opacity: 0.55,
+      duration: 1.2,
+      delay: 0.8,
+      ease: 'power2.inOut'
+    });
+
+    // Fase 3: intro scale
+    networkGroup.scale.setScalar(0.7);
+    gsap.to(networkGroup.scale, {
+      x: 1, y: 1, z: 1,
+      duration: 2.5,
+      delay: 0.3,
+      ease: 'expo.out'
+    });
+
+    // ─── SCROLL REACTIVO ───
+    let scrollY = 0;
+    let targetRotY = 0;
+    let targetRotX = 0;
+    let scrollVelocity = 0;
+    let lastScrollY = 0;
+    let colorBlend = 0;
+    let targetColorBlend = 0;
+
+    window.addEventListener('scroll', () => {
+      scrollY = window.scrollY;
+      scrollVelocity = Math.abs(scrollY - lastScrollY);
+      lastScrollY = scrollY;
+
+      targetRotY = scrollY * 0.0003;
+      targetRotX = scrollY * 0.0001;
+      targetColorBlend = Math.min(1, scrollVelocity / 25);
+    }, { passive: true });
+
+    // ─── GSAP SCROLL: color lines on scroll ───
+    ScrollTrigger.create({
+      trigger: 'body',
+      start: 'top top',
+      end: 'bottom bottom',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress;
+        const r = Math.round(THREE.MathUtils.lerp(58, 46, p));
+        const g = Math.round(THREE.MathUtils.lerp(63, 91, p));
+        const b = Math.round(THREE.MathUtils.lerp(82, 255, p));
+        lineMaterial.color.setRGB(r/255, g/255, b/255);
+      }
+    });
+
+    // ─── ANIMATION LOOP ───
+    let rafId;
+    function animate() {
+      rafId = requestAnimationFrame(animate);
+
+      // Smooth scroll rotation
+      networkGroup.rotation.y += (targetRotY - networkGroup.rotation.y) * 0.04;
+      networkGroup.rotation.x += (targetRotX - networkGroup.rotation.x) * 0.03;
+
+      // Ambient drift
+      networkGroup.rotation.z += 0.00015;
+
+      // Velocity-based node brightness
+      colorBlend += (targetColorBlend - colorBlend) * 0.12;
+      nodeMaterial.opacity = 0.75 + colorBlend * 0.25;
+
+      // Decay velocity
+      targetColorBlend *= 0.9;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    // ─── RESIZE ───
+    window.addEventListener('resize', () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    }, { passive: true });
+
+    // Pause on hidden
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        cancelAnimationFrame(rafId);
+      } else {
+        animate();
+      }
     });
   }
+
+  // ===========================
+  // INTERSECTION OBSERVER (Section reveals)
+  // ===========================
+  const sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -60px 0px' }
+  );
+
+  document.querySelectorAll('[data-section]').forEach((s) => {
+    sectionObserver.observe(s);
+  });
+
+  // ===========================
+  // MODULE CARDS: stagger cascade
+  // ===========================
+  const moduleObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const cards = entry.target.querySelectorAll('.module-card');
+          cards.forEach((card, i) => {
+            setTimeout(() => {
+              card.classList.add('visible');
+            }, i * 100);
+          });
+          moduleObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  const modulesSection = document.querySelector('.section-modules');
+  if (modulesSection) {
+    moduleObserver.observe(modulesSection);
+  }
+
+  // ===========================
+  // RUPTURA BINARIA: GSAP ScrollTrigger
+  // ===========================
+  const ruptureContainer = document.getElementById('rupture-container');
+  if (ruptureContainer) {
+    gsap.to(ruptureContainer, {
+      scrollTrigger: {
+        trigger: '.section-rupture',
+        start: 'top 55%',
+        end: 'center 30%',
+        scrub: 1.2,
+        onEnter: () => ruptureContainer.classList.add('activated'),
+        onLeaveBack: () => ruptureContainer.classList.remove('activated'),
+      },
+    });
+  }
+
+  // ===========================
+  // GSAP: Section headline reveals (fallback/boost)
+  // ===========================
+  const sections = document.querySelectorAll('[data-section]');
+  sections.forEach((section) => {
+    const h2 = section.querySelector('.section-h2');
+    if (h2) {
+      gsap.fromTo(h2,
+        { opacity: 0, y: 32 },
+        {
+          opacity: 1, y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 75%',
+            toggleActions: 'play none none none',
+          }
+        }
+      );
+    }
+  });
 </script>
+
 </MainLayout>
