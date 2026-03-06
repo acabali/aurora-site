@@ -1,0 +1,1632 @@
+---
+const { lang = "es" } = Astro.props;
+const locale = lang === "en" ? "en" : "es";
+const isEn = locale === "en";
+const pick = (value) => (typeof value === "string" ? value : value[locale]);
+
+const icons = {
+  calculator: '<path d="M14 10h20v28H14z" fill="none"/><path d="M18 16h12"/><path d="M19 23h4"/><path d="M25 23h4"/><path d="M19 29h4"/><path d="M25 29h4"/>',
+  futures: '<path d="M9 35l12-22 6 12 12-14" fill="none"/><path d="M22 16l-1 19" fill="none"/><path d="M31 21l4 14" fill="none"/>',
+  fracture: '<path d="M10 34c4-10 11-16 20-18" fill="none"/><path d="M29 13l9 9" fill="none"/><path d="M20 18l4 4-6 5 5 4-4 5" fill="none"/>',
+  cause: '<circle cx="21" cy="21" r="8" fill="none"/><path d="M27 27l10 10" fill="none"/><path d="M21 13v16" fill="none"/><path d="M13 21h16" fill="none"/>',
+  memory: '<path d="M14 10h16l6 6v22H14z" fill="none"/><path d="M30 10v7h7" fill="none"/><path d="M20 24h10" fill="none"/><path d="M20 30h10" fill="none"/>',
+  investment: '<path d="M10 32h28" fill="none"/><path d="M16 28V16" fill="none"/><path d="M24 28V12" fill="none"/><path d="M32 28V20" fill="none"/>',
+  cash: '<path d="M11 16h26v16H11z" fill="none"/><path d="M18 22h12" fill="none"/><path d="M15 30l4-4 5 4 7-8 4 3" fill="none"/>',
+  expansion: '<path d="M10 30h12V18H10z" fill="none"/><path d="M26 34h12V14H26z" fill="none"/><path d="M22 24h4" fill="none"/>',
+  pricing: '<path d="M13 14h14l8 8-14 14-8-8z" fill="none"/><path d="M21 21h6" fill="none"/><path d="M24 18v6" fill="none"/>',
+  marketing: '<path d="M12 18l16-6v24l-16-6z" fill="none"/><path d="M28 18l8-4v20l-8-4" fill="none"/><path d="M10 22h4" fill="none"/>',
+  hiring: '<circle cx="18" cy="18" r="5" fill="none"/><path d="M10 34c2-6 6-9 12-9s10 3 12 9" fill="none"/><path d="M33 17h8" fill="none"/><path d="M37 13v8" fill="none"/>',
+  governance: '<path d="M24 10l14 6v8c0 9-5 14-14 18-9-4-14-9-14-18v-8z" fill="none"/><path d="M18 24h12" fill="none"/><path d="M18 30h8" fill="none"/>',
+};
+
+const nav = {
+  system: isEn ? "SYSTEM" : "SISTEMA",
+  applications: isEn ? "APPLICATIONS" : "APLICACIONES",
+  demo: "DEMO",
+};
+
+const hero = {
+  label: isEn ? "Decision Infrastructure" : "Infraestructura decisional",
+  title: isEn ? "Aurora tests decisions before you execute them" : "Aurora prueba decisiones antes de ejecutarlas",
+  subtitle: isEn
+    ? "Decision infrastructure that integrates data, simulates scenarios and executes under thresholds you control."
+    : "Infraestructura decisional que integra datos, simula escenarios y ejecuta bajo umbrales que controlas.",
+  primary: isEn ? "Simulate my decision" : "Simular mi decisión",
+  secondary: isEn ? "See how it works" : "Ver cómo funciona",
+  scroll: isEn ? "Scroll to continue" : "Scroll para continuar",
+  simulatorTitle: isEn ? "Live simulator" : "Simulador en vivo",
+  simulatorBody: isEn
+    ? "Move three assumptions and see how margin, cash and breakeven react before you commit the decision."
+    : "Mueve tres supuestos y ve cómo reaccionan margen, caja y breakeven antes de comprometer la decisión.",
+  calculate: isEn ? "Calculate" : "Calcular",
+  note: isEn
+    ? "Illustrative scenario based on pricing, volume and fixed-cost stress."
+    : "Escenario ilustrativo basado en pricing, volumen y presión de costo fijo.",
+};
+
+const simulatorLabels = {
+  price: isEn ? "My price increases" : "Mi precio sube",
+  volume: isEn ? "My volume decreases" : "Mi volumen baja",
+  fixed: isEn ? "My fixed cost increases" : "Mi costo fijo sube",
+  margin: isEn ? "Margin" : "Margen",
+  cash: isEn ? "Cash" : "Caja",
+  breakeven: isEn ? "Breakeven" : "Punto de equilibrio",
+};
+
+const systemSection = {
+  label: nav.system,
+  title: isEn ? "Five modules, one decision system" : "Cinco módulos, un solo sistema decisional",
+  intro: isEn
+    ? "Execution under thresholds is a capability of the system, not a separate product."
+    : "La ejecución bajo umbrales es una capacidad del sistema, no un producto aparte.",
+};
+
+const applicationSection = {
+  label: nav.applications,
+  title: isEn ? "Six operating reads of the same core" : "Seis lecturas operativas del mismo núcleo",
+  intro: isEn
+    ? "Aurora manifests as investment, cash, pricing, expansion, marketing and hiring decisions."
+    : "Aurora se manifiesta en decisiones de inversión, caja, pricing, expansión, marketing y contratación.",
+};
+
+const operatingSection = {
+  label: isEn ? "OPERATING MODE" : "MODO OPERATIVO",
+  title: isEn ? "Execution under defined thresholds" : "Ejecución bajo umbrales definidos",
+  body: isEn
+    ? "Define your risk thresholds. Aurora executes safe decisions automatically. Critical ones, to you."
+    : "Define tus umbrales de riesgo. Aurora ejecuta automáticamente las decisiones seguras. Las críticas, para ti.",
+  input: isEn ? "Input" : "Input",
+  evaluates: isEn ? "Aurora evaluates" : "Aurora evalúa",
+  threshold: isEn ? "Is risk < threshold?" : "¿Riesgo < umbral?",
+  execute: isEn ? "Execute automatically" : "Ejecuta automáticamente",
+  approval: isEn ? "Requires approval" : "Requiere aprobación",
+};
+
+const governanceSection = {
+  label: isEn ? "GOVERNANCE" : "GOBERNANZA",
+  title: isEn ? "Full governance native" : "Full governance nativo",
+  intro: isEn
+    ? "Decision ID, hash, ledger and audit trail are visible because governance is part of the product, not an afterthought."
+    : "Decision ID, hash, ledger y audit trail son visibles porque la gobernanza es parte del producto, no un agregado tardío.",
+  badges: isEn
+    ? ["decision_id", "decision_hash", "Ledger", "Audit trail", "Compliance ready"]
+    : ["decision_id", "decision_hash", "Ledger", "Audit trail", "Compliance ready"],
+  status: isEn ? "Status" : "Estado",
+  actor: isEn ? "Actor" : "Actor",
+  action: isEn ? "Action" : "Acción",
+  hash: isEn ? "Hash" : "Hash",
+};
+
+const ctaSection = {
+  label: isEn ? "DEMO" : "DEMO",
+  title: isEn ? "Take your next decision into simulation" : "Lleva tu próxima decisión a simulación",
+  body: isEn
+    ? "Start with the live calculator or go straight to the interactive demo with the Aurora team."
+    : "Empieza con la calculadora en vivo o entra directo a la demo interactiva con el equipo Aurora.",
+  primary: isEn ? "Access interactive demo" : "Acceder a demo interactiva",
+  secondary: isEn ? "Talk to team" : "Hablar con equipo",
+};
+
+const footer = {
+  privacy: isEn ? "Privacy" : "Privacidad",
+  terms: isEn ? "Terms" : "Términos",
+  contact: isEn ? "Contact" : "Contacto",
+  copy: isEn
+    ? "© 2026 Aurora. Sovereign calculation for business decisions."
+    : "© 2026 Aurora. Cálculo soberano para decisiones empresariales.",
+};
+
+const modules = [
+  {
+    icon: "calculator",
+    name: { es: "Calculadora Estratégica", en: "Strategic Calculator" },
+    description: {
+      es: "Ve cómo interactúan todas las variables de tu negocio en simultáneo.",
+      en: "See how every business variable interacts at the same time.",
+    },
+    example: {
+      es: "Precio +20% → Volumen -15% → Margen +5% → Caja +X%",
+      en: "Price +20% → Volume -15% → Margin +5% → Cash +X%",
+    },
+  },
+  {
+    icon: "futures",
+    name: { es: "Simulador de Futuros", en: "Future Simulator" },
+    description: {
+      es: "Prueba múltiples escenarios de una decisión antes de mover capital, equipo o timing.",
+      en: "Test multiple future states before moving capital, team or timing.",
+    },
+    example: {
+      es: "Comparas 12 versiones de expansión con distintos costos, mercados y plazos.",
+      en: "Compare 12 expansion paths with different costs, markets and timing.",
+    },
+  },
+  {
+    icon: "fracture",
+    name: { es: "Detector de Grietas", en: "Fracture Detector" },
+    description: {
+      es: "Identifica exactamente dónde puede fallar un plan y cuál es su punto de ruptura.",
+      en: "Pinpoint where the plan breaks and which threshold becomes critical.",
+    },
+    example: {
+      es: "Tu plan quiebra si el volumen cae por debajo de 40% vs baseline.",
+      en: "Your plan breaks if volume falls below 40% versus baseline.",
+    },
+  },
+  {
+    icon: "cause",
+    name: { es: "Revelador de Causas", en: "Cause Revealer" },
+    description: {
+      es: "Detecta qué variable causa realmente el problema cuando todo parece moverse a la vez.",
+      en: "Detect the variable actually causing the problem when everything seems to move at once.",
+    },
+    example: {
+      es: "Ventas -18%. No es precio ni canal. Es temporada + competencia nueva.",
+      en: "Sales -18%. Not price, not channel. Seasonality + new competitor.",
+    },
+  },
+  {
+    icon: "memory",
+    name: { es: "Memoria Corporativa", en: "Corporate Memory" },
+    description: {
+      es: "Registra cada decisión con contexto, inputs, outputs y resultado real.",
+      en: "Record every decision with context, inputs, outputs and actual result.",
+    },
+    example: {
+      es: "Doce meses después sabés por qué cada decisión ganó o perdió.",
+      en: "Twelve months later you know exactly why each decision won or lost.",
+    },
+  },
+] as const;
+
+const applications = [
+  {
+    icon: "investment",
+    name: { es: "Evaluador de Inversiones", en: "Investment Validator" },
+    problem: {
+      es: "Evalúa si una inversión realmente retorna o solo compra tiempo.",
+      en: "Validate whether an investment returns value or only buys time.",
+    },
+    flow: {
+      es: "Inversión + timeline → ROI + break-even",
+      en: "Investment + timeline → ROI + breakeven",
+    },
+    example: {
+      es: "¿Una franquicia de US$80k es viable o se rompe antes del mes 18?",
+      en: "Is a US$100k franchise viable or broken before month 18?",
+    },
+  },
+  {
+    icon: "cash",
+    name: { es: "Detector de Fugas de Caja", en: "Cash Leak Detector" },
+    problem: {
+      es: "Identifica exactamente cuándo se acaba la caja si sigues operando igual.",
+      en: "Identify exactly when cash runs out if you keep operating the same way.",
+    },
+    flow: {
+      es: "Histórico gasto → Caja en X días",
+      en: "Spend history → Cash ends in X days",
+    },
+    example: {
+      es: "Aurora encuentra la fuga dominante sin culpar al síntoma equivocado.",
+      en: "Aurora finds the dominant leak instead of blaming the wrong symptom.",
+    },
+  },
+  {
+    icon: "expansion",
+    name: { es: "Validador de Expansiones", en: "Expansion Validator" },
+    problem: {
+      es: "Prueba si abrir una nueva unidad mejora el sistema o lo tensiona.",
+      en: "Test whether a new location improves the system or overloads it.",
+    },
+    flow: {
+      es: "Nueva sucursal → Viabilidad + escenarios",
+      en: "New location → Viability + scenarios",
+    },
+    example: {
+      es: "Compara demanda, alquiler y costo operativo antes de firmar.",
+      en: "Compare demand, rent and operating cost before you sign.",
+    },
+  },
+  {
+    icon: "pricing",
+    name: { es: "Decisor de Pricing", en: "Pricing Decision Engine" },
+    problem: {
+      es: "Simula impacto de cambios de precio en volumen, margen y caja.",
+      en: "Simulate price changes across volume, margin and cash.",
+    },
+    flow: {
+      es: "Precio actual + elasticidad → Precio óptimo + ROAS",
+      en: "Current price + elasticity → Optimal price + ROAS",
+    },
+    example: {
+      es: "Subes 12% y Aurora te dice si ganas margen o destruyes demanda.",
+      en: "Raise price 12% and Aurora shows whether you gain margin or destroy demand.",
+    },
+  },
+  {
+    icon: "marketing",
+    name: { es: "Decisor de Marketing", en: "Marketing Decision Engine" },
+    problem: {
+      es: "Valida si el gasto en marketing genera ROI real o ilusión de crecimiento.",
+      en: "Validate if marketing spend creates real ROI or only the illusion of growth.",
+    },
+    flow: {
+      es: "Gasto por canal → CAC + ROAS",
+      en: "Channel spend → CAC + ROAS",
+    },
+    example: {
+      es: "Compara performance por canal y prioriza el que sostiene caja.",
+      en: "Compare performance by channel and prioritize what actually sustains cash.",
+    },
+  },
+  {
+    icon: "hiring",
+    name: { es: "Decisor de Contratación", en: "Hiring Decision Engine" },
+    problem: {
+      es: "Calcula si contratar mejora capacidad o solo agrega peso fijo.",
+      en: "Calculate whether a hire improves capacity or only adds fixed weight.",
+    },
+    flow: {
+      es: "Empleado + salario → Impacto en margen",
+      en: "Headcount + salary → Margin impact",
+    },
+    example: {
+      es: "Aurora marca el punto exacto donde la contratación pasa a ser palanca.",
+      en: "Aurora marks the exact point where the hire becomes a lever.",
+    },
+  },
+] as const;
+
+const governanceRows = [
+  {
+    id: "DEC-2048",
+    actor: { es: "Aurora + CFO", en: "Aurora + CFO" },
+    action: { es: "Pricing update", en: "Pricing update" },
+    status: { es: "Aprobada", en: "Approved" },
+    hash: "8fa3c2d9",
+  },
+  {
+    id: "DEC-2051",
+    actor: { es: "Aurora + COO", en: "Aurora + COO" },
+    action: { es: "Expansion screening", en: "Expansion screening" },
+    status: { es: "Requiere aprobación", en: "Needs approval" },
+    hash: "1cd77ab4",
+  },
+  {
+    id: "DEC-2058",
+    actor: { es: "Aurora + Growth", en: "Aurora + Growth" },
+    action: { es: "Marketing reallocation", en: "Marketing reallocation" },
+    status: { es: "Ejecución segura", en: "Safe execution" },
+    hash: "53ee0f18",
+  },
+] as const;
+---
+
+<div class="aurora-page" data-lang={locale}>
+  <header class="home-header" id="top">
+    <div class="home-header__inner">
+      <a href={isEn ? "/en/" : "/"} class="home-brand" aria-label="Aurora home">
+        <svg class="home-brand__mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M16 32a16 16 0 0 1 32 0" fill="none" pathLength="1"></path>
+          <path d="M48 32a16 16 0 0 1-16 16" fill="none" pathLength="1"></path>
+        </svg>
+        <span class="home-brand__word">AURORA</span>
+      </a>
+
+      <nav class="home-nav" aria-label="Primary navigation">
+        <a href="#system">{nav.system}</a>
+        <a href="#applications">{nav.applications}</a>
+        <a href="/demo">{nav.demo}</a>
+      </nav>
+
+      <div class="lang-switch" aria-label="Language switcher">
+        <a href="/" class:list={{ active: !isEn }} aria-current={!isEn ? "page" : undefined}>🇪🇸 ES</a>
+        <a href="/en/" class:list={{ active: isEn }} aria-current={isEn ? "page" : undefined}>🇬🇧 EN</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero-shell" id="hero">
+      <canvas id="network-canvas" class="hero-shell__canvas" aria-hidden="true"></canvas>
+      <div class="hero-shell__veil hero-shell__veil--left" aria-hidden="true"></div>
+      <div class="hero-shell__veil hero-shell__veil--right" aria-hidden="true"></div>
+
+      <div class="section-frame hero-grid">
+        <div class="hero-copy">
+          <p class="section-label hero-scroll" data-hero-scroll>
+            <span></span>
+            {hero.scroll}
+          </p>
+          <p class="hero-kicker">{hero.label}</p>
+          <h1 class="hero-headline" aria-label={hero.title}>
+            {pick(hero.title).split(" ").map((word) => <span data-hero-word>{word}</span>)}
+          </h1>
+          <p class="hero-subtitle" data-reveal>{hero.subtitle}</p>
+          <div class="hero-actions" data-reveal>
+            <a href="#simulator" class="cta cta--primary">{hero.primary}</a>
+            <a href="#system" class="cta cta--secondary">{hero.secondary}</a>
+          </div>
+        </div>
+
+        <aside class="simulator-card" id="simulator" data-reveal>
+          <p class="section-label">{hero.simulatorTitle}</p>
+          <h2>{isEn ? "Move the decision before it hits the business" : "Mueve la decisión antes de que golpee al negocio"}</h2>
+          <p class="simulator-card__intro">{hero.simulatorBody}</p>
+
+          <div class="simulator-controls">
+            <label class="sim-field">
+              <span>{simulatorLabels.price}</span>
+              <div class="sim-field__row">
+                <input type="range" min="0" max="30" value="12" step="1" data-sim-input="price" />
+                <strong data-sim-readout="price">12%</strong>
+              </div>
+            </label>
+            <label class="sim-field">
+              <span>{simulatorLabels.volume}</span>
+              <div class="sim-field__row">
+                <input type="range" min="0" max="35" value="10" step="1" data-sim-input="volume" />
+                <strong data-sim-readout="volume">10%</strong>
+              </div>
+            </label>
+            <label class="sim-field">
+              <span>{simulatorLabels.fixed}</span>
+              <div class="sim-field__row">
+                <input type="range" min="0" max="25" value="6" step="1" data-sim-input="fixed" />
+                <strong data-sim-readout="fixed">6%</strong>
+              </div>
+            </label>
+          </div>
+
+          <button type="button" class="simulator-button" data-sim-trigger>{hero.calculate}</button>
+
+          <div class="simulator-results" data-sim-results>
+            <article>
+              <span>{simulatorLabels.margin}</span>
+              <strong data-output="margin" data-value="0">0.0%</strong>
+            </article>
+            <article>
+              <span>{simulatorLabels.cash}</span>
+              <strong data-output="cash" data-value="0">0</strong>
+            </article>
+            <article>
+              <span>{simulatorLabels.breakeven}</span>
+              <strong data-output="breakeven" data-value="0">$0</strong>
+            </article>
+          </div>
+
+          <p class="simulator-hint" data-sim-hint>{hero.note}</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="aurora-section" id="system">
+      <div class="section-frame" data-reveal-group>
+        <p class="section-label" data-reveal>{systemSection.label}</p>
+        <h2 data-reveal>{systemSection.title}</h2>
+        <p class="section-intro" data-reveal>{systemSection.intro}</p>
+
+        <div class="card-grid card-grid--modules">
+          {modules.map((item) => (
+            <article class="info-card" data-reveal tabindex="0">
+              <div class="info-card__icon" aria-hidden="true">
+                <svg viewBox="0 0 48 48" set:html={icons[item.icon]}></svg>
+              </div>
+              <p class="info-card__title">{pick(item.name)}</p>
+              <p>{pick(item.description)}</p>
+              <div class="info-card__detail">
+                <p>{pick(item.example)}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="aurora-section aurora-section--tinted" id="applications">
+      <div class="section-frame" data-reveal-group>
+        <p class="section-label" data-reveal>{applicationSection.label}</p>
+        <h2 data-reveal>{applicationSection.title}</h2>
+        <p class="section-intro" data-reveal>{applicationSection.intro}</p>
+
+        <div class="card-grid card-grid--applications">
+          {applications.map((item) => (
+            <article class="application-card" data-reveal>
+              <div class="application-card__top">
+                <div class="info-card__icon info-card__icon--small" aria-hidden="true">
+                  <svg viewBox="0 0 48 48" set:html={icons[item.icon]}></svg>
+                </div>
+                <p class="info-card__title">{pick(item.name)}</p>
+              </div>
+              <p>{pick(item.problem)}</p>
+              <p class="application-card__flow">{pick(item.flow)}</p>
+              <p class="application-card__example">{pick(item.example)}</p>
+              <span class="application-card__cta">{isEn ? "Explore" : "Explora"}</span>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="aurora-section aurora-section--operating" id="operating">
+      <div class="section-frame operating-layout" data-reveal-group>
+        <div>
+          <p class="section-label" data-reveal>{operatingSection.label}</p>
+          <h2 data-reveal>{operatingSection.title}</h2>
+          <p class="section-intro" data-reveal>{operatingSection.body}</p>
+        </div>
+
+        <div class="threshold-diagram" data-reveal>
+          <div class="threshold-step">{operatingSection.input}</div>
+          <div class="threshold-arrow">→</div>
+          <div class="threshold-step">{operatingSection.evaluates}</div>
+          <div class="threshold-arrow">→</div>
+          <div class="threshold-step threshold-step--decision">{operatingSection.threshold}</div>
+          <div class="threshold-branches">
+            <div>
+              <span>YES</span>
+              <strong>{operatingSection.execute}</strong>
+            </div>
+            <div>
+              <span>NO</span>
+              <strong>{operatingSection.approval}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="aurora-section aurora-section--governance" id="governance">
+      <div class="section-frame" data-reveal-group>
+        <p class="section-label" data-reveal>{governanceSection.label}</p>
+        <h2 data-reveal>{governanceSection.title}</h2>
+        <p class="section-intro" data-reveal>{governanceSection.intro}</p>
+
+        <div class="governance-badges" data-reveal>
+          {governanceSection.badges.map((badge) => <span>{badge}</span>)}
+        </div>
+
+        <div class="governance-panel" data-reveal>
+          <div class="governance-panel__header">
+            <div class="info-card__icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48" set:html={icons.governance}></svg>
+            </div>
+            <div>
+              <p class="info-card__title">{isEn ? "Audit-ready decision log" : "Decision log listo para auditoría"}</p>
+              <p>{isEn ? "Illustrative ledger with decision_id, actor, action, status and hash." : "Ledger ilustrativo con decision_id, actor, acción, estado y hash."}</p>
+            </div>
+          </div>
+
+          <div class="governance-table">
+            <div class="governance-table__head">
+              <span>decision_id</span>
+              <span>{governanceSection.actor}</span>
+              <span>{governanceSection.action}</span>
+              <span>{governanceSection.status}</span>
+              <span>{governanceSection.hash}</span>
+            </div>
+            {governanceRows.map((row) => (
+              <div class="governance-table__row">
+                <span data-label="decision_id">{row.id}</span>
+                <span data-label={governanceSection.actor}>{pick(row.actor)}</span>
+                <span data-label={governanceSection.action}>{pick(row.action)}</span>
+                <span data-label={governanceSection.status}>{pick(row.status)}</span>
+                <span data-label={governanceSection.hash}>{row.hash}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="aurora-section aurora-section--cta" id="demo-cta">
+      <div class="section-frame final-cta" data-reveal-group>
+        <p class="section-label" data-reveal>{ctaSection.label}</p>
+        <h2 data-reveal>{ctaSection.title}</h2>
+        <p class="section-intro" data-reveal>{ctaSection.body}</p>
+        <div class="hero-actions final-cta__actions" data-reveal>
+          <a href="/demo" class="cta cta--primary">{ctaSection.primary}</a>
+          <a href="mailto:hola@aurora.io?subject=Aurora%20Demo" class="cta cta--secondary">{ctaSection.secondary}</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="home-footer" id="contact">
+    <div class="section-frame home-footer__inner">
+      <div class="home-footer__links">
+        <a href="#system">{nav.system}</a>
+        <a href="#applications">{nav.applications}</a>
+        <a href="/demo">{nav.demo}</a>
+        <a href="#contact">{footer.contact}</a>
+        <a href="#">{footer.privacy}</a>
+        <a href="#">{footer.terms}</a>
+      </div>
+      <p class="home-footer__copy">{footer.copy}</p>
+    </div>
+  </footer>
+</div>
+
+<style is:global>
+  @import url("https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700;800&display=swap");
+
+  :root {
+    --aurora-bg: #0b0b0c;
+    --aurora-text: #f7f7f5;
+    --aurora-muted: #bfc2c7;
+    --aurora-blue: #2e5bff;
+    --aurora-green: #00c389;
+    --aurora-red: #ff3d3d;
+    --aurora-line: rgba(191, 194, 199, 0.16);
+    --aurora-card: rgba(247, 247, 245, 0.05);
+    --aurora-card-strong: rgba(247, 247, 245, 0.08);
+    --aurora-shadow: 0 28px 88px rgba(0, 0, 0, 0.34);
+    --aurora-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --aurora-container: min(1180px, calc(100vw - 48px));
+    --aurora-space: clamp(4.5rem, 10vw, 7.5rem);
+  }
+
+  html {
+    background: var(--aurora-bg);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    padding-top: 0;
+    background:
+      radial-gradient(circle at 14% 14%, rgba(46, 91, 255, 0.15), transparent 24%),
+      radial-gradient(circle at 86% 18%, rgba(0, 195, 137, 0.1), transparent 20%),
+      linear-gradient(180deg, #050507 0%, #0b0b0c 26%, #0b0f17 100%);
+    color: var(--aurora-text);
+    font-family: "DM Sans", sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  main {
+    display: block;
+  }
+
+  .aurora-page {
+    min-height: 100vh;
+  }
+
+  .section-frame {
+    width: var(--aurora-container);
+    margin: 0 auto;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h1,
+  h2 {
+    letter-spacing: -0.02em;
+  }
+
+  h1 {
+    font-size: clamp(3.6rem, 8vw, 6.3rem);
+    line-height: 0.94;
+  }
+
+  h2 {
+    font-size: clamp(2rem, 4.8vw, 4rem);
+    line-height: 0.98;
+    max-width: 13ch;
+  }
+
+  p {
+    font-size: clamp(1rem, 1.15vw, 1.08rem);
+    color: rgba(247, 247, 245, 0.78);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    font-family: "DM Mono", monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.68);
+  }
+
+  .section-label::before {
+    content: "";
+    width: 2.6rem;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(247, 247, 245, 0.22), rgba(46, 91, 255, 0.8));
+  }
+
+  .home-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 40;
+    padding: 1.1rem 0;
+    transition: background-color 240ms ease, border-color 240ms ease, backdrop-filter 240ms ease;
+  }
+
+  .home-header.is-scrolled {
+    background: rgba(8, 8, 10, 0.78);
+    border-bottom: 1px solid rgba(46, 91, 255, 0.14);
+    backdrop-filter: blur(14px);
+  }
+
+  .home-header__inner {
+    width: var(--aurora-container);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .home-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    text-decoration: none;
+  }
+
+  .home-brand__mark {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .home-brand__mark path {
+    stroke: var(--aurora-text);
+    stroke-width: 6;
+    stroke-linecap: square;
+  }
+
+  .home-brand__word,
+  .home-nav a,
+  .lang-switch a,
+  .hero-kicker,
+  .info-card__title,
+  .application-card__cta,
+  .governance-badges span,
+  .governance-table__head,
+  .governance-table__row,
+  .home-footer__links {
+    font-family: "DM Mono", monospace;
+  }
+
+  .home-brand__word {
+    font-size: 0.9rem;
+    letter-spacing: 0.24em;
+  }
+
+  .home-nav {
+    display: inline-flex;
+    justify-content: center;
+    gap: 1.25rem;
+  }
+
+  .home-nav a,
+  .lang-switch a {
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.72);
+  }
+
+  .home-nav a:hover,
+  .home-nav a:focus-visible,
+  .lang-switch a:hover,
+  .lang-switch a:focus-visible,
+  .lang-switch a.active {
+    color: var(--aurora-text);
+  }
+
+  .lang-switch {
+    display: inline-flex;
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .hero-shell {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    align-items: center;
+    overflow: clip;
+    padding: 8rem 0 3rem;
+  }
+
+  .hero-shell__canvas,
+  .hero-shell__veil {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .hero-shell__veil {
+    filter: blur(90px);
+    opacity: 0.45;
+  }
+
+  .hero-shell__veil--left {
+    background: radial-gradient(circle, rgba(46, 91, 255, 0.2) 0%, transparent 62%);
+    transform: translate(-18%, -20%);
+  }
+
+  .hero-shell__veil--right {
+    background: radial-gradient(circle, rgba(0, 195, 137, 0.12) 0%, transparent 58%);
+    transform: translate(40%, 18%);
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+    gap: clamp(1.5rem, 3vw, 3rem);
+    align-items: center;
+  }
+
+  .hero-copy {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .hero-scroll span {
+    display: inline-block;
+    width: 0.8rem;
+    height: 0.8rem;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+    transform: rotate(45deg) translateY(-0.1rem);
+    animation: auroraScroll 1.6s ease-in-out infinite;
+  }
+
+  .hero-kicker {
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.8);
+  }
+
+  .hero-headline {
+    max-width: 11ch;
+  }
+
+  .hero-headline span {
+    display: inline-block;
+    margin-right: 0.24em;
+  }
+
+  .hero-subtitle {
+    max-width: 38rem;
+    font-size: clamp(1.1rem, 1.7vw, 1.32rem);
+    color: rgba(247, 247, 245, 0.88);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.35rem;
+    padding: 0.9rem 1.35rem;
+    border-radius: 999px;
+    text-decoration: none;
+    font-weight: 700;
+    transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+  }
+
+  .cta--primary {
+    background: var(--aurora-blue);
+    color: var(--aurora-text);
+    box-shadow: 0 18px 40px rgba(46, 91, 255, 0.32);
+  }
+
+  .cta--secondary {
+    border: 1px solid rgba(247, 247, 245, 0.16);
+    background: rgba(247, 247, 245, 0.03);
+  }
+
+  .cta:hover,
+  .cta:focus-visible {
+    transform: translateY(-2px);
+  }
+
+  .simulator-card,
+  .info-card,
+  .application-card,
+  .governance-panel,
+  .threshold-diagram {
+    border: 1px solid rgba(247, 247, 245, 0.08);
+    border-radius: 1.4rem;
+    background: linear-gradient(180deg, rgba(247, 247, 245, 0.07), rgba(247, 247, 245, 0.03));
+    box-shadow: var(--aurora-shadow);
+  }
+
+  .simulator-card {
+    padding: 1.5rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .simulator-card h2 {
+    max-width: 10ch;
+    font-size: clamp(1.55rem, 2.3vw, 2.35rem);
+  }
+
+  .simulator-controls {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sim-field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .sim-field span {
+    color: rgba(247, 247, 245, 0.84);
+  }
+
+  .sim-field__row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.9rem;
+    align-items: center;
+  }
+
+  .sim-field input {
+    width: 100%;
+    accent-color: var(--aurora-blue);
+  }
+
+  .sim-field strong,
+  .simulator-results strong {
+    font-size: 1.25rem;
+    color: var(--aurora-text);
+  }
+
+  .simulator-button {
+    appearance: none;
+    border: 0;
+    border-radius: 999px;
+    min-height: 3rem;
+    padding: 0.8rem 1.1rem;
+    background: rgba(247, 247, 245, 0.08);
+    color: var(--aurora-text);
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .simulator-results {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .simulator-results article {
+    padding: 0.95rem;
+    border-radius: 1rem;
+    background: rgba(247, 247, 245, 0.04);
+    border: 1px solid rgba(247, 247, 245, 0.06);
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .simulator-results span {
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.6);
+  }
+
+  .simulator-hint {
+    color: rgba(247, 247, 245, 0.64);
+  }
+
+  .aurora-section {
+    padding: var(--aurora-space) 0;
+    border-top: 1px solid rgba(247, 247, 245, 0.06);
+  }
+
+  .aurora-section--tinted {
+    background: linear-gradient(180deg, rgba(46, 91, 255, 0.07), rgba(46, 91, 255, 0.015) 55%, transparent 100%);
+  }
+
+  .aurora-section--operating {
+    background: linear-gradient(180deg, rgba(0, 195, 137, 0.06), rgba(0, 195, 137, 0.015) 55%, transparent 100%);
+  }
+
+  .aurora-section--governance {
+    background: linear-gradient(180deg, rgba(247, 247, 245, 0.04), rgba(247, 247, 245, 0.01) 60%, transparent 100%);
+  }
+
+  .aurora-section--cta {
+    background: radial-gradient(circle at 50% 20%, rgba(46, 91, 255, 0.1), transparent 28%);
+  }
+
+  .section-intro {
+    max-width: 46rem;
+    margin-top: 1rem;
+    color: rgba(247, 247, 245, 0.86);
+  }
+
+  .card-grid {
+    display: grid;
+    gap: 1.2rem;
+    margin-top: 2.2rem;
+  }
+
+  .card-grid--modules {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .card-grid--applications {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .info-card,
+  .application-card {
+    padding: 1.35rem;
+    display: grid;
+    gap: 0.95rem;
+    transition: transform 220ms var(--aurora-ease), border-color 220ms ease, box-shadow 220ms ease;
+  }
+
+  .info-card:hover,
+  .info-card:focus-visible,
+  .application-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(46, 91, 255, 0.34);
+  }
+
+  .info-card__icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.95rem;
+    display: grid;
+    place-items: center;
+    background: rgba(46, 91, 255, 0.1);
+    color: var(--aurora-text);
+  }
+
+  .info-card__icon--small {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.8rem;
+  }
+
+  .info-card__icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .info-card__title {
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.92);
+  }
+
+  .info-card__detail,
+  .application-card__cta {
+    color: rgba(247, 247, 245, 0.64);
+  }
+
+  .application-card__top {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .application-card__flow {
+    color: var(--aurora-green);
+    font-weight: 700;
+  }
+
+  .application-card__example {
+    color: rgba(247, 247, 245, 0.88);
+  }
+
+  .application-card__cta {
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-size: 0.82rem;
+  }
+
+  .operating-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 1.5rem;
+    align-items: center;
+  }
+
+  .threshold-diagram {
+    padding: 1.35rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .threshold-step {
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: rgba(247, 247, 245, 0.04);
+    text-align: center;
+    color: rgba(247, 247, 245, 0.88);
+  }
+
+  .threshold-step--decision {
+    border: 1px solid rgba(46, 91, 255, 0.38);
+    background: rgba(46, 91, 255, 0.08);
+  }
+
+  .threshold-arrow {
+    text-align: center;
+    color: rgba(247, 247, 245, 0.54);
+  }
+
+  .threshold-branches {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+  }
+
+  .threshold-branches div {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: rgba(247, 247, 245, 0.04);
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .threshold-branches span {
+    font-family: "DM Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
+    color: rgba(247, 247, 245, 0.6);
+  }
+
+  .governance-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .governance-badges span {
+    padding: 0.72rem 0.9rem;
+    border-radius: 999px;
+    border: 1px solid rgba(247, 247, 245, 0.08);
+    background: rgba(247, 247, 245, 0.04);
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .governance-panel {
+    margin-top: 1.4rem;
+    padding: 1.35rem;
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .governance-panel__header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .governance-table {
+    border: 1px solid rgba(247, 247, 245, 0.06);
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .governance-table__head,
+  .governance-table__row {
+    display: grid;
+    grid-template-columns: 1.1fr 1.2fr 1.4fr 1.1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.95rem 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.08em;
+  }
+
+  .governance-table__head {
+    background: rgba(247, 247, 245, 0.05);
+    text-transform: uppercase;
+    color: rgba(247, 247, 245, 0.56);
+  }
+
+  .governance-table__row {
+    border-top: 1px solid rgba(247, 247, 245, 0.05);
+    color: rgba(247, 247, 245, 0.86);
+  }
+
+  .final-cta {
+    text-align: center;
+  }
+
+  .final-cta h2,
+  .final-cta .section-intro {
+    margin-inline: auto;
+  }
+
+  .final-cta__actions {
+    justify-content: center;
+    margin-top: 1.6rem;
+  }
+
+  .home-footer {
+    border-top: 1px solid rgba(247, 247, 245, 0.06);
+    padding: 2rem 0 3rem;
+    background: rgba(5, 5, 7, 0.72);
+  }
+
+  .home-footer__inner {
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+  }
+
+  .home-footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .home-footer__links a {
+    text-decoration: none;
+    color: rgba(247, 247, 245, 0.68);
+  }
+
+  .home-footer__copy {
+    color: rgba(247, 247, 245, 0.54);
+    text-align: center;
+  }
+
+  [data-reveal] {
+    will-change: transform, opacity;
+  }
+
+  @keyframes auroraScroll {
+    0%,
+    100% {
+      transform: rotate(45deg) translateY(-0.1rem);
+      opacity: 0.55;
+    }
+    50% {
+      transform: rotate(45deg) translate(0.18rem, 0.22rem);
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 980px) {
+    .card-grid--modules,
+    .card-grid--applications {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-grid,
+    .operating-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    :root {
+      --aurora-container: min(100vw - 28px, 100% - 28px);
+    }
+
+    .home-header__inner {
+      grid-template-columns: 1fr;
+      justify-items: start;
+    }
+
+    .home-nav,
+    .lang-switch {
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .hero-shell {
+      padding-top: 9rem;
+    }
+
+    .hero-actions,
+    .final-cta__actions {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .cta {
+      width: 100%;
+    }
+
+    .simulator-results,
+    .card-grid--modules,
+    .card-grid--applications,
+    .threshold-branches,
+    .governance-table__head,
+    .governance-table__row {
+      grid-template-columns: 1fr;
+    }
+
+    .governance-table__head {
+      display: none;
+    }
+
+    .governance-table__row span {
+      display: grid;
+      gap: 0.2rem;
+    }
+
+    .governance-table__row span::before {
+      content: attr(data-label);
+      font-family: "DM Mono", monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(247, 247, 245, 0.5);
+    }
+  }
+</style>
+
+<script>
+  const root = document.querySelector(".aurora-page");
+  const lang = root?.dataset.lang === "en" ? "en" : "es";
+  const locale = lang === "en" ? "en-US" : "es-AR";
+  const currency = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+  const decimals = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const integer = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cleanup = [];
+
+  const header = document.querySelector(".home-header");
+  const syncHeader = () => {
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 24);
+  };
+
+  syncHeader();
+  window.addEventListener("scroll", syncHeader, { passive: true });
+
+  const simInputs = {
+    price: root?.querySelector('[data-sim-input="price"]'),
+    volume: root?.querySelector('[data-sim-input="volume"]'),
+    fixed: root?.querySelector('[data-sim-input="fixed"]'),
+  };
+
+  const readouts = {
+    price: root?.querySelector('[data-sim-readout="price"]'),
+    volume: root?.querySelector('[data-sim-readout="volume"]'),
+    fixed: root?.querySelector('[data-sim-readout="fixed"]'),
+  };
+
+  const outputs = {
+    margin: root?.querySelector('[data-output="margin"]'),
+    cash: root?.querySelector('[data-output="cash"]'),
+    breakeven: root?.querySelector('[data-output="breakeven"]'),
+  };
+
+  const hint = root?.querySelector('[data-sim-hint]');
+  const trigger = root?.querySelector('[data-sim-trigger]');
+
+  const animateValue = (element, nextValue, formatter) => {
+    if (!element) return;
+    const startValue = Number(element.dataset.value || 0);
+    const start = performance.now();
+    const duration = 480;
+
+    const frame = (now) => {
+      const progress = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = startValue + (nextValue - startValue) * eased;
+      element.textContent = formatter(current);
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        element.dataset.value = String(nextValue);
+      }
+    };
+
+    requestAnimationFrame(frame);
+  };
+
+  const updateSimulator = () => {
+    if (!simInputs.price || !simInputs.volume || !simInputs.fixed) return;
+
+    const price = Number(simInputs.price.value);
+    const volume = Number(simInputs.volume.value);
+    const fixed = Number(simInputs.fixed.value);
+
+    readouts.price.textContent = `${price}%`;
+    readouts.volume.textContent = `${volume}%`;
+    readouts.fixed.textContent = `${fixed}%`;
+
+    const baseRevenue = 120000;
+    const variableCostRate = 0.53;
+    const baseFixedCost = 26000;
+
+    const newRevenue = baseRevenue * (1 + price / 100) * (1 - volume / 100);
+    const newVariableCost = baseRevenue * (1 - volume / 100) * variableCostRate;
+    const newFixedCost = baseFixedCost * (1 + fixed / 100);
+    const contribution = Math.max(0.18, (newRevenue - newVariableCost) / Math.max(newRevenue, 1));
+    const net = newRevenue - newVariableCost - newFixedCost;
+    const margin = (net / Math.max(newRevenue, 1)) * 100;
+    const cashDays = Math.max(18, Math.min(240, 112 + net / 850 - volume * 1.4 - fixed * 1.15 + price * 0.9));
+    const breakeven = newFixedCost / contribution;
+
+    animateValue(outputs.margin, margin, (value) => `${decimals.format(value)}%`);
+    animateValue(outputs.cash, cashDays, (value) => `${integer.format(Math.round(value))} ${lang === "en" ? "days" : "días"}`);
+    animateValue(outputs.breakeven, breakeven, (value) => currency.format(value));
+
+    if (hint) {
+      if (margin >= 22) {
+        hint.textContent =
+          lang === "en"
+            ? "The scenario holds: margin expands, cash extends and the move stays inside a safe threshold."
+            : "El escenario sostiene: el margen expande, la caja se alarga y el movimiento queda dentro de un umbral seguro.";
+      } else if (margin >= 12) {
+        hint.textContent =
+          lang === "en"
+            ? "The move is viable, but only if volume damage stays controlled and fixed cost pressure does not widen."
+            : "El movimiento es viable, pero solo si el daño en volumen se mantiene controlado y la presión de costo fijo no se amplía.";
+      } else {
+        hint.textContent =
+          lang === "en"
+            ? "Threshold breached: Aurora would ask for approval before executing this version of the decision."
+            : "Umbral roto: Aurora pediría aprobación antes de ejecutar esta versión de la decisión.";
+      }
+    }
+  };
+
+  Object.values(simInputs).forEach((input) => input?.addEventListener("input", updateSimulator));
+  trigger?.addEventListener("click", updateSimulator);
+  updateSimulator();
+
+  const bootVisuals = async () => {
+    try {
+      const [{ default: gsap }, { ScrollTrigger }, THREE] = await Promise.all([
+        import("gsap"),
+        import("gsap/ScrollTrigger"),
+        import("three"),
+      ]);
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      if (!prefersReducedMotion) {
+        const words = Array.from(root.querySelectorAll("[data-hero-word]"));
+        gsap.from(words, {
+          opacity: 0,
+          yPercent: 110,
+          duration: 0.72,
+          stagger: 0.06,
+          ease: "power3.out",
+        });
+
+        gsap.utils.toArray(root.querySelectorAll("[data-reveal-group]")).forEach((group) => {
+          const items = group.querySelectorAll("[data-reveal]");
+          if (!items.length) return;
+          gsap.from(items, {
+            opacity: 0,
+            y: 28,
+            duration: 0.78,
+            stagger: 0.08,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: group,
+              start: "top 80%",
+              toggleActions: "play none none reverse",
+            },
+          });
+        });
+      }
+
+      const canvas = root.querySelector("#network-canvas");
+      if (!canvas || prefersReducedMotion) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 12;
+
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      const nodeCount = 22;
+      const basePositions = [];
+      const lineSegments = [];
+
+      for (let index = 0; index < nodeCount; index += 1) {
+        const angle = (index / nodeCount) * Math.PI * 2;
+        const radius = 3.5 + Math.sin(index * 0.7) * 1.05 + Math.random() * 0.4;
+        basePositions.push(
+          Math.cos(angle) * radius + (Math.random() - 0.5) * 0.6,
+          Math.sin(index * 0.45) * 1.7 + (Math.random() - 0.5) * 1.4,
+          Math.sin(angle) * radius * 0.72
+        );
+      }
+
+      const livePoints = new Float32Array(basePositions.map((value) => value * 0.3));
+      const pointGeometry = new THREE.BufferGeometry();
+      pointGeometry.setAttribute("position", new THREE.BufferAttribute(livePoints, 3));
+      const pointMaterial = new THREE.PointsMaterial({
+        color: 0xbfc2c7,
+        size: 0.14,
+        transparent: true,
+        opacity: 0.2,
+      });
+
+      for (let index = 0; index < nodeCount; index += 1) {
+        const current = new THREE.Vector3(
+          basePositions[index * 3],
+          basePositions[index * 3 + 1],
+          basePositions[index * 3 + 2]
+        );
+        const distances = [];
+        for (let compareIndex = 0; compareIndex < nodeCount; compareIndex += 1) {
+          if (compareIndex === index) continue;
+          const compare = new THREE.Vector3(
+            basePositions[compareIndex * 3],
+            basePositions[compareIndex * 3 + 1],
+            basePositions[compareIndex * 3 + 2]
+          );
+          distances.push({ compareIndex, distance: current.distanceTo(compare) });
+        }
+        distances
+          .sort((left, right) => left.distance - right.distance)
+          .slice(0, 2)
+          .forEach(({ compareIndex }) => {
+            if (compareIndex < index) return;
+            lineSegments.push(
+              basePositions[index * 3],
+              basePositions[index * 3 + 1],
+              basePositions[index * 3 + 2],
+              basePositions[compareIndex * 3],
+              basePositions[compareIndex * 3 + 1],
+              basePositions[compareIndex * 3 + 2]
+            );
+          });
+      }
+
+      const liveLines = new Float32Array(lineSegments.map((value) => value * 0.3));
+      const lineGeometry = new THREE.BufferGeometry();
+      lineGeometry.setAttribute("position", new THREE.BufferAttribute(liveLines, 3));
+      const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbfc2c7, transparent: true, opacity: 0.08 });
+
+      const points = new THREE.Points(pointGeometry, pointMaterial);
+      const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
+      group.add(lines);
+      group.add(points);
+
+      const state = { progress: 0.22, mix: 0 };
+      const gray = new THREE.Color(0xbfc2c7);
+      const blue = new THREE.Color(0x2e5bff);
+
+      const syncNetwork = () => {
+        for (let index = 0; index < basePositions.length; index += 1) {
+          livePoints[index] = basePositions[index] * state.progress;
+        }
+        for (let index = 0; index < lineSegments.length; index += 1) {
+          liveLines[index] = lineSegments[index] * state.progress;
+        }
+        pointGeometry.attributes.position.needsUpdate = true;
+        lineGeometry.attributes.position.needsUpdate = true;
+        pointMaterial.opacity = 0.22 + state.progress * 0.4;
+        lineMaterial.opacity = 0.04 + state.progress * 0.2;
+        pointMaterial.color.copy(gray).lerp(blue, state.mix);
+        lineMaterial.color.copy(gray).lerp(blue, state.mix * 0.92);
+      };
+
+      syncNetwork();
+
+      const emergenceTween = gsap.to(state, {
+        progress: 1,
+        duration: 4,
+        ease: "power2.out",
+        onUpdate: syncNetwork,
+      });
+
+      const colorTween = gsap.to(state, {
+        mix: 1,
+        ease: "none",
+        onUpdate: syncNetwork,
+        scrollTrigger: {
+          trigger: document.body,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+      });
+
+      group.rotation.x = -0.34;
+      group.rotation.y = 0.28;
+
+      const tick = () => {
+        group.rotation.y += 0.0011;
+        group.rotation.z += 0.0005;
+        renderer.render(scene, camera);
+      };
+      gsap.ticker.add(tick);
+
+      const onResize = () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+      };
+
+      window.addEventListener("resize", onResize, { passive: true });
+      cleanup.push(() => {
+        emergenceTween.kill();
+        colorTween.kill();
+        gsap.ticker.remove(tick);
+        window.removeEventListener("resize", onResize);
+        pointGeometry.dispose();
+        lineGeometry.dispose();
+        pointMaterial.dispose();
+        lineMaterial.dispose();
+        renderer.dispose();
+        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      });
+    } catch (error) {
+      console.error("Aurora landing runtime failed", error);
+    }
+  };
+
+  bootVisuals();
+
+  window.addEventListener(
+    "pagehide",
+    () => {
+      cleanup.forEach((fn) => fn());
+      window.removeEventListener("scroll", syncHeader);
+    },
+    { once: true }
+  );
+</script>
