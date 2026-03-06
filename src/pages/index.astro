@@ -18,35 +18,62 @@ title: Aurora — Era Experience
   --easing-snappy: cubic-bezier(0.6, 0, 0.4, 1);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--color-bg); color: var(--color-text); line-height: 1.7; }
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
 
 @keyframes reveal-bottom {
-  from { opacity: 0; transform: translateY(40px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes point-emerge {
-  from { opacity: 0; scale: 0.5; }
-  to { opacity: 1; scale: 1; }
+  from {
+    opacity: 0;
+    scale: 0.5;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
-@keyframes line-draw {
-  from { stroke-dashoffset: 1000; opacity: 0; }
-  to { stroke-dashoffset: 0; opacity: 1; }
+.reveal {
+  animation: reveal-bottom 0.6s var(--easing-smooth) forwards;
+  opacity: 0;
 }
 
-.reveal { animation: reveal-bottom 0.6s var(--easing-smooth) forwards; opacity: 0; }
 .reveal:nth-child(1) { animation-delay: 0.05s; }
 .reveal:nth-child(2) { animation-delay: 0.15s; }
 .reveal:nth-child(3) { animation-delay: 0.25s; }
 .reveal:nth-child(4) { animation-delay: 0.35s; }
 .reveal:nth-child(5) { animation-delay: 0.45s; }
+.reveal:nth-child(6) { animation-delay: 0.55s; }
+.reveal:nth-child(7) { animation-delay: 0.65s; }
+.reveal:nth-child(8) { animation-delay: 0.75s; }
 </style>
 
-<!-- HEADER -->
+<!-- HEADER STICKY -->
 <header class="header">
   <a href="/" class="logo-link">
     <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -77,7 +104,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .logo-link {
   text-decoration: none;
-  transition: transform 250ms var(--easing-smooth);
+  transition: transform var(--duration-normal) var(--easing-smooth);
 }
 
 .logo-link:hover {
@@ -93,7 +120,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   text-decoration: none;
   color: var(--color-text-secondary);
   font-size: 0.95rem;
-  transition: color 250ms var(--easing-smooth);
+  font-weight: 500;
+  transition: color var(--duration-normal) var(--easing-smooth);
 }
 
 .nav-link:hover,
@@ -102,24 +130,49 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 
 @media (max-width: 768px) {
-  .header { padding: 1rem 1.5rem; }
-  .nav { gap: 1rem; }
-  .nav-link { font-size: 0.85rem; }
+  .header {
+    padding: 1rem 1.5rem;
+  }
+  .nav {
+    gap: 1rem;
+  }
+  .nav-link {
+    font-size: 0.85rem;
+  }
 }
 </style>
 
-<!-- HERO CON THREE.JS EMERGENCIA -->
+<!-- ===== HERO CON THREE.JS EMERGENCIA ===== -->
 <section class="hero" data-era-section data-era-phase="unstable">
   <canvas id="network-canvas" class="hero-canvas"></canvas>
   <div class="hero-content">
-    <h1><span class="reveal">El límite humano</span><br><span class="reveal">ya no alcanza.</span></h1>
-    <p class="reveal" style="margin-top:1.5rem">El mercado ya no compite con personas.<br>Compite con sistemas.</p>
-    <p class="reveal" style="margin-top:1rem">Quedarse en intuición<br>es quedar fuera del juego real.</p>
-    <p class="reveal" style="margin-top:2rem;font-size:1.125rem;font-weight:600">Aurora no mejora decisiones.</p>
-    <p class="reveal">Desplaza el límite humano por el cálculo permanente.</p>
-    <p class="reveal" style="margin-top:2rem">No es digitalización.</p>
-    <p class="reveal" style="font-size:1.125rem;font-weight:600">Es sustitución operativa.</p>
-    <a href="/demo" class="cta-button reveal" style="margin-top:2rem">Poner una decisión bajo evidencia</a>
+    <h1>
+      <span class="reveal">El límite humano</span><br>
+      <span class="reveal">ya no alcanza.</span>
+    </h1>
+    <p class="reveal" style="margin-top:1.5rem;font-size:1.125rem">
+      El mercado ya no compite con personas.<br>
+      Compite con sistemas.
+    </p>
+    <p class="reveal" style="margin-top:1rem;font-size:1.125rem">
+      Quedarse en intuición<br>
+      es quedar fuera del juego real.
+    </p>
+    <p class="reveal" style="margin-top:2rem;font-size:1.125rem;font-weight:600">
+      Aurora no mejora decisiones.
+    </p>
+    <p class="reveal" style="font-size:1.125rem">
+      Desplaza el límite humano por el cálculo permanente.
+    </p>
+    <p class="reveal" style="margin-top:2rem;font-size:1.125rem">
+      No es digitalización.
+    </p>
+    <p class="reveal" style="font-size:1.125rem;font-weight:600">
+      Es sustitución operativa.
+    </p>
+    <a href="/demo" class="cta-button reveal" style="margin-top:2rem">
+      Poner una decisión bajo evidencia
+    </a>
   </div>
 </section>
 
@@ -156,6 +209,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   margin-bottom: 0;
   line-height: 1.1;
   color: var(--color-text);
+  letter-spacing: -0.02em;
 }
 
 .hero p {
@@ -173,10 +227,11 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   border-radius: 32px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 250ms var(--easing-snappy);
+  transition: all var(--duration-normal) var(--easing-snappy);
   text-transform: uppercase;
   font-size: 0.95rem;
   letter-spacing: 0.05em;
+  border: 2px solid var(--color-accent-blue);
 }
 
 .cta-button:hover {
@@ -185,23 +240,34 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 
 @media (max-width: 768px) {
-  .hero { min-height: auto; padding: 1rem; }
-  .hero-content { margin-top: 40px; }
-  .hero h1 { font-size: 2rem; }
-  .cta-button { width: 100%; text-align: center; display: block; }
+  .hero {
+    min-height: auto;
+    padding: 1rem;
+  }
+  .hero-content {
+    margin-top: 40px;
+  }
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .cta-button {
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
 }
 </style>
 
-<!-- SECCIÓN 1: PROBLEMA -->
+<!-- ===== SECCIÓN 1: PROBLEMA ===== -->
 <section class="section section-1">
   <div style="width:100%;max-width:900px">
     <h2>Las decisiones se toman fragmentadas.</h2>
-    <p>Las empresas toman decisiones sin ver todas las variables juntas. Información dispersa, procesos sin integración.</p>
+    <p>Las empresas toman decisiones sin ver todas las variables juntas. Información dispersa, procesos sin integración, contextos silenciados.</p>
     <p style="color:var(--color-accent-blue);font-weight:600;margin-top:1.5rem">El costo de no ver el sistema completo crece exponencialmente.</p>
   </div>
 </section>
 
-<!-- SECCIÓN 2: CAMBIO -->
+<!-- ===== SECCIÓN 2: CAMBIO ===== -->
 <section class="section section-2">
   <div style="width:100%;max-width:900px">
     <h2>El mercado ya opera con cálculo.</h2>
@@ -211,7 +277,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   </div>
 </section>
 
-<!-- SECCIÓN 3: DESAJUSTE -->
+<!-- ===== SECCIÓN 3: DESAJUSTE ===== -->
 <section class="section section-3">
   <div style="width:100%;max-width:900px">
     <h2>Hoy es más barato operar con cálculo.</h2>
@@ -222,7 +288,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   </div>
 </section>
 
-<!-- SECCIÓN 4: RUPTURA BINARIA (CRÍTICA) -->
+<!-- ===== SECCIÓN 4: RUPTURA BINARIA (CRÍTICA) ===== -->
 <section class="section section-rupture" data-binary-boundary>
   <div style="width:100%">
     <h2>La forma de operar cambió.</h2>
@@ -271,6 +337,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   margin-bottom: 2rem;
   line-height: 1.2;
   color: var(--color-text);
+  letter-spacing: -0.02em;
 }
 
 .section p {
@@ -301,6 +368,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 .rupture-after h3 {
@@ -308,6 +377,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 .rupture-list {
@@ -356,12 +427,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 
 @media (max-width: 768px) {
-  .section { padding: 3rem 1rem; }
-  .section h2 { font-size: 1.5rem; }
+  .section {
+    padding: 3rem 1rem;
+  }
+  .section h2 {
+    font-size: 1.5rem;
+  }
 }
 </style>
 
-<!-- SECCIÓN 5: DEFINICIÓN -->
+<!-- ===== SECCIÓN 5: DEFINICIÓN ===== -->
 <section class="section section-definition">
   <div style="width:100%">
     <h2>Aurora es una capa de cálculo soberano.</h2>
@@ -369,7 +444,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     <p>Divide a quienes operan desde límite humano de quienes operan con potencia algorítmica.</p>
     <p style="margin-top:2rem">El entorno ya está gobernado por datos en tiempo real, automatización y modelos autónomos.</p>
     <p>Actuar solo con intuición no es identidad. <strong style="color:var(--color-accent-red)">Es inferioridad estructural.</strong></p>
-
+    
     <div class="definition-block">
       <p>Cálculo soberano significa <strong style="color:var(--color-accent-blue)">autonomía frente al error recurrente.</strong></p>
       <p>Significa <strong style="color:var(--color-accent-blue)">procesar complejidad sin reducirla.</strong></p>
@@ -392,10 +467,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
 .definition-block p {
   margin-bottom: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.8;
 }
 </style>
 
-<!-- SECCIÓN 6: MÓDULOS GRID -->
+<!-- ===== SECCIÓN 6: MÓDULOS GRID (6 CARDS) ===== -->
 <section class="section section-modules">
   <div style="width:100%">
     <h2>Capacidades de Aurora.</h2>
@@ -451,7 +528,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   background: rgba(46, 91, 255, 0.03);
   border: 1px solid rgba(46, 91, 255, 0.1);
   border-radius: 12px;
-  transition: all 250ms var(--easing-smooth);
+  transition: all var(--duration-normal) var(--easing-smooth);
 }
 
 .module-card:hover {
@@ -478,6 +555,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   font-size: 0.95rem;
   color: var(--color-text-secondary);
   margin-bottom: 0;
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
@@ -487,18 +565,18 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 </style>
 
-<!-- SECCIÓN 7: CTA FINAL -->
+<!-- ===== SECCIÓN 7: CTA FINAL ===== -->
 <section class="section section-cta">
   <div style="width:100%;max-width:900px">
     <h2>Pon tu próximo movimiento bajo evidencia.</h2>
     <div class="demo-narrative">
       <p style="font-size:1.125rem;font-weight:600;color:var(--color-accent-green);margin-bottom:1rem"><strong>Aurora no opina.</strong> Calcula.</p>
-      <p>Detecta la interacción dominante.<br>Expone la vulnerabilidad central.</p>
-      <p style="margin-top:1rem"><strong>Una señal.</strong><br>Un movimiento correcto.</p>
+      <p style="font-size:1.125rem;margin-bottom:1rem">Detecta la interacción dominante.<br>Expone la vulnerabilidad central.</p>
+      <p style="font-size:1.125rem;font-weight:600"><strong>Una señal.</strong><br>Un movimiento correcto.</p>
     </div>
     <div style="margin-top:2rem;display:flex;gap:2rem;flex-wrap:wrap">
       <a href="/demo" class="cta-button">Abrir Demo</a>
-      <a href="mailto:hola@aurora.io" class="cta-button" style="background:transparent;border:2px solid var(--color-accent-blue);color:var(--color-accent-blue)">Contactar</a>
+      <a href="mailto:hola@aurora.io" class="cta-button" style="background:transparent;color:var(--color-accent-blue)">Contactar</a>
     </div>
   </div>
 </section>
@@ -520,7 +598,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 </style>
 
-<!-- FOOTER -->
+<!-- ===== FOOTER ===== -->
 <footer class="footer">
   <p>&copy; 2026 Aurora. Cálculo soberano para decisiones empresariales.</p>
   <div class="footer-links">
@@ -536,10 +614,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   text-align: center;
   border-top: 1px solid rgba(46, 91, 255, 0.1);
   color: var(--color-text-secondary);
+  background: rgba(46, 91, 255, 0.01);
 }
 
 .footer p {
   margin-bottom: 1.5rem;
+  font-size: 0.95rem;
 }
 
 .footer-links {
@@ -552,7 +632,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 .footer-links a {
   color: var(--color-text-secondary);
   text-decoration: none;
-  transition: color 250ms var(--easing-smooth);
+  transition: color var(--duration-normal) var(--easing-smooth);
+  font-size: 0.95rem;
 }
 
 .footer-links a:hover {
@@ -560,11 +641,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 }
 
 @media (max-width: 768px) {
-  .footer { padding: 2rem 1rem; }
+  .footer {
+    padding: 2rem 1rem;
+  }
+  .footer-links {
+    gap: 1rem;
+  }
 }
 </style>
 
-<!-- SCRIPTS: THREE.JS + GSAP + LENIS -->
+<!-- ===== SCRIPTS: THREE.JS + GSAP + LENIS ===== -->
 <script>
   import * as THREE from 'three';
   import gsap from 'gsap';
@@ -572,7 +658,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // LENIS SMOOTH SCROLL
+  // LENIS SMOOTH SCROLL (OPCIONAL - Fallback si no está disponible)
   async function setupLenis() {
     try {
       const Lenis = (await import('@studio-freight/lenis')).default;
@@ -581,6 +667,8 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         direction: 'vertical',
         smooth: true,
+        smoothTouch: false,
+        touchMultiplier: 2,
       });
 
       function raf(time) {
@@ -590,24 +678,36 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
 
       requestAnimationFrame(raf);
     } catch (e) {
-      console.log('Lenis optional - proceeding without');
+      console.log('Lenis no disponible - scroll estándar activo');
     }
   }
 
   setupLenis();
 
-  // THREE.JS NETWORK EMERGENCE
+  // ===== THREE.JS NETWORK EMERGENCE =====
   const canvas = document.getElementById('network-canvas');
   if (canvas) {
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      precision: 'highp',
+    });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x0B0B0C, 1);
+    renderer.sortObjects = false;
     camera.position.z = 8;
 
+    // ===== FASE 1: EMERGENCE (0-3 segundos) =====
     const nodeCount = 15;
     const positions = [];
     const nodes = [];
@@ -622,18 +722,24 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       nodes.push({ x, y, z });
     }
 
+    // Nodos
     const nodeGeometry = new THREE.BufferGeometry();
-    nodeGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    nodeGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(positions), 3)
+    );
 
     const nodeMaterial = new THREE.PointsMaterial({
       color: 0x2E5BFF,
       size: 0.15,
       sizeAttenuation: true,
+      fog: false,
     });
 
     const pointsMesh = new THREE.Points(nodeGeometry, nodeMaterial);
     scene.add(pointsMesh);
 
+    // Líneas
     const linePositions = [];
     for (let i = 0; i < nodeCount; i++) {
       const neighborCount = 2 + Math.floor(Math.random() * 2);
@@ -641,17 +747,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
         const neighborIdx = (i + 1 + j) % nodeCount;
         if (linePositions.length < 150) {
           linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z);
-          linePositions.push(nodes[neighborIdx].x, nodes[neighborIdx].y, nodes[neighborIdx].z);
+          linePositions.push(
+            nodes[neighborIdx].x,
+            nodes[neighborIdx].y,
+            nodes[neighborIdx].z
+          );
         }
       }
     }
 
     const lineGeometry = new THREE.BufferGeometry();
-    lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3));
+    lineGeometry.setAttribute(
+      'position',
+      new THREE.BufferAttribute(new Float32Array(linePositions), 3)
+    );
     const lineMaterial = new THREE.LineBasicMaterial({
       color: 0xBFC2C7,
       transparent: true,
       opacity: 0.6,
+      fog: false,
     });
     const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
     scene.add(linesMesh);
@@ -661,9 +775,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     group.add(linesMesh);
     scene.add(group);
 
-    gsap.fromTo(nodeMaterial, { opacity: 0 }, { opacity: 1, duration: 0.3, delay: 0.3 });
-    gsap.fromTo(lineMaterial, { opacity: 0 }, { opacity: 0.6, duration: 0.8, delay: 0.8 });
+    // ===== EMERGENCIA ANIMATION (T=0-3s) =====
+    gsap.fromTo(
+      nodeMaterial,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.3, delay: 0.3 }
+    );
+    gsap.fromTo(
+      lineMaterial,
+      { opacity: 0 },
+      { opacity: 0.6, duration: 0.8, delay: 0.8 }
+    );
 
+    // ===== SCROLL BINDING =====
     gsap.to(group.rotation, {
       scrollTrigger: {
         trigger: 'body',
@@ -674,6 +798,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       duration: 10,
     });
 
+    // ===== SCROLL REACTIVE COLORS =====
     let lastScrollY = 0;
     window.addEventListener('scroll', () => {
       const scrollVelocity = window.scrollY - lastScrollY;
@@ -689,14 +814,17 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       group.rotation.z += (scrollVelocity / 1000) * 0.1;
     });
 
+    // ===== RESIZE HANDLER =====
     window.addEventListener('resize', () => {
       const width = window.innerWidth;
       const height = window.innerHeight;
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
       renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     });
 
+    // ===== ANIMATION LOOP =====
     function animate() {
       requestAnimationFrame(animate);
       group.rotation.x += 0.0002;
@@ -707,7 +835,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     animate();
   }
 
-  // GSAP SECTION ANIMATIONS
+  // ===== GSAP SECTION ANIMATIONS =====
   gsap.to('.section-1 h2', {
     scrollTrigger: {
       trigger: '.section-1',
@@ -741,7 +869,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
     duration: 0.8,
   });
 
-  // RUPTURA BINARIA SCROLL BINDING
+  // ===== RUPTURA BINARIA SCROLL BINDING =====
   gsap.to('.rupture-container', {
     scrollTrigger: {
       trigger: '.section-rupture',
@@ -749,11 +877,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
       end: 'center 30%',
       scrub: 1.2,
     },
-    backgroundImage: 'linear-gradient(90deg, rgba(255,61,61,0.15) 0%, rgba(0,195,137,0.15) 100%)',
+    backgroundImage:
+      'linear-gradient(90deg, rgba(255,61,61,0.15) 0%, rgba(0,195,137,0.15) 100%)',
     duration: 2,
   });
 
-  // MÓDULOS CASCADA
+  // ===== MÓDULOS CASCADA =====
   document.querySelectorAll('.module-card').forEach((card, i) => {
     gsap.from(card, {
       scrollTrigger: {
