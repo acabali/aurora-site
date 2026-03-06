@@ -1,0 +1,11 @@
+node_modules
+.next
+dist
+build
+.cache
+coverage
+.vercel
+playwright-report
+test-results
+*.log
+*.zip
