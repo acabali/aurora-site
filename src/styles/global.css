@@ -1,0 +1,7 @@
+:root {
+  --color-bg: #0B0B0C;
+  --color-text: #F7F7F5;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--color-bg); color: var(--color-text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; }

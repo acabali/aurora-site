@@ -1,0 +1,43 @@
+:root {
+  --font-display: Inter, "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: Inter, "Avenir Next", "Segoe UI", sans-serif;
+  --font-tech: "JetBrains Mono", "SFMono-Regular", monospace;
+
+  --fs-h1: clamp(3rem, 8vw, 5rem);
+  --fs-h2: clamp(2rem, 4.6vw, 3rem);
+  --fs-h3: clamp(1.35rem, 2.4vw, 1.75rem);
+  --fs-body: clamp(1rem, 1.2vw, 1.125rem);
+
+  --bg-base: #0b0b0c;
+  --bg-elevated: rgba(247, 247, 245, 0.04);
+  --bg-panel: rgba(247, 247, 245, 0.06);
+  --text-main: #f7f7f5;
+  --text-muted: rgba(247, 247, 245, 0.72);
+  --line-soft: rgba(191, 194, 199, 0.22);
+  --line-strong: #bfc2c7;
+  --accent-system: #2e5bff;
+  --accent-proof: #00c389;
+  --accent-risk: #ff3d3d;
+  --cta-main: #f7f7f5;
+
+  --container: 1220px;
+  --gutter: clamp(1.5rem, 4vw, 3rem);
+
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-14: 56px;
+  --space-18: 72px;
+  --space-20: 80px;
+  --space-24: 96px;
+  --space-30: 120px;
+
+  --duration-fast: 180ms;
+  --duration-mid: 320ms;
+  --duration-slow: 600ms;
+}

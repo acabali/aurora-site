@@ -1,0 +1,14 @@
+{
+  "name": "aurora-site",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build"
+  },
+  "dependencies": {
+    "astro": "^5.17.0",
+    "three": "^0.160.0",
+    "gsap": "^3.12.2"
+  }
+}
