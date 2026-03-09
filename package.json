@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@studio-freight/lenis": "^1.0.42",
+    "@supabase/supabase-js": "^2.99.0",
     "astro": "^5.17.0",
     "gsap": "^3.12.2",
     "three": "^0.160.0"
