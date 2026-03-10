@@ -77,9 +77,11 @@ export default async function handler(
   const email_domain = email.trim().split("@")[1] ?? "";
 
   try {
-    const saRaw = process.env.AURORA_SHEETS_SA_JSON_B64
-      ? Buffer.from(process.env.AURORA_SHEETS_SA_JSON_B64, "base64").toString("utf8")
-      : (process.env.AURORA_SHEETS_SA_JSON ?? "{}");
+    // Prefer AURORA_SHEETS_SA_JSON (working) over _B64 (contains only private key)
+    const saRaw = process.env.AURORA_SHEETS_SA_JSON
+      ?? (process.env.AURORA_SHEETS_SA_JSON_B64
+        ? Buffer.from(process.env.AURORA_SHEETS_SA_JSON_B64, "base64").toString("utf8")
+        : "{}");
 
     const sa = JSON.parse(saRaw) as { client_email?: string; private_key?: string };
 
