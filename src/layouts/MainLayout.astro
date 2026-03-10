@@ -202,20 +202,17 @@ const faqJSON = JSON.stringify(faqSchema);
         padding: 40px 24px;
         background: var(--bg-dark);
       }
-      .footer-content {
-        max-width: 1200px;
+      .footer-inner {
+        max-width: 900px;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 40px;
-        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
       }
-      .footer-section h4 { font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-light); margin-bottom: 16px; }
-      .footer-links { display: flex; flex-direction: column; gap: 8px; }
       .footer-link { color: var(--text-muted); text-decoration: none; font-size: 14px; transition: color 200ms; }
       .footer-link:hover { color: var(--text-light); }
-      .footer-social { display: flex; gap: 16px; }
-      .footer-bottom { text-align: center; color: var(--text-muted); font-size: 12px; padding-top: 24px; border-top: 1px solid var(--border-light); }
+      .footer-copy { font-size: 14px; color: var(--text-muted); margin-left: auto; }
       @media (max-width: 768px) {
         h1 { font-size: 42px; }
         h2 { font-size: 32px; }
@@ -234,9 +231,7 @@ const faqJSON = JSON.stringify(faqSchema);
       </div>
       <div class="header-right">
         <nav class="nav-horizontal">
-          <a href="#sistema">SISTEMA</a>
-          <a href="#aplicaciones">APLICACIONES</a>
-          <a href="#demo">DEMO</a>
+          <a href="/demo">DEMO</a>
         </nav>
       </div>
     </header>
@@ -246,31 +241,11 @@ const faqJSON = JSON.stringify(faqSchema);
     </main>
 
     <footer>
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>Producto</h4>
-          <div class="footer-links">
-            <a href="#sistema" class="footer-link">Sistema</a>
-            <a href="#aplicaciones" class="footer-link">Aplicaciones</a>
-            <a href="#demo" class="footer-link">Demo</a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h4>Empresa</h4>
-          <div class="footer-links">
-            <a href="#" class="footer-link">Blog</a>
-          </div>
-        </div>
-        <div class="footer-section">
-          <h4>Social</h4>
-          <div class="footer-social">
-            <a href="https://linkedin.com/company/aurora" class="footer-link" target="_blank" rel="noopener">LinkedIn</a>
-            <a href="https://twitter.com/aurora" class="footer-link" target="_blank" rel="noopener">Twitter</a>
-            <a href="mailto:demo@aurora-site.com" class="footer-link">Email</a>
-          </div>
-        </div>
+      <div class="footer-inner">
+        <a href="/" class="footer-link">Home</a>
+        <a href="/demo" class="footer-link">Demo</a>
+        <span class="footer-copy">© 2026 Aurora</span>
       </div>
-      <div class="footer-bottom">© 2026 Aurora. Infraestructura decisional.</div>
     </footer>
 
   </body>
