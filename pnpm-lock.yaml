@@ -17,6 +17,10 @@ importers:
       googleapis:
         specifier: ^171.4.0
         version: 171.4.0
+    devDependencies:
+      '@types/node':
+        specifier: ^25.4.0
+        version: 25.4.0
 
 packages:
 
