@@ -8,48 +8,59 @@ import MainLayout from "../layouts/MainLayout.astro";
     <!-- Phase 1: Input -->
     <div id="phase-input" class="demo-phase">
       <span class="demo-eyebrow">AURORA / CÁLCULO</span>
-      <h1 class="demo-h1">Describí el movimiento.</h1>
-      <p class="demo-sub">Expansión, ajuste, decisión comercial, cambio de estructura.</p>
+      <h1 class="demo-h1">¿Qué decisión estás evaluando?</h1>
+      <p class="demo-sub">Escribila en una frase o elegí un ejemplo para arrancar.</p>
       <textarea
         id="movement-input"
         class="demo-textarea"
-        placeholder="Ej: Voy a abrir una segunda sucursal el próximo mes con financiamiento propio."
-        rows="5"
-        aria-label="Describí el movimiento a calcular"
+        placeholder="Abrir una nueva tienda"
+        rows="4"
+        aria-label="Decisión a analizar"
       ></textarea>
 
+      <div class="demo-examples" aria-label="Ejemplos de decisiones">
+        <span class="demo-examples-label">Ejemplos rápidos</span>
+        <div class="demo-examples-list">
+          <button type="button" class="demo-example" data-example="Abrir una nueva tienda">Abrir una nueva tienda</button>
+          <button type="button" class="demo-example" data-example="Subir precios 15%">Subir precios 15%</button>
+          <button type="button" class="demo-example" data-example="Lanzar una segunda marca">Lanzar una segunda marca</button>
+          <button type="button" class="demo-example" data-example="Vender en Amazon o Mercado Libre">Vender en Amazon o Mercado Libre</button>
+          <button type="button" class="demo-example" data-example="Entrar a otro país">Entrar a otro país</button>
+          <button type="button" class="demo-example" data-example="Contratar equipo comercial">Contratar equipo comercial</button>
+        </div>
+      </div>
+
       <!-- Structural calibrators -->
-      <div class="calibrators">
+      <div id="calibrators" class="calibrators" aria-hidden="true">
         <div class="cal-group">
-          <span class="cal-label">Reversibilidad</span>
+          <span class="cal-label">¿Podés deshacer esta decisión?</span>
           <div class="cal-chips" data-group="reversibility">
-            <button class="chip" data-value="reversible">Reversible</button>
-            <button class="chip selected" data-value="partially-locked">Parcialmente bloqueado</button>
-            <button class="chip" data-value="irreversible">Irreversible</button>
+            <button type="button" class="chip" data-value="reversible">Fácil</button>
+            <button type="button" class="chip selected" data-value="partially-locked">Con costo</button>
+            <button type="button" class="chip" data-value="irreversible">No</button>
           </div>
         </div>
         <div class="cal-group">
-          <span class="cal-label">Recurso comprometido</span>
+          <span class="cal-label">¿Qué compromete principalmente?</span>
           <div class="cal-chips" data-group="resource">
-            <button class="chip selected" data-value="capital">Capital</button>
-            <button class="chip" data-value="headcount">Headcount</button>
-            <button class="chip" data-value="attention">Atención</button>
-            <button class="chip" data-value="time">Tiempo</button>
-            <button class="chip" data-value="position">Posición</button>
+            <button type="button" class="chip selected" data-value="capital">Dinero</button>
+            <button type="button" class="chip" data-value="headcount">Equipo</button>
+            <button type="button" class="chip" data-value="time">Tiempo</button>
+            <button type="button" class="chip" data-value="position">Posición</button>
           </div>
         </div>
         <div class="cal-group">
-          <span class="cal-label">Horizonte</span>
+          <span class="cal-label">¿Cuándo se verán los efectos?</span>
           <div class="cal-chips" data-group="horizon">
-            <button class="chip" data-value="under-90">Menos de 90 días</button>
-            <button class="chip selected" data-value="90-365">90–365 días</button>
-            <button class="chip" data-value="beyond-1y">Más de 1 año</button>
+            <button type="button" class="chip" data-value="under-90">Menos de 3 meses</button>
+            <button type="button" class="chip selected" data-value="90-365">3 a 12 meses</button>
+            <button type="button" class="chip" data-value="beyond-1y">Más de 1 año</button>
           </div>
         </div>
       </div>
 
       <div class="demo-actions">
-        <button id="btn-calc" class="btn-calc">Calcular movimiento</button>
+        <button id="btn-calc" class="btn-calc" disabled>Ver análisis</button>
         <span id="input-hint" class="input-hint" role="alert"></span>
       </div>
     </div>
@@ -256,11 +267,69 @@ import MainLayout from "../layouts/MainLayout.astro";
     cursor: not-allowed;
   }
 
+  .demo-examples {
+    margin-bottom: 1.75rem;
+  }
+
+  .demo-examples-label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(191, 194, 199, 0.42);
+    margin-bottom: 0.75rem;
+  }
+
+  .demo-examples-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.625rem;
+  }
+
+  .demo-example {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0.6rem 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    transition: border-color 160ms ease, color 160ms ease, background 160ms ease, transform 160ms ease;
+  }
+
+  .demo-example:hover {
+    border-color: rgba(46, 91, 255, 0.35);
+    background: rgba(46, 91, 255, 0.08);
+    color: var(--text-light);
+    transform: translateY(-1px);
+  }
+
   /* Calibrators */
   .calibrators {
     display: flex;
     flex-direction: column;
     gap: 1.125rem;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition:
+      max-height 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 180ms ease,
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    margin-bottom: 0;
+  }
+
+  .calibrators.is-visible {
+    max-height: 320px;
+    opacity: 1;
+    overflow: visible;
+    pointer-events: auto;
+    transform: translateY(0);
     margin-bottom: 2rem;
   }
 
@@ -826,6 +895,16 @@ import MainLayout from "../layouts/MainLayout.astro";
     .demo-wrap {
       padding: 64px 24px 80px;
     }
+
+    .demo-examples-list {
+      gap: 0.5rem;
+    }
+
+    .demo-example {
+      width: 100%;
+      justify-content: flex-start;
+      text-align: left;
+    }
   }
 </style>
 
@@ -840,6 +919,29 @@ import MainLayout from "../layouts/MainLayout.astro";
     input:  string;
     output: DemoOutput;
   } | null = null;
+
+  const placeholderSamples = [
+    'Abrir una nueva tienda',
+    'Subir precios 15%',
+    'Lanzar una segunda marca más barata',
+    'Vender principalmente en Amazon o Mercado Libre',
+    'Entrar a otro país',
+    'Contratar un equipo comercial',
+    'Cerrar tiendas físicas y vender online',
+    'Apostar fuerte a influencers',
+  ];
+
+  const defaultChipValues = {
+    reversibility: 'partially-locked',
+    resource: 'capital',
+    horizon: '90-365',
+  } as const;
+
+  const textarea = document.getElementById('movement-input') as HTMLTextAreaElement;
+  const hint = document.getElementById('input-hint')!;
+  const btnCalc = document.getElementById('btn-calc') as HTMLButtonElement;
+  const calibrators = document.getElementById('calibrators')!;
+  let placeholderIndex = 1;
 
   // Deterministic 8-char hex hash of input text
   function decisionHash(text: string): string {
@@ -873,6 +975,48 @@ import MainLayout from "../layouts/MainLayout.astro";
     activate();
   }
 
+  function hasInputText(): boolean {
+    return textarea.value.trim().length > 0;
+  }
+
+  function setCalibratorsVisible(visible: boolean): void {
+    calibrators.classList.toggle('is-visible', visible);
+    calibrators.setAttribute('aria-hidden', String(!visible));
+  }
+
+  function syncInputState(): void {
+    const hasText = hasInputText();
+    setCalibratorsVisible(hasText);
+    btnCalc.disabled = !hasText || textarea.disabled;
+
+    if (hasText) {
+      hint.textContent = '';
+      hint.classList.remove('visible');
+    }
+  }
+
+  function setInputValue(value: string): void {
+    textarea.value = value;
+    syncInputState();
+  }
+
+  function resetCalibrators(): void {
+    document.querySelectorAll<HTMLElement>('.cal-chips').forEach(group => {
+      const groupName = group.dataset.group as keyof typeof defaultChipValues | undefined;
+      if (!groupName) return;
+
+      group.querySelectorAll<HTMLButtonElement>('.chip').forEach(chip => {
+        chip.classList.toggle('selected', chip.dataset.value === defaultChipValues[groupName]);
+      });
+    });
+  }
+
+  function rotatePlaceholder(): void {
+    if (document.activeElement === textarea || hasInputText() || textarea.disabled) return;
+    textarea.placeholder = placeholderSamples[placeholderIndex]!;
+    placeholderIndex = (placeholderIndex + 1) % placeholderSamples.length;
+  }
+
   // Read selected chip value from a calibrator group
   function getChipValue(group: string): string {
     const selected = document.querySelector<HTMLElement>(
@@ -890,6 +1034,22 @@ import MainLayout from "../layouts/MainLayout.astro";
       });
     });
   });
+
+  document.querySelectorAll<HTMLButtonElement>('.demo-example').forEach(button => {
+    button.addEventListener('click', () => {
+      const example = button.dataset.example;
+      if (!example) return;
+
+      setInputValue(example);
+      textarea.focus();
+      const end = textarea.value.length;
+      textarea.setSelectionRange(end, end);
+    });
+  });
+
+  textarea.addEventListener('input', syncInputState);
+  setInterval(rotatePlaceholder, 1800);
+  syncInputState();
 
   function populateList(containerId: string, items: string[]): void {
     const container = document.getElementById(containerId)!;
@@ -976,10 +1136,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   // Calculate
-  document.getElementById('btn-calc')!.addEventListener('click', () => {
-    const textarea = document.getElementById('movement-input') as HTMLTextAreaElement;
-    const hint     = document.getElementById('input-hint')!;
-    const btnCalc  = document.getElementById('btn-calc') as HTMLButtonElement;
+  btnCalc.addEventListener('click', () => {
     const text     = textarea.value.trim();
 
     if (!text) {
@@ -1083,18 +1240,19 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   // Reset
   document.getElementById('btn-reset')!.addEventListener('click', () => {
-    const textarea = document.getElementById('movement-input') as HTMLTextAreaElement;
-    const btnCalc  = document.getElementById('btn-calc') as HTMLButtonElement;
-
     currentDecision   = null;
-    textarea.value    = '';
     textarea.disabled = false;
-    btnCalc.disabled  = false;
+    placeholderIndex = 1;
+    textarea.placeholder = placeholderSamples[0]!;
+    setInputValue('');
+    resetCalibrators();
 
     document.querySelectorAll<HTMLElement>('.loader-line').forEach(l => {
       delete l.dataset.state;
     });
 
+    hint.textContent = '';
+    hint.classList.remove('visible');
     showPhase('input');
     textarea.focus();
   });
