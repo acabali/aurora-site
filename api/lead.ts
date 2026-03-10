@@ -81,7 +81,7 @@ export default async function handler(
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        client_email: process.env.GOOGLE_CLIENT_EMAIL ?? "",
         private_key:  privateKey,
       },
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],

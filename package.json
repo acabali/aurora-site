@@ -8,6 +8,10 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.0",
-    "astro": "^5.17.0"
+    "astro": "^5.17.0",
+    "googleapis": "^171.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.4.0"
   }
 }
