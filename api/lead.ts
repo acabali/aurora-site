@@ -77,12 +77,16 @@ export default async function handler(
   const email_domain = email.trim().split("@")[1] ?? "";
 
   try {
-    const privateKey = (process.env.GOOGLE_PRIVATE_KEY ?? "").replace(/\\n/g, "\n");
+    const saRaw = process.env.AURORA_SHEETS_SA_JSON_B64
+      ? Buffer.from(process.env.AURORA_SHEETS_SA_JSON_B64, "base64").toString("utf8")
+      : (process.env.AURORA_SHEETS_SA_JSON ?? "{}");
+
+    const sa = JSON.parse(saRaw) as { client_email?: string; private_key?: string };
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL ?? "",
-        private_key:  privateKey,
+        client_email: sa.client_email ?? "",
+        private_key:  (sa.private_key ?? "").replace(/\\n/g, "\n"),
       },
       scopes: ["https://www.googleapis.com/auth/spreadsheets"],
     });
@@ -106,8 +110,8 @@ export default async function handler(
     ];
 
     await sheets.spreadsheets.values.append({
-      spreadsheetId: process.env.GOOGLE_SHEET_ID,
-      range:         `${process.env.GOOGLE_SHEET_TAB ?? "Sheet1"}!A1`,
+      spreadsheetId: process.env.AURORA_SHEETS_SHEET_ID,
+      range:         `${process.env.AURORA_SHEETS_TAB ?? "Sheet1"}!A1`,
       valueInputOption: "USER_ENTERED",
       requestBody:   { values: [row] },
     });
