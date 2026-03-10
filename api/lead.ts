@@ -1,7 +1,16 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { google } from "googleapis";
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+interface LeadRequest {
+  method?: string;
+  body?: unknown;
+}
+
+interface LeadResponse {
+  status(code: number): LeadResponse;
+  json(body: unknown): void;
+}
+
+export default async function handler(req: LeadRequest, res: LeadResponse) {
   // Stage 0: method guard
   if (req.method !== "POST") {
     console.error("LEAD_API_BAD_METHOD", req.method);
@@ -85,7 +94,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // Stage 5: Sheets append
   try {
-    const sheets = google.sheets({ version: "v4", auth });
+    const sheets = google.sheets("v4");
 
     const row = [
       (timestamp as string) ?? new Date().toISOString(),
@@ -104,6 +113,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     ];
 
     await sheets.spreadsheets.values.append({
+      auth,
       spreadsheetId: sheetId,
       range,
       valueInputOption: "USER_ENTERED",
