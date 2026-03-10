@@ -17,6 +17,37 @@ import MainLayout from "../layouts/MainLayout.astro";
         rows="5"
         aria-label="Describí el movimiento a calcular"
       ></textarea>
+
+      <!-- Structural calibrators -->
+      <div class="calibrators">
+        <div class="cal-group">
+          <span class="cal-label">Reversibilidad</span>
+          <div class="cal-chips" data-group="reversibility">
+            <button class="chip" data-value="reversible">Reversible</button>
+            <button class="chip selected" data-value="partially-locked">Parcialmente bloqueado</button>
+            <button class="chip" data-value="irreversible">Irreversible</button>
+          </div>
+        </div>
+        <div class="cal-group">
+          <span class="cal-label">Recurso comprometido</span>
+          <div class="cal-chips" data-group="resource">
+            <button class="chip selected" data-value="capital">Capital</button>
+            <button class="chip" data-value="headcount">Headcount</button>
+            <button class="chip" data-value="attention">Atención</button>
+            <button class="chip" data-value="time">Tiempo</button>
+            <button class="chip" data-value="position">Posición</button>
+          </div>
+        </div>
+        <div class="cal-group">
+          <span class="cal-label">Horizonte</span>
+          <div class="cal-chips" data-group="horizon">
+            <button class="chip" data-value="under-90">Menos de 90 días</button>
+            <button class="chip selected" data-value="90-365">90–365 días</button>
+            <button class="chip" data-value="beyond-1y">Más de 1 año</button>
+          </div>
+        </div>
+      </div>
+
       <div class="demo-actions">
         <button id="btn-calc" class="btn-calc">Calcular movimiento</button>
         <span id="input-hint" class="input-hint" role="alert"></span>
@@ -26,11 +57,11 @@ import MainLayout from "../layouts/MainLayout.astro";
     <!-- Phase 2: Loader -->
     <div id="phase-loader" class="demo-phase demo-phase--hidden">
       <div class="loader-seq" role="status" aria-label="Calculando estructura del movimiento">
-        <div class="loader-line">Leyendo Forma</div>
-        <div class="loader-line">Detectando Exposición</div>
-        <div class="loader-line">Midiendo Presión</div>
-        <div class="loader-line">Calculando Posición</div>
-        <div class="loader-line">Estimando Ventana</div>
+        <div class="loader-line">Normalizando estructura de inputs</div>
+        <div class="loader-line">Derivando concentración de exposición</div>
+        <div class="loader-line">Calculando gradiente de reversión</div>
+        <div class="loader-line">Midiendo inercia de compromiso</div>
+        <div class="loader-line">Calculando radio de clausura</div>
       </div>
     </div>
 
@@ -38,27 +69,73 @@ import MainLayout from "../layouts/MainLayout.astro";
     <div id="phase-results" class="demo-phase demo-phase--hidden">
       <p class="demo-system-line">Aurora detectó la estructura real del movimiento.</p>
 
+      <!-- Cold mirror: structural translation of the move -->
+      <div class="cold-mirror" id="cold-mirror">
+        <span class="cold-mirror-label">TRADUCCIÓN ESTRUCTURAL</span>
+        <p class="cold-mirror-text" id="cold-mirror-text"></p>
+      </div>
+
       <div class="demo-results">
-        <div class="result-row" data-result="forma">
-          <span class="result-label">FORMA</span>
-          <p class="result-text"></p>
+
+        <!-- Output 1: Exposure Geometry -->
+        <div class="output-block" data-output="geometry">
+          <div class="output-block-header">
+            <span class="output-block-label">GEOMETRÍA DE EXPOSICIÓN</span>
+            <span class="output-shape-tag" id="shape-tag"></span>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">EXPOSICIÓN DOMINANTE</span>
+            <p class="output-field-val" id="geo-dominant"></p>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">VECTORES SECUNDARIOS</span>
+            <div class="output-field-list" id="geo-secondary"></div>
+          </div>
         </div>
-        <div class="result-row" data-result="exposicion">
-          <span class="result-label">EXPOSICIÓN</span>
-          <p class="result-text"></p>
+
+        <!-- Output 2: Reversal Profile -->
+        <div class="output-block" data-output="reversal">
+          <div class="output-block-header">
+            <span class="output-block-label">PERFIL DE REVERSIÓN</span>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">SALIDA LIMPIA MÁS TEMPRANA</span>
+            <p class="output-field-val" id="rev-exit"></p>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">PUNTO DE INFLEXIÓN DE COSTO</span>
+            <p class="output-field-val" id="rev-inflection"></p>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">BLOQUEO ESTRUCTURAL</span>
+            <p class="output-field-val" id="rev-lockin"></p>
+          </div>
         </div>
-        <div class="result-row" data-result="presion">
-          <span class="result-label">PRESIÓN</span>
-          <p class="result-text"></p>
+
+        <!-- Output 3: Positional Foreclosure -->
+        <div class="output-block" data-output="foreclosure">
+          <div class="output-block-header">
+            <span class="output-block-label">CLAUSURA POSICIONAL</span>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">POSICIONES CLAUSURADAS</span>
+            <div class="output-field-list" id="fc-closed-list"></div>
+          </div>
+          <div class="output-field">
+            <span class="output-field-key">POSICIÓN ABIERTA</span>
+            <p class="output-field-val output-open-val" id="fc-open"></p>
+          </div>
         </div>
-        <div class="result-row" data-result="posicion">
-          <span class="result-label">POSICIÓN</span>
-          <p class="result-text"></p>
+
+      </div>
+
+      <!-- Structural fingerprint -->
+      <div class="fingerprint-block" id="fingerprint-block">
+        <div class="fingerprint-header">
+          <span class="fingerprint-label">PERFIL ESTRUCTURAL</span>
+          <span class="fingerprint-code" id="fingerprint-code">—</span>
         </div>
-        <div class="result-row" data-result="ventana">
-          <span class="result-label">VENTANA</span>
-          <p class="result-text"></p>
-        </div>
+        <p class="fingerprint-summary" id="fingerprint-summary"></p>
       </div>
 
       <!-- Decision footprint -->
@@ -163,7 +240,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     resize: none;
     outline: none;
     transition: border-color 180ms ease;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem;
   }
 
   .demo-textarea::placeholder {
@@ -177,6 +254,58 @@ import MainLayout from "../layouts/MainLayout.astro";
   .demo-textarea:disabled {
     opacity: 0.45;
     cursor: not-allowed;
+  }
+
+  /* Calibrators */
+  .calibrators {
+    display: flex;
+    flex-direction: column;
+    gap: 1.125rem;
+    margin-bottom: 2rem;
+  }
+
+  .cal-group {}
+
+  .cal-label {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(191, 194, 199, 0.38);
+    margin-bottom: 0.5rem;
+  }
+
+  .cal-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .chip {
+    height: 28px;
+    padding: 0 0.75rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 2px;
+    color: rgba(191, 194, 199, 0.45);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.07em;
+    cursor: pointer;
+    transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+    white-space: nowrap;
+  }
+
+  .chip:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: var(--text-light);
+  }
+
+  .chip.selected {
+    border-color: rgba(46, 91, 255, 0.45);
+    background: rgba(46, 91, 255, 0.07);
+    color: var(--text-light);
   }
 
   .demo-actions {
@@ -300,40 +429,186 @@ import MainLayout from "../layouts/MainLayout.astro";
     transform: translateY(0);
   }
 
-  .demo-results {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
-  }
-
-  .result-row {
-    padding: 1.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  /* Cold mirror */
+  .cold-mirror {
+    border-left: 2px solid rgba(46, 91, 255, 0.22);
+    padding: 0.5rem 0 0.5rem 1rem;
+    margin-bottom: 2.5rem;
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
     transition:
-      opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+      opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .result-row.revealed {
+  .cold-mirror.revealed {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .result-label {
+  .cold-mirror-label {
     display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(46, 91, 255, 0.4);
+    margin-bottom: 0.375rem;
+  }
+
+  .cold-mirror-text {
+    font-size: 14px !important;
+    color: rgba(191, 194, 199, 0.55) !important;
+    line-height: 1.65 !important;
+    margin: 0 !important;
+  }
+
+  /* Structural fingerprint */
+  .fingerprint-block {
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .fingerprint-block.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .fingerprint-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .fingerprint-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(191, 194, 199, 0.35);
+  }
+
+  .fingerprint-code {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    letter-spacing: 0.12em;
+    color: var(--text-light);
+  }
+
+  .fingerprint-summary {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    color: rgba(191, 194, 199, 0.38);
+    margin: 0 !important;
+    line-height: 1.5;
+  }
+
+  .demo-results {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Output blocks */
+  .output-block {
+    padding: 1.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    opacity: 0;
+    transform: translateY(10px);
+    transition:
+      opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .output-block.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .output-block-header {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .output-block-label {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent-green);
-    margin-bottom: 0.5rem;
   }
 
-  .result-text {
-    font-size: 15px !important;
+  .output-shape-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(191, 194, 199, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 2px;
+    padding: 0.15rem 0.5rem;
+  }
+
+  .output-field {
+    margin-bottom: 1rem;
+  }
+
+  .output-field:last-child {
+    margin-bottom: 0;
+  }
+
+  .output-field-key {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(191, 194, 199, 0.32);
+    margin-bottom: 0.375rem;
+  }
+
+  .output-field-val {
+    font-size: 14px !important;
     color: var(--text-muted) !important;
     margin: 0 !important;
     line-height: 1.6 !important;
+  }
+
+  .output-open-val {
+    font-size: 14px !important;
+    color: rgba(100, 130, 255, 0.7) !important;
+    margin: 0 !important;
+    line-height: 1.6 !important;
+  }
+
+  .output-field-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .output-list-item {
+    font-size: 14px !important;
+    color: var(--text-muted) !important;
+    margin: 0 !important;
+    line-height: 1.55 !important;
+    padding-left: 1.125rem;
+    position: relative;
+  }
+
+  .output-list-item::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: rgba(191, 194, 199, 0.22);
+    font-family: 'DM Mono', monospace;
   }
 
   /* Decision footprint */
@@ -535,7 +810,9 @@ import MainLayout from "../layouts/MainLayout.astro";
   @media (prefers-reduced-motion: reduce) {
     .demo-phase { animation: none; }
     .demo-system-line,
-    .result-row,
+    .cold-mirror,
+    .output-block,
+    .fingerprint-block,
     .decision-meta,
     .lead-gate,
     .demo-reset-row {
@@ -554,13 +831,13 @@ import MainLayout from "../layouts/MainLayout.astro";
 
 <script>
   import { analyzeMovement } from '../lib/demoEngine.ts';
-  import type { DemoOutput } from '../lib/demoEngine.ts';
+  import type { DemoInput, DemoOutput } from '../lib/demoEngine.ts';
+  // StructuralFingerprint, Domain included in DemoOutput
 
-  // Decision footprint stored between calc and lead submit
   let currentDecision: {
-    id: string;
-    hash: string;
-    input: string;
+    id:     string;
+    hash:   string;
+    input:  string;
     output: DemoOutput;
   } | null = null;
 
@@ -577,14 +854,12 @@ import MainLayout from "../layouts/MainLayout.astro";
     document.querySelectorAll<HTMLElement>('.demo-phase').forEach(p => {
       p.classList.add('demo-phase--hidden');
     });
-    const el = document.getElementById('phase-' + id)!;
-    el.classList.remove('demo-phase--hidden');
+    document.getElementById('phase-' + id)!.classList.remove('demo-phase--hidden');
   }
 
   function runLoader(done: () => void): void {
     const lines = document.querySelectorAll<HTMLElement>('.loader-line');
     let i = 0;
-
     function activate(): void {
       if (i > 0) lines[i - 1]!.dataset.state = 'done';
       if (i < lines.length) {
@@ -595,64 +870,117 @@ import MainLayout from "../layouts/MainLayout.astro";
         setTimeout(done, 380);
       }
     }
-
     activate();
   }
 
-  function showResults(output: DemoOutput, input: string): void {
-    // Generate decision footprint
-    const id   = crypto.randomUUID();
-    const hash = decisionHash(input);
+  // Read selected chip value from a calibrator group
+  function getChipValue(group: string): string {
+    const selected = document.querySelector<HTMLElement>(
+      `.cal-chips[data-group="${group}"] .chip.selected`
+    );
+    return selected?.dataset.value ?? '';
+  }
 
-    currentDecision = { id, hash, input, output };
-
-    // Populate result rows
-    document.querySelectorAll<HTMLElement>('.result-row').forEach(row => {
-      const key = row.dataset.result as keyof DemoOutput;
-      row.querySelector<HTMLElement>('.result-text')!.textContent = output[key];
-      row.classList.remove('revealed');
+  // Initialize chip selectors
+  document.querySelectorAll<HTMLElement>('.cal-chips').forEach(group => {
+    group.querySelectorAll<HTMLButtonElement>('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        group.querySelectorAll<HTMLButtonElement>('.chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+      });
     });
+  });
+
+  function populateList(containerId: string, items: string[]): void {
+    const container = document.getElementById(containerId)!;
+    container.innerHTML = '';
+    items.forEach(text => {
+      const p = document.createElement('p');
+      p.className = 'output-list-item';
+      p.textContent = text;
+      container.appendChild(p);
+    });
+  }
+
+  function showResults(output: DemoOutput, inputText: string): void {
+    const id   = crypto.randomUUID();
+    const hash = decisionHash(inputText);
+    currentDecision = { id, hash, input: inputText, output };
+
+    // Populate cold mirror
+    document.getElementById('cold-mirror-text')!.textContent = output.cold_mirror;
+
+    // Populate geometry block
+    const geo = output.exposure_geometry;
+    document.getElementById('shape-tag')!.textContent    = geo.shape.toUpperCase();
+    document.getElementById('geo-dominant')!.textContent = geo.dominant_exposure;
+    populateList('geo-secondary', geo.secondary_exposures);
+
+    // Populate reversal block
+    const rev = output.reversal_profile;
+    document.getElementById('rev-exit')!.textContent       = rev.earliest_clean_exit;
+    document.getElementById('rev-inflection')!.textContent = rev.cost_inflection_point;
+    document.getElementById('rev-lockin')!.textContent     = rev.structural_lock_in;
+
+    // Populate foreclosure block
+    const fc = output.positional_foreclosure;
+    populateList('fc-closed-list', fc.closed_positions);
+    document.getElementById('fc-open')!.textContent = fc.open_position;
+
+    // Populate structural fingerprint
+    const fp = output.structural_fingerprint;
+    document.getElementById('fingerprint-code')!.textContent    = fp.code;
+    document.getElementById('fingerprint-summary')!.textContent = fp.summary;
 
     // Reset reveal states
-    const systemLine   = document.querySelector<HTMLElement>('.demo-system-line')!;
-    const decisionMeta = document.querySelector<HTMLElement>('.decision-meta')!;
-    const leadGate     = document.getElementById('lead-gate')!;
-    const leadConfirm  = document.getElementById('lead-confirm')!;
-    const resetRow     = document.querySelector<HTMLElement>('.demo-reset-row')!;
-    [systemLine, decisionMeta, leadGate, resetRow].forEach(el => el.classList.remove('revealed'));
+    const systemLine      = document.querySelector<HTMLElement>('.demo-system-line')!;
+    const coldMirrorEl    = document.getElementById('cold-mirror')!;
+    const fingerprintEl   = document.getElementById('fingerprint-block')!;
+    const decisionMeta    = document.querySelector<HTMLElement>('.decision-meta')!;
+    const leadGate        = document.getElementById('lead-gate')!;
+    const leadConfirm     = document.getElementById('lead-confirm')!;
+    const resetRow        = document.querySelector<HTMLElement>('.demo-reset-row')!;
+    const blocks          = document.querySelectorAll<HTMLElement>('.output-block');
+
+    [systemLine, coldMirrorEl, fingerprintEl, decisionMeta, leadGate, resetRow]
+      .forEach(el => el.classList.remove('revealed'));
+    blocks.forEach(b => b.classList.remove('revealed'));
     leadConfirm.classList.add('demo-phase--hidden');
 
-    // Populate footprint display (truncated for readability)
+    // Populate footprint
     document.getElementById('meta-decision-id')!.textContent   = id.slice(0, 8);
     document.getElementById('meta-decision-hash')!.textContent = hash;
 
     // Reset lead form
-    (document.getElementById('lead-name')  as HTMLInputElement).value = '';
-    (document.getElementById('lead-email') as HTMLInputElement).value = '';
+    (document.getElementById('lead-name')    as HTMLInputElement).value = '';
+    (document.getElementById('lead-email')   as HTMLInputElement).value = '';
     (document.getElementById('lead-company') as HTMLInputElement).value = '';
     const leadErr = document.getElementById('lead-error')!;
     leadErr.textContent = '';
     leadErr.classList.remove('visible');
     (document.getElementById('btn-lead') as HTMLButtonElement).disabled = false;
+    document.getElementById('lead-form')!.classList.remove('demo-phase--hidden');
 
     showPhase('results');
 
-    // Sequential reveal
-    setTimeout(() => systemLine.classList.add('revealed'), 60);
-    document.querySelectorAll<HTMLElement>('.result-row').forEach((row, idx) => {
-      setTimeout(() => row.classList.add('revealed'), 200 + idx * 100);
+    // Sequential reveal: system → cold mirror → 3 blocks → fingerprint → meta → gate → reset
+    setTimeout(() => systemLine.classList.add('revealed'),    60);
+    setTimeout(() => coldMirrorEl.classList.add('revealed'), 200);
+    blocks.forEach((block, idx) => {
+      setTimeout(() => block.classList.add('revealed'), 400 + idx * 200);
     });
-    setTimeout(() => decisionMeta.classList.add('revealed'), 760);
-    setTimeout(() => leadGate.classList.add('revealed'),     1000);
-    setTimeout(() => resetRow.classList.add('revealed'),     1200);
+    setTimeout(() => fingerprintEl.classList.add('revealed'), 1060);
+    setTimeout(() => decisionMeta.classList.add('revealed'),  1160);
+    setTimeout(() => leadGate.classList.add('revealed'),      1320);
+    setTimeout(() => resetRow.classList.add('revealed'),      1480);
   }
 
-  // Calc
+  // Calculate
   document.getElementById('btn-calc')!.addEventListener('click', () => {
-    const input   = document.getElementById('movement-input') as HTMLTextAreaElement;
-    const hint    = document.getElementById('input-hint')!;
-    const btnCalc = document.getElementById('btn-calc') as HTMLButtonElement;
-    const text    = input.value.trim();
+    const textarea = document.getElementById('movement-input') as HTMLTextAreaElement;
+    const hint     = document.getElementById('input-hint')!;
+    const btnCalc  = document.getElementById('btn-calc') as HTMLButtonElement;
+    const text     = textarea.value.trim();
 
     if (!text) {
       hint.textContent = 'Ingresá el movimiento para calcular.';
@@ -661,10 +989,17 @@ import MainLayout from "../layouts/MainLayout.astro";
     }
 
     hint.classList.remove('visible');
-    input.disabled = true;
-    btnCalc.disabled = true;
+    textarea.disabled = true;
+    btnCalc.disabled  = true;
 
-    const output = analyzeMovement(text);
+    const demoInput: DemoInput = {
+      text,
+      reversibility: (getChipValue('reversibility') || 'partially-locked') as DemoInput['reversibility'],
+      resource:      (getChipValue('resource')      || 'capital')           as DemoInput['resource'],
+      horizon:       (getChipValue('horizon')       || '90-365')            as DemoInput['horizon'],
+    };
+
+    const output = analyzeMovement(demoInput);
 
     showPhase('loader');
     runLoader(() => showResults(output, text));
@@ -699,16 +1034,22 @@ import MainLayout from "../layouts/MainLayout.astro";
     btnLead.disabled = true;
 
     const { id, hash, input, output } = currentDecision;
+
+    // Flatten v2.1 output into legacy Sheets columns
     const payload = {
       decision_id:   id,
       decision_hash: hash,
       timestamp:     new Date().toISOString(),
       input,
-      forma:         output.forma,
-      exposicion:    output.exposicion,
-      presion:       output.presion,
-      posicion:      output.posicion,
-      ventana:       output.ventana,
+      forma:      output.cold_mirror,
+      exposicion: `[${output.structural_fingerprint.code}] ${output.exposure_geometry.shape}: ${output.exposure_geometry.dominant_exposure}`,
+      presion:    [
+        output.reversal_profile.earliest_clean_exit,
+        output.reversal_profile.cost_inflection_point,
+        output.reversal_profile.structural_lock_in,
+      ].join(' | '),
+      posicion:   output.positional_foreclosure.closed_positions.join(' | '),
+      ventana:    output.positional_foreclosure.open_position,
       name,
       email,
       company:      company || null,
@@ -730,7 +1071,6 @@ import MainLayout from "../layouts/MainLayout.astro";
         return;
       }
 
-      // Hide form, show confirmation
       document.getElementById('lead-form')!.classList.add('demo-phase--hidden');
       document.getElementById('lead-confirm')!.classList.remove('demo-phase--hidden');
 
@@ -743,22 +1083,19 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   // Reset
   document.getElementById('btn-reset')!.addEventListener('click', () => {
-    const input   = document.getElementById('movement-input') as HTMLTextAreaElement;
-    const btnCalc = document.getElementById('btn-calc') as HTMLButtonElement;
+    const textarea = document.getElementById('movement-input') as HTMLTextAreaElement;
+    const btnCalc  = document.getElementById('btn-calc') as HTMLButtonElement;
 
-    currentDecision = null;
-    input.value    = '';
-    input.disabled = false;
-    btnCalc.disabled = false;
+    currentDecision   = null;
+    textarea.value    = '';
+    textarea.disabled = false;
+    btnCalc.disabled  = false;
 
     document.querySelectorAll<HTMLElement>('.loader-line').forEach(l => {
       delete l.dataset.state;
     });
 
-    // Restore lead form visibility for next run
-    document.getElementById('lead-form')!.classList.remove('demo-phase--hidden');
-
     showPhase('input');
-    input.focus();
+    textarea.focus();
   });
 </script>
