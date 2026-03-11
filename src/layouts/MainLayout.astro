@@ -3,7 +3,7 @@ const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Aurora",
-  "description": "Aurora introduce cálculo sobre los movimientos.",
+  "description": "Aurora introduces calculation over movements.",
   "url": "https://aurora-site.com"
 };
 
@@ -16,12 +16,12 @@ interface Props {
 
 const {
   title = "Aurora",
-  description = "Aurora introduce cálculo sobre los movimientos."
+  description = "Aurora introduces calculation over movements."
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -70,11 +70,12 @@ const {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-bottom: 1px solid var(--border-light);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         position: sticky;
         top: 0;
         z-index: 1000;
-        background: var(--bg-dark);
+        background: rgba(11, 11, 12, 0.94);
+        backdrop-filter: blur(14px);
       }
       .header-left { display: flex; align-items: center; gap: 32px; }
       .logo { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
@@ -82,8 +83,8 @@ const {
         display: flex;
         gap: 32px;
         font-family: 'DM Mono', monospace;
-        font-size: 12px;
-        letter-spacing: 0.15em;
+        font-size: 11px;
+        letter-spacing: 0.18em;
         text-transform: uppercase;
       }
       .nav-horizontal a { color: var(--accent-green); text-decoration: none; }
@@ -121,6 +122,9 @@ const {
         <a href="/" class="logo">◧</a>
       </div>
       <nav class="nav-horizontal">
+        <a href="/products">PRODUCTS</a>
+        <a href="/solutions">SOLUTIONS</a>
+        <a href="/why-aurora">WHY AURORA</a>
         <a href="/demo">DEMO</a>
       </nav>
     </header>
@@ -132,6 +136,9 @@ const {
     <footer>
       <div class="footer-inner">
         <a href="/" class="footer-link">Home</a>
+        <a href="/products" class="footer-link">Products</a>
+        <a href="/solutions" class="footer-link">Solutions</a>
+        <a href="/why-aurora" class="footer-link">Why Aurora</a>
         <a href="/demo" class="footer-link">Demo</a>
         <span class="footer-copy">© 2026 Aurora</span>
       </div>

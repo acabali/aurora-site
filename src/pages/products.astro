@@ -1,0 +1,111 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+---
+
+<MainLayout title="Aurora — Products" description="Decision infrastructure for modern operations.">
+  <div class="page-container">
+    <section class="subpage-hero">
+      <span class="eyebrow">PRODUCTS</span>
+      <h1>System Capabilities</h1>
+      <p class="hero-sub">Aurora is not a dashboard. It is an architecture of calculation applied to strategic moves.</p>
+    </section>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <h3>Aurora Core</h3>
+        <p>The underlying engine that maps the structural dependencies of any movement.</p>
+      </div>
+      <div class="product-card">
+        <h3>Scenario</h3>
+        <p>Dynamic simulation of environment responses to specific strategic actions.</p>
+      </div>
+      <div class="product-card">
+        <h3>Risk</h3>
+        <p>Quantifying structural exposure beyond traditional statistical models.</p>
+      </div>
+      <div class="product-card">
+        <h3>Signal</h3>
+        <p>High-fidelity detection of dominant market interactions before they manifest as data.</p>
+      </div>
+      <div class="product-card">
+        <h3>Ledger</h3>
+        <p>The immutable record of decision quality and structural outcomes.</p>
+      </div>
+    </div>
+
+    <section class="page-cta">
+      <a href="/demo" class="cta-button">→ Put a move under calculation</a>
+    </section>
+  </div>
+</MainLayout>
+
+<style>
+  .page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+  .subpage-hero {
+    margin-bottom: 80px;
+  }
+  .eyebrow {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--accent-green);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: 56px;
+    margin-bottom: 24px;
+  }
+  .hero-sub {
+    font-size: 20px;
+    max-width: 600px;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 32px;
+    margin-bottom: 80px;
+  }
+  .product-card {
+    padding: 32px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+  }
+  .product-card h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: var(--text-light);
+  }
+  .product-card p {
+    font-size: 15px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .page-cta {
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 24px;
+    background: var(--accent-blue);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: transform 0.2s ease;
+  }
+  .cta-button:hover {
+    transform: translateY(-2px);
+  }
+</style>
