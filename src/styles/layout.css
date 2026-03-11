@@ -1,3 +1,4 @@
+/* Canonical shell stylesheet: global reset, shell variants, shared header/footer. */
 :root {
   color-scheme: dark;
   --ease-aurora: cubic-bezier(0.22, 1, 0.36, 1);
