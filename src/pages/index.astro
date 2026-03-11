@@ -1,5 +1,11 @@
 ---
+import MainLayout from "../layouts/MainLayout.astro";
 import AuroraLanding from "../components/AuroraLanding.astro";
 ---
 
-<AuroraLanding />
+<MainLayout
+  title="Aurora"
+  description="Aurora calcula las consecuencias de una decisión antes de ejecutarla."
+>
+  <AuroraLanding />
+</MainLayout>
