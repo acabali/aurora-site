@@ -1,4 +1,8 @@
 ---
+import SiteFooter from "../components/site/SiteFooter.astro";
+import SiteHeader from "../components/site/SiteHeader.astro";
+import "../styles/layout.css";
+
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -12,12 +16,16 @@ const organizationJSON = JSON.stringify(organizationSchema);
 interface Props {
   title?: string;
   description?: string;
+  shell?: "default" | "landing";
 }
 
 const {
   title = "Aurora",
-  description = "Aurora calcula las consecuencias de una decisión antes de ejecutarla."
+  description = "Aurora calcula las consecuencias de una decisión antes de ejecutarla.",
+  shell = "default"
 } = Astro.props;
+
+const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
 ---
 
 <!DOCTYPE html>
@@ -44,97 +52,14 @@ const {
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <slot name="head" />
-
-    <style is:global>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      :root {
-        --bg-dark: #0b0b0c;
-        --text-light: #f7f7f5;
-        --text-muted: #bfc2c7;
-        --accent-blue: #2e5bff;
-        --accent-green: #00c389;
-        --accent-red: #ff3d3d;
-        --border-light: rgba(46, 91, 255, 0.1);
-        --ease-aurora: cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      body {
-        background: var(--bg-dark);
-        color: var(--text-light);
-        font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        line-height: 1.6;
-        overflow-x: hidden;
-      }
-      header {
-        height: 80px;
-        padding: 0 24px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid var(--border-light);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-        background: var(--bg-dark);
-      }
-      .header-left { display: flex; align-items: center; gap: 32px; }
-      .logo { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 32px; }
-      .nav-horizontal {
-        display: flex;
-        gap: 32px;
-        font-family: 'DM Mono', monospace;
-        font-size: 12px;
-        letter-spacing: 0.15em;
-        text-transform: uppercase;
-      }
-      .nav-horizontal a { color: var(--accent-green); text-decoration: none; }
-      .nav-horizontal a:hover { color: var(--text-light); }
-      main { position: relative; }
-      h1 { font-size: 56px; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 32px; font-weight: 700; }
-      h2 { font-size: 42px; line-height: 1.3; margin-bottom: 24px; font-weight: 600; }
-      h3 { font-size: 20px; font-weight: 600; margin-bottom: 12px; }
-      p { font-size: 16px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.7; }
-      footer {
-        border-top: 1px solid var(--border-light);
-        padding: 40px 24px;
-      }
-      .footer-inner {
-        max-width: 900px;
-        margin: 0 auto;
-        display: flex;
-        align-items: center;
-        gap: 24px;
-        flex-wrap: wrap;
-      }
-      .footer-link { color: var(--text-muted); text-decoration: none; font-size: 14px; }
-      .footer-link:hover { color: var(--text-light); }
-      .footer-copy { font-size: 14px; color: var(--text-muted); margin-left: auto; }
-      @media (max-width: 768px) {
-        h1 { font-size: 36px; }
-        h2 { font-size: 28px; }
-        header { padding: 0 16px; }
-      }
-    </style>
   </head>
-  <body>
-    <header>
-      <div class="header-left">
-        <a href="/" class="logo">◧</a>
-      </div>
-      <nav class="nav-horizontal">
-        <a href="/demo">DEMO</a>
-      </nav>
-    </header>
+  <body class={bodyClass}>
+    <SiteHeader variant={shell} />
 
-    <main>
+    <main id="top" class="site-main">
       <slot />
     </main>
 
-    <footer>
-      <div class="footer-inner">
-        <a href="/" class="footer-link">Home</a>
-        <a href="/demo" class="footer-link">Demo</a>
-        <span class="footer-copy">© 2026 Aurora</span>
-      </div>
-    </footer>
+    <SiteFooter variant={shell} />
   </body>
 </html>
