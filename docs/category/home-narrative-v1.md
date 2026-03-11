@@ -2,8 +2,8 @@
 
 ## HERO
 
-El entorno ya superó
-la capacidad de anticipación humana.
+La mente humana tiene un límite.
+La realidad no.
 
 El mercado ya no compite con personas.
 
