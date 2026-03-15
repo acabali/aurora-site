@@ -62,18 +62,10 @@ import MainLayout from "../layouts/MainLayout.astro";
 
     <!-- Phase 3: Loader -->
     <div id="phase-loader" class="demo-phase demo-phase--hidden">
-      <div class="loader-seq" role="status" aria-label="Procesando movimiento">
-        <div class="loader-line">Analizando capital comprometido…</div>
-        <div class="loader-line">
-          Calculando margen de corrección…
-          <span class="loader-badge">≠ INPUT</span>
-        </div>
-        <div class="loader-line">Detectando interacción dominante…</div>
-        <div class="loader-line">
-          Estimando ventana crítica…
-          <span class="loader-badge">≠ INPUT</span>
-        </div>
-        <div class="loader-line">Calculando presión de ejecución…</div>
+      <div class="loader-seq" role="status" aria-label="Registering movement">
+        <div class="loader-line">registering movement</div>
+        <div class="loader-line">mapping structural variables</div>
+        <div class="loader-line">locating pressure point</div>
       </div>
     </div>
 
@@ -82,61 +74,59 @@ import MainLayout from "../layouts/MainLayout.astro";
 
       <!-- Insight -->
       <div class="insight-block" id="insight-block">
-        <p class="insight-line" id="insight-0"></p>
-        <p class="insight-line" id="insight-1"></p>
-        <p class="insight-line insight-line--key" id="insight-2"></p>
+        <span class="terminal-title">AURORA DECISION SYSTEM</span>
+        <p class="insight-line insight-line--state" id="insight-0">movement registered</p>
+        <p class="insight-line" id="insight-1">decision_id: --</p>
+        <p class="insight-line" id="insight-2">protocol: vΩ</p>
+        <p class="insight-line insight-line--key" id="insight-3">run_signature: --</p>
       </div>
 
       <!-- Relationship map -->
-      <div class="rel-map" id="rel-map" aria-label="Mapa de relación estructural">
-        <div class="rel-node">
-          <span class="rel-node-name">Capital</span>
-          <span class="rel-node-val" id="map-capital">—</span>
+      <div class="rel-map" id="rel-map" aria-label="System reading">
+        <div class="terminal-cluster">
+          <p class="rel-node-val" id="map-capital">structural load: --</p>
+          <p class="rel-node-val" id="map-window">pressure point: --</p>
+          <p class="rel-node-val" id="map-reversibility">compression mechanism: --</p>
         </div>
-        <div class="rel-connector" aria-hidden="true">→</div>
-        <div class="rel-node rel-node--derived">
-          <span class="rel-derived-tag">← DERIVADO</span>
-          <span class="rel-node-name">Ventana de corrección</span>
-          <span class="rel-node-val" id="map-window">—</span>
-        </div>
-        <div class="rel-connector" aria-hidden="true">→</div>
-        <div class="rel-node">
-          <span class="rel-node-name">Reversibilidad</span>
-          <span class="rel-node-val" id="map-reversibility">—</span>
+        <div class="terminal-divider" aria-hidden="true"></div>
+        <div class="terminal-cluster">
+          <p class="rel-node-val rel-node-val--label">system reading</p>
+          <p class="rel-node-val" id="system-reading-primary">capacity maintained</p>
+          <p class="rel-node-val" id="system-reading-secondary">execution window open</p>
         </div>
       </div>
 
       <!-- Registration ritual -->
       <div class="reg-ritual" id="reg-ritual">
-        <span class="reg-title">Movimiento registrado</span>
+        <span class="reg-title">movement recorded</span>
         <div class="reg-fields">
           <div class="reg-field">
-            <span class="reg-key">ID</span>
+            <span class="reg-key">decision_id</span>
             <span class="reg-val" id="reg-id">—</span>
           </div>
           <div class="reg-field">
-            <span class="reg-key">HASH</span>
+            <span class="reg-key">protocol</span>
             <span class="reg-val" id="reg-hash">—</span>
           </div>
           <div class="reg-field">
-            <span class="reg-key">PRESIÓN</span>
+            <span class="reg-key">run_signature</span>
             <span class="reg-val" id="reg-pressure">—</span>
           </div>
           <div class="reg-field">
-            <span class="reg-key">VENTANA</span>
+            <span class="reg-key">structural load</span>
             <span class="reg-val" id="reg-window">—</span>
           </div>
           <div class="reg-field">
-            <span class="reg-key">TIMESTAMP</span>
+            <span class="reg-key">pressure point</span>
             <span class="reg-val" id="reg-ts">—</span>
           </div>
         </div>
-        <p class="reg-guarantee">Same movement. Same hash. Always.</p>
+        <p class="reg-guarantee">Same movement. Same footprint. Deterministic output.</p>
       </div>
 
       <!-- CTA -->
       <div class="cta-block" id="cta-block">
-        <button class="btn-cta">Procesar en Aurora →</button>
+        <a href="/" class="btn-cta">Explore Aurora</a>
       </div>
 
       <!-- Reset -->
@@ -351,17 +341,20 @@ import MainLayout from "../layouts/MainLayout.astro";
   /* Loader */
   .loader-seq {
     padding-top: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.015);
+    padding: 1rem 1.1rem;
   }
 
   .loader-line {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.9rem;
     font-family: 'DM Mono', monospace;
     font-size: 13px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    padding: 0.65rem 0;
+    padding: 0.55rem 0;
     color: var(--text-muted);
     opacity: 0.2;
     transition:
@@ -402,32 +395,12 @@ import MainLayout from "../layouts/MainLayout.astro";
     opacity: 0.8;
   }
 
-  /* ≠ INPUT badge */
-  .loader-badge {
-    margin-left: auto;
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(46, 91, 255, 0.75);
-    border: 1px solid rgba(46, 91, 255, 0.25);
-    border-radius: 2px;
-    padding: 0.1rem 0.4rem;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    flex-shrink: 0;
-  }
-
-  .loader-line[data-state="active"] .loader-badge,
-  .loader-line[data-state="done"] .loader-badge {
-    opacity: 1;
-  }
-
   /* Insight block */
   .insight-block {
     margin-bottom: 2.5rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.4rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.015);
     opacity: 0;
     transform: translateY(10px);
     transition:
@@ -441,30 +414,49 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .insight-line {
-    font-size: 15px !important;
-    color: var(--text-muted) !important;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px !important;
+    color: rgba(191, 194, 199, 0.7) !important;
     line-height: 1.7 !important;
-    margin: 0 0 0.375rem !important;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+    margin: 0 0 0.25rem !important;
+  }
+
+  .insight-line--state {
+    color: var(--accent-green) !important;
+    margin-bottom: 0.75rem !important;
   }
 
   .insight-line--key {
-    font-size: 18px !important;
+    font-size: 12px !important;
     font-weight: 500 !important;
     color: var(--text-light) !important;
-    border-left: 2px solid rgba(46, 91, 255, 0.45);
-    padding-left: 1rem;
-    margin-top: 1.25rem !important;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
     line-height: 1.5 !important;
+  }
+
+  .terminal-title {
+    display: block;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: 1rem;
   }
 
   /* Relationship map */
   .rel-map {
-    display: flex;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
     margin-bottom: 2.5rem;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 4px;
-    overflow: hidden;
+    background: rgba(255, 255, 255, 0.015);
+    padding: 1.4rem 1.25rem;
     opacity: 0;
     transform: translateY(10px);
     transition:
@@ -477,66 +469,39 @@ import MainLayout from "../layouts/MainLayout.astro";
     transform: translateY(0);
   }
 
-  .rel-node {
-    flex: 1;
+  .terminal-cluster {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.45rem;
-    padding: 1.25rem 0.75rem;
-    background: rgba(255, 255, 255, 0.015);
-    text-align: center;
-  }
-
-  .rel-node--derived {
-    background: rgba(46, 91, 255, 0.05);
-    border-left:  1px solid rgba(46, 91, 255, 0.14);
-    border-right: 1px solid rgba(46, 91, 255, 0.14);
-  }
-
-  .rel-derived-tag {
-    font-family: 'DM Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: rgba(46, 91, 255, 0.6);
-    border: 1px solid rgba(46, 91, 255, 0.2);
-    border-radius: 2px;
-    padding: 0.1rem 0.35rem;
-  }
-
-  .rel-node-name {
-    font-family: 'DM Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: rgba(191, 194, 199, 0.38);
+    gap: 0.3rem;
   }
 
   .rel-node-val {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.04em;
-    color: var(--text-light);
-    line-height: 1.4;
+    color: rgba(191, 194, 199, 0.7);
+    line-height: 1.6;
+    margin: 0;
   }
 
-  .rel-connector {
-    display: flex;
-    align-items: center;
-    padding: 0 0.375rem;
-    color: rgba(191, 194, 199, 0.18);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    flex-shrink: 0;
+  .rel-node-val--label {
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 10px;
+    margin-bottom: 0.35rem;
+  }
+
+  .terminal-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
   }
 
   /* Registration ritual */
   .reg-ritual {
-    padding: 1.5rem 0;
-    border-top:    1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.4rem 1.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.015);
     margin-bottom: 2.5rem;
     opacity: 0;
     transform: translateY(8px);
@@ -571,15 +536,16 @@ import MainLayout from "../layouts/MainLayout.astro";
     display: flex;
     align-items: baseline;
     gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .reg-key {
     font-family: 'DM Mono', monospace;
     font-size: 9px;
     letter-spacing: 0.14em;
-    text-transform: uppercase;
+    text-transform: none;
     color: rgba(191, 194, 199, 0.32);
-    min-width: 76px;
+    min-width: 112px;
     flex-shrink: 0;
   }
 
@@ -587,8 +553,8 @@ import MainLayout from "../layouts/MainLayout.astro";
     font-family: 'DM Mono', monospace;
     font-size: 12px;
     letter-spacing: 0.04em;
-    color: rgba(191, 194, 199, 0.6);
-    word-break: break-all;
+    color: rgba(191, 194, 199, 0.7);
+    word-break: break-word;
   }
 
   .reg-guarantee {
@@ -615,25 +581,32 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .btn-cta {
-    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
     padding: 0 1.5rem;
-    background: var(--accent-blue);
+    background: transparent;
     color: var(--text-light);
-    border: none;
-    border-radius: 5px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
+    border: 1px solid rgba(46, 91, 255, 0.35);
+    border-radius: 3px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
     cursor: pointer;
     transition:
       transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 220ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .btn-cta:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(46, 91, 255, 0.3);
+    border-color: rgba(46, 91, 255, 0.55);
+    box-shadow: 0 8px 24px rgba(46, 91, 255, 0.18);
   }
 
   /* Reset row */
@@ -674,15 +647,6 @@ import MainLayout from "../layouts/MainLayout.astro";
     .demo-wrap {
       padding: 64px 20px 80px;
     }
-
-    .rel-map {
-      flex-direction: column;
-    }
-
-    .rel-connector {
-      padding: 0.375rem 0;
-      justify-content: center;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -698,7 +662,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 <script>
   import { computeMovement } from "../lib/movementEngine";
   import type { Absorption, ReversibilityLevel } from "../lib/movementEngine";
-  import { computeMovementHash, movementId } from "../lib/hash";
+  import { computeMovementHash } from "../lib/hash";
 
   // ── Phase control ───────────────────────────────────────────────────────
 
@@ -764,6 +728,52 @@ import MainLayout from "../layouts/MainLayout.astro";
     );
   }
 
+  function deriveDecisionId(fullHashHex: string): string {
+    const n = parseInt(fullHashHex.slice(0, 6), 16) % 10_000;
+    return `AUR-${n.toString().padStart(4, "0")}`;
+  }
+
+  function deriveStructuralLoad(pressureScore: number): string {
+    if (pressureScore >= 0.72) return "elevated";
+    if (pressureScore >= 0.45) return "active";
+    return "contained";
+  }
+
+  function deriveCompressionMechanism(
+    absorption: Absorption,
+    reversibility: ReversibilityLevel
+  ): string {
+    const absorptionSignal =
+      absorption === "no"
+        ? "market resistance"
+        : absorption === "restricted"
+        ? "restricted absorption"
+        : "correction";
+
+    const reversibilitySignal =
+      reversibility === "none"
+        ? "locked reversibility"
+        : reversibility === "partial"
+        ? "partial reversibility"
+        : "reversibility";
+
+    return `${absorptionSignal} + ${reversibilitySignal}`;
+  }
+
+  function deriveSystemReading(windowDays: number): { primary: string; secondary: string } {
+    if (windowDays <= 4) {
+      return {
+        primary: "capacity compressed",
+        secondary: "execution window narrow",
+      };
+    }
+
+    return {
+      primary: "capacity maintained",
+      secondary: "execution window open",
+    };
+  }
+
   // ── Process ─────────────────────────────────────────────────────────────
 
   document.getElementById("btn-process")!.addEventListener("click", async () => {
@@ -793,46 +803,45 @@ import MainLayout from "../layouts/MainLayout.astro";
     showPhase("loader");
 
     runLoader(async () => {
+      const protocol = "vΩ";
+
       // Deterministic SHA-256 hash
       const fullHash = await computeMovementHash({
         capital,
         absorption,
         reversibility,
         pressureDay: output.pressureDay,
+        protocolVersion: protocol,
       });
 
-      const id = movementId(fullHash);
-      const ts = new Date().toISOString().slice(0, 19).replace("T", " ") + " UTC";
+      const decisionId = deriveDecisionId(fullHash);
+      const runSignature = fullHash.slice(0, 6);
+      const structuralLoad = deriveStructuralLoad(output.pressureScore);
+      const compressionMechanism = deriveCompressionMechanism(absorption, reversibility);
+      const systemReading = deriveSystemReading(output.correctionWindowDays);
 
-      // Insight lines (derived, not input)
-      const insight = [
-        "Este movimiento crea presión antes del resultado.",
-        "El capital comprometido reduce el margen de corrección.",
-        `La ventana de corrección empieza a cerrarse: día ${output.pressureDay}.`,
-      ] as const;
+      // Decision footprint
+      document.getElementById("insight-0")!.textContent = "movement registered";
+      document.getElementById("insight-1")!.textContent = `decision_id: ${decisionId}`;
+      document.getElementById("insight-2")!.textContent = `protocol: ${protocol}`;
+      document.getElementById("insight-3")!.textContent = `run_signature: ${runSignature}`;
 
-      document.getElementById("insight-0")!.textContent = insight[0];
-      document.getElementById("insight-1")!.textContent = insight[1];
-      document.getElementById("insight-2")!.textContent = insight[2];
-
-      // Relationship map
+      // Structural reading
       document.getElementById("map-capital")!.textContent =
-        `$${capital.toLocaleString("es", { maximumFractionDigits: 0 })}`;
+        `structural load: ${structuralLoad}`;
       document.getElementById("map-window")!.textContent =
-        `Día ${output.pressureDay} · ${output.correctionWindowDays}d margen`;
+        `pressure point: day ${output.pressureDay}`;
       document.getElementById("map-reversibility")!.textContent =
-        reversibility === "full"
-          ? "Total"
-          : reversibility === "partial"
-          ? "Parcial"
-          : "Ninguna";
+        `compression mechanism: ${compressionMechanism}`;
+      document.getElementById("system-reading-primary")!.textContent = systemReading.primary;
+      document.getElementById("system-reading-secondary")!.textContent = systemReading.secondary;
 
-      // Registration ritual
-      document.getElementById("reg-id")!.textContent       = id;
-      document.getElementById("reg-hash")!.textContent     = fullHash.slice(0, 16);
-      document.getElementById("reg-pressure")!.textContent = `Día ${output.pressureDay}`;
-      document.getElementById("reg-window")!.textContent   = `${output.correctionWindowDays} días`;
-      document.getElementById("reg-ts")!.textContent       = ts;
+      // Ledger memory signal
+      document.getElementById("reg-id")!.textContent       = decisionId;
+      document.getElementById("reg-hash")!.textContent     = protocol;
+      document.getElementById("reg-pressure")!.textContent = runSignature;
+      document.getElementById("reg-window")!.textContent   = structuralLoad;
+      document.getElementById("reg-ts")!.textContent       = `day ${output.pressureDay}`;
 
       // Reset reveals
       ["insight-block", "rel-map", "reg-ritual", "cta-block", "reset-row"].forEach(
