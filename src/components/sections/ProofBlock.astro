@@ -1,0 +1,32 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Grid from "../layout/Grid.astro";
+import ProofCard from "../system/ProofCard.astro";
+
+interface Props {
+  title: string;
+  items: { label: string; value: string }[];
+}
+
+const { title, items } = Astro.props;
+---
+
+<Section id="proof-block">
+  <Container>
+    <h2 class="section-title">{title}</h2>
+    <Grid columns={2} mobileColumns={1} gap="2rem">
+      {items.map(item => (
+        <ProofCard label={item.label} value={item.value} />
+      ))}
+    </Grid>
+  </Container>
+</Section>
+
+<style>
+  .section-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 3rem;
+  }
+</style>

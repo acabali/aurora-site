@@ -1,0 +1,53 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Grid from "../layout/Grid.astro";
+
+interface Props {
+  title: string;
+  products: { name: string; description: string }[];
+}
+
+const { title, products } = Astro.props;
+---
+
+<Section id="products">
+  <Container>
+    <h2 class="section-title">{title}</h2>
+    <Grid columns={2} mobileColumns={1} gap="2rem">
+      {products.map(product => (
+        <div class="product-card">
+          <h3 class="product-name">{product.name}</h3>
+          <p class="product-description">{product.description}</p>
+        </div>
+      ))}
+    </Grid>
+  </Container>
+</Section>
+
+<style>
+  .section-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 3rem;
+  }
+
+  .product-card {
+    padding: 2.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .product-name {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-accent-blue, #2e5bff);
+  }
+
+  .product-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text-secondary, #bfc2c7);
+  }
+</style>

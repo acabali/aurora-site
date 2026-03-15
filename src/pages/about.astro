@@ -1,0 +1,30 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import Container from "../components/layout/Container.astro";
+import Section from "../components/layout/Section.astro";
+import Stack from "../components/layout/Stack.astro";
+---
+
+<MainLayout title="About | Aurora">
+  <Section id="about-hero">
+    <Container>
+      <Stack gap="2.5rem">
+        <h1 class="about-title">A New Decision Layer</h1>
+        <p class="about-subtitle">Aurora is built for a world where the speed of execution requires deterministic calculation. Our goal is to provide the infrastructure that makes strategic movement visible.</p>
+      </Stack>
+    </Container>
+  </Section>
+</MainLayout>
+
+<style>
+  .about-title {
+    font-size: 48px;
+    font-weight: 700;
+  }
+
+  .about-subtitle {
+    font-size: 20px;
+    color: var(--color-text-secondary, #bfc2c7);
+    max-width: 700px;
+  }
+</style>

@@ -1,0 +1,22 @@
+---
+import { spacing } from "../../system/design/spacing";
+
+interface Props {
+  maxWidth?: string;
+}
+
+const { maxWidth = spacing.container.maxWidth } = Astro.props;
+---
+
+<div class="container" style={`--max-width: ${maxWidth}`}>
+  <slot />
+</div>
+
+<style>
+  .container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+</style>

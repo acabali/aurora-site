@@ -1,0 +1,210 @@
+---
+import TerminalBlock from "./TerminalBlock.astro";
+import DecisionFootprint from "./DecisionFootprint.astro";
+
+interface Props {
+  // Add props if needed
+}
+---
+
+<div class="demo-experience">
+  <div class="demo-form-container">
+    <form id="demo-form" class="demo-form">
+      <div class="form-group">
+        <label for="decision-type">Decision type</label>
+        <select id="decision-type" name="text">
+          <option value="market_expansion">expansion</option>
+          <option value="pricing_move">pricing</option>
+          <option value="hiring_organizational">hiring</option>
+          <option value="capital_allocation">capital</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="capital-exposure">Capital exposure</label>
+        <select id="capital-exposure" name="resource">
+          <option value="attention">low</option>
+          <option value="time">medium</option>
+          <option value="capital">high</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="reversibility">Reversibility</label>
+        <select id="reversibility" name="reversibility">
+          <option value="reversible">high</option>
+          <option value="partially-locked">medium</option>
+          <option value="irreversible">low</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="time-horizon">Time horizon</label>
+        <select id="time-horizon" name="horizon">
+          <option value="under-90">short</option>
+          <option value="90-365">medium</option>
+          <option value="beyond-1y">long</option>
+        </select>
+      </div>
+
+      <button type="submit" class="submit-button">Run Analysis</button>
+    </form>
+  </div>
+
+  <div class="demo-output-container">
+    <TerminalBlock height="500px">
+      <div id="terminal-lines"></div>
+    </TerminalBlock>
+
+    <div id="decision-footprint-result" class="hidden">
+      <!-- Result will be injected here -->
+    </div>
+  </div>
+</div>
+
+<style>
+  .demo-experience {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .demo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .form-group label {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary, #bfc2c7);
+  }
+
+  .form-group select {
+    background: #000;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.75rem;
+    font-size: 14px;
+    border-radius: 4px;
+  }
+
+  .submit-button {
+    margin-top: 1rem;
+    height: 48px;
+    background: var(--color-accent-blue, #2e5bff);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+
+  .submit-button:hover {
+    transform: translateY(-2px);
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  #decision-footprint-result {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .demo-experience {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+</style>
+
+<script>
+  import { analyzeMovement } from "../../lib/demoEngine";
+
+  const form = document.getElementById('demo-form') as HTMLFormElement;
+  const terminalLines = document.getElementById('terminal-lines');
+  const footprintResult = document.getElementById('decision-footprint-result');
+
+  const addLine = (text: string, delay: number = 0) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const line = document.createElement('div');
+        line.textContent = text;
+        line.style.marginBottom = '0.5rem';
+        terminalLines?.appendChild(line);
+        terminalLines?.parentElement?.scrollTo(0, terminalLines.scrollHeight);
+        resolve(true);
+      }, delay);
+    });
+  };
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const input = {
+      text: formData.get('text') as string,
+      resource: formData.get('resource') as any,
+      reversibility: formData.get('reversibility') as any,
+      horizon: formData.get('horizon') as any,
+    };
+
+    if (terminalLines) terminalLines.innerHTML = '';
+    if (footprintResult) {
+      footprintResult.innerHTML = '';
+      footprintResult.classList.add('hidden');
+    }
+
+    await addLine('AURORA DECISION SYSTEM', 0);
+    await addLine('', 200);
+    await addLine('movement registered', 400);
+    await addLine(`decision_id: AUR-${Math.floor(Math.random() * 9000) + 1000}`, 200);
+    await addLine('', 200);
+
+    // Loader sequence
+    await addLine('registering movement...', 400);
+    await addLine('mapping structural variables...', 600);
+    await addLine('locating pressure point...', 600);
+    await addLine('', 400);
+
+    const result = analyzeMovement(input);
+
+    await addLine('structural load: ' + result.structural_fingerprint.code, 400);
+    await addLine('pressure point: ' + result.reversal_profile.cost_inflection_point.split('.')[0], 400);
+    await addLine('compression mechanism: ' + result.domain.replace('_', ' '), 400);
+    await addLine('', 200);
+    await addLine('system reading', 400);
+    await addLine('', 200);
+    await addLine('capacity maintained', 400);
+    await addLine('execution window open', 400);
+    await addLine('', 200);
+    await addLine(`run_signature: ${Math.random().toString(36).substring(2, 8).toUpperCase()}`, 400);
+    await addLine('', 200);
+    await addLine('movement recorded', 400);
+
+    if (footprintResult) {
+      footprintResult.innerHTML = `
+        <div class="decision-footprint">
+          <div style="font-family: 'DM Mono', monospace; font-size: 14px; color: #2e5bff; margin-bottom: 0.5rem;">${result.structural_fingerprint.code}</div>
+          <div style="font-size: 16px; line-height: 1.5; color: #f7f7f5;">${result.structural_fingerprint.summary}</div>
+        </div>
+      `;
+      footprintResult.classList.remove('hidden');
+    }
+  });
+</script>

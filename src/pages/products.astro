@@ -1,0 +1,25 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import ProductsBlock from "../components/sections/ProductsBlock.astro";
+import CTASection from "../components/sections/CTASection.astro";
+
+const products = [
+  { name: "Aurora Core", description: "The foundation of the decision protocol. Real-time structural mapping." },
+  { name: "Simulation Engine", description: "High-fidelity outcome modeling for complex strategic moves." },
+  { name: "Canonical Ledger", description: "Immutable recording of all structural movements." },
+  { name: "MCP Connector", description: "Seamless integration with your existing intelligence layer." }
+];
+---
+
+<MainLayout title="Products | Aurora">
+  <ProductsBlock
+    title="Core Infrastructure"
+    products={products}
+  />
+  <CTASection
+    title="Ready to integrate?"
+    description="Connect your organization to the decision protocol."
+    ctaText="Explore Aurora"
+    ctaHref="/contact"
+  />
+</MainLayout>

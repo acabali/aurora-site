@@ -1,12 +1,78 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
-import AuroraLanding from "../components/AuroraLanding.astro";
+import Hero from "../components/sections/Hero.astro";
+import SystemExplainer from "../components/sections/SystemExplainer.astro";
+import DecisionEngine from "../components/sections/DecisionEngine.astro";
+import DemoBlock from "../components/sections/DemoBlock.astro";
+import ProductsBlock from "../components/sections/ProductsBlock.astro";
+import SolutionsBlock from "../components/sections/SolutionsBlock.astro";
+import AuthorityBlock from "../components/sections/AuthorityBlock.astro";
+import CTASection from "../components/sections/CTASection.astro";
+
+const systemPoints = [
+  { label: "Deterministic", text: "Aurora calculates consequences based on structural variables, not probabilities." },
+  { label: "Infrastructure", text: "A decision layer built for institutional-grade reliability and architectural rigor." }
+];
+
+const products = [
+  { name: "Aurora Core", description: "The foundation of the decision protocol. Real-time structural mapping." },
+  { name: "Simulation Engine", description: "High-fidelity outcome modeling for complex strategic moves." }
+];
+
+const solutions = [
+  { name: "Capital Allocation", description: "Optimize exposure concentration and exit cost gradients." },
+  { name: "Market Expansion", description: "Calculate the foreclosure radius of new geographic positions." }
+];
+
+const authorities = ["ISO-27001", "SOC2 TYPE II", "GDPR COMPLIANT", "HIPAA READY"];
 ---
 
-<MainLayout
-  title="Aurora"
-  description="Aurora calcula las consecuencias de una decisión antes de ejecutarla."
-  shell="landing"
->
-  <AuroraLanding />
+<MainLayout title="Aurora | Decision Infrastructure">
+  <Hero
+    title="Decision infrastructure <br /> for the next era."
+    subtitle="Aurora calculates the structural consequences of a move before it is executed. Not a dashboard. A system."
+    ctaText="Explore Aurora"
+    ctaHref="/products"
+  />
+
+  <SystemExplainer
+    title="What changed"
+    description="The era of interpretation has ended. Systems now compete with systems."
+    points={systemPoints}
+  />
+
+  <DecisionEngine
+    title="Deterministic Engine"
+    description="Aurora identifies the pressure points in any strategic movement. It maps the commitment inertia and calculates the clean exit window."
+  />
+
+  <DemoBlock
+    title="System Capability"
+    description="Put your next move under calculation. See how Aurora reveals the underlying structure."
+    ctaText="See how Aurora works"
+    ctaHref="/demo"
+  />
+
+  <ProductsBlock
+    title="Infrastructure"
+    products={products}
+  />
+
+  <SolutionsBlock
+    title="Applications"
+    solutions={solutions}
+  />
+
+  <AuthorityBlock
+    title="Institutional Credibility"
+    subtitle="Built for organizations that require architectural rigor and deterministic outcomes."
+    authorities={authorities}
+  />
+
+  <CTASection
+    title="Ready to integrate?"
+    description="Connect your organization to the decision protocol."
+    ctaText="Explore Aurora"
+    ctaHref="/contact"
+  />
 </MainLayout>

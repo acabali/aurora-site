@@ -1,0 +1,103 @@
+---
+import Container from "../layout/Container.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  ctaText: string;
+  ctaHref: string;
+}
+
+const { title, subtitle, ctaText, ctaHref } = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="hero-grid"></div>
+  </div>
+
+  <Container>
+    <div class="hero-content">
+      <Stack gap="2.5rem" align="center">
+        <h1 class="hero-title" set:html={title} />
+        <p class="hero-subtitle" set:html={subtitle} />
+        <div class="hero-cta">
+          <a href={ctaHref} class="cta-button">{ctaText}</a>
+        </div>
+      </Stack>
+    </div>
+  </Container>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding: 128px 0 140px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(46, 91, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46, 91, 255, 0.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .hero-title {
+    margin: 0;
+    font-size: 58px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+
+  .hero-subtitle {
+    max-width: 600px;
+    margin: 0;
+    color: var(--color-text-secondary, #bfc2c7);
+    line-height: 1.6;
+    font-size: 18px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    background: var(--color-accent-blue, #2e5bff);
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(46, 91, 255, 0.2);
+  }
+
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 36px;
+    }
+  }
+</style>

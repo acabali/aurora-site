@@ -1,0 +1,32 @@
+---
+interface Props {
+  color?: string;
+  delay?: string;
+}
+
+const {
+  color = "var(--color-accent-blue, #2e5bff)",
+  delay = "0ms"
+} = Astro.props;
+---
+
+<div class="signal-line" style={`--color: ${color}; --delay: ${delay}`}></div>
+
+<style>
+  .signal-line {
+    width: 1px;
+    height: 100px;
+    background: linear-gradient(180deg, transparent, var(--color), transparent);
+    margin: 0 auto;
+    opacity: 0;
+    transform: scaleY(0);
+    animation: signal 2s ease-in-out var(--delay) infinite;
+  }
+
+  @keyframes signal {
+    0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+    51% { opacity: 1; transform: scaleY(1); transform-origin: bottom; }
+    100% { opacity: 0; transform: scaleY(0); transform-origin: bottom; }
+  }
+</style>

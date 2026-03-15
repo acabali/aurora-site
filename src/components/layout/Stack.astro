@@ -1,0 +1,24 @@
+---
+interface Props {
+  gap?: string;
+  align?: "start" | "center" | "end";
+}
+
+const {
+  gap = "1.5rem",
+  align = "start"
+} = Astro.props;
+---
+
+<div class="stack" style={`--gap: ${gap}; --align: ${align}`}>
+  <slot />
+</div>
+
+<style>
+  .stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    align-items: var(--align);
+  }
+</style>

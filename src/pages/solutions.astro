@@ -1,0 +1,25 @@
+---
+import MainLayout from "../layouts/MainLayout.astro";
+import SolutionsBlock from "../components/sections/SolutionsBlock.astro";
+import CTASection from "../components/sections/CTASection.astro";
+
+const solutions = [
+  { name: "Capital Allocation", description: "Optimize exposure concentration and exit cost gradients." },
+  { name: "Market Expansion", description: "Calculate the foreclosure radius of new geographic positions." },
+  { name: "Strategic Positioning", description: "Identify and occupy the most resilient competitive spaces." },
+  { name: "Operational Change", description: "Minimize the structural friction of organizational evolution." }
+];
+---
+
+<MainLayout title="Solutions | Aurora">
+  <SolutionsBlock
+    title="Structural Applications"
+    solutions={solutions}
+  />
+  <CTASection
+    title="Ready to integrate?"
+    description="Connect your organization to the decision protocol."
+    ctaText="Explore Aurora"
+    ctaHref="/contact"
+  />
+</MainLayout>

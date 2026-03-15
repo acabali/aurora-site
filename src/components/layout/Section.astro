@@ -1,0 +1,37 @@
+---
+import { spacing } from "../../system/design/spacing";
+import { colors } from "../../system/design/colors";
+
+interface Props {
+  id?: string;
+  paddingY?: string;
+  borderTop?: boolean;
+}
+
+const {
+  id,
+  paddingY = spacing.section.paddingY,
+  paddingYMobile = spacing.section.paddingYMobile,
+  borderTop = true
+} = Astro.props;
+---
+
+<section id={id} class:list={["section", { "has-border": borderTop }]} style={`--padding-y: ${paddingY}; --padding-y-mobile: ${paddingYMobile}`}>
+  <slot />
+</section>
+
+<style>
+  .section {
+    padding: var(--padding-y) 0;
+  }
+
+  .has-border {
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.06));
+  }
+
+  @media (max-width: 768px) {
+    .section {
+      padding: var(--padding-y-mobile, 80px) 0;
+    }
+  }
+</style>
