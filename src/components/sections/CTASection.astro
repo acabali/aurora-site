@@ -1,0 +1,68 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaHref: string;
+}
+
+const { title, description, ctaText, ctaHref } = Astro.props;
+---
+
+<Section id="cta" borderTop={true}>
+  <Container>
+    <div class="cta-inner">
+      <Stack gap="2.5rem" align="center">
+        <h2 class="cta-title">{title}</h2>
+        <p class="cta-description">{description}</p>
+        <a href={ctaHref} class="cta-button">{ctaText}</a>
+      </Stack>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .cta-inner {
+    padding: 6rem 2rem;
+    background: #fff;
+    color: #000;
+    text-align: center;
+    border-radius: 4px;
+  }
+
+  .cta-title {
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-description {
+    font-size: 18px;
+    opacity: 0.8;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 52px;
+    padding: 0 32px;
+    border-radius: 4px;
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  .cta-button:hover {
+    transform: scale(1.05);
+  }
+</style>

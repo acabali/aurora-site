@@ -1,0 +1,76 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  points: { label: string; text: string }[];
+}
+
+const { title, description, points } = Astro.props;
+---
+
+<Section id="system-explanation">
+  <Container>
+    <Stack gap="4rem">
+      <div class="explainer-header">
+        <h2 class="explainer-title">{title}</h2>
+        <p class="explainer-description">{description}</p>
+      </div>
+
+      <div class="explainer-grid">
+        {points.map((point) => (
+          <div class="explainer-point">
+            <h3 class="point-label">{point.label}</h3>
+            <p class="point-text">{point.text}</p>
+          </div>
+        ))}
+      </div>
+    </Stack>
+  </Container>
+</Section>
+
+<style>
+  .explainer-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .explainer-description {
+    font-size: 18px;
+    color: var(--color-text-secondary, #bfc2c7);
+    max-width: 600px;
+    line-height: 1.6;
+  }
+
+  .explainer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4rem;
+  }
+
+  .point-label {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-blue, #2e5bff);
+    margin-bottom: 1rem;
+  }
+
+  .point-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text, #f7f7f5);
+  }
+
+  @media (max-width: 768px) {
+    .explainer-grid {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>

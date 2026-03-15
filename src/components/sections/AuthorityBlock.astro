@@ -1,0 +1,72 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+
+interface Props {
+  title: string;
+  subtitle: string;
+  authorities: string[];
+}
+
+const { title, subtitle, authorities } = Astro.props;
+---
+
+<Section id="authority">
+  <Container>
+    <div class="authority-layout">
+      <div class="authority-header">
+        <h2 class="authority-title">{title}</h2>
+        <p class="authority-subtitle">{subtitle}</p>
+      </div>
+      <div class="authority-grid">
+        {authorities.map(auth => (
+          <div class="authority-item">{auth}</div>
+        ))}
+      </div>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .authority-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+  }
+
+  .authority-title {
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .authority-subtitle {
+    font-size: 18px;
+    color: var(--color-text-secondary, #bfc2c7);
+    line-height: 1.6;
+  }
+
+  .authority-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+
+  .authority-item {
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .authority-layout {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+  }
+</style>

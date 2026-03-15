@@ -1,0 +1,70 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  solutions: { name: string; description: string }[];
+}
+
+const { title, solutions } = Astro.props;
+---
+
+<Section id="solutions">
+  <Container>
+    <h2 class="section-title">{title}</h2>
+    <div class="solutions-list">
+      {solutions.map(solution => (
+        <div class="solution-item">
+          <div class="solution-header">
+            <h3 class="solution-name">{solution.name}</h3>
+            <div class="solution-line"></div>
+          </div>
+          <p class="solution-description">{solution.description}</p>
+        </div>
+      ))}
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .section-title {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 4rem;
+  }
+
+  .solutions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .solution-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .solution-name {
+    font-size: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .solution-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--color-accent-blue, #2e5bff), transparent);
+    opacity: 0.3;
+  }
+
+  .solution-description {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text-secondary, #bfc2c7);
+    max-width: 700px;
+  }
+</style>

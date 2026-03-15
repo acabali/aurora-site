@@ -1,0 +1,65 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  ctaText: string;
+  ctaHref: string;
+}
+
+const { title, description, ctaText, ctaHref } = Astro.props;
+---
+
+<Section id="demo-preview">
+  <Container>
+    <div class="demo-box">
+      <Stack gap="2rem" align="center">
+        <h2 class="demo-title">{title}</h2>
+        <p class="demo-description">{description}</p>
+        <a href={ctaHref} class="cta-button">{ctaText}</a>
+      </Stack>
+    </div>
+  </Container>
+</Section>
+
+<style>
+  .demo-box {
+    padding: 5rem 2rem;
+    border: 1px solid var(--color-accent-blue, #2e5bff);
+    background: rgba(46, 91, 255, 0.02);
+    text-align: center;
+  }
+
+  .demo-title {
+    font-size: 32px;
+    font-weight: 600;
+  }
+
+  .demo-description {
+    font-size: 18px;
+    color: var(--color-text-secondary, #bfc2c7);
+    max-width: 500px;
+  }
+
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 0 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: 1px solid var(--color-accent-blue, #2e5bff);
+    color: var(--color-accent-blue, #2e5bff);
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .cta-button:hover {
+    background: var(--color-accent-blue, #2e5bff);
+    color: #fff;
+  }
+</style>

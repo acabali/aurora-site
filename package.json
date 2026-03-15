@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.0",
+    "@vercel/functions": "^3.4.3",
     "astro": "^5.17.0",
     "googleapis": "^171.4.0"
   },

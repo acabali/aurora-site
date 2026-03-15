@@ -1,0 +1,93 @@
+---
+interface Props {
+  title?: string;
+  height?: string;
+}
+
+const {
+  title = "AURORA DECISION SYSTEM",
+  height = "400px"
+} = Astro.props;
+---
+
+<div class="terminal-block" style={`--height: ${height}`}>
+  <div class="terminal-header">
+    <span class="terminal-title">{title}</span>
+    <div class="terminal-controls">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="terminal-content" id="terminal-content">
+    <slot />
+    <div class="terminal-cursor"></div>
+  </div>
+</div>
+
+<style>
+  .terminal-block {
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    height: var(--height);
+    display: flex;
+    flex-direction: column;
+    font-family: "DM Mono", monospace;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  }
+
+  .terminal-header {
+    background: #111;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .terminal-title {
+    font-size: 10px;
+    color: #666;
+    letter-spacing: 0.1em;
+  }
+
+  .terminal-controls {
+    display: flex;
+    gap: 6px;
+  }
+
+  .terminal-controls span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #333;
+  }
+
+  .terminal-content {
+    flex: 1;
+    padding: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #00c389;
+    overflow-y: auto;
+    position: relative;
+    white-space: pre-wrap;
+  }
+
+  .terminal-cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: #00c389;
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>

@@ -2,12 +2,15 @@
 import SiteFooter from "../components/site/SiteFooter.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import "../styles/layout.css";
+import { colors } from "../system/design/colors";
+import { typography } from "../system/design/typography";
+import { motion } from "../system/design/motion";
 
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "Aurora",
-  "description": "Aurora calcula las consecuencias de una decisión antes de ejecutarla.",
+  "description": "Aurora calculates the structural consequences of a decision before executing it.",
   "url": "https://aurora-site.com"
 };
 
@@ -20,8 +23,8 @@ interface Props {
 }
 
 const {
-  title = "Aurora",
-  description = "Aurora calcula las consecuencias de una decisión antes de ejecutarla.",
+  title = "Aurora | Decision Infrastructure",
+  description = "Aurora calculates the structural consequences of a decision before executing it.",
   shell = "default"
 } = Astro.props;
 
@@ -29,7 +32,7 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -49,9 +52,45 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link
+      rel="preload"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    </noscript>
 
     <slot name="head" />
+
+    <style define:vars={{
+      bg: colors.bg,
+      textPrimary: colors.text.primary,
+      textSecondary: colors.text.secondary,
+      accentBlue: colors.accent.blue,
+      accentGreen: colors.accent.green,
+      accentRed: colors.accent.red,
+      ease: motion.ease,
+      fontSans: typography.font.sans
+    }}>
+      :root {
+        --color-bg: var(--bg);
+        --color-text: var(--textPrimary);
+        --color-text-secondary: var(--textSecondary);
+        --color-accent-blue: var(--accentBlue);
+        --color-accent-green: var(--accentGreen);
+        --color-accent-red: var(--accentRed);
+        --ease-aurora: var(--ease);
+      }
+
+      body {
+        background: var(--color-bg);
+        color: var(--color-text);
+        margin: 0;
+        font-family: var(--fontSans);
+      }
+    </style>
   </head>
   <body class={bodyClass}>
     <SiteHeader variant={shell} />

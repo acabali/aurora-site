@@ -1,0 +1,104 @@
+---
+import Container from "../layout/Container.astro";
+import Section from "../layout/Section.astro";
+import Stack from "../layout/Stack.astro";
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Section id="decision-engine">
+  <Container>
+    <Stack gap="2.5rem">
+      <h2 class="section-title">{title}</h2>
+      <div class="engine-layout">
+        <div class="engine-visual">
+          <div class="engine-core">
+            <div class="core-ring"></div>
+            <div class="core-ring"></div>
+            <div class="core-ring"></div>
+            <div class="core-dot"></div>
+          </div>
+        </div>
+        <div class="engine-content">
+          <p class="engine-description">{description}</p>
+        </div>
+      </div>
+    </Stack>
+  </Container>
+</Section>
+
+<style>
+  .section-title {
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .engine-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .engine-visual {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .engine-core {
+    position: relative;
+    width: 100px;
+    height: 100px;
+  }
+
+  .core-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--color-accent-blue, #2e5bff);
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: pulse 4s infinite;
+  }
+
+  .core-ring:nth-child(2) { animation-delay: 1s; }
+  .core-ring:nth-child(3) { animation-delay: 2s; }
+
+  .core-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent-blue, #2e5bff);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 20px var(--color-accent-blue, #2e5bff);
+  }
+
+  .engine-description {
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--color-text-secondary, #bfc2c7);
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.3; }
+    100% { transform: scale(2.5); opacity: 0; }
+  }
+
+  @media (max-width: 768px) {
+    .engine-layout {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+  }
+</style>
