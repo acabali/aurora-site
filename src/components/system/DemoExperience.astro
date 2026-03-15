@@ -173,24 +173,27 @@ interface Props {
     await addLine('AURORA DECISION SYSTEM', 0);
     await addLine('', 200);
     await addLine('movement registered', 400);
-    await addLine(`decision_id: AUR-${Math.floor(Math.random() * 9000) + 1000}`, 400);
+    await addLine(`decision_id: AUR-${Math.floor(Math.random() * 9000) + 1000}`, 200);
     await addLine('', 200);
-    await addLine('mapping structural variables', 600);
-    await addLine('locating pressure point', 600);
-    await addLine('', 200);
+
+    // Loader sequence
+    await addLine('registering movement...', 400);
+    await addLine('mapping structural variables...', 600);
+    await addLine('locating pressure point...', 600);
+    await addLine('', 400);
 
     const result = analyzeMovement(input);
 
     await addLine('structural load: ' + result.structural_fingerprint.code, 400);
     await addLine('pressure point: ' + result.reversal_profile.cost_inflection_point.split('.')[0], 400);
-    await addLine('compression: ' + result.domain.replace('_', ' '), 400);
+    await addLine('compression mechanism: ' + result.domain.replace('_', ' '), 400);
     await addLine('', 200);
     await addLine('system reading', 400);
     await addLine('', 200);
     await addLine('capacity maintained', 400);
     await addLine('execution window open', 400);
     await addLine('', 200);
-    await addLine(`run_signature: ${Math.random().toString(36).substring(2, 8)}`, 400);
+    await addLine(`run_signature: ${Math.random().toString(36).substring(2, 8).toUpperCase()}`, 400);
     await addLine('', 200);
     await addLine('movement recorded', 400);
 
