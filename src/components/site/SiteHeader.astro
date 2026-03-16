@@ -1,6 +1,4 @@
 ---
-import SystemStatus from "../SystemStatus.astro";
-
 interface Props {
   variant?: "default" | "landing";
   currentPath?: string;
@@ -11,14 +9,8 @@ const { variant = "default" } = Astro.props;
 
 <header class:list={["site-header", variant === "landing" ? "site-header--landing" : "site-header--default"]}>
   <div class="site-header-left">
-    <a href="/" class="system-header__brand" aria-label="Aurora system home">
-      <span class="site-lockup-wordmark">AURORA</span>
+    <a href="/" class="site-logo" aria-label="Aurora">
+      <img src="/aurora-logo.png" alt="Aurora" width="88" height="48" />
     </a>
   </div>
-
-  {variant === "landing" && (
-    <div class="site-header-right">
-      <SystemStatus />
-    </div>
-  )}
 </header>
