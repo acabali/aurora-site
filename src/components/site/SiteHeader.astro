@@ -4,7 +4,7 @@ interface Props {
   currentPath?: string;
 }
 
-const { variant = "default" } = Astro.props;
+const { variant = "default", currentPath = "/" } = Astro.props;
 ---
 
 <header class:list={["site-header", variant === "landing" ? "site-header--landing" : "site-header--default"]}>
@@ -13,4 +13,8 @@ const { variant = "default" } = Astro.props;
       <img src="/aurora-logo.png" alt="Aurora" width="88" height="48" />
     </a>
   </div>
+  <nav class="site-header-right" aria-label="Principal">
+    <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>Inicio</a>
+    <a href="/demo" aria-current={currentPath === "/demo" ? "page" : undefined}>Demo</a>
+  </nav>
 </header>
