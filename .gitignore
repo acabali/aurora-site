@@ -23,4 +23,6 @@ logs
 .env.vercel
 .claude/worktrees/
 
-.claude/worktrees/
+
+.claude/state/
+var/
