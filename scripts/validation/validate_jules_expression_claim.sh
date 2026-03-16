@@ -30,7 +30,7 @@ echo "3. Structural reasoning language"
 
 rg -q "structural load" src && pass "structural load present" || fail "structural load missing"
 rg -q "pressure point" src && pass "pressure point present" || fail "pressure point missing"
-rg -q "compression mechanism\|compression:" src && pass "compression mechanism present" || fail "compression mechanism missing"
+rg -q "compression mechanism|compression:" src && pass "compression mechanism present" || fail "compression mechanism missing"
 
 echo
 echo "4. Loader sequence"
@@ -47,7 +47,7 @@ rg -q "movement recorded" src && pass "movement recorded present" || warn "movem
 echo
 echo "6. CTA audit"
 
-rg -q "Explore Aurora\|See how Aurora works" src && pass "correct CTA language present" || fail "CTA not compliant"
+rg -q "Someter movimiento a cálculo" src && pass "correct CTA language present" || fail "CTA not compliant"
 
 if rg -q "Start using Aurora\|Get started\|Sign up" src; then
   warn "SaaS CTA language detected"
@@ -63,7 +63,7 @@ echo "7. Validation script present"
 echo
 echo "8. Build"
 
-if pnpm build >/dev/null 2>&1; then
+if npm run build >/dev/null 2>&1; then
   pass "build successful"
 else
   fail "build failed"
