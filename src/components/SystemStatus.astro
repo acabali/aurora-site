@@ -1,0 +1,53 @@
+<div class="system-status" role="status" aria-label="Aurora system status">
+  <span class="system-status__dot" aria-hidden="true">●</span>
+  <span class="system-status__label">SYSTEM ACTIVE</span>
+  <span class="system-status__sr">AURORA SYSTEM ACTIVE</span>
+</div>
+
+<style>
+  .system-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: "DM Mono", monospace;
+    line-height: 1;
+    color: rgba(247, 247, 245, 0.72);
+  }
+
+  .system-status__dot,
+  .system-status__label {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .system-status__dot {
+    color: rgba(247, 247, 245, 0.88);
+  }
+
+  .system-status__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 900px) {
+    .system-status__dot,
+    .system-status__label {
+      font-size: 9px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .system-status {
+      display: none;
+    }
+  }
+</style>

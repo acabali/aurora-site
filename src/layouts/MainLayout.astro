@@ -26,6 +26,8 @@ const {
 } = Astro.props;
 
 const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
+const currentPath = Astro.url.pathname;
+const canonicalHref = new URL(currentPath, "https://aurora-site.com").toString();
 ---
 
 <!DOCTYPE html>
@@ -39,10 +41,10 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content="https://aurora-site.com" />
+    <meta property="og:url" content={canonicalHref} />
     <meta property="og:type" content="website" />
 
-    <link rel="canonical" href="https://aurora-site.com" />
+    <link rel="canonical" href={canonicalHref} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script type="application/ld+json" set:html={organizationJSON}></script>
@@ -54,12 +56,12 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
     <slot name="head" />
   </head>
   <body class={bodyClass}>
-    <SiteHeader variant={shell} />
+    <SiteHeader variant={shell} currentPath={currentPath} />
 
     <main id="top" class="site-main">
       <slot />
     </main>
 
-    <SiteFooter variant={shell} />
+    <SiteFooter variant={shell} currentPath={currentPath} />
   </body>
 </html>

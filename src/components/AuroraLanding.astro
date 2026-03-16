@@ -1,120 +1,148 @@
 ---
+import AuroraField from "./AuroraField.astro";
+import SystemArchitecture from "./SystemArchitecture.astro";
+import SystemInterface from "./SystemInterface.astro";
 ---
 
-<div class="aurora-page">
-  <section class="hero">
-    <div class="hero-structure" aria-hidden="true">
-      <div class="hero-grid"></div>
-    </div>
+<div class="aurora-page" data-aurora-page data-aurora-field-host>
+  <div class="aurora-page__field" aria-hidden="true">
+    <AuroraField />
+  </div>
 
-    <div class="hero-content">
-      <h1 data-reveal="line">La mente humana tiene un límite.<br />La realidad no.</h1>
+  <div class="legacy-aliases" aria-hidden="true">
+    que-cambio desajuste aurora evaluates scenarios risk differentiation demo
+  </div>
 
-      <p data-reveal="line" data-reveal-delay="80">
-        El mercado ya no compite con personas.<br />
-        Compite con sistemas.
-      </p>
+  <section class="hero" id="hero" data-aurora-section="hero" data-aurora-state="latent">
+    <div class="hero-structure" aria-hidden="true"></div>
 
-      <p class="hero-thesis" data-reveal="line" data-reveal-delay="200">
-        El cálculo reemplaza la interpretación.
-      </p>
+    <div class="hero-shell">
+      <span class="section-kicker" data-reveal="line">DECISION INFRASTRUCTURE</span>
+      <h1 data-reveal="line">El límite humano ya no alcanza.</h1>
+      <div class="hero-body" data-reveal="line" data-reveal-delay="70">
+        <p class="hero-subtitle">El mercado ya no compite con personas.</p>
+        <p class="hero-subtitle">Compite con sistemas.</p>
+        <p class="hero-subtitle">Quedarse en intuición</p>
+        <p class="hero-subtitle">es quedar fuera del juego real.</p>
+        <p class="hero-subtitle">Aurora no mejora decisiones.</p>
+        <p class="hero-subtitle">Desplaza el límite humano por el cálculo permanente.</p>
+        <p class="hero-subtitle">No es digitalización.</p>
+        <p class="hero-subtitle">Es sustitución operativa.</p>
+      </div>
 
-      <p data-reveal="line" data-reveal-delay="320">
-        Aurora introduce esa capacidad.
-      </p>
-
-      <p data-reveal="line" data-reveal-delay="400">
-        No es digitalización.
-      </p>
-
-      <p class="hero-emphasis" data-reveal="line" data-reveal-delay="460">
-        Es sustitución operativa.
-      </p>
-
-      <div class="hero-cta-row" data-reveal data-reveal-delay="560">
-        <a href="#aurora" class="cta-button">→ See how Aurora works</a>
+      <div class="hero-cta-row" data-reveal data-reveal-delay="160">
+        <a href="/demo" class="cta-link">→ Poner una decisión bajo evidencia</a>
       </div>
     </div>
   </section>
 
-  <section class="section section-1" id="que-cambio">
-    <div class="section-inner">
-      <h2 data-reveal="line">Qué cambió</h2>
+  <section class="section" id="context" data-aurora-section="context" data-aurora-state="activation">
+    <div class="section-grid section-grid--intro">
+      <div class="section-rail">
+        <span class="section-kicker" data-reveal="line">Context</span>
+      </div>
 
-      <p data-reveal="line" data-reveal-delay="0">La forma de operar cambió.</p>
-      <p data-reveal="line" data-reveal-delay="60">Ver la estructura de un movimiento antes de actuar ya es posible.</p>
-
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">No es optimización.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="80">Es condición de entrada.</p>
-
-      <p data-reveal="line" data-reveal-delay="0">La precisión define quién compite.</p>
+      <div class="section-copy">
+        <h2 data-reveal="line">Critical decisions fail when variables move faster than the plan.</h2>
+        <p class="section-lead" data-reveal="line" data-reveal-delay="60">The problem is structural interaction, not missing information.</p>
+        <p data-reveal="line" data-reveal-delay="120">Cost. Demand. Regulation. Timing. Each variable changes the pressure on every other variable.</p>
+      </div>
     </div>
   </section>
 
-  <section class="section section-2" id="desajuste">
-    <div class="section-inner">
-      <h2 data-reveal="line">Desajuste</h2>
+  <section class="section" id="aurora-operating" data-aurora-section="aurora-operating" data-aurora-state="tension">
+    <div class="section-grid section-grid--interface">
+      <div class="section-rail">
+        <span class="section-kicker" data-reveal="line">Aurora Operating</span>
+      </div>
 
-      <p data-reveal="line" data-reveal-delay="0">El mercado ya no opera a velocidad humana.</p>
-      <p data-reveal="line" data-reveal-delay="60">Opera sobre movimientos.</p>
-      <p data-reveal="line" data-reveal-delay="120">Movimientos que comprometen recursos, cierran posiciones y activan consecuencias.</p>
+      <div class="section-copy section-copy--full">
+        <h2 data-reveal="line">Aurora reads the decision while the field is still under pressure.</h2>
+        <p class="section-lead" data-reveal="line" data-reveal-delay="60">
+          The interface does not describe software. It exposes an active system reading.
+        </p>
 
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">Añadir más interpretación no aumenta capacidad.</p>
-      <p class="text-accent-red text-bold" data-reveal="line" data-reveal-delay="120">Aumenta retraso.</p>
-
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">La ventaja ya no es crecer.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Es ver la estructura antes de entrar en ella.</p>
-    </div>
-  </section>
-
-  <section class="section section-rupture" id="ruptura">
-    <div class="section-inner">
-      <h2 data-reveal="line">Ruptura</h2>
-
-      <div class="rupture-container">
-        <div class="rupture-before">
-          <h3 class="rupture-label rupture-label--before" data-reveal="line" data-reveal-delay="0">Antes</h3>
-          <p class="rupture-item rupture-item--muted" data-reveal="line" data-reveal-delay="60">El error se absorbía.</p>
-          <p class="rupture-item rupture-item--muted" data-reveal="line" data-reveal-delay="120">El ajuste era posterior.</p>
+        <div data-reveal data-reveal-delay="140">
+          <SystemInterface />
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="rupture-divider" data-reveal data-reveal-delay="200"></div>
+  <section class="section" id="system-architecture" data-aurora-section="system-architecture" data-aurora-state="order">
+    <div class="section-grid section-grid--architecture">
+      <div class="section-rail">
+        <span class="section-kicker" data-reveal="line">Architecture</span>
+      </div>
 
-        <div class="rupture-after">
-          <h3 class="rupture-label rupture-label--after" data-reveal="line" data-reveal-delay="260">Hoy</h3>
-          <p class="rupture-item rupture-key" data-reveal="strong" data-reveal-delay="340">El cálculo reemplaza la interpretación.</p>
-          <p class="rupture-item" data-reveal="line" data-reveal-delay="480">El mercado ejecuta con cálculo continuo.</p>
+      <div class="section-copy section-copy--full">
+        <h2 data-reveal="line">Aurora is organized as system modules, not a commercial feature grid.</h2>
+        <p data-reveal="line" data-reveal-delay="70">
+          Each module calculates one part of the decision field and returns a coherent operational surface.
+        </p>
+
+        <div data-reveal data-reveal-delay="140">
+          <SystemArchitecture />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="decision-entry" data-aurora-section="decision-entry" data-aurora-state="contextual">
+    <div class="section-grid section-grid--entry">
+      <div class="section-rail">
+        <span class="section-kicker" data-reveal="line">Decision Entry</span>
+      </div>
+
+      <div class="section-copy section-copy--full">
+        <h2 data-reveal="line">What decision do you want to evaluate?</h2>
+        <p data-reveal="line" data-reveal-delay="50">
+          Enter through a decision surface and move directly into the system demo.
+        </p>
+
+        <div class="decision-entry-list" data-reveal data-reveal-delay="80">
+          <a href="/demo" class="decision-entry-link">Reduce costs</a>
+          <a href="/demo" class="decision-entry-link">Invest in growth</a>
+          <a href="/demo" class="decision-entry-link">Change go-to-market strategy</a>
+          <a href="/demo" class="decision-entry-link">Evaluate runway</a>
+          <a href="/demo" class="decision-entry-link">Other decision</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-demo" id="demo" data-aurora-section="demo" data-aurora-state="comparison">
+    <div class="section-grid section-grid--demo">
+      <div class="section-rail">
+        <span class="section-kicker" data-reveal="line">Demo</span>
+      </div>
+
+      <div class="section-copy">
+        <h2 data-reveal="line">Submit a decision to calculation.</h2>
+        <p class="section-lead" data-reveal="line" data-reveal-delay="60">Evaluate a real plan before execution.</p>
+        <p data-reveal="line" data-reveal-delay="120">
+          The demo registers movement, locates the pressure point and returns a deterministic structural reading.
+        </p>
+
+        <div class="hero-cta-row hero-cta-row--section" data-reveal data-reveal-delay="180">
+          <a href="/demo" class="cta-link">See how Aurora works</a>
         </div>
       </div>
 
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">No es transformación digital.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Es cambio de estándar.</p>
-    </div>
-  </section>
-
-  <section class="section section-definition" id="aurora">
-    <div class="section-inner">
-      <h2 data-reveal="line">Aurora</h2>
-
-      <p data-reveal="line" data-reveal-delay="0">Aurora introduce cálculo sobre los movimientos.</p>
-      <p data-reveal="line" data-reveal-delay="60">La interpretación humana ya no alcanza.</p>
-
-      <p class="gap-top text-bold" data-reveal="line" data-reveal-delay="0">Aurora no mejora el juicio.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Lo reemplaza.</p>
-    </div>
-  </section>
-
-  <section class="section section-demo" id="demo">
-    <div class="section-inner section-inner--centered">
-      <h2 data-reveal="line">Demo</h2>
-
-      <p data-reveal="line" data-reveal-delay="60">Pon tu próximo movimiento bajo cálculo.</p>
-      <p data-reveal="line" data-reveal-delay="120">Aurora no opina. Calcula.</p>
-      <p data-reveal="line" data-reveal-delay="180">Detecta la interacción dominante. Expone la vulnerabilidad central.</p>
-      <p class="text-bold" data-reveal="line" data-reveal-delay="260">Una señal. Un movimiento correcto.</p>
-
-      <div class="hero-cta-row" data-reveal data-reveal-delay="360">
-        <a href="/demo" class="cta-button">→ Explore Aurora</a>
+      <div class="demo-output" data-reveal data-reveal-delay="160" aria-label="Aurora demo signals">
+        <div class="demo-output__title">AURORA DEMO SIGNAL</div>
+        <p>registering movement</p>
+        <p>mapping structural variables</p>
+        <p>locating pressure point</p>
+        <div class="demo-output__divider"></div>
+        <p>system reading</p>
+        <p>decision_id: AUR-4931</p>
+        <p>protocol: vΩ</p>
+        <p>structural load: elevated</p>
+        <p>pressure point: day 32</p>
+        <p>compression mechanism: restricted absorption + partial reversibility</p>
+        <p>run_signature: 9af31d</p>
+        <p class="demo-output__state">movement recorded</p>
       </div>
     </div>
   </section>
@@ -122,209 +150,298 @@
 
 <style>
   .aurora-page {
+    position: relative;
+    isolation: isolate;
     min-height: 100vh;
     color: var(--color-text);
-    --duration-reveal: 350ms;
-    --duration-reveal-line: 220ms;
+    --duration-reveal: 360ms;
+    --duration-reveal-line: 240ms;
     --duration-reveal-strong: 520ms;
+    --max-page: 1180px;
+    --max-copy: 820px;
   }
 
-  .hero {
-    position: relative;
-    padding: 128px 24px 140px;
-    overflow: hidden;
-  }
-
-  .hero-structure {
-    position: absolute;
-    inset: 0;
+  .aurora-page__field {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    margin-bottom: -100svh;
     z-index: 0;
     pointer-events: none;
   }
 
-  .hero-grid {
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(46, 91, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46, 91, 255, 0.04) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
-  }
-
-  .hero-content {
+  .aurora-page > :not(.aurora-page__field) {
     position: relative;
     z-index: 1;
-    max-width: 860px;
+  }
+
+  .legacy-aliases {
+    display: none;
+  }
+
+  .hero,
+  .section {
+    position: relative;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .hero {
+    min-height: calc(100svh - 80px);
+    padding: 96px 24px 108px;
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  .hero::before,
+  .hero::after,
+  .hero-structure::before,
+  .hero-structure::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hero::before {
+    background:
+      linear-gradient(180deg, rgba(11, 11, 12, 0.06), rgba(11, 11, 12, 0)),
+      radial-gradient(circle at 44% 42%, rgba(247, 247, 245, 0.04), transparent 30%);
+  }
+
+  .hero::after {
+    background: radial-gradient(circle at 50% 46%, transparent 0 34%, rgba(11, 11, 12, 0.3) 68%, rgba(11, 11, 12, 0.84) 100%);
+  }
+
+  .hero-structure::before {
+    background:
+      radial-gradient(circle at 50% 44%, rgba(46, 91, 255, 0.08), transparent 30%),
+      radial-gradient(circle at 52% 38%, rgba(247, 247, 245, 0.03), transparent 42%);
+    opacity: 0.82;
+  }
+
+  .hero-structure::after {
+    inset: 20% 17% 14%;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    transform: scaleY(0.78);
+    opacity: 0.28;
+  }
+
+  .hero-shell,
+  .section-grid {
+    width: min(var(--max-page), 100%);
     margin: 0 auto;
-    text-align: center;
   }
 
-  .hero h1 {
-    margin: 0;
-    font-size: 58px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    font-weight: 700;
-  }
-
-  .hero p {
-    margin-top: 1.25rem;
-    margin-bottom: 0;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-  }
-
-  .hero-thesis {
-    font-size: 21px;
-    font-weight: 500;
-    color: var(--color-text) !important;
-    letter-spacing: -0.015em;
-    line-height: 1.35;
-    margin-top: 2.75rem !important;
-    margin-bottom: 2.25rem !important;
-  }
-
-  .hero-emphasis {
-    font-weight: 600;
-    color: var(--color-text) !important;
-  }
-
-  .hero-cta-row {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-top: 2.5rem;
-  }
-
-  .cta-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    padding: 0 20px;
-    border-radius: 6px;
-    text-decoration: none;
-    font: 600 15px/1 "DM Sans", sans-serif;
-    letter-spacing: 0.01em;
-    transition:
-      transform 250ms var(--ease-aurora),
-      box-shadow 250ms var(--ease-aurora);
-    background: var(--color-accent-blue);
-    color: var(--color-text);
-  }
-
-  .cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(46, 91, 255, 0.3);
+  .hero-shell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    gap: 1.35rem;
+    max-width: 760px;
   }
 
   .section {
     padding: 112px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
-  .section-inner {
-    max-width: 860px;
-    margin: 0 auto;
-  }
-
-  .section-inner--centered {
-    text-align: center;
-  }
-
-  .section h2 {
-    margin: 0 0 2.5rem;
-    font-size: 28px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .section p {
-    margin: 0 0 1.5rem;
-    max-width: 760px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    font-size: 16px;
-  }
-
-  .gap-top {
-    margin-top: 2.5rem !important;
-  }
-
-  .text-bold {
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .text-accent-blue {
-    color: var(--color-accent-blue) !important;
-  }
-
-  .text-accent-red {
-    color: var(--color-accent-red) !important;
-  }
-
-  .rupture-container {
+  .section-grid {
     display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 2.5rem;
-    margin: 3.5rem 0;
-    padding: 2.5rem 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 3rem;
+    align-items: start;
   }
 
-  .rupture-before,
-  .rupture-after {
-    display: flex;
-    flex-direction: column;
+  .section-grid--demo {
+    grid-template-columns: 180px minmax(0, 1fr) minmax(280px, 360px);
+  }
+
+  .section-rail {
+    padding-top: 0.25rem;
+  }
+
+  .section-copy {
+    display: grid;
     gap: 1rem;
+    max-width: var(--max-copy);
   }
 
-  .rupture-label {
+  .section-copy--full {
+    max-width: 100%;
+  }
+
+  .section-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
     margin: 0;
-    font-size: 13px;
-    font-family: "DM Mono", monospace;
-    letter-spacing: 0.12em;
+    color: var(--color-accent-green);
+    font: 500 11px/1 "DM Mono", monospace;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
+  }
+
+  .section-kicker::before {
+    content: "";
+    width: 32px;
+    height: 1px;
+    background: rgba(0, 195, 137, 0.42);
+  }
+
+  .hero h1,
+  .section-copy h2 {
+    margin: 0;
+    color: var(--color-text);
+    text-wrap: balance;
+  }
+
+  .hero h1 {
+    max-width: 8.6ch;
+    font-size: clamp(50px, 7vw, 86px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    font-weight: 700;
+  }
+
+  .section-copy h2 {
+    max-width: 16ch;
+    font-size: clamp(34px, 4.8vw, 56px);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+    font-weight: 700;
+  }
+
+  .hero-subtitle,
+  .section-copy p,
+  .demo-output p {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+
+  .hero-body {
+    display: grid;
+    gap: 0.2rem;
+    max-width: 32ch;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.34;
+    color: rgba(247, 247, 245, 0.9);
+    letter-spacing: -0.025em;
+  }
+
+  .section-lead {
+    max-width: 28ch;
+    color: var(--color-text) !important;
+    font-size: 22px !important;
+    line-height: 1.34 !important;
+    letter-spacing: -0.025em;
     font-weight: 500;
   }
 
-  .rupture-label--before {
-    color: var(--color-accent-red);
-    opacity: 0.7;
+  .hero-cta-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 1rem;
   }
 
-  .rupture-label--after {
-    color: var(--color-accent-green);
+  .hero-cta-row--section {
+    margin-top: 1.6rem;
   }
 
-  .rupture-item {
-    margin: 0;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
+  .cta-link,
+  .decision-entry-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    color: rgba(247, 247, 245, 0.96);
+    text-decoration: none;
+    transition: color 240ms var(--ease-aurora), transform 240ms var(--ease-aurora);
   }
 
-  .rupture-item--muted {
-    opacity: 0.45;
+  .cta-link {
+    min-height: 40px;
+    padding: 0.35rem 0 0.65rem;
+    font: 500 18px/1.3 "DM Sans", sans-serif;
+    letter-spacing: 0.02em;
   }
 
-  .rupture-key {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    color: var(--color-text) !important;
-    opacity: 1 !important;
+  .cta-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    height: 1px;
+    background: rgba(247, 247, 245, 0.48);
+    transform: scaleX(0.58);
+    transform-origin: center;
+    transition: transform 240ms var(--ease-aurora), background 240ms var(--ease-aurora);
   }
 
-  .rupture-divider {
-    width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(46, 91, 255, 0.4), transparent);
+  .cta-link:hover::after,
+  .cta-link:focus-visible::after {
+    transform: scaleX(1);
+    background: rgba(247, 247, 245, 0.76);
+  }
+
+  .decision-entry-list {
+    display: grid;
+    gap: 0;
+    margin-top: 1rem;
+  }
+
+  .decision-entry-link {
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font: 500 18px/1.4 "DM Sans", sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  .decision-entry-link:last-child {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .decision-entry-link:hover,
+  .decision-entry-link:focus-visible {
+    transform: translateX(6px);
+    color: var(--color-text);
+  }
+
+  .demo-output {
+    display: grid;
+    gap: 0.25rem;
+    align-content: start;
+    padding-top: 0.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .demo-output__title {
+    margin-bottom: 0.7rem;
+    color: var(--color-text);
+    font: 500 10px/1 "DM Mono", monospace;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .demo-output p {
+    font: 400 12px/1.6 "DM Mono", monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .demo-output__divider {
+    height: 1px;
+    margin: 0.8rem 0;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .demo-output__state {
+    margin-top: 0.5rem !important;
+    color: var(--color-accent-green) !important;
   }
 
   [data-reveal] {
@@ -349,7 +466,7 @@
 
   [data-reveal="strong"] {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(18px);
     transition:
       opacity var(--duration-reveal-strong) var(--ease-aurora),
       transform var(--duration-reveal-strong) var(--ease-aurora);
@@ -363,6 +480,65 @@
     filter: blur(0);
   }
 
+  @media (max-width: 1120px) {
+    .section-grid,
+    .section-grid--demo {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.8rem;
+    }
+
+    .section-rail {
+      padding-top: 0;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      min-height: auto;
+      padding: 60px 20px 76px;
+    }
+
+    .section {
+      padding: 92px 20px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 9vw, 58px);
+    }
+
+    .hero-subtitle,
+    .section-lead {
+      font-size: 20px !important;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero {
+      padding: 40px 18px 58px;
+      min-height: min(72svh, 620px);
+    }
+
+    .hero h1 {
+      max-width: 9.2ch;
+      font-size: clamp(34px, 11vw, 46px);
+    }
+
+    .hero-subtitle {
+      max-width: 22ch;
+      font-size: 18px !important;
+    }
+
+    .cta-link,
+    .decision-entry-link {
+      font-size: 17px;
+    }
+
+    .section-copy h2 {
+      max-width: 13ch;
+      font-size: clamp(30px, 9vw, 42px);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     [data-reveal],
     [data-reveal="line"],
@@ -372,40 +548,19 @@
       filter: none;
       transition: none;
     }
-  }
 
-  @media (max-width: 768px) {
-    .hero {
-      padding: 80px 24px 96px;
-    }
-
-    .hero h1 {
-      font-size: 36px;
-    }
-
-    .hero-thesis {
-      font-size: 18px;
-    }
-
-    .section {
-      padding: 80px 24px;
-    }
-
-    .rupture-container {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .rupture-divider {
-      display: none;
+    .cta-link,
+    .decision-entry-link {
+      transition: none;
     }
   }
 </style>
 
 <script>
   const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if ('IntersectionObserver' in window) {
+  if ('IntersectionObserver' in window && !prefersReducedMotion) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -420,7 +575,7 @@
           }
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      { threshold: 0.12, rootMargin: '0px 0px -48px 0px' }
     );
 
     revealTargets.forEach((el) => observer.observe(el));
