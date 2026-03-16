@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd ~/aurora-site || { echo "FAIL  - aurora-site repo not found"; exit 1; }
+# cd ~/aurora-site || { echo "FAIL  - aurora-site repo not found"; exit 1; }
 
 PASS=0
 FAIL=0
@@ -110,7 +110,7 @@ fi
 echo
 echo "6. CTA language"
 
-if rg -n "Explore Aurora|See how Aurora works" src/pages src/components >/dev/null 2>&1; then
+if rg -n "Someter movimiento a cálculo" src/pages src/components >/dev/null 2>&1; then
   pass "correct CTA language detected"
 else
   fail "correct CTA language missing"
@@ -134,7 +134,7 @@ fi
 echo
 echo "8. Build"
 
-if pnpm build >/dev/null 2>&1; then
+if npm run build >/dev/null 2>&1; then
   pass "build successful"
 else
   fail "build failed"

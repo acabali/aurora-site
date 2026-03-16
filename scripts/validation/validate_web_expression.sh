@@ -50,7 +50,7 @@ fi
 
 echo
 echo "7. CTA language"
-if rg -n "Explore Aurora|See how Aurora works" src/pages src/components >/dev/null 2>&1; then
+if rg -n "Someter movimiento a cálculo" src/pages src/components >/dev/null 2>&1; then
   pass "correct CTA language detected"
 else
   warn "expected CTA language not detected"
