@@ -1,28 +1,25 @@
 <div class="proof-moment" data-proof-moment data-status="loading">
   <div class="proof-moment__header">
     <span class="proof-moment__eyebrow">Salida institucional</span>
-    <p class="proof-moment__state" data-proof-state>Calculando lectura institucional</p>
+    <p class="proof-moment__state" data-proof-state>loading</p>
   </div>
 
   <div class="proof-moment__body">
     <div class="proof-moment__primary">
-      <p class="proof-moment__line" data-proof-insight>Aurora está evaluando el movimiento de referencia.</p>
-      <p class="proof-moment__line proof-moment__line--secondary" data-proof-counterfactual>Contrastando escenario alternativo.</p>
-    </div>
-
-    <div class="proof-moment__trace">
-      <p data-proof-decision-id>decision_id: esperando</p>
-      <p data-proof-decision-hash>decision_hash: esperando</p>
+      <p class="proof-moment__line" data-proof-primary>registrando movimiento de referencia</p>
+      <p class="proof-moment__line proof-moment__line--secondary" data-proof-secondary>esperando respuesta canónica</p>
     </div>
   </div>
 
-  <ul class="proof-moment__evidence" data-proof-evidence>
-    <li>Monto de referencia cargado</li>
-    <li>Caja comprometida 30d validada</li>
-    <li>Reversibilidad y naturaleza registradas</li>
+  <ul class="proof-moment__terminal" data-proof-terminal>
+    <li>POST /api/v1/movement/evaluate</li>
+    <li>capital: 50000</li>
+    <li>absorption: restricted</li>
+    <li>reversibility: partial</li>
+    <li>protocol: vΩ</li>
   </ul>
 
-  <button type="button" class="proof-moment__retry" data-proof-retry hidden>Reintentar cálculo</button>
+  <button type="button" class="proof-moment__retry" data-proof-retry hidden>Retry</button>
 </div>
 
 <style>
@@ -58,16 +55,8 @@
     letter-spacing: -0.04em;
   }
 
-  .proof-moment__line,
-  .proof-moment__trace p,
-  .proof-moment__evidence li {
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: 15px;
-    line-height: 1.7;
-  }
-
   .proof-moment__line {
+    margin: 0;
     color: rgba(244, 246, 242, 0.94);
     font-size: 18px;
     line-height: 1.45;
@@ -79,24 +68,16 @@
     font-size: 16px;
   }
 
-  .proof-moment__trace {
-    display: grid;
-    gap: 0.25rem;
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .proof-moment__evidence {
+  .proof-moment__terminal {
     display: grid;
     gap: 0.45rem;
     margin: 0;
-    padding: 0;
+    padding: 1rem;
     list-style: none;
-  }
-
-  .proof-moment__evidence li::before {
-    content: "· ";
-    color: var(--color-accent);
+    border: 1px solid rgba(151, 214, 186, 0.14);
+    background: rgba(4, 8, 10, 0.92);
+    color: #c7ffd9;
+    font: 500 13px/1.6 "IBM Plex Mono", monospace;
   }
 
   .proof-moment__retry {
@@ -111,12 +92,8 @@
     cursor: pointer;
   }
 
-  .proof-moment[data-status="success"] .proof-moment__state {
-    color: #f4f6f2;
-  }
-
   .proof-moment[data-status="error"] .proof-moment__state {
-    color: #ffd08f;
+    color: #ff8c7d;
   }
 </style>
 

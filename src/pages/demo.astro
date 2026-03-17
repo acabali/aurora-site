@@ -1,112 +1,81 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import {
-  DECISION_CATEGORY_OPTIONS,
-  DECISION_INDUSTRY_OPTIONS,
+  DECISION_ABSORPTION_OPTIONS,
+  DECISION_REVERSIBILITY_OPTIONS,
 } from "../lib/aurora/decision/types";
 ---
 
 <MainLayout
   title="Aurora — Demo"
-  description="Aurora prepara un movimiento para el engine real y devuelve una lectura estructural antes de ejecutar."
+  description="Aurora envía el request canónico al engine real y renderiza la lectura estructural sin fallback local."
   shell="landing"
 >
   <section class="decision-demo" data-decision-demo data-status="idle">
     <div class="decision-demo__shell">
       <div class="decision-demo__intro">
         <p class="decision-demo__kicker">Demo de decisión</p>
-        <h1>Someter movimiento a cálculo</h1>
+        <h1>POST /api/v1/movement/evaluate</h1>
         <p class="decision-demo__lead">
-          La interfaz registra un movimiento, cierra el contrato mínimo y devuelve riesgo,
-          contrafactual e identidad de decisión desde un único adapter.
+          La interfaz mapea capital, absorción y reversibilidad al contrato canónico. El
+          resultado se renderiza únicamente desde la respuesta del engine.
         </p>
-        <div class="decision-demo__trace" data-demo-trace>USD 120.000 · Ventas y canales · Movimiento único</div>
+        <div class="decision-demo__trace" data-demo-trace>US$ 50.000 · Absorción restringida · Reversibilidad parcial</div>
       </div>
 
       <div class="decision-demo__grid">
         <form class="decision-form" data-demo-form>
+          <input name="protocol" type="hidden" value="vΩ" />
+
           <label class="decision-form__field">
-            <span>Monto del movimiento (USD)</span>
-            <input name="amount" type="number" min="1" step="1000" value="120000" required />
+            <span>capital</span>
+            <input name="capital" type="number" min="0" step="1000" value="50000" required />
           </label>
 
           <label class="decision-form__field">
-            <span>Caja comprometida a 30 días</span>
-            <select name="cashCommitment30d">
-              <option value="BAJA">Baja</option>
-              <option value="MEDIA" selected>Media</option>
-              <option value="ALTA">Alta</option>
-            </select>
-          </label>
-
-          <label class="decision-form__field">
-            <span>Naturaleza del movimiento</span>
-            <select name="nature">
-              <option value="UNICO" selected>Único</option>
-              <option value="RECURRENTE">Recurrente</option>
-            </select>
-          </label>
-
-          <label class="decision-form__field">
-            <span>Categoría</span>
-            <select name="category">
-              {DECISION_CATEGORY_OPTIONS.map((option) => (
-                <option value={option} selected={option === "VENTAS_CANALES"}>
-                  {option === "EQUIPAMIENTO"
-                    ? "Equipamiento y estructura"
-                    : option === "VENTAS_CANALES"
-                      ? "Ventas y canales"
-                      : "Adquisición paga"}
-                </option>
+            <span>absorption</span>
+            <select name="absorption">
+              {DECISION_ABSORPTION_OPTIONS.map((option) => (
+                <option value={option} selected={option === "restricted"}>{option}</option>
               ))}
             </select>
           </label>
 
           <label class="decision-form__field">
-            <span>Reversibilidad</span>
+            <span>reversibility</span>
             <select name="reversibility">
-              <option value="ALTA">Alta</option>
-              <option value="MEDIA" selected>Media</option>
-              <option value="BAJA">Baja</option>
-            </select>
-          </label>
-
-          <label class="decision-form__field">
-            <span>Industria</span>
-            <select name="industry">
-              {DECISION_INDUSTRY_OPTIONS.map((option) => (
-                <option value={option} selected={option === "SAAS"}>
-                  {option === "OTRA" ? "Otra" : option}
-                </option>
+              {DECISION_REVERSIBILITY_OPTIONS.map((option) => (
+                <option value={option} selected={option === "partial"}>{option}</option>
               ))}
             </select>
           </label>
 
-          <button type="submit" class="decision-form__submit">Someter movimiento a cálculo</button>
+          <button type="submit" class="decision-form__submit">Evaluate movement</button>
         </form>
 
         <div class="decision-output">
           <div class="decision-output__status">
-            <span class="decision-output__eyebrow">Lectura del sistema</span>
-            <p class="decision-output__label" data-demo-status-label>Listo para calcular</p>
-            <p class="decision-output__summary" data-demo-summary>La demo prepara el movimiento para el adapter único de Aurora.</p>
+            <span class="decision-output__eyebrow">Frontend state</span>
+            <p class="decision-output__label" data-demo-status-label>idle</p>
+            <p class="decision-output__summary" data-demo-summary>form visible, no request in flight</p>
           </div>
 
           <div class="decision-output__panel">
-            <p class="decision-output__text" data-demo-insight>Ingresa el movimiento y ejecuta el cálculo.</p>
-            <p class="decision-output__text decision-output__text--secondary" data-demo-counterfactual>El resultado devolverá insight, contrafactual y huella de decisión.</p>
+            <p class="decision-output__text" data-demo-primary>capital, absorción y reversibilidad quedan mapeados al request canónico.</p>
+            <p class="decision-output__text decision-output__text--secondary" data-demo-secondary>el demo no calcula localmente ni completa datos por fuera del engine.</p>
           </div>
 
-          <div class="decision-output__ids">
-            <p data-demo-decision-id>decision_id: --</p>
-            <p data-demo-decision-hash>decision_hash: --</p>
-          </div>
-
-          <ul class="decision-output__evidence" data-demo-evidence></ul>
+          <ul class="decision-output__terminal" data-demo-terminal>
+            <li>request.shape</li>
+            <li>capital: number</li>
+            <li>absorption: yes | restricted | no</li>
+            <li>reversibility: full | partial | none</li>
+            <li>protocol: vΩ</li>
+          </ul>
 
           <p class="decision-output__error" data-demo-error></p>
 
-          <button type="button" class="decision-output__retry" data-demo-retry hidden>Reintentar cálculo</button>
+          <button type="button" class="decision-output__retry" data-demo-retry hidden>Retry</button>
         </div>
       </div>
     </div>
@@ -153,7 +122,7 @@ import {
   }
 
   .decision-demo__lead {
-    max-width: 34ch;
+    max-width: 36ch;
     color: rgba(244, 246, 242, 0.9);
     font-size: 22px;
     line-height: 1.42;
@@ -168,7 +137,7 @@ import {
 
   .decision-demo__grid {
     display: grid;
-    grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+    grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
     gap: 1.5rem;
     align-items: start;
   }
@@ -222,8 +191,7 @@ import {
   }
 
   .decision-output__status,
-  .decision-output__panel,
-  .decision-output__ids {
+  .decision-output__panel {
     display: grid;
     gap: 0.55rem;
   }
@@ -231,8 +199,6 @@ import {
   .decision-output__label,
   .decision-output__summary,
   .decision-output__text,
-  .decision-output__ids p,
-  .decision-output__evidence li,
   .decision-output__error {
     margin: 0;
   }
@@ -252,29 +218,21 @@ import {
   }
 
   .decision-output__text--secondary,
-  .decision-output__ids p,
-  .decision-output__evidence li,
   .decision-output__error {
     color: var(--color-text-secondary);
     font-size: 15px;
   }
 
-  .decision-output__ids {
-    padding-top: 1rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .decision-output__evidence {
+  .decision-output__terminal {
     display: grid;
     gap: 0.45rem;
     margin: 0;
-    padding: 0;
+    padding: 1rem;
     list-style: none;
-  }
-
-  .decision-output__evidence li::before {
-    content: "· ";
-    color: var(--color-accent);
+    border: 1px solid rgba(151, 214, 186, 0.14);
+    background: rgba(4, 8, 10, 0.92);
+    color: #c7ffd9;
+    font: 500 13px/1.6 "IBM Plex Mono", monospace;
   }
 
   .decision-output__error:empty {
@@ -285,8 +243,13 @@ import {
     color: var(--color-accent-strong);
   }
 
+  [data-decision-demo][data-status="error"] .decision-output__terminal {
+    border-color: rgba(255, 125, 102, 0.34);
+    color: #ff8c7d;
+  }
+
   [data-decision-demo][data-status="error"] .decision-output__label {
-    color: #ffd08f;
+    color: #ff8c7d;
   }
 
   @media (max-width: 920px) {

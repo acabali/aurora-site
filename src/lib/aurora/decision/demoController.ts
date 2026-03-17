@@ -1,15 +1,14 @@
 import { submitAuroraDecision, toAuroraDecisionError } from "./adapter";
 import {
-  DECISION_CATEGORY_LABEL,
-  DECISION_INDUSTRY_LABEL,
-  DECISION_NATURE_LABEL,
+  DECISION_ABSORPTION_LABEL,
   DECISION_REVERSIBILITY_LABEL,
-  DECISION_RISK_LEVEL_LABEL,
+  DEFAULT_DECISION_REQUEST,
   type AuroraDecisionRequest,
+  type AuroraDecisionResponse,
   type DemoViewState,
 } from "./types";
 
-function formatAmount(value: number): string {
+function formatCapital(value: number): string {
   return new Intl.NumberFormat("es-AR", {
     style: "currency",
     currency: "USD",
@@ -17,104 +16,177 @@ function formatAmount(value: number): string {
   }).format(value);
 }
 
+function formatPressureScore(value: number): string {
+  return value.toFixed(2);
+}
+
+function formatTimestamp(value: string): string {
+  return new Intl.DateTimeFormat("es-AR", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "UTC",
+  }).format(new Date(value));
+}
+
 function toFormRequest(form: HTMLFormElement): AuroraDecisionRequest {
   const formData = new FormData(form);
+  const capital = Number(formData.get("capital") ?? DEFAULT_DECISION_REQUEST.capital);
+  const protocol = String(formData.get("protocol") ?? DEFAULT_DECISION_REQUEST.protocol);
 
   return {
-    amount: Number(formData.get("amount") ?? 0),
-    currency: "USD",
-    cashCommitment30d: String(formData.get("cashCommitment30d") ?? "MEDIA") as AuroraDecisionRequest["cashCommitment30d"],
-    nature: String(formData.get("nature") ?? "UNICO") as AuroraDecisionRequest["nature"],
-    category: String(formData.get("category") ?? "VENTAS_CANALES") as AuroraDecisionRequest["category"],
-    reversibility: String(formData.get("reversibility") ?? "MEDIA") as AuroraDecisionRequest["reversibility"],
-    industry: String(formData.get("industry") ?? "SAAS") as AuroraDecisionRequest["industry"],
+    capital,
+    absorption: String(formData.get("absorption") ?? DEFAULT_DECISION_REQUEST.absorption) as AuroraDecisionRequest["absorption"],
+    reversibility: String(formData.get("reversibility") ?? DEFAULT_DECISION_REQUEST.reversibility) as AuroraDecisionRequest["reversibility"],
+    protocol: protocol === "vΩ" ? "vΩ" : DEFAULT_DECISION_REQUEST.protocol,
   };
 }
 
 function validateRequest(request: AuroraDecisionRequest): string | null {
-  if (!Number.isFinite(request.amount) || request.amount <= 0) {
-    return "Ingresa un monto valido para someter el movimiento a calculo.";
+  if (!Number.isFinite(request.capital) || request.capital < 0) {
+    return "El capital debe ser un numero mayor o igual a cero.";
+  }
+
+  if (!["yes", "restricted", "no"].includes(request.absorption)) {
+    return "La absorcion debe seguir el enum canónico.";
+  }
+
+  if (!["full", "partial", "none"].includes(request.reversibility)) {
+    return "La reversibilidad debe seguir el enum canónico.";
+  }
+
+  if (request.protocol !== "vΩ") {
+    return "El protocolo canónico requerido es vΩ.";
   }
 
   return null;
 }
 
+function setText(root: ParentNode, selector: string, value: string): void {
+  const element = root.querySelector<HTMLElement>(selector);
+
+  if (element) {
+    element.textContent = value;
+  }
+}
+
+function renderTerminal(root: ParentNode, lines: string[]): void {
+  const list = root.querySelector<HTMLElement>("[data-demo-terminal]");
+
+  if (!list) {
+    return;
+  }
+
+  list.replaceChildren(
+    ...lines.map((line) => {
+      const item = document.createElement("li");
+      item.textContent = line;
+      return item;
+    }),
+  );
+}
+
+function terminalLines(data: AuroraDecisionResponse): string[] {
+  const correctionWindow =
+    typeof data.correction_window_days === "number"
+      ? String(data.correction_window_days)
+      : "--";
+
+  return [
+    `decision_id: ${data.decision_id}`,
+    `run_signature: ${data.run_signature}`,
+    `protocol: ${data.protocol}`,
+    `pressure_score: ${formatPressureScore(data.pressure_score)}`,
+    `pressure_day: ${data.pressure_day}`,
+    `correction_window_days: ${correctionWindow}`,
+    `structural_load: ${data.structural_load}`,
+    `compression_mechanism: ${data.compression_mechanism}`,
+    `system_reading.primary: ${data.system_reading.primary}`,
+    `system_reading.secondary: ${data.system_reading.secondary}`,
+    `timestamp: ${data.timestamp}`,
+  ];
+}
+
 function renderState(root: HTMLElement, state: DemoViewState): void {
   root.dataset.status = state.status;
 
+  const form = root.querySelector<HTMLElement>("[data-demo-form]");
   const statusEl = root.querySelector<HTMLElement>("[data-demo-status-label]");
   const summaryEl = root.querySelector<HTMLElement>("[data-demo-summary]");
-  const insightEl = root.querySelector<HTMLElement>("[data-demo-insight]");
-  const counterfactualEl = root.querySelector<HTMLElement>("[data-demo-counterfactual]");
-  const decisionIdEl = root.querySelector<HTMLElement>("[data-demo-decision-id]");
-  const decisionHashEl = root.querySelector<HTMLElement>("[data-demo-decision-hash]");
-  const evidenceEl = root.querySelector<HTMLElement>("[data-demo-evidence]");
+  const primaryEl = root.querySelector<HTMLElement>("[data-demo-primary]");
+  const secondaryEl = root.querySelector<HTMLElement>("[data-demo-secondary]");
   const errorEl = root.querySelector<HTMLElement>("[data-demo-error]");
   const retryButton = root.querySelector<HTMLButtonElement>("[data-demo-retry]");
   const traceEl = root.querySelector<HTMLElement>("[data-demo-trace]");
 
-  if (!statusEl || !summaryEl || !insightEl || !counterfactualEl || !decisionIdEl || !decisionHashEl || !evidenceEl || !errorEl || !retryButton || !traceEl) {
+  if (!form || !statusEl || !summaryEl || !primaryEl || !secondaryEl || !errorEl || !retryButton || !traceEl) {
     return;
   }
 
+  form.hidden = state.status === "loading";
+
   if (state.status === "loading") {
-    statusEl.textContent = "Calculando movimiento";
-    summaryEl.textContent = "Aurora esta evaluando la presion estructural antes de ejecutar.";
-    insightEl.textContent = "Mapeando variables activas, caja comprometida y reversibilidad.";
-    counterfactualEl.textContent = "Contrastando contrafactual operativo.";
-    decisionIdEl.textContent = "decision_id: esperando";
-    decisionHashEl.textContent = "decision_hash: esperando";
-    evidenceEl.innerHTML = "<li>Recibiendo contrato de decision</li><li>Verificando estructura del movimiento</li><li>Esperando lectura del sistema</li>";
+    statusEl.textContent = "loading";
+    summaryEl.textContent = "loader sequence active";
+    primaryEl.textContent = "registrando movimiento";
+    secondaryEl.textContent = "esperando respuesta canónica del engine";
     errorEl.textContent = "";
-    retryButton.disabled = true;
     retryButton.hidden = true;
-    traceEl.textContent = `${formatAmount(state.request.amount)} · ${DECISION_CATEGORY_LABEL[state.request.category]} · ${DECISION_NATURE_LABEL[state.request.nature]}`;
+    renderTerminal(root, [
+      "POST /api/v1/movement/evaluate",
+      `capital: ${state.request.capital}`,
+      `absorption: ${state.request.absorption}`,
+      `reversibility: ${state.request.reversibility}`,
+      "protocol: vΩ",
+    ]);
+    traceEl.textContent = `${formatCapital(state.request.capital)} · ${DECISION_ABSORPTION_LABEL[state.request.absorption]} · ${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]}`;
     return;
   }
 
   if (state.status === "idle") {
-    statusEl.textContent = "Listo para calcular";
-    summaryEl.textContent = "La demo prepara el movimiento para el adapter único de Aurora.";
-    insightEl.textContent = "Ingresa el movimiento y ejecuta el cálculo.";
-    counterfactualEl.textContent = "El resultado devolverá insight, contrafactual y huella de decisión.";
-    decisionIdEl.textContent = "decision_id: --";
-    decisionHashEl.textContent = "decision_hash: --";
-    evidenceEl.innerHTML = "";
+    statusEl.textContent = "idle";
+    summaryEl.textContent = "form visible, no request in flight";
+    primaryEl.textContent = "capital, absorción y reversibilidad quedan mapeados al request canónico.";
+    secondaryEl.textContent = "el demo no calcula localmente ni completa datos por fuera del engine.";
     errorEl.textContent = "";
-    retryButton.disabled = false;
     retryButton.hidden = true;
-    traceEl.textContent = `${formatAmount(state.request.amount)} · ${DECISION_CATEGORY_LABEL[state.request.category]} · ${DECISION_NATURE_LABEL[state.request.nature]}`;
+    renderTerminal(root, [
+      "request.shape",
+      "capital: number",
+      "absorption: yes | restricted | no",
+      "reversibility: full | partial | none",
+      "protocol: vΩ",
+    ]);
+    traceEl.textContent = `${formatCapital(state.request.capital)} · ${DECISION_ABSORPTION_LABEL[state.request.absorption]} · ${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]}`;
     return;
   }
 
   if (state.status === "error" || !state.result) {
-    statusEl.textContent = "Calculo no disponible";
-    summaryEl.textContent = "Aurora no pudo devolver una lectura valida para este intento.";
-    insightEl.textContent = "Reintenta la conexion o ajusta el movimiento.";
-    counterfactualEl.textContent = "El contrato del adapter sigue listo para reintento inmediato.";
-    decisionIdEl.textContent = "decision_id: --";
-    decisionHashEl.textContent = "decision_hash: --";
-    evidenceEl.innerHTML = "";
-    errorEl.textContent = state.error?.message ?? "No fue posible calcular el movimiento.";
-    retryButton.disabled = false;
+    statusEl.textContent = "error";
+    summaryEl.textContent = "sistema no disponible";
+    primaryEl.textContent = "any error state OR response takes > latency_max";
+    secondaryEl.textContent = "never run local calculation, never show partial data, never mock";
+    errorEl.textContent = "sistema no disponible";
     retryButton.hidden = false;
-    traceEl.textContent = `${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]} · ${DECISION_INDUSTRY_LABEL[state.request.industry]}`;
+    renderTerminal(root, [
+      "error: sistema no disponible",
+      `code: ${state.error?.code ?? "unknown"}`,
+      `status: ${state.error?.status ?? "--"}`,
+      "action: retry",
+    ]);
+    traceEl.textContent = `${formatCapital(state.request.capital)} · ${DECISION_ABSORPTION_LABEL[state.request.absorption]} · ${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]}`;
     return;
   }
 
   const { data } = state.result;
 
-  statusEl.textContent = DECISION_RISK_LEVEL_LABEL[data.riskLevel];
-  summaryEl.textContent = `${formatAmount(state.request.amount)} · ${DECISION_CATEGORY_LABEL[state.request.category]} · ${DECISION_NATURE_LABEL[state.request.nature]}`;
-  insightEl.textContent = data.insight;
-  counterfactualEl.textContent = data.counterfactual;
-  decisionIdEl.textContent = `decision_id: ${data.decisionId}`;
-  decisionHashEl.textContent = `decision_hash: ${data.decisionHash}`;
-  evidenceEl.innerHTML = data.evidence.map((item) => `<li>${item}</li>`).join("");
+  statusEl.textContent = "success";
+  summaryEl.textContent = "results rendered from response";
+  primaryEl.textContent = data.system_reading.primary;
+  secondaryEl.textContent = data.system_reading.secondary;
   errorEl.textContent = "";
-  retryButton.disabled = false;
   retryButton.hidden = false;
-  traceEl.textContent = `${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]} · ${DECISION_INDUSTRY_LABEL[state.request.industry]}`;
+  renderTerminal(root, terminalLines(data));
+  traceEl.textContent = `${data.structural_load} · day ${data.pressure_day} · ${formatTimestamp(data.timestamp)}`;
 }
 
 export function mountDecisionDemo(): void {
@@ -138,7 +210,7 @@ export function mountDecisionDemo(): void {
         request,
         result: null,
         error: {
-          code: "BAD_RESPONSE",
+          code: "validation",
           message: validationError,
           retriable: false,
         },
