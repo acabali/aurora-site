@@ -6,7 +6,14 @@ import type {
 } from "./types";
 
 const REQUEST_TIMEOUT_MS = 6000;
-const DECISION_ENDPOINT = "/api/decision";
+
+const DECISION_ENDPOINT =
+  import.meta.env.PUBLIC_AURORA_DECISION_ENDPOINT || "/api/decision";
+
+const AURORA_MODE = import.meta.env.PUBLIC_AURORA_MODE || "dev";
+
+const ALLOW_FALLBACK =
+  import.meta.env.PUBLIC_AURORA_DECISION_FALLBACK === "local";
 
 export class AuroraDecisionAdapterError extends Error {
   readonly code: AuroraDecisionErrorShape["code"];
@@ -57,7 +64,7 @@ function normalizeResponse(payload: unknown): AuroraDecisionResponse {
   ) {
     throw new AuroraDecisionAdapterError({
       code: "server",
-      message: "Aurora devolvio una respuesta fuera del contrato esperado.",
+      message: "Aurora devolvió una respuesta fuera del contrato esperado.",
       retriable: true,
     });
   }
@@ -98,7 +105,7 @@ function buildServiceError(status: number, payload: unknown): AuroraDecisionAdap
   if (status === 401 || status === 403) {
     return new AuroraDecisionAdapterError({
       code: "auth",
-      message: errorMessageFromPayload(payload, "Aurora rechazo la autenticación del relay."),
+      message: errorMessageFromPayload(payload, "Aurora rechazó la autenticación del relay."),
       retriable: false,
       status,
     });
@@ -115,13 +122,18 @@ function buildServiceError(status: number, payload: unknown): AuroraDecisionAdap
 
   return new AuroraDecisionAdapterError({
     code: "unknown",
-    message: errorMessageFromPayload(payload, `Aurora devolvio un estado no esperado (${status}).`),
+    message: errorMessageFromPayload(
+      payload,
+      `Aurora devolvió un estado no esperado (${status}).`,
+    ),
     retriable: status >= 502,
     status,
   });
 }
 
-async function fetchRemoteDecision(request: AuroraDecisionRequest): Promise<AuroraDecisionResponse> {
+async function fetchRemoteDecision(
+  request: AuroraDecisionRequest,
+): Promise<AuroraDecisionResponse> {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
@@ -130,6 +142,9 @@ async function fetchRemoteDecision(request: AuroraDecisionRequest): Promise<Auro
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(import.meta.env.AURORA_API_KEY
+          ? { Authorization: `Bearer ${import.meta.env.AURORA_API_KEY}` }
+          : {}),
       },
       body: JSON.stringify(request),
       signal: controller.signal,
@@ -152,7 +167,7 @@ async function fetchRemoteDecision(request: AuroraDecisionRequest): Promise<Auro
     throw new AuroraDecisionAdapterError({
       code: "network",
       message: isTimeout
-        ? `Aurora excedio el timeout de ${REQUEST_TIMEOUT_MS}ms.`
+        ? `Aurora excedió el timeout de ${REQUEST_TIMEOUT_MS}ms.`
         : "No fue posible conectar con Aurora.",
       retriable: true,
     });
@@ -161,13 +176,35 @@ async function fetchRemoteDecision(request: AuroraDecisionRequest): Promise<Auro
   }
 }
 
-export async function submitAuroraDecision(request: AuroraDecisionRequest): Promise<AuroraDecisionEnvelope> {
-  const result = await fetchRemoteDecision(request);
+export async function submitAuroraDecision(
+  request: AuroraDecisionRequest,
+): Promise<AuroraDecisionEnvelope> {
+  try {
+    const result = await fetchRemoteDecision(request);
 
-  return {
-    data: result,
-    source: "remote",
-  };
+    return {
+      data: result,
+      source: "remote",
+    };
+  } catch (error) {
+    if (AURORA_MODE === "dev" && ALLOW_FALLBACK) {
+      const { evaluateMovement } = await import("./movementEngine");
+      const fallback = evaluateMovement(request);
+
+      return {
+        data: {
+          risk_level: fallback.riskLevel,
+          insight: fallback.insight,
+          counterfactual: fallback.counterfactual,
+          decision_id: fallback.decisionId,
+          decision_hash: fallback.decisionHash,
+        },
+        source: "local",
+      };
+    }
+
+    throw error;
+  }
 }
 
 export function toAuroraDecisionError(error: unknown): AuroraDecisionAdapterError {
@@ -177,7 +214,7 @@ export function toAuroraDecisionError(error: unknown): AuroraDecisionAdapterErro
 
   return new AuroraDecisionAdapterError({
     code: "unknown",
-    message: "Aurora no devolvio una respuesta utilizable.",
+    message: "Aurora no devolvió una respuesta utilizable.",
     retriable: false,
   });
 }
