@@ -1,16 +1,12 @@
 export const DECISION_ABSORPTION_OPTIONS = ["yes", "restricted", "no"] as const;
 export const DECISION_REVERSIBILITY_OPTIONS = ["full", "partial", "none"] as const;
 export const DECISION_PROTOCOL_OPTIONS = ["vΩ"] as const;
-export const DECISION_STRUCTURAL_LOAD_OPTIONS = ["contained", "active", "elevated"] as const;
-export const DECISION_SYSTEM_PRIMARY_OPTIONS = ["capacity maintained", "capacity compressed"] as const;
-export const DECISION_SYSTEM_SECONDARY_OPTIONS = ["execution window open", "execution window narrow"] as const;
+export const DECISION_RISK_LEVEL_OPTIONS = ["BAJO", "CONTROLADO", "CRITICO"] as const;
 
 export type AuroraDecisionAbsorption = (typeof DECISION_ABSORPTION_OPTIONS)[number];
 export type AuroraDecisionReversibility = (typeof DECISION_REVERSIBILITY_OPTIONS)[number];
 export type AuroraDecisionProtocol = (typeof DECISION_PROTOCOL_OPTIONS)[number];
-export type AuroraDecisionStructuralLoad = (typeof DECISION_STRUCTURAL_LOAD_OPTIONS)[number];
-export type AuroraDecisionSystemPrimary = (typeof DECISION_SYSTEM_PRIMARY_OPTIONS)[number];
-export type AuroraDecisionSystemSecondary = (typeof DECISION_SYSTEM_SECONDARY_OPTIONS)[number];
+export type AuroraDecisionRiskLevel = (typeof DECISION_RISK_LEVEL_OPTIONS)[number];
 
 export interface AuroraDecisionRequest {
   capital: number;
@@ -19,22 +15,12 @@ export interface AuroraDecisionRequest {
   protocol: AuroraDecisionProtocol;
 }
 
-export interface AuroraDecisionSystemReading {
-  primary: AuroraDecisionSystemPrimary;
-  secondary: AuroraDecisionSystemSecondary;
-}
-
 export interface AuroraDecisionResponse {
+  risk_level: AuroraDecisionRiskLevel;
+  insight: string;
+  counterfactual: string;
   decision_id: string;
-  run_signature: string;
-  protocol: AuroraDecisionProtocol;
-  pressure_score: number;
-  pressure_day: number;
-  correction_window_days?: number;
-  structural_load: AuroraDecisionStructuralLoad;
-  compression_mechanism: string;
-  system_reading: AuroraDecisionSystemReading;
-  timestamp: string;
+  decision_hash: string;
 }
 
 export interface AuroraDecisionEnvelope {
@@ -70,10 +56,10 @@ export const DECISION_REVERSIBILITY_LABEL: Record<AuroraDecisionReversibility, s
   none: "Sin reversibilidad",
 };
 
-export const DECISION_STRUCTURAL_LOAD_LABEL: Record<AuroraDecisionStructuralLoad, string> = {
-  contained: "contained",
-  active: "active",
-  elevated: "elevated",
+export const DECISION_RISK_LEVEL_LABEL: Record<AuroraDecisionRiskLevel, string> = {
+  BAJO: "riesgo bajo",
+  CONTROLADO: "riesgo controlado",
+  CRITICO: "riesgo crítico",
 };
 
 export const DEFAULT_DECISION_REQUEST: AuroraDecisionRequest = {
