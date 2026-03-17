@@ -40,7 +40,7 @@ export function mountProofMoment(): void {
     setText(root, "[data-proof-primary]", "registrando movimiento de referencia");
     setText(root, "[data-proof-secondary]", "esperando respuesta canónica");
     setLines(root, "[data-proof-terminal]", [
-      "POST /api/v1/movement/evaluate",
+      "POST /api/decision",
       "capital: 50000",
       "absorption: restricted",
       "reversibility: partial",
@@ -51,16 +51,13 @@ export function mountProofMoment(): void {
       const result = await submitAuroraDecision(HOME_PROOF_REQUEST);
 
       root.dataset.status = "success";
-      setText(root, "[data-proof-state]", result.data.system_reading.primary);
-      setText(root, "[data-proof-primary]", result.data.compression_mechanism);
-      setText(root, "[data-proof-secondary]", result.data.system_reading.secondary);
+      setText(root, "[data-proof-state]", result.data.risk_level);
+      setText(root, "[data-proof-primary]", result.data.insight);
+      setText(root, "[data-proof-secondary]", result.data.counterfactual);
       setLines(root, "[data-proof-terminal]", [
+        `risk_level: ${result.data.risk_level}`,
         `decision_id: ${result.data.decision_id}`,
-        `run_signature: ${result.data.run_signature}`,
-        `pressure_score: ${result.data.pressure_score.toFixed(2)}`,
-        `pressure_day: ${result.data.pressure_day}`,
-        `structural_load: ${result.data.structural_load}`,
-        `timestamp: ${result.data.timestamp}`,
+        `decision_hash: ${result.data.decision_hash}`,
       ]);
       return;
     } catch (error) {

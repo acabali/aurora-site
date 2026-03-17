@@ -6,7 +6,7 @@ import type {
 } from "./types";
 
 const REQUEST_TIMEOUT_MS = 6000;
-const DECISION_ENDPOINT = "/api/v1/movement/evaluate";
+const DECISION_ENDPOINT = "/api/decision";
 
 export class AuroraDecisionAdapterError extends Error {
   readonly code: AuroraDecisionErrorShape["code"];
@@ -39,67 +39,35 @@ function readObject(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
-function isFiniteNumber(value: unknown): value is number {
-  return typeof value === "number" && Number.isFinite(value);
-}
-
-function isIntegerInRange(value: unknown, min: number, max: number): value is number {
-  return Number.isInteger(value) && typeof value === "number" && value >= min && value <= max;
-}
-
-function isIsoTimestamp(value: unknown): value is string {
-  return typeof value === "string" && !Number.isNaN(Date.parse(value));
-}
-
 function normalizeResponse(payload: unknown): AuroraDecisionResponse {
   const root = readObject(payload);
-  const systemReading = readObject(root?.system_reading);
 
   if (
+    (root?.risk_level !== "BAJO" &&
+      root?.risk_level !== "CONTROLADO" &&
+      root?.risk_level !== "CRITICO") ||
+    typeof root?.insight !== "string" ||
+    root.insight.trim().length === 0 ||
+    typeof root?.counterfactual !== "string" ||
+    root.counterfactual.trim().length === 0 ||
     typeof root?.decision_id !== "string" ||
     !/^AUR-[A-Z0-9]{4,}$/i.test(root.decision_id) ||
-    typeof root?.run_signature !== "string" ||
-    !/^[a-f0-9]{6}$/.test(root.run_signature) ||
-    root?.protocol !== "vΩ" ||
-    !isFiniteNumber(root?.pressure_score) ||
-    root.pressure_score < 0 ||
-    root.pressure_score > 1 ||
-    !isIntegerInRange(root?.pressure_day, 21, 45) ||
-    (root?.correction_window_days !== undefined &&
-      !isIntegerInRange(root.correction_window_days, 0, 24)) ||
-    (root?.structural_load !== "contained" &&
-      root?.structural_load !== "active" &&
-      root?.structural_load !== "elevated") ||
-    typeof root?.compression_mechanism !== "string" ||
-    root.compression_mechanism.trim().length === 0 ||
-    !systemReading ||
-    (systemReading.primary !== "capacity maintained" &&
-      systemReading.primary !== "capacity compressed") ||
-    (systemReading.secondary !== "execution window open" &&
-      systemReading.secondary !== "execution window narrow") ||
-    !isIsoTimestamp(root?.timestamp)
+    typeof root?.decision_hash !== "string" ||
+    !/^[a-f0-9]{8}$/i.test(root.decision_hash)
   ) {
     throw new AuroraDecisionAdapterError({
-      code: "unknown",
-      message: "Aurora devolvio un contrato invalido.",
-      retriable: false,
+      code: "server",
+      message: "Aurora devolvio una respuesta fuera del contrato esperado.",
+      retriable: true,
     });
   }
 
   return {
+    risk_level: root.risk_level,
+    insight: root.insight,
+    counterfactual: root.counterfactual,
     decision_id: root.decision_id,
-    run_signature: root.run_signature,
-    protocol: root.protocol,
-    pressure_score: root.pressure_score,
-    pressure_day: root.pressure_day,
-    correction_window_days: root.correction_window_days,
-    structural_load: root.structural_load,
-    compression_mechanism: root.compression_mechanism,
-    system_reading: {
-      primary: systemReading.primary,
-      secondary: systemReading.secondary,
-    },
-    timestamp: root.timestamp,
+    decision_hash: root.decision_hash,
   };
 }
 

@@ -1,6 +1,7 @@
 import { submitAuroraDecision, toAuroraDecisionError } from "./adapter";
 import {
   DECISION_ABSORPTION_LABEL,
+  DECISION_RISK_LEVEL_LABEL,
   DECISION_REVERSIBILITY_LABEL,
   DEFAULT_DECISION_REQUEST,
   type AuroraDecisionRequest,
@@ -14,18 +15,6 @@ function formatCapital(value: number): string {
     currency: "USD",
     maximumFractionDigits: 0,
   }).format(value);
-}
-
-function formatPressureScore(value: number): string {
-  return value.toFixed(2);
-}
-
-function formatTimestamp(value: string): string {
-  return new Intl.DateTimeFormat("es-AR", {
-    dateStyle: "medium",
-    timeStyle: "medium",
-    timeZone: "UTC",
-  }).format(new Date(value));
 }
 
 function toFormRequest(form: HTMLFormElement): AuroraDecisionRequest {
@@ -86,23 +75,12 @@ function renderTerminal(root: ParentNode, lines: string[]): void {
 }
 
 function terminalLines(data: AuroraDecisionResponse): string[] {
-  const correctionWindow =
-    typeof data.correction_window_days === "number"
-      ? String(data.correction_window_days)
-      : "--";
-
   return [
+    `risk_level: ${data.risk_level}`,
+    `insight: ${data.insight}`,
+    `counterfactual: ${data.counterfactual}`,
     `decision_id: ${data.decision_id}`,
-    `run_signature: ${data.run_signature}`,
-    `protocol: ${data.protocol}`,
-    `pressure_score: ${formatPressureScore(data.pressure_score)}`,
-    `pressure_day: ${data.pressure_day}`,
-    `correction_window_days: ${correctionWindow}`,
-    `structural_load: ${data.structural_load}`,
-    `compression_mechanism: ${data.compression_mechanism}`,
-    `system_reading.primary: ${data.system_reading.primary}`,
-    `system_reading.secondary: ${data.system_reading.secondary}`,
-    `timestamp: ${data.timestamp}`,
+    `decision_hash: ${data.decision_hash}`,
   ];
 }
 
@@ -132,7 +110,7 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
     errorEl.textContent = "";
     retryButton.hidden = true;
     renderTerminal(root, [
-      "POST /api/v1/movement/evaluate",
+      "POST /api/decision",
       `capital: ${state.request.capital}`,
       `absorption: ${state.request.absorption}`,
       `reversibility: ${state.request.reversibility}`,
@@ -181,12 +159,12 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
 
   statusEl.textContent = "success";
   summaryEl.textContent = "results rendered from response";
-  primaryEl.textContent = data.system_reading.primary;
-  secondaryEl.textContent = data.system_reading.secondary;
+  primaryEl.textContent = data.insight;
+  secondaryEl.textContent = data.counterfactual;
   errorEl.textContent = "";
   retryButton.hidden = false;
   renderTerminal(root, terminalLines(data));
-  traceEl.textContent = `${data.structural_load} · day ${data.pressure_day} · ${formatTimestamp(data.timestamp)}`;
+  traceEl.textContent = `${DECISION_RISK_LEVEL_LABEL[data.risk_level]} · ${data.decision_id} · ${data.decision_hash}`;
 }
 
 export function mountDecisionDemo(): void {
