@@ -1,36 +1,127 @@
-<div class="system-readout-block">
-  <p class="system-readout-block__intro">
-    Aurora no describe una decisión.
-    La somete a cálculo estructural antes de ejecutarla.
-  </p>
+<div class="proof-moment" data-proof-moment data-status="loading">
+  <div class="proof-moment__header">
+    <span class="proof-moment__eyebrow">Salida institucional</span>
+    <p class="proof-moment__state" data-proof-state>Calculando lectura institucional</p>
+  </div>
 
-  <div class="system-readout" aria-label="Lectura del sistema Aurora">
-    <div class="system-readout__title">LECTURA DEL SISTEMA</div>
-
-    <div class="system-readout__section">
-      <p class="system-readout__label">variables activas</p>
-      <p>costos</p>
-      <p>demanda</p>
-      <p>regulación</p>
-      <p>momento</p>
+  <div class="proof-moment__body">
+    <div class="proof-moment__primary">
+      <p class="proof-moment__line" data-proof-insight>Aurora está evaluando el movimiento de referencia.</p>
+      <p class="proof-moment__line proof-moment__line--secondary" data-proof-counterfactual>Contrastando escenario alternativo.</p>
     </div>
 
-    <div class="system-readout__section">
-      <p class="system-readout__label">presión estructural</p>
-      <p class="system-readout__state">elevada</p>
-    </div>
-
-    <div class="system-readout__section">
-      <p class="system-readout__label">estado de riesgo</p>
-      <p class="system-readout__state">controlado</p>
-    </div>
-
-    <div class="system-readout__section">
-      <p class="system-readout__label">huella</p>
-      <p>decision_id: AUR-4931</p>
-      <p>protocol: vΩ</p>
-      <p>punto de presión: día 32</p>
-      <p>movimiento registrado</p>
+    <div class="proof-moment__trace">
+      <p data-proof-decision-id>decision_id: esperando</p>
+      <p data-proof-decision-hash>decision_hash: esperando</p>
     </div>
   </div>
+
+  <ul class="proof-moment__evidence" data-proof-evidence>
+    <li>Monto de referencia cargado</li>
+    <li>Caja comprometida 30d validada</li>
+    <li>Reversibilidad y naturaleza registradas</li>
+  </ul>
+
+  <button type="button" class="proof-moment__retry" data-proof-retry hidden>Reintentar cálculo</button>
 </div>
+
+<style>
+  .proof-moment {
+    display: grid;
+    gap: 1.4rem;
+    padding: 1.6rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+      rgba(8, 11, 14, 0.82);
+    backdrop-filter: blur(14px);
+  }
+
+  .proof-moment__header,
+  .proof-moment__body {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .proof-moment__eyebrow {
+    color: var(--color-accent);
+    font: 600 11px/1 "Inter", sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .proof-moment__state {
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.08;
+    letter-spacing: -0.04em;
+  }
+
+  .proof-moment__line,
+  .proof-moment__trace p,
+  .proof-moment__evidence li {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .proof-moment__line {
+    color: rgba(244, 246, 242, 0.94);
+    font-size: 18px;
+    line-height: 1.45;
+    letter-spacing: -0.02em;
+  }
+
+  .proof-moment__line--secondary {
+    color: var(--color-text-secondary);
+    font-size: 16px;
+  }
+
+  .proof-moment__trace {
+    display: grid;
+    gap: 0.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .proof-moment__evidence {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .proof-moment__evidence li::before {
+    content: "· ";
+    color: var(--color-accent);
+  }
+
+  .proof-moment__retry {
+    justify-self: start;
+    min-height: 42px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: transparent;
+    color: var(--color-text);
+    font: 500 14px/1 "Inter", sans-serif;
+    cursor: pointer;
+  }
+
+  .proof-moment[data-status="success"] .proof-moment__state {
+    color: #f4f6f2;
+  }
+
+  .proof-moment[data-status="error"] .proof-moment__state {
+    color: #ffd08f;
+  }
+</style>
+
+<script>
+  import { mountProofMoment } from "../lib/aurora/decision/proofMoment";
+
+  mountProofMoment();
+</script>

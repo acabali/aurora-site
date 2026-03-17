@@ -1,935 +1,317 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
+import {
+  DECISION_CATEGORY_OPTIONS,
+  DECISION_INDUSTRY_OPTIONS,
+} from "../lib/aurora/decision/types";
 ---
 
 <MainLayout
   title="Aurora — Demo"
-  description="Aurora registra un movimiento y devuelve una lectura estructural determinística antes de ejecutarlo."
+  description="Aurora prepara un movimiento para el engine real y devuelve una lectura estructural antes de ejecutar."
   shell="landing"
 >
-  <div class="demo-wrap">
+  <section class="decision-demo" data-decision-demo data-status="idle">
+    <div class="decision-demo__shell">
+      <div class="decision-demo__intro">
+        <p class="decision-demo__kicker">Demo de decisión</p>
+        <h1>Someter movimiento a cálculo</h1>
+        <p class="decision-demo__lead">
+          La interfaz registra un movimiento, cierra el contrato mínimo y devuelve riesgo,
+          contrafactual e identidad de decisión desde un único adapter.
+        </p>
+        <div class="decision-demo__trace" data-demo-trace>USD 120.000 · Ventas y canales · Movimiento único</div>
+      </div>
 
-    <!-- Phase 1: Hero -->
-    <div id="phase-hero" class="demo-phase">
-      <span class="demo-eyebrow">AURORA / DECISION SYSTEM</span>
-      <h1 class="demo-h1">Registra el movimiento.<br />Lee la estructura.</h1>
-      <p class="demo-sub">
-        Tres variables visibles. El sistema deriva decision_id, pressure point y run_signature
-        con el mismo resultado para la misma entrada.
-      </p>
-      <button id="btn-start" class="btn-start">Registrar movimiento →</button>
+      <div class="decision-demo__grid">
+        <form class="decision-form" data-demo-form>
+          <label class="decision-form__field">
+            <span>Monto del movimiento (USD)</span>
+            <input name="amount" type="number" min="1" step="1000" value="120000" required />
+          </label>
+
+          <label class="decision-form__field">
+            <span>Caja comprometida a 30 días</span>
+            <select name="cashCommitment30d">
+              <option value="BAJA">Baja</option>
+              <option value="MEDIA" selected>Media</option>
+              <option value="ALTA">Alta</option>
+            </select>
+          </label>
+
+          <label class="decision-form__field">
+            <span>Naturaleza del movimiento</span>
+            <select name="nature">
+              <option value="UNICO" selected>Único</option>
+              <option value="RECURRENTE">Recurrente</option>
+            </select>
+          </label>
+
+          <label class="decision-form__field">
+            <span>Categoría</span>
+            <select name="category">
+              {DECISION_CATEGORY_OPTIONS.map((option) => (
+                <option value={option} selected={option === "VENTAS_CANALES"}>
+                  {option === "EQUIPAMIENTO"
+                    ? "Equipamiento y estructura"
+                    : option === "VENTAS_CANALES"
+                      ? "Ventas y canales"
+                      : "Adquisición paga"}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label class="decision-form__field">
+            <span>Reversibilidad</span>
+            <select name="reversibility">
+              <option value="ALTA">Alta</option>
+              <option value="MEDIA" selected>Media</option>
+              <option value="BAJA">Baja</option>
+            </select>
+          </label>
+
+          <label class="decision-form__field">
+            <span>Industria</span>
+            <select name="industry">
+              {DECISION_INDUSTRY_OPTIONS.map((option) => (
+                <option value={option} selected={option === "SAAS"}>
+                  {option === "OTRA" ? "Otra" : option}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <button type="submit" class="decision-form__submit">Someter movimiento a cálculo</button>
+        </form>
+
+        <div class="decision-output">
+          <div class="decision-output__status">
+            <span class="decision-output__eyebrow">Lectura del sistema</span>
+            <p class="decision-output__label" data-demo-status-label>Listo para calcular</p>
+            <p class="decision-output__summary" data-demo-summary>La demo prepara el movimiento para el adapter único de Aurora.</p>
+          </div>
+
+          <div class="decision-output__panel">
+            <p class="decision-output__text" data-demo-insight>Ingresa el movimiento y ejecuta el cálculo.</p>
+            <p class="decision-output__text decision-output__text--secondary" data-demo-counterfactual>El resultado devolverá insight, contrafactual y huella de decisión.</p>
+          </div>
+
+          <div class="decision-output__ids">
+            <p data-demo-decision-id>decision_id: --</p>
+            <p data-demo-decision-hash>decision_hash: --</p>
+          </div>
+
+          <ul class="decision-output__evidence" data-demo-evidence></ul>
+
+          <p class="decision-output__error" data-demo-error></p>
+
+          <button type="button" class="decision-output__retry" data-demo-retry hidden>Reintentar cálculo</button>
+        </div>
+      </div>
     </div>
-
-    <!-- Phase 2: Inputs -->
-    <div id="phase-inputs" class="demo-phase demo-phase--hidden">
-      <span class="demo-eyebrow">AURORA / CÁLCULO</span>
-      <h2 class="demo-h2">Visible inputs</h2>
-
-      <!-- Capital -->
-      <div class="input-group">
-        <label class="input-label" for="input-capital">Capital comprometido (USD)</label>
-        <input
-          id="input-capital"
-          type="number"
-          class="demo-number-input"
-          placeholder="50000"
-          min="0"
-          step="1000"
-          aria-label="Capital comprometido en dólares"
-        />
-      </div>
-
-      <!-- Absorption -->
-      <div class="input-group">
-        <span class="input-label">¿El mercado absorbe este movimiento?</span>
-        <div class="cal-chips" data-group="absorption" role="radiogroup" aria-label="Absorción del mercado">
-          <button type="button" class="chip selected" data-value="yes" role="radio" aria-checked="true" tabindex="0">Sí</button>
-          <button type="button" class="chip" data-value="restricted" role="radio" aria-checked="false" tabindex="-1">Restringido</button>
-          <button type="button" class="chip" data-value="no" role="radio" aria-checked="false" tabindex="-1">No</button>
-        </div>
-      </div>
-
-      <!-- Reversibility -->
-      <div class="input-group">
-        <span class="input-label">¿Qué tan reversible es?</span>
-        <div class="cal-chips" data-group="reversibility" role="radiogroup" aria-label="Nivel de reversibilidad">
-          <button type="button" class="chip selected" data-value="full" role="radio" aria-checked="true" tabindex="0">Total</button>
-          <button type="button" class="chip" data-value="partial" role="radio" aria-checked="false" tabindex="-1">Parcial</button>
-          <button type="button" class="chip" data-value="none" role="radio" aria-checked="false" tabindex="-1">Ninguna</button>
-        </div>
-      </div>
-
-      <div class="demo-actions">
-        <button id="btn-process" class="btn-calc">Procesar movimiento</button>
-        <span id="input-hint" class="input-hint" role="alert"></span>
-      </div>
-    </div>
-
-    <!-- Phase 3: Loader -->
-    <div id="phase-loader" class="demo-phase demo-phase--hidden">
-      <div
-        id="loader-status"
-        class="loader-seq"
-        role="status"
-        aria-live="polite"
-        aria-label="Registering movement"
-        tabindex="-1"
-      >
-        <div class="loader-line">registering movement</div>
-        <div class="loader-line">mapping structural variables</div>
-        <div class="loader-line">locating pressure point</div>
-      </div>
-    </div>
-
-    <!-- Phase 4: Results -->
-    <div id="phase-results" class="demo-phase demo-phase--hidden">
-      <h2 id="results-heading" class="sr-only" tabindex="-1">System output</h2>
-
-      <!-- Insight -->
-      <div class="insight-block" id="insight-block" tabindex="-1">
-        <span class="terminal-title">AURORA DECISION SYSTEM</span>
-        <p class="insight-line insight-line--state" id="insight-0">movement registered</p>
-        <p class="insight-line" id="insight-1">decision_id: --</p>
-        <p class="insight-line" id="insight-2">protocol: vΩ</p>
-      </div>
-
-      <!-- Relationship map -->
-      <div class="rel-map" id="rel-map" aria-label="System reading">
-        <div class="terminal-cluster">
-          <p class="rel-node-val" id="map-capital">structural load: --</p>
-          <p class="rel-node-val" id="map-window">pressure point: --</p>
-          <p class="rel-node-val" id="map-reversibility">compression mechanism: --</p>
-        </div>
-        <div class="terminal-divider" aria-hidden="true"></div>
-        <div class="terminal-cluster">
-          <p class="rel-node-val rel-node-val--label">system reading</p>
-          <p class="rel-node-val" id="system-reading-primary">capacity maintained</p>
-          <p class="rel-node-val" id="system-reading-secondary">execution window open</p>
-          <p class="rel-node-val rel-node-val--signature" id="system-reading-signature">run_signature: --</p>
-        </div>
-      </div>
-
-      <!-- Registration ritual -->
-      <div class="reg-ritual" id="reg-ritual">
-        <span class="reg-title">movement recorded</span>
-        <div class="reg-fields">
-          <div class="reg-field">
-            <span class="reg-key">decision_id</span>
-            <span class="reg-val" id="reg-id">—</span>
-          </div>
-          <div class="reg-field">
-            <span class="reg-key">protocol</span>
-            <span class="reg-val" id="reg-hash">—</span>
-          </div>
-          <div class="reg-field">
-            <span class="reg-key">run_signature</span>
-            <span class="reg-val" id="reg-pressure">—</span>
-          </div>
-          <div class="reg-field">
-            <span class="reg-key">structural load</span>
-            <span class="reg-val" id="reg-window">—</span>
-          </div>
-          <div class="reg-field">
-            <span class="reg-key">pressure point</span>
-            <span class="reg-val" id="reg-ts">—</span>
-          </div>
-        </div>
-        <p class="reg-guarantee">Same movement. Same footprint. Deterministic output.</p>
-      </div>
-
-      <!-- CTA -->
-      <div class="cta-block" id="cta-block">
-        <a href="/" class="btn-cta">Explore Aurora</a>
-      </div>
-
-      <!-- Reset -->
-      <div class="demo-reset-row" id="reset-row">
-        <button id="btn-reset" class="btn-reset">Calcular otro movimiento</button>
-      </div>
-
-    </div>
-
-  </div>
+  </section>
 </MainLayout>
 
-<style is:global>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
+<style>
+  .decision-demo {
+    padding: 96px 24px 120px;
   }
 
-  .demo-wrap {
-    max-width: 680px;
+  .decision-demo__shell {
+    width: min(1160px, 100%);
     margin: 0 auto;
-    padding: 104px 24px 120px;
-  }
-
-  /* Phase control */
-  .demo-phase {
-    animation: demoIn 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-
-  .demo-phase--hidden {
-    display: none !important;
-  }
-
-  @keyframes demoIn {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Shared typography */
-  .demo-eyebrow {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-green);
-    margin: 0 0 1.75rem;
-  }
-
-  .demo-h1 {
-    font-size: clamp(36px, 6vw, 64px) !important;
-    line-height: 1.08 !important;
-    letter-spacing: -0.03em !important;
-    font-weight: 700 !important;
-    color: var(--text-light) !important;
-    margin: 0 0 1rem !important;
-  }
-
-  .demo-h2 {
-    font-size: clamp(22px, 4vw, 32px) !important;
-    line-height: 1.2 !important;
-    letter-spacing: -0.02em !important;
-    font-weight: 700 !important;
-    color: var(--text-light) !important;
-    margin: 0 0 2rem !important;
-  }
-
-  .demo-sub {
-    font-size: 16px !important;
-    color: var(--text-muted) !important;
-    line-height: 1.6 !important;
-    margin: 0 0 2.5rem !important;
-    max-width: 640px;
-  }
-
-  /* Hero CTA */
-  .btn-start {
-    height: 48px;
-    padding: 0 1.5rem;
-    background: var(--accent-blue);
-    color: var(--text-light);
-    border: none;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    cursor: pointer;
-    transition:
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .btn-start:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(46, 91, 255, 0.3);
-  }
-
-  /* Input groups */
-  .input-group {
-    margin-bottom: 2rem;
-  }
-
-  .input-label {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(191, 194, 199, 0.45);
-    margin-bottom: 0.75rem;
-  }
-
-  .demo-number-input {
-    display: block;
-    width: 100%;
-    background: var(--surface-panel);
-    border: 1px solid var(--surface-border);
-    border-radius: 4px;
-    color: var(--text-light);
-    font-family: 'Inter', sans-serif;
-    font-size: 20px;
-    letter-spacing: 0.02em;
-    padding: 0.875rem 1rem;
-    outline: none;
-    transition: border-color 180ms ease;
-    -moz-appearance: textfield;
-  }
-
-  .demo-number-input::-webkit-outer-spin-button,
-  .demo-number-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-
-  .demo-number-input::placeholder {
-    color: rgba(191, 194, 199, 0.22);
-  }
-
-  .demo-number-input:focus {
-    border-color: rgba(46, 91, 255, 0.4);
-  }
-
-  /* Chips */
-  .cal-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.375rem;
-  }
-
-  .chip {
-    height: 32px;
-    padding: 0 0.875rem;
-    background: transparent;
-    border: 1px solid var(--surface-border);
-    border-radius: 3px;
-    color: rgba(191, 194, 199, 0.6);
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.07em;
-    cursor: pointer;
-    transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
-    white-space: nowrap;
-  }
-
-  .chip:hover {
-    border-color: rgba(255, 255, 255, 0.2);
-    color: var(--text-light);
-  }
-
-  .chip.selected {
-    border-color: rgba(46, 91, 255, 0.45);
-    background: rgba(46, 91, 255, 0.08);
-    color: var(--text-light);
-  }
-
-  /* Actions row */
-  .demo-actions {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .btn-calc {
-    height: 48px;
-    padding: 0 1.25rem;
-    background: var(--accent-blue);
-    color: var(--text-light);
-    border: none;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    cursor: pointer;
-    transition:
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .btn-calc:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(46, 91, 255, 0.3);
-  }
-
-  .input-hint {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.08em;
-    color: var(--accent-red);
-    display: none;
-    line-height: 1.5;
-  }
-
-  .input-hint.visible {
-    display: block;
-  }
-
-  /* Loader */
-  .loader-seq {
-    padding-top: 0.25rem;
-    border: 1px solid var(--surface-border);
-    background: var(--surface-panel);
-    padding: 1rem 1.1rem;
-  }
-
-  .loader-line {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 0.55rem 0;
-    color: var(--text-muted);
-    opacity: 0.2;
-    transition:
-      opacity 200ms ease,
-      color 200ms ease,
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .loader-line::before {
-    content: '—';
-    color: inherit;
-    opacity: 0.5;
-    width: 1ch;
-    flex-shrink: 0;
-  }
-
-  .loader-line[data-state="active"] {
-    opacity: 1;
-    color: var(--text-light);
-    transform: translateX(4px);
-  }
-
-  .loader-line[data-state="active"]::before {
-    content: '→';
-    color: var(--accent-blue);
-    opacity: 1;
-  }
-
-  .loader-line[data-state="done"] {
-    opacity: 0.45;
-    color: var(--accent-green);
-    transform: translateX(0);
-  }
-
-  .loader-line[data-state="done"]::before {
-    content: '—';
-    color: var(--accent-green);
-    opacity: 0.8;
-  }
-
-  /* Insight block */
-  .insight-block {
-    margin-bottom: 2.5rem;
-    padding: 1.4rem 1.25rem;
-    border: 1px solid var(--surface-border);
-    background: var(--surface-panel);
-    opacity: 0;
-    transform: translateY(10px);
-    transition:
-      opacity 380ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .insight-block.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .insight-line {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px !important;
-    color: rgba(191, 194, 199, 0.7) !important;
-    line-height: 1.7 !important;
-    letter-spacing: 0.04em;
-    text-transform: lowercase;
-    margin: 0 0 0.25rem !important;
-  }
-
-  .insight-line--state {
-    color: var(--accent-green) !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .terminal-title {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--text-light);
-    margin-bottom: 1rem;
-  }
-
-  /* Relationship map */
-  .rel-map {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-    border: 1px solid var(--surface-border);
-    background: var(--surface-panel);
-    padding: 1.4rem 1.25rem;
-    opacity: 0;
-    transform: translateY(10px);
-    transition:
-      opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    gap: 2.2rem;
   }
 
-  .rel-map.revealed {
-    opacity: 1;
-    transform: translateY(0);
+  .decision-demo__intro {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 760px;
   }
 
-  .terminal-cluster {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
+  .decision-demo__kicker {
+    margin: 0;
+    color: var(--color-accent);
+    font: 600 11px/1 "Inter", sans-serif;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
   }
 
-  .rel-node-val {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: rgba(191, 194, 199, 0.7);
-    line-height: 1.6;
+  .decision-demo h1 {
+    margin: 0;
+    color: var(--color-text);
+    font-size: clamp(42px, 7vw, 78px);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+  }
+
+  .decision-demo__lead,
+  .decision-demo__trace {
     margin: 0;
   }
 
-  .rel-node-val--label {
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 10px;
-    margin-bottom: 0.35rem;
+  .decision-demo__lead {
+    max-width: 34ch;
+    color: rgba(244, 246, 242, 0.9);
+    font-size: 22px;
+    line-height: 1.42;
+    letter-spacing: -0.025em;
   }
 
-  .rel-node-val--signature {
-    color: var(--text-light);
-    padding-top: 0.75rem;
-    margin-top: 0.6rem;
-    border-top: 1px solid var(--surface-border);
-  }
-
-  .terminal-divider {
-    height: 1px;
-    background: var(--surface-border);
-  }
-
-  /* Registration ritual */
-  .reg-ritual {
-    padding: 1.4rem 1.25rem;
-    border: 1px solid var(--surface-border);
-    background: var(--surface-panel);
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .reg-ritual.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .reg-title {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-green);
-    margin-bottom: 1rem;
-  }
-
-  .reg-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
-
-  .reg-field {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .reg-key {
-    font-family: 'Inter', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.14em;
-    text-transform: none;
-    color: rgba(191, 194, 199, 0.32);
-    min-width: 112px;
-    flex-shrink: 0;
-  }
-
-  .reg-val {
-    font-family: 'Inter', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-    color: rgba(191, 194, 199, 0.7);
-    word-break: break-word;
-  }
-
-  .reg-guarantee {
-    font-family: 'Inter', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.06em;
-    color: rgba(191, 194, 199, 0.25);
-    margin: 0 !important;
-  }
-
-  /* CTA block */
-  .cta-block {
-    margin-bottom: 2rem;
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .cta-block.revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .btn-cta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 48px;
-    padding: 0 1.5rem;
-    background: var(--accent-blue);
-    color: var(--text-light);
-    border: none;
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
+  .decision-demo__trace {
+    color: var(--color-text-secondary);
     font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    line-height: 1.6;
   }
 
-  .btn-cta:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(46, 91, 255, 0.3);
+  .decision-demo__grid {
+    display: grid;
+    grid-template-columns: minmax(320px, 460px) minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
   }
 
-  /* Reset row */
-  .demo-reset-row {
-    opacity: 0;
-    transform: translateY(8px);
-    transition:
-      opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  .decision-form,
+  .decision-output {
+    display: grid;
+    gap: 1rem;
+    padding: 1.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+      rgba(8, 11, 14, 0.82);
+    backdrop-filter: blur(14px);
   }
 
-  .demo-reset-row.revealed {
-    opacity: 1;
-    transform: translateY(0);
+  .decision-form__field {
+    display: grid;
+    gap: 0.4rem;
   }
 
-  .btn-reset {
-    background: none;
-    border: 1px solid var(--surface-border);
-    border-radius: 3px;
-    color: var(--text-muted);
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.14em;
+  .decision-form__field span,
+  .decision-output__eyebrow {
+    color: var(--color-text-secondary);
+    font: 600 11px/1 "Inter", sans-serif;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    padding: 0.75rem 1.25rem;
+  }
+
+  .decision-form input,
+  .decision-form select {
+    min-height: 48px;
+    padding: 0 0.95rem;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text);
+    font: 500 15px/1 "Inter", sans-serif;
+  }
+
+  .decision-form__submit,
+  .decision-output__retry {
+    min-height: 48px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(151, 214, 186, 0.28);
+    background: rgba(151, 214, 186, 0.12);
+    color: var(--color-text);
+    font: 600 15px/1 "Inter", sans-serif;
     cursor: pointer;
-    transition: border-color 180ms ease, color 180ms ease;
   }
 
-  .btn-reset:hover {
-    border-color: rgba(255, 255, 255, 0.22);
-    color: var(--text-light);
+  .decision-output__status,
+  .decision-output__panel,
+  .decision-output__ids {
+    display: grid;
+    gap: 0.55rem;
   }
 
-  /* Responsive */
-  @media (max-width: 600px) {
-    .demo-wrap {
-      padding: 64px 20px 80px;
+  .decision-output__label,
+  .decision-output__summary,
+  .decision-output__text,
+  .decision-output__ids p,
+  .decision-output__evidence li,
+  .decision-output__error {
+    margin: 0;
+  }
+
+  .decision-output__label {
+    color: var(--color-text);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.04;
+    letter-spacing: -0.045em;
+  }
+
+  .decision-output__summary,
+  .decision-output__text {
+    color: rgba(244, 246, 242, 0.9);
+    font-size: 17px;
+    line-height: 1.68;
+  }
+
+  .decision-output__text--secondary,
+  .decision-output__ids p,
+  .decision-output__evidence li,
+  .decision-output__error {
+    color: var(--color-text-secondary);
+    font-size: 15px;
+  }
+
+  .decision-output__ids {
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .decision-output__evidence {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .decision-output__evidence li::before {
+    content: "· ";
+    color: var(--color-accent);
+  }
+
+  .decision-output__error:empty {
+    display: none;
+  }
+
+  [data-decision-demo][data-status="loading"] .decision-output__label {
+    color: var(--color-accent-strong);
+  }
+
+  [data-decision-demo][data-status="error"] .decision-output__label {
+    color: #ffd08f;
+  }
+
+  @media (max-width: 920px) {
+    .decision-demo {
+      padding: 72px 20px 92px;
     }
 
-    .demo-actions {
-      align-items: stretch;
-    }
-
-    .btn-calc,
-    .btn-cta,
-    .btn-start {
-      width: 100%;
-      justify-content: center;
+    .decision-demo__grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .demo-phase     { animation: none; }
-    .insight-block,
-    .rel-map,
-    .reg-ritual,
-    .cta-block,
-    .demo-reset-row { opacity: 1; transform: none; transition: none; }
+  @media (max-width: 640px) {
+    .decision-demo h1 {
+      font-size: clamp(34px, 12vw, 52px);
+    }
+
+    .decision-demo__lead {
+      font-size: 18px;
+    }
   }
 </style>
 
 <script>
-  import {
-    requestAuroraDecision,
-    type DemoAbsorption,
-    type DemoReversibility,
-    type AuroraDecisionResult
-  } from "../lib/auroraDecisionApi";
+  import { mountDecisionDemo } from "../lib/aurora/decision/demoController";
 
-  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  // ── Phase control ───────────────────────────────────────────────────────
-
-  function moveFocus(targetId?: string): void {
-    if (!targetId) return;
-    requestAnimationFrame(() => {
-      document.getElementById(targetId)?.focus();
-    });
-  }
-
-  function showPhase(id: string, focusTargetId?: string): void {
-    document.querySelectorAll<HTMLElement>(".demo-phase").forEach((p) => {
-      p.classList.add("demo-phase--hidden");
-    });
-    document.getElementById("phase-" + id)!.classList.remove("demo-phase--hidden");
-    moveFocus(focusTargetId);
-  }
-
-  // ── Chip selection ──────────────────────────────────────────────────────
-
-  function setChipSelection(group: HTMLElement, selectedChip: HTMLButtonElement): void {
-    group.querySelectorAll<HTMLButtonElement>(".chip").forEach((chip) => {
-      const isSelected = chip === selectedChip;
-      chip.classList.toggle("selected", isSelected);
-      chip.setAttribute("aria-checked", isSelected ? "true" : "false");
-      chip.tabIndex = isSelected ? 0 : -1;
-    });
-  }
-
-  document.querySelectorAll<HTMLElement>(".cal-chips").forEach((group) => {
-    const chips = Array.from(group.querySelectorAll<HTMLButtonElement>(".chip"));
-
-    chips.forEach((chip, index) => {
-      chip.addEventListener("click", () => {
-        setChipSelection(group, chip);
-      });
-
-      chip.addEventListener("keydown", (event) => {
-        if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(event.key)) return;
-        event.preventDefault();
-
-        const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
-        const nextIndex = (index + direction + chips.length) % chips.length;
-        const nextChip = chips[nextIndex]!;
-
-        setChipSelection(group, nextChip);
-        nextChip.focus();
-      });
-    });
-  });
-
-  function getChipValue(group: string): string {
-    return (
-      document.querySelector<HTMLElement>(
-        `.cal-chips[data-group="${group}"] .chip.selected`
-      )?.dataset.value ?? ""
-    );
-  }
-
-  // ── Hero → Inputs ───────────────────────────────────────────────────────
-
-  document.getElementById("btn-start")!.addEventListener("click", () => {
-    showPhase("inputs", "input-capital");
-  });
-
-  // ── Loader ──────────────────────────────────────────────────────────────
-
-  function runLoader(done: () => void): void {
-    const lines = document.querySelectorAll<HTMLElement>(".loader-line");
-    if (prefersReducedMotion) {
-      lines.forEach((line) => {
-        line.dataset.state = "done";
-      });
-      done();
-      return;
-    }
-
-    let i = 0;
-    function activate(): void {
-      if (i > 0) lines[i - 1]!.dataset.state = "done";
-      if (i < lines.length) {
-        lines[i]!.dataset.state = "active";
-        i++;
-        setTimeout(activate, 220);
-      } else {
-        setTimeout(done, 240);
-      }
-    }
-    activate();
-  }
-
-  // ── Reveal helper ───────────────────────────────────────────────────────
-
-  function revealEl(id: string, delay: number): void {
-    if (prefersReducedMotion) {
-      document.getElementById(id)?.classList.add("revealed");
-      return;
-    }
-
-    setTimeout(() => document.getElementById(id)?.classList.add("revealed"), delay);
-  }
-
-  function showHint(message: string): void {
-    const hint = document.getElementById("input-hint")!;
-    hint.textContent = message;
-    hint.classList.add("visible");
-  }
-
-  function hideHint(): void {
-    const hint = document.getElementById("input-hint")!;
-    hint.textContent = "";
-    hint.classList.remove("visible");
-  }
-
-  function formatStructuralLoad(value: number): string {
-    return value.toFixed(2);
-  }
-
-  function toDisplayText(items: string[], fallback: string): string {
-    return items.filter(Boolean).join(" + ") || fallback;
-  }
-
-  function renderDecisionResult(decision: AuroraDecisionResult): void {
-    const pressurePoint = decision.structural_pressure.pressure_points[0] ?? "not surfaced";
-    const compressionMechanism = toDisplayText(
-      decision.structural_pressure.compression_mechanisms,
-      "not surfaced"
-    );
-
-    document.getElementById("insight-0")!.textContent = "movement registered";
-    document.getElementById("insight-1")!.textContent = `decision_id: ${decision.decision_id}`;
-    document.getElementById("insight-2")!.textContent = `protocol: ${decision.protocol}`;
-
-    document.getElementById("map-capital")!.textContent =
-      `structural load: ${formatStructuralLoad(decision.structural_pressure.structural_load)}`;
-    document.getElementById("map-window")!.textContent = `pressure point: ${pressurePoint}`;
-    document.getElementById("map-reversibility")!.textContent =
-      `compression mechanism: ${compressionMechanism}`;
-    document.getElementById("system-reading-primary")!.textContent = decision.executive_summary;
-    document.getElementById("system-reading-secondary")!.textContent = decision.recommendation;
-    document.getElementById("system-reading-signature")!.textContent =
-      `run_signature: ${decision.run_signature}`;
-
-    document.getElementById("reg-id")!.textContent = decision.decision_id;
-    document.getElementById("reg-hash")!.textContent = decision.protocol;
-    document.getElementById("reg-pressure")!.textContent = decision.run_signature;
-    document.getElementById("reg-window")!.textContent =
-      formatStructuralLoad(decision.structural_pressure.structural_pressure);
-    document.getElementById("reg-ts")!.textContent = pressurePoint;
-  }
-
-  // ── Process ─────────────────────────────────────────────────────────────
-
-  document.getElementById("btn-process")!.addEventListener("click", async () => {
-    const capitalInput = document.getElementById("input-capital") as HTMLInputElement;
-    const capital      = parseFloat(capitalInput.value);
-    if (!capitalInput.value || isNaN(capital) || capital < 0) {
-      showHint("Ingresá un valor de capital válido.");
-      return;
-    }
-
-    hideHint();
-
-    const absorption = (getChipValue("absorption") || "yes") as DemoAbsorption;
-    const reversibility = (getChipValue("reversibility") || "full") as DemoReversibility;
-
-    // Reset loader state
-    document.querySelectorAll<HTMLElement>(".loader-line").forEach((l) => {
-      delete l.dataset.state;
-    });
-
-    showPhase("loader", "loader-status");
-
-    runLoader(async () => {
-      try {
-        const decision = await requestAuroraDecision({
-          capital,
-          absorption,
-          reversibility
-        });
-
-        renderDecisionResult(decision);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Aurora OS request failed.";
-        showPhase("inputs", "input-capital");
-        showHint(message);
-        return;
-      }
-
-      // Reset reveals
-      ["insight-block", "rel-map", "reg-ritual", "cta-block", "reset-row"].forEach(
-        (elId) => document.getElementById(elId)?.classList.remove("revealed")
-      );
-
-      showPhase("results", "results-heading");
-
-      // Sequential reveal
-      revealEl("insight-block", 40);
-      revealEl("rel-map",       140);
-      revealEl("reg-ritual",    220);
-      revealEl("cta-block",     300);
-      revealEl("reset-row",     360);
-    });
-  });
-
-  // ── Reset ───────────────────────────────────────────────────────────────
-
-  document.getElementById("btn-reset")!.addEventListener("click", () => {
-    (document.getElementById("input-capital") as HTMLInputElement).value = "";
-
-    document
-      .querySelectorAll<HTMLButtonElement>('[data-group="absorption"] .chip')
-      .forEach((c) => {
-        const isSelected = c.dataset.value === "yes";
-        c.classList.toggle("selected", isSelected);
-        c.setAttribute("aria-checked", isSelected ? "true" : "false");
-        c.tabIndex = isSelected ? 0 : -1;
-      });
-
-    document
-      .querySelectorAll<HTMLButtonElement>('[data-group="reversibility"] .chip')
-      .forEach((c) => {
-        const isSelected = c.dataset.value === "full";
-        c.classList.toggle("selected", isSelected);
-        c.setAttribute("aria-checked", isSelected ? "true" : "false");
-        c.tabIndex = isSelected ? 0 : -1;
-      });
-
-    hideHint();
-
-    showPhase("hero", "btn-start");
-  });
+  mountDecisionDemo();
 </script>

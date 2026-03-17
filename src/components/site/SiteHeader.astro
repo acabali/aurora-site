@@ -5,16 +5,18 @@ interface Props {
 }
 
 const { variant = "default", currentPath = "/" } = Astro.props;
+const demoHref = currentPath === "/demo" ? "#top" : "/demo";
 ---
 
 <header class:list={["site-header", variant === "landing" ? "site-header--landing" : "site-header--default"]}>
-  <div class="site-header-left">
-    <a href="/" class="site-logo" aria-label="Aurora">
-      <img src="/aurora-logo.png" alt="Aurora" width="88" height="48" />
+  <a href="/" class="site-logo" aria-label="Aurora">
+    <img src="/aurora-logo.png" alt="Aurora" width="88" height="48" />
+  </a>
+
+  <nav class="site-nav" aria-label="Principal">
+    <a href="/" class="site-nav__link" aria-current={currentPath === "/" ? "page" : undefined}>Inicio</a>
+    <a href={demoHref} class="site-nav__cta" aria-current={currentPath === "/demo" ? "page" : undefined}>
+      Someter movimiento a cálculo
     </a>
-  </div>
-  <nav class="site-header-right" aria-label="Principal">
-    <a href="/" aria-current={currentPath === "/" ? "page" : undefined}>Inicio</a>
-    <a href="/demo" aria-current={currentPath === "/demo" ? "page" : undefined}>Demo</a>
   </nav>
 </header>

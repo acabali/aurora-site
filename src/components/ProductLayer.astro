@@ -1,0 +1,117 @@
+---
+const groups = [
+  {
+    title: "CORE",
+    entries: [
+      ["Aurora Core", "Integra variables y fija la lectura estructural antes de ejecutar."],
+      ["Scenario", "Contrasta sensibilidad entre rutas posibles antes de comprometer el movimiento."],
+      ["Risk", "Lee exposición, presión y reversibilidad en una sola capa."],
+      ["Signal", "Aísla cambios relevantes dentro del ruido operativo."],
+      ["Ledger", "Registra decisión y contexto para trazabilidad posterior."],
+      ["Demo", "Superficie pública controlada para someter un movimiento a cálculo."],
+    ],
+  },
+  {
+    title: "MOTORES",
+    entries: [
+      ["Decision Evaluation Engine", "Somete una decisión real a lectura estructural antes de ejecutarla."],
+      ["Counterfactual Engine", "Abre alternativas plausibles desde el sistema y no desde la interfaz."],
+      ["Structural Pressure Detection", "Localiza dónde se concentra la presión dominante."],
+      ["Reversibility Mapping", "Mide margen de corrección antes de comprometer irreversibilidad."],
+      ["Decision Footprint", "Devuelve huella de decisión para trazabilidad end-to-end."],
+    ],
+  },
+  {
+    title: "SUPERFICIE OPERATIVA",
+    entries: [
+      ["Optimización de Costos", "Contrasta recortes sobre estructura, margen y absorción antes de actuar."],
+      ["Estrategia de Crecimiento", "Compara rutas de expansión antes de comprometer escala."],
+      ["Estrategia de Marketing", "Evalúa canal, CAC y momento de entrada bajo presión competitiva."],
+      ["Evaluación de Inversiones", "Lee exposición y reversibilidad antes de comprometer capital."],
+      ["Soporte a Decisiones Clave", "Ubica el punto de presión y la dirección operativa antes de mover."],
+      ["Control de Caja y Runway", "Detecta compresión de liquidez antes de tensionar caja y runway."],
+    ],
+  },
+];
+---
+
+<div class="product-layer">
+  {groups.map((group) => (
+    <section class="product-layer__group">
+      <div class="product-layer__title">{group.title}</div>
+      <div class="product-layer__entries">
+        {group.entries.map(([name, description]) => (
+          <article class="product-layer__entry">
+            <p class="product-layer__name">{name}</p>
+            <p class="product-layer__description">{description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))}
+</div>
+
+<style>
+  .product-layer {
+    display: grid;
+    gap: 2.2rem;
+    margin-top: 1.8rem;
+  }
+
+  .product-layer__group {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 1.2rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .product-layer__title {
+    color: var(--color-text);
+    font: 600 12px/1 "Inter", sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
+
+  .product-layer__entries {
+    display: grid;
+    gap: 0;
+  }
+
+  .product-layer__entry {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .product-layer__name,
+  .product-layer__description {
+    margin: 0;
+  }
+
+  .product-layer__name {
+    color: rgba(244, 246, 242, 0.96);
+    font-size: 20px;
+    line-height: 1.25;
+    letter-spacing: -0.03em;
+  }
+
+  .product-layer__description {
+    color: var(--color-text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 62ch;
+  }
+
+  @media (max-width: 768px) {
+    .product-layer__group {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.8rem;
+    }
+
+    .product-layer__name {
+      font-size: 18px;
+    }
+  }
+</style>

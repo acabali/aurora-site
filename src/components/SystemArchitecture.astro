@@ -1,140 +1,95 @@
+---
+const layers = [
+  {
+    title: "Core",
+    summary: "Concentra el cálculo basal del sistema y conserva consistencia entre lectura, huella y trazabilidad.",
+    outputs: ["Aurora Core", "Signal", "Ledger"],
+  },
+  {
+    title: "Motores",
+    summary: "Evalúan presión estructural, escenarios, reversibilidad y huella decisional antes de ejecutar.",
+    outputs: ["Scenario", "Risk", "Decision Evaluation Engine", "Counterfactual Engine", "Structural Pressure Detection", "Reversibility Mapping", "Decision Footprint"],
+  },
+  {
+    title: "Superficie operativa",
+    summary: "Expone la lectura del sistema en productos y soluciones concretas sin duplicar lógica en la web.",
+    outputs: ["Demo", "Optimización de Costos", "Estrategia de Crecimiento", "Estrategia de Marketing", "Evaluación de Inversiones", "Soporte a Decisiones Clave", "Control de Caja y Runway"],
+  },
+];
+---
+
 <div class="system-architecture">
-  <div class="system-header">
-    <span>ARQUITECTURA DEL SISTEMA</span>
-  </div>
-
-  <p class="module-group__summary">Aurora está organizado como arquitectura de sistema.</p>
-  <p class="module-group__summary">Cada capa calcula una parte del campo de decisión y devuelve una lectura operativa coherente.</p>
-
-  <div class="module-list">
-    <div class="module-group">
-      <h3>CAMPO ESTRUCTURAL</h3>
-      <button type="button" class="module-line" data-aurora-focus="aurora-core">
-        <span class="module-line__name">Aurora Core</span>
-      </button>
-      <p class="module-group__summary">Integra variables y expone interacción estructural.</p>
-      <button type="button" class="module-line" data-aurora-focus="aurora-signal">
-        <span class="module-line__name">Aurora Signal</span>
-      </button>
-      <p class="module-group__summary">Detecta cambios relevantes dentro del ruido operativo.</p>
-      <button type="button" class="module-line" data-aurora-focus="aurora-scenario">
-        <span class="module-line__name">Aurora Scenario</span>
-      </button>
-      <p class="module-group__summary">Simula sensibilidad entre variables.</p>
-    </div>
-
-    <div class="module-group">
-      <h3>CAMPO DE RIESGO</h3>
-      <button type="button" class="module-line" data-aurora-focus="aurora-risk">
-        <span class="module-line__name">Aurora Risk</span>
-      </button>
-      <p class="module-group__summary">Evalúa exposición y reversibilidad.</p>
-    </div>
-
-    <div class="module-group">
-      <h3>CAMPO OPERATIVO</h3>
-      <button type="button" class="module-line" data-aurora-focus="aurora-ledger">
-        <span class="module-line__name">Aurora Ledger</span>
-      </button>
-      <p class="module-group__summary">Registra decisiones y contexto para trazabilidad futura.</p>
-    </div>
-
-    <div class="module-group">
-      <h3>SUPERFICIES OPERATIVAS</h3>
-      <button type="button" class="module-line" data-aurora-focus="cluster-costos">
-        <span class="module-line__name">Optimización de costos</span>
-      </button>
-      <p class="module-group__summary">Simulación de recortes antes de ejecutarlos.</p>
-      <button type="button" class="module-line" data-aurora-focus="cluster-demanda">
-        <span class="module-line__name">Estrategia de crecimiento</span>
-      </button>
-      <p class="module-group__summary">Comparación de escenarios antes de escalar.</p>
-      <button type="button" class="module-line" data-aurora-focus="cluster-competencia">
-        <span class="module-line__name">Estrategia de marketing</span>
-      </button>
-      <p class="module-group__summary">Evaluación estructural de canal, CAC y momento de entrada.</p>
-      <button type="button" class="module-line" data-aurora-focus="cluster-regulacion">
-        <span class="module-line__name">Evaluación de inversiones</span>
-      </button>
-      <p class="module-group__summary">Lectura de exposición antes de comprometer capital.</p>
-      <button type="button" class="module-line" data-aurora-focus="system-critical">
-        <span class="module-line__name">Soporte a decisiones críticas</span>
-      </button>
-      <p class="module-group__summary">Presión, reversibilidad y punto de quiebre antes de ejecutar.</p>
-      <button type="button" class="module-line" data-aurora-focus="cluster-costos">
-        <span class="module-line__name">Control de caja y margen operativo</span>
-      </button>
-      <p class="module-group__summary">Lectura de margen operativo y estrés de liquidez.</p>
-    </div>
-
-    <div class="module-group">
-      <h3>CAPAS AVANZADAS</h3>
-      <button
-        type="button"
-        class="module-line"
-        data-aurora-focus="aurora-scenario"
-        data-aurora-hover-substate="pressure"
-      >
-        <span class="module-line__name">Presión de escenarios</span>
-      </button>
-      <button
-        type="button"
-        class="module-line"
-        data-aurora-focus="aurora-signal"
-        data-aurora-hover-substate="signal"
-      >
-        <span class="module-line__name">Anulación de señal</span>
-      </button>
-      <button
-        type="button"
-        class="module-line"
-        data-aurora-focus="aurora-ledger"
-        data-aurora-hover-substate="ledger"
-      >
-        <span class="module-line__name">Registro de decisiones</span>
-      </button>
-    </div>
-  </div>
+  {layers.map((layer) => (
+    <article class="system-architecture__layer">
+      <div class="system-architecture__label">{layer.title}</div>
+      <div class="system-architecture__content">
+        <p class="system-architecture__summary">{layer.summary}</p>
+        <div class="system-architecture__outputs">
+          {layer.outputs.map((item) => (
+            <span class="system-architecture__chip">{item}</span>
+          ))}
+        </div>
+      </div>
+    </article>
+  ))}
 </div>
 
-<script>
-  const page = document.querySelector<HTMLElement>("[data-aurora-page]");
-  const architecture = document.querySelector<HTMLElement>(".system-architecture");
-  const focusTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-aurora-focus]"));
-
-  function clearAuroraFocus(): void {
-    if (!page) {
-      return;
-    }
-
-    delete page.dataset.auroraFocus;
-    delete page.dataset.auroraHoverSubstate;
+<style>
+  .system-architecture {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
-  function applyAuroraFocus(target: HTMLElement): void {
-    if (!page) {
-      return;
-    }
-
-    page.dataset.auroraFocus = target.dataset.auroraFocus ?? "";
-    if (target.dataset.auroraHoverSubstate) {
-      page.dataset.auroraHoverSubstate = target.dataset.auroraHoverSubstate;
-    } else {
-      delete page.dataset.auroraHoverSubstate;
-    }
+  .system-architecture__layer {
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 1.2rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  focusTargets.forEach((target) => {
-    target.addEventListener("pointerenter", () => applyAuroraFocus(target));
-    target.addEventListener("focus", () => applyAuroraFocus(target));
-  });
+  .system-architecture__label {
+    color: var(--color-text);
+    font: 600 12px/1 "Inter", sans-serif;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+  }
 
-  architecture?.addEventListener("pointerleave", clearAuroraFocus);
-  architecture?.addEventListener("focusout", () => {
-    window.requestAnimationFrame(() => {
-      if (!architecture.contains(document.activeElement)) {
-        clearAuroraFocus();
-      }
-    });
-  });
-</script>
+  .system-architecture__content {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .system-architecture__summary {
+    margin: 0;
+    color: rgba(244, 246, 242, 0.9);
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .system-architecture__outputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
+  .system-architecture__chip {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 0 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--color-text-secondary);
+    font: 500 13px/1 "Inter", sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .system-architecture__layer {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.7rem;
+    }
+  }
+</style>

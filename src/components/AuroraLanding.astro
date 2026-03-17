@@ -1,5 +1,6 @@
 ---
 import AuroraField from "./AuroraField.astro";
+import ProductLayer from "./ProductLayer.astro";
 import SystemArchitecture from "./SystemArchitecture.astro";
 import SystemInterface from "./SystemInterface.astro";
 ---
@@ -9,131 +10,80 @@ import SystemInterface from "./SystemInterface.astro";
     <AuroraField />
   </div>
 
-  <div class="legacy-aliases" aria-hidden="true">
-    que-cambio desajuste aurora evalua escenarios riesgo diferenciacion demo
-  </div>
-
-  <section class="hero" id="hero" data-aurora-section="hero" data-aurora-state="latent">
-    <div class="hero-structure" aria-hidden="true"></div>
-
-    <div class="hero-shell" data-aurora-silence-zone>
-      <span class="section-kicker" data-hero-stage="headline">INFRAESTRUCTURA DE DECISIÓN</span>
-      <h1 data-hero-stage="headline">El límite humano ya no alcanza.</h1>
-      <div class="hero-body" data-hero-stage="subcopy">
-        <p class="hero-subtitle">El mercado ya no compite con personas.</p>
-        <p class="hero-subtitle">Compite con sistemas.</p>
-        <p class="hero-subtitle">Aurora desplaza el límite humano mediante cálculo permanente.</p>
-        <p class="hero-subtitle">Es sustitución operativa.</p>
+  <section class="hero" id="hero" data-aurora-state="hero">
+    <div class="hero-shell">
+      <p class="hero-kicker">INFRAESTRUCTURA DE DECISIÓN</p>
+      <h1>La mente humana tiene un límite. La realidad no.</h1>
+      <p class="hero-anchor">Aurora calcula las consecuencias de un movimiento antes de ejecutarlo.</p>
+      <div class="hero-body">
+        <p>El mercado ya no compite con personas.</p>
+        <p>Compite con sistemas.</p>
+        <p>El cálculo reemplaza la interpretación.</p>
+        <p>Aurora introduce esa capacidad.</p>
       </div>
 
-      <div class="hero-cta-row" data-hero-stage="cta">
-        <a href="/demo" class="cta-link">→ Poner una decisión bajo evidencia</a>
+      <div class="hero-actions">
+        <a href="/demo" class="cta-link">Someter movimiento a cálculo</a>
       </div>
     </div>
   </section>
 
-  <section class="section" id="context" data-aurora-section="context" data-aurora-state="activation">
-    <div class="section-grid section-grid--intro">
+  <section class="section" id="contexto" data-aurora-state="context">
+    <div class="section-grid">
       <div class="section-rail">
-        <span class="section-kicker" data-reveal="line">Contexto</span>
+        <span class="section-kicker">Cambio de estándar</span>
       </div>
 
-      <div class="section-copy">
-        <h2 data-reveal="line">Las decisiones críticas fallan cuando las variables se mueven más rápido que el plan.</h2>
-        <p class="section-lead" data-reveal="line" data-reveal-delay="60">El problema no es falta de información.</p>
-        <p data-reveal="line" data-reveal-delay="120">Es interacción estructural entre costos, demanda, regulación y tiempo.</p>
+      <div class="section-copy section-copy--wide">
+        <h2>Hoy es posible ver la estructura de un movimiento antes de actuar.</h2>
+        <div class="context-grid">
+          <p>La forma de operar cambió. Ya no alcanza con interpretar más rápido ni con agregar más capas humanas sobre la decisión.</p>
+          <p>Los movimientos comprometen capital, activan operación y dejan consecuencias. La ventaja ya no es crecer. Es ver la estructura antes de entrar en ella.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section" id="aurora-operating" data-aurora-section="aurora-operating" data-aurora-state="tension">
-    <div class="section-grid section-grid--interface">
+  <section class="section" id="proof" data-aurora-state="proof">
+    <div class="section-grid">
       <div class="section-rail">
-        <span class="section-kicker" data-reveal="line">Operación Aurora</span>
+        <span class="section-kicker">Prueba</span>
       </div>
 
       <div class="section-copy section-copy--full">
-        <h2 data-reveal="line">Aurora evalúa una decisión mientras el campo todavía está bajo presión.</h2>
-        <p class="section-lead" data-reveal="line" data-reveal-delay="60">
-          Aurora no describe software.
-        </p>
-        <p data-reveal="line" data-reveal-delay="110">Expone una lectura activa del sistema.</p>
-        <p data-reveal="line" data-reveal-delay="150">La interfaz devuelve una lectura estructural antes de ejecutar.</p>
-
-        <div data-reveal data-reveal-delay="140">
-          <SystemInterface />
-        </div>
+        <SystemInterface />
       </div>
     </div>
   </section>
 
-  <section class="section" id="system-architecture" data-aurora-section="system-architecture" data-aurora-state="order">
-    <div class="section-grid section-grid--architecture">
+  <section class="section" id="arquitectura" data-aurora-state="architecture">
+    <div class="section-grid">
       <div class="section-rail">
-        <span class="section-kicker" data-reveal="line">Arquitectura</span>
+        <span class="section-kicker">Arquitectura y capa de producto</span>
       </div>
 
       <div class="section-copy section-copy--full">
-        <div data-reveal data-reveal-delay="140">
-          <SystemArchitecture />
-        </div>
+        <h2>Core. Motores. Superficie operativa.</h2>
+        <p class="section-lead">Aurora opera como sistema. La web expone la arquitectura y la demo somete un movimiento a cálculo sin duplicar el motor visible.</p>
+        <SystemArchitecture />
+        <ProductLayer />
       </div>
     </div>
   </section>
 
-  <section class="section" id="decision-entry" data-aurora-section="decision-entry" data-aurora-state="contextual">
-    <div class="section-grid section-grid--entry">
+  <section class="section section-cta" id="demo" data-aurora-state="cta">
+    <div class="section-grid">
       <div class="section-rail">
-        <span class="section-kicker" data-reveal="line">Entrada de decisión</span>
+        <span class="section-kicker">Demo</span>
       </div>
 
-      <div class="section-copy section-copy--full">
-        <h2 data-reveal="line">¿Qué decisión querés evaluar?</h2>
-
-        <div class="decision-entry-list" data-reveal data-reveal-delay="80">
-          <a href="/demo" class="decision-entry-link">Reducir costos</a>
-          <a href="/demo" class="decision-entry-link">Invertir en crecimiento</a>
-          <a href="/demo" class="decision-entry-link">Cambiar estrategia de salida al mercado</a>
-          <a href="/demo" class="decision-entry-link">Evaluar margen operativo</a>
-          <a href="/demo" class="decision-entry-link">Otra decisión</a>
+      <div class="section-copy section-copy--wide">
+        <h2>Pon tu próximo movimiento bajo cálculo.</h2>
+        <p class="section-lead">Aurora no opina. Calcula.</p>
+        <p>La demo prepara el contrato real, registra el movimiento y devuelve lectura, contrafactual e identidad de decisión desde un único adapter.</p>
+        <div class="hero-actions hero-actions--section">
+          <a href="/demo" class="cta-link">Someter movimiento a cálculo</a>
         </div>
-
-        <div class="hero-cta-row hero-cta-row--section" data-reveal data-reveal-delay="140">
-          <a href="/demo" class="cta-link">Someter una decisión a cálculo.</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section section-demo" id="demo" data-aurora-section="demo" data-aurora-state="comparison">
-    <div class="section-grid section-grid--demo">
-      <div class="section-rail">
-        <span class="section-kicker" data-reveal="line">Demo</span>
-      </div>
-
-      <div class="section-copy">
-        <h2 data-reveal="line">Someter una decisión a cálculo.</h2>
-        <p class="section-lead" data-reveal="line" data-reveal-delay="60">Evaluá un plan real antes de ejecutarlo.</p>
-        <p data-reveal="line" data-reveal-delay="120">
-          La demo registra el movimiento, localiza el punto de presión y devuelve una lectura estructural determinística.
-        </p>
-
-        <div class="hero-cta-row hero-cta-row--section" data-reveal data-reveal-delay="180">
-          <a href="/demo" class="cta-link">Ver cómo funciona Aurora</a>
-        </div>
-      </div>
-
-      <div class="demo-output" data-reveal data-reveal-delay="160" aria-label="Señales demo Aurora">
-        <div class="demo-output__title">SEÑAL DEMO AURORA</div>
-        <p>registrando movimiento</p>
-        <p>mapeando variables estructurales</p>
-        <p>localizando punto de presión</p>
-        <div class="demo-output__divider"></div>
-        <p>lectura del sistema</p>
-        <p>carga estructural: elevada</p>
-        <p>punto de presión: día 32</p>
-        <p>mecanismo de compresión: absorción restringida + reversibilidad parcial</p>
-        <p class="demo-output__state">movimiento registrado</p>
       </div>
     </div>
   </section>
@@ -143,13 +93,7 @@ import SystemInterface from "./SystemInterface.astro";
   .aurora-page {
     position: relative;
     isolation: isolate;
-    min-height: 100vh;
     color: var(--color-text);
-    --duration-reveal: 360ms;
-    --duration-reveal-line: 240ms;
-    --duration-reveal-strong: 520ms;
-    --max-page: 1180px;
-    --max-copy: 820px;
   }
 
   .aurora-page__field {
@@ -157,8 +101,8 @@ import SystemInterface from "./SystemInterface.astro";
     top: 0;
     height: 100svh;
     margin-bottom: -100svh;
-    z-index: 0;
     pointer-events: none;
+    z-index: 0;
   }
 
   .aurora-page > :not(.aurora-page__field) {
@@ -166,478 +110,229 @@ import SystemInterface from "./SystemInterface.astro";
     z-index: 1;
   }
 
-  .legacy-aliases {
-    display: none;
-  }
-
   .hero,
   .section {
     position: relative;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .hero {
     min-height: calc(100svh - 80px);
-    padding: 96px 24px 108px;
+    padding: 110px 24px 120px;
     border-top: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    overflow: hidden;
-  }
-
-  .hero::before,
-  .hero::after,
-  .hero-structure::before,
-  .hero-structure::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   }
 
   .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
     background:
-      linear-gradient(180deg, rgba(11, 11, 12, 0.06), rgba(11, 11, 12, 0)),
-      radial-gradient(circle at 44% 42%, rgba(247, 247, 245, 0.04), transparent 30%);
-  }
-
-  .hero::after {
-    background: radial-gradient(circle at 50% 46%, transparent 0 34%, rgba(11, 11, 12, 0.3) 68%, rgba(11, 11, 12, 0.84) 100%);
-  }
-
-  .hero-structure::before {
-    background:
-      radial-gradient(circle at 50% 44%, rgba(46, 91, 255, 0.08), transparent 30%),
-      radial-gradient(circle at 52% 38%, rgba(247, 247, 245, 0.03), transparent 42%);
-    opacity: 0.82;
-  }
-
-  .hero-structure::after {
-    inset: 20% 17% 14%;
-    border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    transform: scaleY(0.78);
-    opacity: 0.28;
+      radial-gradient(circle at 48% 40%, rgba(214, 255, 234, 0.08), transparent 28%),
+      linear-gradient(180deg, rgba(11, 13, 16, 0.2), rgba(11, 13, 16, 0.6));
+    pointer-events: none;
   }
 
   .hero-shell,
   .section-grid {
-    width: min(var(--max-page), 100%);
+    width: min(1160px, 100%);
     margin: 0 auto;
   }
 
   .hero-shell {
     position: relative;
-    z-index: 2;
     display: grid;
     gap: 1.35rem;
-    max-width: 760px;
+    max-width: 820px;
   }
 
-  .section {
-    padding: 112px 24px;
-  }
-
-  .section-grid {
-    display: grid;
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: 3rem;
-    align-items: start;
-  }
-
-  .section-grid--demo {
-    grid-template-columns: 180px minmax(0, 1fr) minmax(280px, 360px);
-  }
-
-  .section-rail {
-    padding-top: 0.25rem;
-  }
-
-  .section-copy {
-    display: grid;
-    gap: 1rem;
-    max-width: var(--max-copy);
-  }
-
-  .section-copy--full {
-    max-width: 100%;
-  }
-
+  .hero-kicker,
   .section-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.65rem;
     margin: 0;
-    color: var(--color-accent-green);
+    color: var(--color-accent);
     font: 600 11px/1 "Inter", sans-serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
+  .hero-kicker::before,
   .section-kicker::before {
     content: "";
-    width: 32px;
+    width: 38px;
     height: 1px;
-    background: rgba(0, 195, 137, 0.42);
+    background: rgba(151, 214, 186, 0.48);
   }
 
   .hero h1,
   .section-copy h2 {
     margin: 0;
     color: var(--color-text);
+    letter-spacing: -0.05em;
     text-wrap: balance;
   }
 
   .hero h1 {
-    max-width: 8.6ch;
-    font-size: clamp(50px, 7vw, 86px);
-    line-height: 0.98;
-    letter-spacing: -0.05em;
-    font-weight: 700;
+    max-width: 9ch;
+    font-size: clamp(50px, 8vw, 92px);
+    line-height: 0.95;
   }
 
-  .section-copy h2 {
-    max-width: 16ch;
-    font-size: clamp(34px, 4.8vw, 56px);
-    line-height: 1.04;
-    letter-spacing: -0.045em;
-    font-weight: 700;
-  }
-
-  .hero-subtitle,
-  .section-copy p,
-  .demo-output p {
+  .hero-anchor {
+    max-width: 26ch;
     margin: 0;
-    color: var(--color-text-secondary);
+    color: rgba(244, 246, 242, 0.98);
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.14;
+    letter-spacing: -0.035em;
   }
 
   .hero-body {
     display: grid;
-    gap: 0.2rem;
-    max-width: 32ch;
+    gap: 0.25rem;
+    max-width: 30ch;
   }
 
-  .hero-subtitle {
-    font-size: clamp(18px, 2vw, 22px);
-    line-height: 1.34;
-    color: rgba(247, 247, 245, 0.9);
-    letter-spacing: -0.025em;
+  .hero-body p,
+  .section-copy p {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: 17px;
+    line-height: 1.7;
   }
 
-  .section-lead {
-    max-width: 28ch;
-    color: var(--color-text) !important;
-    font-size: 22px !important;
-    line-height: 1.34 !important;
-    letter-spacing: -0.025em;
-    font-weight: 500;
+  .hero-body p {
+    color: rgba(225, 229, 220, 0.88);
+    font-size: 19px;
+    line-height: 1.42;
+    letter-spacing: -0.02em;
   }
 
-  .hero-cta-row {
+  .hero-actions {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    margin-top: 1rem;
-  }
-
-  .hero-cta-row--section {
-    margin-top: 1.6rem;
-  }
-
-  .cta-link,
-  .decision-entry-link {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    color: rgba(247, 247, 245, 0.96);
-    text-decoration: none;
-    transition: color 240ms var(--ease-aurora), transform 240ms var(--ease-aurora);
+    margin-top: 0.7rem;
   }
 
   .cta-link {
-    min-height: 40px;
-    padding: 0.35rem 0 0.65rem;
-    font: 500 18px/1.3 "Inter", sans-serif;
+    display: inline-flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    background: rgba(151, 214, 186, 0.12);
+    border: 1px solid rgba(151, 214, 186, 0.28);
+    color: var(--color-text);
+    text-decoration: none;
+    font: 600 15px/1 "Inter", sans-serif;
     letter-spacing: 0.02em;
+    transition:
+      transform 220ms var(--ease-aurora),
+      background 220ms var(--ease-aurora),
+      border-color 220ms var(--ease-aurora);
   }
 
-  .cta-link::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -6px;
-    height: 1px;
-    background: rgba(247, 247, 245, 0.48);
-    transform: scaleX(0.58);
-    transform-origin: center;
-    transition: transform 240ms var(--ease-aurora), background 240ms var(--ease-aurora);
+  .cta-link:hover,
+  .cta-link:focus-visible {
+    transform: translateY(-1px);
+    background: rgba(151, 214, 186, 0.18);
+    border-color: rgba(151, 214, 186, 0.4);
   }
 
-  .cta-link:hover::after,
-  .cta-link:focus-visible::after {
-    transform: scaleX(1);
-    background: rgba(247, 247, 245, 0.76);
+  .section {
+    padding: 104px 24px;
   }
 
-  .decision-entry-list {
+  .section-grid {
     display: grid;
-    gap: 0;
-    margin-top: 1rem;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 2.6rem;
+    align-items: start;
   }
 
-  .decision-entry-link {
-    padding: 1rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    font: 500 18px/1.4 "Inter", sans-serif;
-    letter-spacing: -0.01em;
-  }
-
-  .decision-entry-link:last-child {
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .decision-entry-link:hover,
-  .decision-entry-link:focus-visible {
-    transform: translateX(6px);
-    color: var(--color-text);
-  }
-
-  .demo-output {
+  .section-copy {
     display: grid;
-    gap: 0.25rem;
-    align-content: start;
-    padding-top: 0.2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 1rem;
+    max-width: 760px;
   }
 
-  .demo-output__title {
-    margin-bottom: 0.7rem;
-    color: var(--color-text);
-    font: 600 10px/1 "Inter", sans-serif;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+  .section-copy--wide {
+    max-width: 920px;
   }
 
-  .demo-output p {
-    font: 400 12px/1.6 "Inter", sans-serif;
-    letter-spacing: 0.025em;
+  .section-copy--full {
+    max-width: 100%;
   }
 
-  [data-hero-stage] {
-    opacity: 0;
-    transform: translateY(12px);
-    filter: blur(4px);
-    transition:
-      opacity 360ms var(--ease-aurora),
-      transform 360ms var(--ease-aurora),
-      filter 360ms var(--ease-aurora);
+  .section-copy h2 {
+    max-width: 14ch;
+    font-size: clamp(34px, 5vw, 58px);
+    line-height: 1.02;
   }
 
-  [data-hero-stage].is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+  .section-lead {
+    max-width: 34ch;
+    color: var(--color-text) !important;
+    font-size: 22px !important;
+    line-height: 1.38 !important;
+    letter-spacing: -0.025em;
   }
 
-  .demo-output__divider {
-    height: 1px;
-    margin: 0.8rem 0;
-    background: rgba(255, 255, 255, 0.08);
+  .context-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.2rem 2rem;
   }
 
-  .demo-output__state {
-    margin-top: 0.5rem !important;
-    color: var(--color-accent-green) !important;
+  .section-cta {
+    padding-bottom: 120px;
   }
 
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(12px);
-    filter: blur(3px);
-    transition:
-      opacity var(--duration-reveal) var(--ease-aurora),
-      transform var(--duration-reveal) var(--ease-aurora),
-      filter var(--duration-reveal) var(--ease-aurora);
+  .hero-actions--section {
+    margin-top: 1.3rem;
   }
 
-  [data-reveal="line"] {
-    opacity: 0;
-    transform: translateY(8px);
-    filter: blur(2px);
-    transition:
-      opacity var(--duration-reveal-line) var(--ease-aurora),
-      transform var(--duration-reveal-line) var(--ease-aurora),
-      filter var(--duration-reveal-line) var(--ease-aurora);
-  }
-
-  [data-reveal="strong"] {
-    opacity: 0;
-    transform: translateY(18px);
-    transition:
-      opacity var(--duration-reveal-strong) var(--ease-aurora),
-      transform var(--duration-reveal-strong) var(--ease-aurora);
-  }
-
-  [data-reveal].is-visible,
-  [data-reveal="line"].is-visible,
-  [data-reveal="strong"].is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-
-  @media (max-width: 1120px) {
-    .section-grid,
-    .section-grid--demo {
+  @media (max-width: 1100px) {
+    .section-grid {
       grid-template-columns: minmax(0, 1fr);
-      gap: 1.8rem;
+      gap: 1.5rem;
     }
 
-    .section-rail {
-      padding-top: 0;
+    .section-copy h2 {
+      max-width: 100%;
     }
   }
 
   @media (max-width: 768px) {
     .hero {
       min-height: auto;
-      padding: 60px 20px 76px;
+      padding: 76px 20px 84px;
     }
 
     .section {
-      padding: 92px 20px;
+      padding: 84px 20px;
     }
 
     .hero h1 {
-      font-size: clamp(40px, 9vw, 58px);
+      font-size: clamp(42px, 14vw, 62px);
     }
 
-    .hero-subtitle,
+    .hero-anchor {
+      font-size: 22px;
+    }
+
+    .hero-body p,
+    .section-copy p {
+      font-size: 16px;
+    }
+
     .section-lead {
       font-size: 20px !important;
     }
-  }
 
-  @media (max-width: 767px) {
-    .hero {
-      padding: 40px 18px 58px;
-      min-height: min(72svh, 620px);
-    }
-
-    .hero h1 {
-      max-width: 9.2ch;
-      font-size: clamp(34px, 11vw, 46px);
-    }
-
-    .hero-subtitle {
-      max-width: 22ch;
-      font-size: 18px !important;
-    }
-
-    .cta-link,
-    .decision-entry-link {
-      font-size: 17px;
-    }
-
-    .section-copy h2 {
-      max-width: 13ch;
-      font-size: clamp(30px, 9vw, 42px);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    [data-hero-stage] {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      transition: none;
-    }
-
-    [data-reveal],
-    [data-reveal="line"],
-    [data-reveal="strong"] {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      transition: none;
-    }
-
-    .cta-link,
-    .decision-entry-link {
-      transition: none;
+    .context-grid {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>
-
-<script>
-  const pageRoot = document.querySelector<HTMLElement>("[data-aurora-page]");
-  const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
-  const heroHeadlineTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="headline"]'));
-  const heroSubcopyTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="subcopy"]'));
-  const heroCtaTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="cta"]'));
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  function showHeroTargets(targets: HTMLElement[]): void {
-    targets.forEach((target) => target.classList.add("is-visible"));
-  }
-
-  function runHeroSequence(): void {
-    if (!pageRoot) {
-      return;
-    }
-
-    if (prefersReducedMotion) {
-      pageRoot.dataset.auroraBoot = "ready";
-      showHeroTargets(heroHeadlineTargets);
-      showHeroTargets(heroSubcopyTargets);
-      showHeroTargets(heroCtaTargets);
-      return;
-    }
-
-    pageRoot.dataset.auroraBoot = "dark";
-    window.setTimeout(() => {
-      pageRoot.dataset.auroraBoot = "nodes";
-    }, 200);
-    window.setTimeout(() => {
-      pageRoot.dataset.auroraBoot = "links";
-    }, 500);
-    window.setTimeout(() => {
-      pageRoot.dataset.auroraBoot = "headline";
-      showHeroTargets(heroHeadlineTargets);
-    }, 800);
-    window.setTimeout(() => {
-      pageRoot.dataset.auroraBoot = "subcopy";
-      showHeroTargets(heroSubcopyTargets);
-    }, 1200);
-    window.setTimeout(() => {
-      pageRoot.dataset.auroraBoot = "ready";
-      showHeroTargets(heroCtaTargets);
-    }, 1600);
-  }
-
-  runHeroSequence();
-
-  if ('IntersectionObserver' in window && !prefersReducedMotion) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const delay = parseInt((entry.target as HTMLElement).dataset.revealDelay || '0', 10);
-            if (delay > 0) {
-              setTimeout(() => entry.target.classList.add('is-visible'), delay);
-            } else {
-              entry.target.classList.add('is-visible');
-            }
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -48px 0px' }
-    );
-
-    revealTargets.forEach((el) => observer.observe(el));
-  } else {
-    revealTargets.forEach((el) => el.classList.add('is-visible'));
-  }
-</script>
