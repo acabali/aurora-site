@@ -55,8 +55,7 @@ src/
 │   ├── ai/           # AI provider abstractions (providers.ts)
 │   ├── aurora/       # Aurora-specific logic (claude.ts integration)
 │   ├── knowledge/    # Data layer (supabase.ts client)
-│   ├── demoEngine.ts # Demo functionality
-│   ├── demoFingerprint.ts
+│   ├── auroraDecisionApi.ts # Browser contract client for Aurora OS
 │   └── reveal.ts     # Animation/reveal utilities
 ├── pages/            # Astro routes (index, demo, /en/...)
 └── styles/           # Global styles and design tokens
@@ -72,7 +71,7 @@ src/
 
 **`src/lib/ai/providers.ts`**: AI provider abstraction layer. Supports multiple AI backends.
 
-**`src/lib/demoEngine.ts`**: Powers interactive demo experiences on the demo page.
+**`src/lib/auroraDecisionApi.ts`**: Adapts the public demo inputs into the Aurora OS contract and renders canonical output from Aurora OS.
 
 **`src/components/system/DecisionField.astro`**: System component for decision-based interactions.
 
@@ -146,4 +145,3 @@ Demo
 The central visual model is Aurora Field (causal graph).
 
 The goal of the website is cognitive clarity in under 5 seconds.
-
