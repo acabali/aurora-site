@@ -9,47 +9,132 @@
   <div class="module-list">
     <div class="module-group">
       <h3>CAMPO ESTRUCTURAL</h3>
-      <div class="module-line"><span class="module-line__name">Aurora Core</span></div>
+      <button type="button" class="module-line" data-aurora-focus="aurora-core">
+        <span class="module-line__name">Aurora Core</span>
+      </button>
       <p class="module-group__summary">Integra variables y expone interacción estructural.</p>
-      <div class="module-line"><span class="module-line__name">Aurora Signal</span></div>
+      <button type="button" class="module-line" data-aurora-focus="aurora-signal">
+        <span class="module-line__name">Aurora Signal</span>
+      </button>
       <p class="module-group__summary">Detecta cambios relevantes dentro del ruido operativo.</p>
-      <div class="module-line"><span class="module-line__name">Aurora Scenario</span></div>
+      <button type="button" class="module-line" data-aurora-focus="aurora-scenario">
+        <span class="module-line__name">Aurora Scenario</span>
+      </button>
       <p class="module-group__summary">Simula sensibilidad entre variables.</p>
     </div>
 
     <div class="module-group">
       <h3>CAMPO DE RIESGO</h3>
-      <div class="module-line"><span class="module-line__name">Aurora Risk</span></div>
+      <button type="button" class="module-line" data-aurora-focus="aurora-risk">
+        <span class="module-line__name">Aurora Risk</span>
+      </button>
       <p class="module-group__summary">Evalúa exposición y reversibilidad.</p>
     </div>
 
     <div class="module-group">
       <h3>CAMPO OPERATIVO</h3>
-      <div class="module-line"><span class="module-line__name">Aurora Ledger</span></div>
+      <button type="button" class="module-line" data-aurora-focus="aurora-ledger">
+        <span class="module-line__name">Aurora Ledger</span>
+      </button>
       <p class="module-group__summary">Registra decisiones y contexto para trazabilidad futura.</p>
     </div>
 
     <div class="module-group">
       <h3>SUPERFICIES OPERATIVAS</h3>
-      <div class="module-line"><span class="module-line__name">Optimización de costos</span></div>
+      <button type="button" class="module-line" data-aurora-focus="cluster-costos">
+        <span class="module-line__name">Optimización de costos</span>
+      </button>
       <p class="module-group__summary">Simulación de recortes antes de ejecutarlos.</p>
-      <div class="module-line"><span class="module-line__name">Estrategia de crecimiento</span></div>
+      <button type="button" class="module-line" data-aurora-focus="cluster-demanda">
+        <span class="module-line__name">Estrategia de crecimiento</span>
+      </button>
       <p class="module-group__summary">Comparación de escenarios antes de escalar.</p>
-      <div class="module-line"><span class="module-line__name">Estrategia de marketing</span></div>
+      <button type="button" class="module-line" data-aurora-focus="cluster-competencia">
+        <span class="module-line__name">Estrategia de marketing</span>
+      </button>
       <p class="module-group__summary">Evaluación estructural de canal, CAC y momento de entrada.</p>
-      <div class="module-line"><span class="module-line__name">Evaluación de inversiones</span></div>
+      <button type="button" class="module-line" data-aurora-focus="cluster-regulacion">
+        <span class="module-line__name">Evaluación de inversiones</span>
+      </button>
       <p class="module-group__summary">Lectura de exposición antes de comprometer capital.</p>
-      <div class="module-line"><span class="module-line__name">Soporte a decisiones críticas</span></div>
+      <button type="button" class="module-line" data-aurora-focus="system-critical">
+        <span class="module-line__name">Soporte a decisiones críticas</span>
+      </button>
       <p class="module-group__summary">Presión, reversibilidad y punto de quiebre antes de ejecutar.</p>
-      <div class="module-line"><span class="module-line__name">Control de caja y margen operativo</span></div>
+      <button type="button" class="module-line" data-aurora-focus="cluster-costos">
+        <span class="module-line__name">Control de caja y margen operativo</span>
+      </button>
       <p class="module-group__summary">Lectura de margen operativo y estrés de liquidez.</p>
     </div>
 
     <div class="module-group">
       <h3>CAPAS AVANZADAS</h3>
-      <div class="module-line"><span class="module-line__name">Presión de escenarios</span></div>
-      <div class="module-line"><span class="module-line__name">Anulación de señal</span></div>
-      <div class="module-line"><span class="module-line__name">Registro de decisiones</span></div>
+      <button
+        type="button"
+        class="module-line"
+        data-aurora-focus="aurora-scenario"
+        data-aurora-hover-substate="pressure"
+      >
+        <span class="module-line__name">Presión de escenarios</span>
+      </button>
+      <button
+        type="button"
+        class="module-line"
+        data-aurora-focus="aurora-signal"
+        data-aurora-hover-substate="signal"
+      >
+        <span class="module-line__name">Anulación de señal</span>
+      </button>
+      <button
+        type="button"
+        class="module-line"
+        data-aurora-focus="aurora-ledger"
+        data-aurora-hover-substate="ledger"
+      >
+        <span class="module-line__name">Registro de decisiones</span>
+      </button>
     </div>
   </div>
 </div>
+
+<script>
+  const page = document.querySelector<HTMLElement>("[data-aurora-page]");
+  const architecture = document.querySelector<HTMLElement>(".system-architecture");
+  const focusTargets = Array.from(document.querySelectorAll<HTMLElement>("[data-aurora-focus]"));
+
+  function clearAuroraFocus(): void {
+    if (!page) {
+      return;
+    }
+
+    delete page.dataset.auroraFocus;
+    delete page.dataset.auroraHoverSubstate;
+  }
+
+  function applyAuroraFocus(target: HTMLElement): void {
+    if (!page) {
+      return;
+    }
+
+    page.dataset.auroraFocus = target.dataset.auroraFocus ?? "";
+    if (target.dataset.auroraHoverSubstate) {
+      page.dataset.auroraHoverSubstate = target.dataset.auroraHoverSubstate;
+    } else {
+      delete page.dataset.auroraHoverSubstate;
+    }
+  }
+
+  focusTargets.forEach((target) => {
+    target.addEventListener("pointerenter", () => applyAuroraFocus(target));
+    target.addEventListener("focus", () => applyAuroraFocus(target));
+  });
+
+  architecture?.addEventListener("pointerleave", clearAuroraFocus);
+  architecture?.addEventListener("focusout", () => {
+    window.requestAnimationFrame(() => {
+      if (!architecture.contains(document.activeElement)) {
+        clearAuroraFocus();
+      }
+    });
+  });
+</script>

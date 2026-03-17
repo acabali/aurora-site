@@ -19,3 +19,10 @@ Sitio web activo de Aurora para narrativa, producto, demo y presencia institucio
 Este repo no define el runtime completo de Aurora ni su infraestructura interna.
 Si algo parece de backend, ops o automatización, no asumir que vive aquí.
 
+## Ownership estricto
+- `aurora-site` captura input, adapta payloads, consume contratos/API de Aurora OS y renderiza resultados
+- `aurora-site` no genera `decision_id`, `decision_hash`, `run_signature` ni ejecuta protocolo de decisión local
+- `aurora-site` no calcula riesgo estructural, no simula escenarios, no ejecuta counterfactuals y no mantiene ledger local
+- design system, narrativa pública y continuidad home -> demo viven aquí
+- contratos, identidad, telemetry, validation y surfaces canónicas viven en `aurora-os`
+

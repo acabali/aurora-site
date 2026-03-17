@@ -16,17 +16,17 @@ import SystemInterface from "./SystemInterface.astro";
   <section class="hero" id="hero" data-aurora-section="hero" data-aurora-state="latent">
     <div class="hero-structure" aria-hidden="true"></div>
 
-    <div class="hero-shell">
-      <span class="section-kicker" data-reveal="line">INFRAESTRUCTURA DE DECISIÓN</span>
-      <h1 data-reveal="line">El límite humano ya no alcanza.</h1>
-      <div class="hero-body" data-reveal="line" data-reveal-delay="70">
+    <div class="hero-shell" data-aurora-silence-zone>
+      <span class="section-kicker" data-hero-stage="headline">INFRAESTRUCTURA DE DECISIÓN</span>
+      <h1 data-hero-stage="headline">El límite humano ya no alcanza.</h1>
+      <div class="hero-body" data-hero-stage="subcopy">
         <p class="hero-subtitle">El mercado ya no compite con personas.</p>
         <p class="hero-subtitle">Compite con sistemas.</p>
         <p class="hero-subtitle">Aurora desplaza el límite humano mediante cálculo permanente.</p>
         <p class="hero-subtitle">Es sustitución operativa.</p>
       </div>
 
-      <div class="hero-cta-row" data-reveal data-reveal-delay="160">
+      <div class="hero-cta-row" data-hero-stage="cta">
         <a href="/demo" class="cta-link">→ Poner una decisión bajo evidencia</a>
       </div>
     </div>
@@ -268,7 +268,7 @@ import SystemInterface from "./SystemInterface.astro";
     gap: 0.6rem;
     margin: 0;
     color: var(--color-accent-green);
-    font: 500 11px/1 "DM Mono", monospace;
+    font: 600 11px/1 "Inter", sans-serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
@@ -356,7 +356,7 @@ import SystemInterface from "./SystemInterface.astro";
   .cta-link {
     min-height: 40px;
     padding: 0.35rem 0 0.65rem;
-    font: 500 18px/1.3 "DM Sans", sans-serif;
+    font: 500 18px/1.3 "Inter", sans-serif;
     letter-spacing: 0.02em;
   }
 
@@ -388,7 +388,7 @@ import SystemInterface from "./SystemInterface.astro";
   .decision-entry-link {
     padding: 1rem 0;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    font: 500 18px/1.4 "DM Sans", sans-serif;
+    font: 500 18px/1.4 "Inter", sans-serif;
     letter-spacing: -0.01em;
   }
 
@@ -414,14 +414,30 @@ import SystemInterface from "./SystemInterface.astro";
   .demo-output__title {
     margin-bottom: 0.7rem;
     color: var(--color-text);
-    font: 500 10px/1 "DM Mono", monospace;
+    font: 600 10px/1 "Inter", sans-serif;
     letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
   .demo-output p {
-    font: 400 12px/1.6 "DM Mono", monospace;
-    letter-spacing: 0.04em;
+    font: 400 12px/1.6 "Inter", sans-serif;
+    letter-spacing: 0.025em;
+  }
+
+  [data-hero-stage] {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(4px);
+    transition:
+      opacity 360ms var(--ease-aurora),
+      transform 360ms var(--ease-aurora),
+      filter 360ms var(--ease-aurora);
+  }
+
+  [data-hero-stage].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
   }
 
   .demo-output__divider {
@@ -531,6 +547,13 @@ import SystemInterface from "./SystemInterface.astro";
   }
 
   @media (prefers-reduced-motion: reduce) {
+    [data-hero-stage] {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+
     [data-reveal],
     [data-reveal="line"],
     [data-reveal="strong"] {
@@ -548,8 +571,52 @@ import SystemInterface from "./SystemInterface.astro";
 </style>
 
 <script>
+  const pageRoot = document.querySelector<HTMLElement>("[data-aurora-page]");
   const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+  const heroHeadlineTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="headline"]'));
+  const heroSubcopyTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="subcopy"]'));
+  const heroCtaTargets = Array.from(document.querySelectorAll<HTMLElement>('[data-hero-stage="cta"]'));
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function showHeroTargets(targets: HTMLElement[]): void {
+    targets.forEach((target) => target.classList.add("is-visible"));
+  }
+
+  function runHeroSequence(): void {
+    if (!pageRoot) {
+      return;
+    }
+
+    if (prefersReducedMotion) {
+      pageRoot.dataset.auroraBoot = "ready";
+      showHeroTargets(heroHeadlineTargets);
+      showHeroTargets(heroSubcopyTargets);
+      showHeroTargets(heroCtaTargets);
+      return;
+    }
+
+    pageRoot.dataset.auroraBoot = "dark";
+    window.setTimeout(() => {
+      pageRoot.dataset.auroraBoot = "nodes";
+    }, 200);
+    window.setTimeout(() => {
+      pageRoot.dataset.auroraBoot = "links";
+    }, 500);
+    window.setTimeout(() => {
+      pageRoot.dataset.auroraBoot = "headline";
+      showHeroTargets(heroHeadlineTargets);
+    }, 800);
+    window.setTimeout(() => {
+      pageRoot.dataset.auroraBoot = "subcopy";
+      showHeroTargets(heroSubcopyTargets);
+    }, 1200);
+    window.setTimeout(() => {
+      pageRoot.dataset.auroraBoot = "ready";
+      showHeroTargets(heroCtaTargets);
+    }, 1600);
+  }
+
+  runHeroSequence();
 
   if ('IntersectionObserver' in window && !prefersReducedMotion) {
     const observer = new IntersectionObserver(

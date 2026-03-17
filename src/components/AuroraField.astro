@@ -69,12 +69,32 @@
     glow: number;
     warmth: number;
   };
+  type TrailPoint = {
+    x: number;
+    y: number;
+  };
+  type BehaviorPhase = "LATENT" | "VARIABLES" | "AURORA" | "SYSTEM" | "STABLE";
+  type BehaviorProfile = {
+    orbitScale: number;
+    centerForce: number;
+    velocityDecay: number;
+    symmetryBreak: number;
+    pressurePropagation: number;
+    glowScale: number;
+    structuralBias: number;
+  };
   type Node = {
     id: number;
     type: NodeType;
     clusterId: number;
     weight: number;
     pressure: number;
+    pressureLevel: number;
+    localPressure: number;
+    propagatedPressure: number;
+    propagatedTarget: number;
+    propagationDelayMs: number;
+    propagationDelayUntil: number;
     connectionStrength: number;
     x: number;
     y: number;
@@ -85,6 +105,7 @@
     baseRadius: number;
     lastX: number;
     lastY: number;
+    trail: TrailPoint[];
   };
   type Edge = {
     from: number;
@@ -101,6 +122,16 @@
     duplicateEnabled: boolean;
     gridOpacity: number;
     labelScale: number;
+    glowScale: number;
+    linkAlphaScale: number;
+    historyLimit: number;
+  };
+  type AuroraCore = {
+    x: number;
+    y: number;
+    radius: number;
+    pulse: number;
+    flash: number;
   };
 
   const clusterNames = ["Costos", "Demanda", "Regulacion", "Competencia"];
@@ -302,26 +333,120 @@
     return base;
   }
 
+  function getBehaviorPhase(state: StateName): BehaviorPhase {
+    switch (state) {
+      case "latent":
+        return "LATENT";
+      case "activation":
+        return "VARIABLES";
+      case "tension":
+      case "breakpoint":
+        return "AURORA";
+      case "order":
+      case "dimension-mode":
+      case "contextual":
+        return "SYSTEM";
+      case "comparison":
+      case "full-system":
+        return "STABLE";
+      default:
+        return "SYSTEM";
+    }
+  }
+
+  function getBehaviorProfile(state: StateName, isMobile: boolean): BehaviorProfile {
+    const mobileGlow = isMobile ? 0.34 : 1;
+
+    switch (getBehaviorPhase(state)) {
+      case "LATENT":
+        return {
+          orbitScale: 0.82,
+          centerForce: 0.2,
+          velocityDecay: 0.82,
+          symmetryBreak: 0.08,
+          pressurePropagation: 0.28,
+          glowScale: 0.68 * mobileGlow,
+          structuralBias: 0.08,
+        };
+      case "VARIABLES":
+        return {
+          orbitScale: 0.72,
+          centerForce: 0.38,
+          velocityDecay: 0.84,
+          symmetryBreak: 0.18,
+          pressurePropagation: 0.52,
+          glowScale: 0.86 * mobileGlow,
+          structuralBias: 0.16,
+        };
+      case "AURORA":
+        return {
+          orbitScale: 0.46,
+          centerForce: 0.9,
+          velocityDecay: 0.8,
+          symmetryBreak: 0.34,
+          pressurePropagation: 1,
+          glowScale: 1 * mobileGlow,
+          structuralBias: 0.32,
+        };
+      case "SYSTEM":
+        return {
+          orbitScale: 0.28,
+          centerForce: 1.06,
+          velocityDecay: 0.9,
+          symmetryBreak: 0.22,
+          pressurePropagation: 0.74,
+          glowScale: 0.72 * mobileGlow,
+          structuralBias: 0.22,
+        };
+      case "STABLE":
+        return {
+          orbitScale: 0.12,
+          centerForce: 1.3,
+          velocityDecay: 0.94,
+          symmetryBreak: 0.12,
+          pressurePropagation: 0.44,
+          glowScale: 0.5 * mobileGlow,
+          structuralBias: 0.18,
+        };
+      default:
+        return {
+          orbitScale: 0.4,
+          centerForce: 0.76,
+          velocityDecay: 0.88,
+          symmetryBreak: 0.2,
+          pressurePropagation: 0.62,
+          glowScale: 0.72 * mobileGlow,
+          structuralBias: 0.18,
+        };
+    }
+  }
+
   function getResponsiveProfile(width: number): ResponsiveProfile {
     if (width <= 767) {
       return {
-        visibleCount: 14,
-        pointerAmplitude: 10,
+        visibleCount: 10,
+        pointerAmplitude: 8,
         trailsEnabled: false,
         duplicateEnabled: false,
-        gridOpacity: 0.018,
+        gridOpacity: 0.014,
         labelScale: 0.82,
+        glowScale: 0.28,
+        linkAlphaScale: 0.62,
+        historyLimit: 4,
       };
     }
 
     if (width <= 1120) {
       return {
         visibleCount: 18,
-        pointerAmplitude: 12,
+        pointerAmplitude: 10,
         trailsEnabled: true,
         duplicateEnabled: false,
         gridOpacity: 0.022,
         labelScale: 0.92,
+        glowScale: 0.72,
+        linkAlphaScale: 0.84,
+        historyLimit: 6,
       };
     }
 
@@ -332,6 +457,9 @@
       duplicateEnabled: true,
       gridOpacity: 0.028,
       labelScale: 1,
+      glowScale: 1,
+      linkAlphaScale: 1,
+      historyLimit: 8,
     };
   }
 
@@ -370,6 +498,12 @@
         clusterId: seed.clusterId,
         weight: seed.weight,
         pressure: 0,
+        pressureLevel: 0,
+        localPressure: 0,
+        propagatedPressure: 0,
+        propagatedTarget: 0,
+        propagationDelayMs: 120 + ((index * 37) % 121),
+        propagationDelayUntil: 0,
         connectionStrength: 0.6,
         x,
         y,
@@ -380,6 +514,7 @@
         baseRadius: seed.radius,
         lastX: x,
         lastY: y,
+        trail: [{ x, y }],
       };
     });
   }
@@ -435,6 +570,8 @@
     const page = field.closest<HTMLElement>("[data-aurora-page]") ?? document.body;
     const sections = Array.from(page.querySelectorAll<HTMLElement>("[data-aurora-state]"));
     const host = field.closest<HTMLElement>("[data-aurora-field-host]") ?? field;
+    const heroSilenceZone = page.querySelector<HTMLElement>("[data-aurora-silence-zone]");
+    const auroraCore: AuroraCore = { x: 0, y: 0, radius: 0, pulse: 0, flash: 0 };
 
     function isReducedMotion(): boolean {
       return prefersReducedMotion.matches;
@@ -451,6 +588,81 @@
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       nodes = createNodes(width, height);
       edges = createEdges(nodes);
+      auroraCore.x = width * 0.52;
+      auroraCore.y = height * 0.46;
+      auroraCore.radius = width <= 767 ? 14 : 18;
+    }
+
+    function getResolvedSubstate(): SubstateName | null {
+      const hoveredSubstate = page.dataset.auroraHoverSubstate as SubstateName | undefined;
+      return hoveredSubstate || activeSubstate;
+    }
+
+    function getFocus(): string | null {
+      return page.dataset.auroraFocus || null;
+    }
+
+    function getBootPhase(): string {
+      return page.dataset.auroraBoot || "ready";
+    }
+
+    function getBootMultipliers(): { node: number; edge: number; core: number } {
+      const phase = getBootPhase();
+      if (phase === "dark") {
+        return { node: 0, edge: 0, core: 0 };
+      }
+      if (phase === "nodes") {
+        return { node: 0.24, edge: 0.02, core: 0.14 };
+      }
+      if (phase === "links") {
+        return { node: 0.4, edge: 0.24, core: 0.22 };
+      }
+      if (phase === "headline") {
+        return { node: 0.74, edge: 0.58, core: 0.64 };
+      }
+      if (phase === "subcopy") {
+        return { node: 0.9, edge: 0.82, core: 0.88 };
+      }
+      return { node: 1, edge: 1, core: 1 };
+    }
+
+    function getSilenceZone(): DOMRect | null {
+      if (!heroSilenceZone) {
+        return null;
+      }
+
+      const rect = heroSilenceZone.getBoundingClientRect();
+      if (rect.bottom <= 0 || rect.top >= height) {
+        return null;
+      }
+
+      const insetX = Math.min(48, rect.width * 0.08);
+      const insetY = Math.min(42, rect.height * 0.16);
+      return new DOMRect(
+        rect.left - insetX,
+        rect.top - insetY,
+        rect.width + insetX * 2,
+        rect.height + insetY * 2
+      );
+    }
+
+    function isPointInRect(x: number, y: number, rect: DOMRect): boolean {
+      return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    }
+
+    function updateAuroraCore(time: number): void {
+      const behavior = getBehaviorProfile(activeState, width <= 767);
+      const stability = currentState.order * 0.6 + currentState.comparison * 0.8;
+      const drift = 1 - stability * 0.38 * behavior.velocityDecay;
+      auroraCore.x =
+        width * lerp(0.5, 0.54, currentState.comparison * 0.52) +
+        Math.sin(time * 0.00028) * 8 * drift +
+        pointer.x * 0.16;
+      auroraCore.y =
+        height * lerp(0.46, 0.48, currentState.comparison * 0.2) +
+        Math.cos(time * 0.00024) * 6 * drift +
+        pointer.y * 0.14;
+      auroraCore.radius = (width <= 767 ? 11 : 15) + currentState.glow * 5 * behavior.glowScale;
     }
 
     function getActiveSection(): HTMLElement | null {
@@ -511,11 +723,16 @@
     function syncStateFromScroll(): void {
       scrollFrame = 0;
       const section = getActiveSection();
+      const sectionId = section?.id ?? "";
       const nextState = (section?.dataset.auroraState as StateName | undefined) ?? "latent";
       const nextSubstate = getActiveSubstate(section);
       activeState = nextState;
       activeSubstate = nextSubstate;
       targetState = makeFieldState(nextState, nextSubstate);
+      if (sectionId === "aurora-operating" && field.dataset.auroraSection !== sectionId) {
+        auroraCore.flash = 1;
+      }
+      field.dataset.auroraSection = sectionId;
       field.dataset.auroraState = nextState;
       page.dataset.auroraState = nextState;
       if (nextSubstate) {
@@ -547,6 +764,7 @@
     }
 
     function getClusterCenter(clusterId: number, time: number): { x: number; y: number } {
+      const behavior = getBehaviorProfile(activeState, width <= 767);
       const compression = 1 - currentState.compression * 0.34;
       const leftX = width * lerp(0.24, 0.42, currentState.comparison * 0.88);
       const rightX = width * 0.74;
@@ -559,52 +777,103 @@
         { x: leftX, y: bottomY },
       ];
       const base = baseTargets[clusterId]!;
-      const shiftX = Math.sin(time * 0.00022 + clusterId * 1.7) * 22 * currentState.activity;
-      const shiftY = Math.cos(time * 0.00019 + clusterId * 1.2) * 16 * currentState.activity;
+      const drift = 1 - (currentState.order * 0.24 + currentState.comparison * 0.38);
+      const asymmetry = (clusterId - 1.5) * width * 0.014 * behavior.symmetryBreak;
+      const shiftX =
+        Math.sin(time * 0.00022 + clusterId * 1.7) * 22 * currentState.activity * drift * behavior.orbitScale +
+        asymmetry;
+      const shiftY =
+        Math.cos(time * 0.00019 + clusterId * 1.2) * 16 * currentState.activity * drift * behavior.orbitScale +
+        Math.sin(time * 0.00012 + clusterId * 2.1) * height * 0.008 * behavior.symmetryBreak;
       const centerX = width * 0.5 + (base.x - width * 0.5) * compression;
       const centerY = height * 0.5 + (base.y - height * 0.5) * compression;
       const comparisonPull = clusterId % 2 === 0 ? -width * 0.02 * currentState.comparison : width * 0.02 * currentState.comparison;
+      const auroraPull = 0.04 + currentState.order * 0.12 + currentState.comparison * 0.18 + behavior.centerForce * 0.12;
 
       return {
-        x: centerX + shiftX + comparisonPull + pointer.x * 0.25,
-        y: centerY + shiftY + pointer.y * 0.25,
+        x: lerp(centerX + shiftX + comparisonPull + pointer.x * 0.25, auroraCore.x, auroraPull),
+        y: lerp(centerY + shiftY + pointer.y * 0.25, auroraCore.y, auroraPull),
       };
+    }
+
+    function nodeMatchesFocus(node: Node, focus: string): boolean {
+      switch (focus) {
+        case "aurora-core":
+          return node.type === "primary";
+        case "aurora-signal":
+          return node.type === "signal";
+        case "aurora-scenario":
+          return node.type !== "signal";
+        case "aurora-risk":
+          return node.pressureLevel > 0.16 || node.type === "signal";
+        case "aurora-ledger":
+          return node.type === "primary" || node.clusterId === 2;
+        case "cluster-costos":
+          return node.clusterId === 0;
+        case "cluster-demanda":
+          return node.clusterId === 1;
+        case "cluster-regulacion":
+          return node.clusterId === 2;
+        case "cluster-competencia":
+          return node.clusterId === 3;
+        case "system-critical":
+          return node.pressureLevel > 0.24 || node.type === "primary";
+        default:
+          return false;
+      }
+    }
+
+    function getNodeFocusWeight(node: Node, focus: string | null): number {
+      if (!focus) {
+        return 1;
+      }
+
+      return nodeMatchesFocus(node, focus) ? 1 : 0.16;
     }
 
     function updateNodes(deltaMs: number, time: number): void {
       const delta = clamp(deltaMs / 16.666, 0.65, 1.6);
       const visibleCount = profile.visibleCount;
       const visibleNodes = nodes.slice(0, visibleCount);
+      const silenceZone = getSilenceZone();
+      const behavior = getBehaviorProfile(activeState, width <= 767);
 
-      pointer.x += (pointer.targetX - pointer.x) * 0.05;
-      pointer.y += (pointer.targetY - pointer.y) * 0.05;
+      updateAuroraCore(time);
+      pointer.x += (pointer.targetX - pointer.x) * 0.03;
+      pointer.y += (pointer.targetY - pointer.y) * 0.03;
 
       visibleNodes.forEach((node) => {
         node.lastX = node.x;
         node.lastY = node.y;
         const center = getClusterCenter(node.clusterId, time);
-        const radialOffset = node.type === "primary" ? 0 : node.type === "signal" ? 92 : 54;
+        const radialOffset = node.type === "primary" ? 0 : node.type === "signal" ? 86 : 48;
         const orbit = time * 0.00024 * (0.6 + currentState.activity * 0.8) + node.id * 0.85;
-        const jitter = (node.type === "signal" ? 16 : 10) * currentState.activity;
-        const orbitScaleX = radialOffset * (0.7 + node.weight * 0.6) * (1 - currentState.order * 0.18);
+        const jitter = (node.type === "signal" ? 14 : 8) * currentState.activity * (1 - currentState.comparison * 0.22);
+        const orbitScaleX =
+          radialOffset *
+          (0.7 + node.weight * 0.6) *
+          (1 - currentState.order * 0.18 - currentState.comparison * 0.16) *
+          behavior.orbitScale;
         const orbitScaleY = orbitScaleX * (0.82 + currentState.tension * 0.18);
+        const flowShift = (node.clusterId < 2 ? 1 : -1) * width * 0.006 * behavior.structuralBias;
 
         node.targetX =
           center.x +
           Math.cos(orbit) * orbitScaleX +
-          Math.sin(orbit * 1.7) * jitter +
-          pointer.x * (node.type === "signal" ? 0.6 : 0.34);
+          Math.sin(orbit * 1.7) * jitter * behavior.orbitScale +
+          flowShift +
+          pointer.x * (node.type === "signal" ? 0.5 : 0.28);
         node.targetY =
           center.y +
           Math.sin(orbit * 1.08) * orbitScaleY +
-          Math.cos(orbit * 1.5) * jitter +
-          pointer.y * (node.type === "signal" ? 0.6 : 0.34);
+          Math.cos(orbit * 1.5) * jitter * behavior.orbitScale +
+          pointer.y * (node.type === "signal" ? 0.5 : 0.28);
       });
 
       visibleNodes.forEach((node, index) => {
         const center = getClusterCenter(node.clusterId, time);
-        let forceX = (node.targetX - node.x) * (0.0032 + currentState.order * 0.0028) * delta;
-        let forceY = (node.targetY - node.y) * (0.0032 + currentState.order * 0.0028) * delta;
+        let forceX = (node.targetX - node.x) * (0.0032 + currentState.order * 0.0028 + currentState.comparison * 0.0018) * delta;
+        let forceY = (node.targetY - node.y) * (0.0032 + currentState.order * 0.0028 + currentState.comparison * 0.0018) * delta;
 
         visibleNodes.forEach((other, otherIndex) => {
           if (index === otherIndex) {
@@ -635,24 +904,103 @@
           node.connectionStrength = clamp(1 - dist / (220 - currentState.compression * 50), 0.12, 1);
         });
 
-        const pressureDist = distance(node, center);
-        node.pressure = clamp(pressureDist / (height * 0.24), 0, 1) * (0.26 + currentState.tension * 0.74);
+        const auroraAttraction =
+          (0.00024 + currentState.order * 0.0016 + currentState.comparison * 0.002 + behavior.centerForce * 0.0012) *
+          (node.type === "primary" ? 1.3 : node.type === "secondary" ? 0.9 : 0.45) *
+          delta;
+        forceX += (auroraCore.x - node.x) * auroraAttraction;
+        forceY += (auroraCore.y - node.y) * auroraAttraction;
 
-        node.vx = (node.vx + forceX) * (0.86 - currentState.activity * 0.08);
-        node.vy = (node.vy + forceY) * (0.86 - currentState.activity * 0.08);
+        if (silenceZone && isPointInRect(node.x, node.y, silenceZone)) {
+          const zoneCenterX = silenceZone.left + silenceZone.width * 0.5;
+          const zoneCenterY = silenceZone.top + silenceZone.height * 0.5;
+          const dx = node.x - zoneCenterX || (node.clusterId < 2 ? -1 : 1);
+          const dy = node.y - zoneCenterY || (node.clusterId % 2 === 0 ? -1 : 1);
+          const dist = Math.max(18, Math.hypot(dx, dy));
+          const repel = (0.9 + currentState.order * 0.3) * delta;
+          forceX += (dx / dist) * repel * 7.2;
+          forceY += (dy / dist) * repel * 7.2;
+        }
+
+        const pressureDist = distance(node, center);
+        node.localPressure = clamp(pressureDist / (height * 0.24), 0, 1) * (0.26 + currentState.tension * 0.74);
+        node.pressure = node.localPressure;
+
+        const damping = clamp(
+          behavior.velocityDecay -
+            currentState.activity * 0.04 +
+            currentState.order * 0.02 +
+            currentState.comparison * 0.04 +
+            node.pressureLevel * 0.08,
+          0.78,
+          0.965
+        );
+        node.vx = (node.vx + forceX) * damping;
+        node.vy = (node.vy + forceY) * damping;
 
         if (currentState.tension > 0.4) {
-          node.vx += Math.sin(time * 0.0014 + node.id) * 0.16 * currentState.tension;
-          node.vy += Math.cos(time * 0.0012 + node.id * 1.3) * 0.16 * currentState.tension;
+          node.vx += Math.sin(time * 0.0014 + node.id) * 0.16 * currentState.tension * (1 - node.pressureLevel * 0.45);
+          node.vy += Math.cos(time * 0.0012 + node.id * 1.3) * 0.16 * currentState.tension * (1 - node.pressureLevel * 0.45);
         }
 
         node.x = clamp(node.x + node.vx * delta, 0, width);
         node.y = clamp(node.y + node.vy * delta, 0, height);
+
+        if (profile.trailsEnabled && currentState.trails > 0.12) {
+          const moved = Math.hypot(node.x - node.lastX, node.y - node.lastY);
+          if (moved > 0.75) {
+            node.trail.push({ x: node.x, y: node.y });
+          }
+          const trailLimit = profile.historyLimit;
+          if (node.trail.length > trailLimit) {
+            node.trail.splice(0, node.trail.length - trailLimit);
+          }
+        } else if (node.trail.length > 1) {
+          node.trail.splice(0, node.trail.length - 1);
+        }
+      });
+
+      const neighborTargets = new Map<number, number>();
+      visibleNodes.forEach((node) => neighborTargets.set(node.id, 0));
+
+      edges.forEach((edge) => {
+        const from = nodes[edge.from];
+        const to = nodes[edge.to];
+        if (!from || !to || !neighborTargets.has(from.id) || !neighborTargets.has(to.id)) {
+          return;
+        }
+
+        const propagationWeight = edge.strength * (0.22 + behavior.pressurePropagation * 0.32);
+        const nextTo = Math.max(neighborTargets.get(to.id) ?? 0, from.localPressure * propagationWeight);
+        const nextFrom = Math.max(neighborTargets.get(from.id) ?? 0, to.localPressure * propagationWeight);
+        neighborTargets.set(to.id, nextTo);
+        neighborTargets.set(from.id, nextFrom);
+      });
+
+      visibleNodes.forEach((node) => {
+        const nextTarget = clamp(neighborTargets.get(node.id) ?? 0, 0, 1);
+        if (Math.abs(nextTarget - node.propagatedTarget) > 0.05) {
+          node.propagatedTarget = nextTarget;
+          node.propagationDelayUntil = time + node.propagationDelayMs;
+        }
+
+        if (time >= node.propagationDelayUntil) {
+          node.propagatedPressure = lerp(node.propagatedPressure, node.propagatedTarget, isReducedMotion() ? 1 : 0.14);
+        } else {
+          node.propagatedPressure = lerp(node.propagatedPressure, node.propagatedPressure * 0.96, 0.08);
+        }
+
+        node.pressureLevel = clamp(
+          node.localPressure * 0.7 + node.propagatedPressure * 0.62 + currentState.compression * 0.08,
+          0,
+          1
+        );
       });
     }
 
     function updateEdges(deltaMs: number, time: number): void {
       const visibleIds = new Set(nodes.slice(0, profile.visibleCount).map((node) => node.id));
+      const behavior = getBehaviorProfile(activeState, width <= 767);
 
       edges.forEach((edge, index) => {
         if (!visibleIds.has(edge.from) || !visibleIds.has(edge.to)) {
@@ -664,10 +1012,10 @@
         const to = nodes[edge.to]!;
         const sameCluster = from.clusterId === to.clusterId;
         const dist = distance(from, to);
-        const baseStrength = sameCluster ? 0.74 : 0.44;
-        const structuralBias = sameCluster ? currentState.order * 0.22 : currentState.hierarchy * 0.14;
+        const baseStrength = sameCluster ? 0.72 + behavior.structuralBias * 0.08 : 0.4 + behavior.structuralBias * 0.06;
+        const structuralBias = sameCluster ? currentState.order * 0.22 + behavior.structuralBias * 0.14 : currentState.hierarchy * 0.14 + behavior.structuralBias * 0.1;
         const distancePenalty = dist / (sameCluster ? 280 : 420);
-        const pressurePenalty = (from.pressure + to.pressure) * 0.18 * currentState.tension;
+        const pressurePenalty = (from.pressureLevel + to.pressureLevel) * 0.18 * currentState.tension;
         edge.strength = clamp(baseStrength + structuralBias - distancePenalty - pressurePenalty, 0.04, 1);
 
         if (edge.cooldown > 0) {
@@ -711,9 +1059,24 @@
 
     function drawSurfaceGlow(time: number): void {
       const pulse = isReducedMotion() ? 0.4 : Math.sin(time * 0.00022) * 0.5 + 0.5;
-      const glow = context.createRadialGradient(width * 0.52 + pointer.x * 0.4, height * 0.44 + pointer.y * 0.3, 0, width * 0.52, height * 0.48, Math.max(width, height) * (0.26 + currentState.glow * 0.08 + pulse * 0.02));
-      glow.addColorStop(0, `rgba(46, 91, 255, ${0.08 + currentState.glow * 0.1})`);
-      glow.addColorStop(0.56, `rgba(46, 91, 255, ${0.02 + currentState.glow * 0.04})`);
+      const boot = getBootMultipliers();
+      const behavior = getBehaviorProfile(activeState, width <= 767);
+      const glow = context.createRadialGradient(
+        auroraCore.x + pointer.x * 0.24,
+        auroraCore.y + pointer.y * 0.18,
+        0,
+        auroraCore.x,
+        auroraCore.y,
+        Math.max(width, height) * (0.22 + currentState.glow * 0.08 * profile.glowScale + pulse * 0.02 + auroraCore.pulse * 0.03)
+      );
+      glow.addColorStop(
+        0,
+        `rgba(46, 91, 255, ${(0.08 + currentState.glow * 0.1 * profile.glowScale + auroraCore.pulse * 0.08) * boot.core * behavior.glowScale})`
+      );
+      glow.addColorStop(
+        0.56,
+        `rgba(46, 91, 255, ${(0.02 + currentState.glow * 0.04 * profile.glowScale + auroraCore.pulse * 0.03) * boot.core * behavior.glowScale})`
+      );
       glow.addColorStop(1, "rgba(46, 91, 255, 0)");
       context.fillStyle = glow;
       context.fillRect(0, 0, width, height);
@@ -741,6 +1104,8 @@
     }
 
     function drawConnection(from: Node, to: Node, edge: Edge, duplicateOffsetX = 0): void {
+      const boot = getBootMultipliers();
+      const focus = getFocus();
       const startX = from.x + duplicateOffsetX;
       const endX = to.x + duplicateOffsetX;
       const dx = endX - startX;
@@ -753,7 +1118,13 @@
       const blue = Math.round(91 - redMix * 28);
       const green = Math.round(160 - redMix * 90);
       const red = Math.round(46 + redMix * 170);
-      const alpha = clamp(edge.strength * edge.active * (0.28 + currentState.density * 0.44), 0, 1);
+      const focusAlpha =
+        !focus || (nodeMatchesFocus(from, focus) && nodeMatchesFocus(to, focus)) ? 1 : 0.1;
+      const alpha = clamp(
+        edge.strength * edge.active * (0.28 + currentState.density * 0.44) * focusAlpha * boot.edge * profile.linkAlphaScale,
+        0,
+        1
+      );
 
       context.beginPath();
       context.moveTo(startX, from.y);
@@ -763,30 +1134,110 @@
       context.stroke();
     }
 
+    function drawTrails(): void {
+      if (!profile.trailsEnabled || currentState.trails <= 0.12) {
+        return;
+      }
+
+      const boot = getBootMultipliers();
+      const focus = getFocus();
+      const visibleNodes = nodes.slice(0, profile.visibleCount);
+
+      visibleNodes.forEach((node) => {
+        if (node.trail.length < 2) {
+          return;
+        }
+
+        const focusWeight = getNodeFocusWeight(node, focus);
+        const baseAlpha =
+          node.type === "signal"
+            ? (0.018 + currentState.trails * 0.08) * focusWeight * boot.node
+            : (0.014 + currentState.trails * 0.06) * focusWeight * boot.node;
+        const lineWidth = node.type === "signal" ? 1.05 : 0.78;
+
+        context.save();
+        context.lineCap = "round";
+        context.lineJoin = "round";
+
+        for (let index = 1; index < node.trail.length; index += 1) {
+          const previousPoint = node.trail[index - 1]!;
+          const point = node.trail[index]!;
+          const fade = Math.pow(index / (node.trail.length - 1), 1.35);
+          const segmentAlpha = baseAlpha * fade;
+
+          context.beginPath();
+          context.moveTo(previousPoint.x, previousPoint.y);
+          context.lineTo(point.x, point.y);
+          context.strokeStyle =
+            node.type === "signal"
+              ? `rgba(104, 136, 255, ${segmentAlpha})`
+              : `rgba(247, 247, 245, ${segmentAlpha})`;
+          context.lineWidth = lineWidth * (0.72 + fade * 0.28);
+          context.stroke();
+        }
+
+        context.restore();
+      });
+    }
+
+    function drawAuroraCore(time: number): void {
+      const boot = getBootMultipliers();
+      const focus = getFocus();
+      const behavior = getBehaviorProfile(activeState, width <= 767);
+      const focusAlpha = !focus || focus === "aurora-core" || focus === "system-critical" ? 1 : 0.38;
+      const pulse = isReducedMotion() ? 0.22 : Math.sin(time * 0.0048) * 0.5 + 0.5;
+      const outerRadius = auroraCore.radius * (2.8 + auroraCore.pulse * 0.9 + pulse * 0.18);
+      const innerRadius = auroraCore.radius * (1 + auroraCore.pulse * 0.16);
+
+      context.beginPath();
+      context.fillStyle = `rgba(46, 91, 255, ${(0.14 + currentState.glow * 0.08 * profile.glowScale + auroraCore.pulse * 0.14) * focusAlpha * boot.core * behavior.glowScale})`;
+      context.arc(auroraCore.x, auroraCore.y, outerRadius, 0, Math.PI * 2);
+      context.fill();
+
+      context.beginPath();
+      context.fillStyle = `rgba(247, 247, 245, ${(0.76 + auroraCore.pulse * 0.16 * profile.glowScale) * focusAlpha * boot.core})`;
+      context.arc(auroraCore.x, auroraCore.y, innerRadius, 0, Math.PI * 2);
+      context.fill();
+    }
+
     function drawNodes(time: number, duplicateOffsetX = 0, alphaMultiplier = 1): void {
+      const boot = getBootMultipliers();
+      const focus = getFocus();
+      const behavior = getBehaviorProfile(activeState, width <= 767);
       const visibleNodes = nodes.slice(0, profile.visibleCount);
 
       visibleNodes.forEach((node) => {
         const pulse = isReducedMotion() ? 0.35 : Math.sin(time * 0.0022 + node.id * 0.7) * 0.5 + 0.5;
         const signalBoost = node.type === "signal" ? currentState.signal * 0.22 : 0;
-        const glowAlpha = (0.04 + currentState.glow * 0.08 + signalBoost + node.pressure * currentState.warmth * 0.18) * alphaMultiplier;
-        const warmth = currentState.warmth * (node.type === "signal" ? 0.5 : 1) + node.pressure * 0.24;
+        const focusWeight = getNodeFocusWeight(node, focus);
+        const glowAlpha =
+          (0.03 +
+            currentState.glow * 0.06 * profile.glowScale +
+            signalBoost +
+            node.pressureLevel * 0.12 +
+            node.pressureLevel * currentState.warmth * 0.18) *
+          alphaMultiplier *
+          focusWeight *
+          boot.node *
+          behavior.glowScale;
+        const warmth = currentState.warmth * (node.type === "signal" ? 0.5 : 1) + node.pressureLevel * 0.24;
         const coreRed = Math.round(247);
         const coreGreen = Math.round(247 - warmth * 90);
         const coreBlue = Math.round(245 - warmth * 120);
         const glowRed = Math.round(46 + warmth * 150);
         const glowGreen = Math.round(91 + currentState.signal * 54 - warmth * 70);
         const glowBlue = Math.round(255 - warmth * 180);
-        const radius = node.baseRadius + node.weight * 1.6 + (node.type === "signal" ? pulse * 0.7 : 0);
+        const saturationRadius = node.pressureLevel * (node.type === "primary" ? 2.2 : node.type === "secondary" ? 1.7 : 1.1);
+        const radius = node.baseRadius + node.weight * 1.6 + saturationRadius + (node.type === "signal" ? pulse * 0.4 : 0);
         const x = node.x + duplicateOffsetX;
 
         context.beginPath();
         context.fillStyle = `rgba(${glowRed}, ${glowGreen}, ${glowBlue}, ${glowAlpha})`;
-        context.arc(x, node.y, radius * (node.type === "signal" ? 3.4 : 2.7), 0, Math.PI * 2);
+        context.arc(x, node.y, radius * (node.type === "signal" ? 2.4 : 2.2), 0, Math.PI * 2);
         context.fill();
 
         context.beginPath();
-        context.fillStyle = `rgba(${coreRed}, ${coreGreen}, ${coreBlue}, ${0.62 + node.connectionStrength * 0.26})`;
+        context.fillStyle = `rgba(${coreRed}, ${coreGreen}, ${coreBlue}, ${(0.62 + node.connectionStrength * 0.26) * focusWeight * boot.node})`;
         context.arc(x, node.y, radius, 0, Math.PI * 2);
         context.fill();
       });
@@ -798,7 +1249,7 @@
       }
 
       context.save();
-      context.font = `${10 * profile.labelScale}px "DM Mono", monospace`;
+      context.font = `${10 * profile.labelScale}px "Inter", sans-serif`;
       context.textBaseline = "middle";
 
       if (currentState.contextual > 0.14) {
@@ -834,12 +1285,15 @@
     }
 
     function drawScene(time: number): void {
+      const boot = getBootMultipliers();
       const clearAlpha = profile.trailsEnabled && currentState.trails > 0.18 ? 0.12 : 0.26;
       context.fillStyle = `rgba(11, 11, 12, ${clearAlpha})`;
       context.fillRect(0, 0, width, height);
       drawSurfaceGlow(time);
       drawGrid();
       drawStructuralArc(time);
+      drawTrails();
+      drawAuroraCore(time);
 
       edges.forEach((edge) => {
         if (edge.active <= 0.01) {
@@ -850,7 +1304,7 @@
 
       if (profile.duplicateEnabled && currentState.duplication > 0.12) {
         const offset = width * (0.06 + currentState.duplication * 0.04);
-        context.globalAlpha = 0.18 + currentState.duplication * 0.14;
+        context.globalAlpha = (0.18 + currentState.duplication * 0.14) * boot.edge;
         edges.forEach((edge) => {
           if (edge.active <= 0.12) {
             return;
@@ -891,10 +1345,18 @@
     function tick(time: number): void {
       const deltaMs = lastTime === 0 ? 16.666 : Math.min(time - lastTime, 34);
       lastTime = time;
+      const resolvedSubstate = getResolvedSubstate();
+      const effectiveTargetState = resolvedSubstate ? makeFieldState(activeState, resolvedSubstate) : targetState;
 
       (Object.keys(currentState) as Array<keyof FieldState>).forEach((key) => {
-        currentState[key] = lerp(currentState[key], targetState[key], isReducedMotion() ? 1 : 0.06);
+        currentState[key] = lerp(currentState[key], effectiveTargetState[key], isReducedMotion() ? 1 : 0.06);
       });
+      auroraCore.flash = Math.max(0, auroraCore.flash - deltaMs / 600);
+      auroraCore.pulse = lerp(
+        auroraCore.pulse,
+        auroraCore.flash + (getFocus() === "aurora-core" ? 0.5 : 0),
+        isReducedMotion() ? 1 : 0.14
+      );
 
       updateNodes(deltaMs, time);
       updateEdges(deltaMs, time);
@@ -914,8 +1376,10 @@
         pointer.y = 0;
         pointer.targetX = 0;
         pointer.targetY = 0;
+        const resolvedSubstate = getResolvedSubstate();
+        const effectiveTargetState = resolvedSubstate ? makeFieldState(activeState, resolvedSubstate) : targetState;
         (Object.keys(currentState) as Array<keyof FieldState>).forEach((key) => {
-          currentState[key] = targetState[key];
+          currentState[key] = effectiveTargetState[key];
         });
         updateNodes(16.666, 0);
         updateEdges(16.666, 0);

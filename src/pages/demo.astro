@@ -188,7 +188,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   /* Shared typography */
   .demo-eyebrow {
     display: block;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -230,7 +230,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     color: var(--text-light);
     border: none;
     border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -252,7 +252,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   .input-label {
     display: block;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -267,7 +267,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     border: 1px solid var(--surface-border);
     border-radius: 4px;
     color: var(--text-light);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 20px;
     letter-spacing: 0.02em;
     padding: 0.875rem 1rem;
@@ -303,7 +303,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     border: 1px solid var(--surface-border);
     border-radius: 3px;
     color: rgba(191, 194, 199, 0.6);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     letter-spacing: 0.07em;
     cursor: pointer;
@@ -337,7 +337,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     color: var(--text-light);
     border: none;
     border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -353,7 +353,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .input-hint {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     letter-spacing: 0.08em;
     color: var(--accent-red);
@@ -377,7 +377,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     display: flex;
     align-items: center;
     gap: 0.9rem;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 13px;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -441,7 +441,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .insight-line {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 12px !important;
     color: rgba(191, 194, 199, 0.7) !important;
     line-height: 1.7 !important;
@@ -457,7 +457,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   .terminal-title {
     display: block;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -493,7 +493,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .rel-node-val {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
     letter-spacing: 0.04em;
     color: rgba(191, 194, 199, 0.7);
@@ -541,7 +541,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
   .reg-title {
     display: block;
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 9px;
     letter-spacing: 0.18em;
     text-transform: uppercase;
@@ -564,7 +564,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .reg-key {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 9px;
     letter-spacing: 0.14em;
     text-transform: none;
@@ -574,7 +574,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .reg-val {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
     letter-spacing: 0.04em;
     color: rgba(191, 194, 199, 0.7);
@@ -582,7 +582,7 @@ import MainLayout from "../layouts/MainLayout.astro";
   }
 
   .reg-guarantee {
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 10px;
     letter-spacing: 0.06em;
     color: rgba(191, 194, 199, 0.25);
@@ -614,7 +614,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     color: var(--text-light);
     border: none;
     border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.01em;
@@ -649,7 +649,7 @@ import MainLayout from "../layouts/MainLayout.astro";
     border: 1px solid var(--surface-border);
     border-radius: 3px;
     color: var(--text-muted);
-    font-family: 'DM Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 11px;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -692,9 +692,12 @@ import MainLayout from "../layouts/MainLayout.astro";
 </style>
 
 <script>
-  import { computeMovement } from "../lib/movementEngine";
-  import type { Absorption, ReversibilityLevel } from "../lib/movementEngine";
-  import { computeMovementHash } from "../lib/hash";
+  import {
+    requestAuroraDecision,
+    type DemoAbsorption,
+    type DemoReversibility,
+    type AuroraDecisionResult
+  } from "../lib/auroraDecisionApi";
 
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -799,50 +802,53 @@ import MainLayout from "../layouts/MainLayout.astro";
     setTimeout(() => document.getElementById(id)?.classList.add("revealed"), delay);
   }
 
-  function deriveDecisionId(fullHashHex: string): string {
-    const n = parseInt(fullHashHex.slice(0, 6), 16) % 10_000;
-    return `AUR-${n.toString().padStart(4, "0")}`;
+  function showHint(message: string): void {
+    const hint = document.getElementById("input-hint")!;
+    hint.textContent = message;
+    hint.classList.add("visible");
   }
 
-  function deriveStructuralLoad(pressureScore: number): string {
-    if (pressureScore >= 0.72) return "elevated";
-    if (pressureScore >= 0.45) return "active";
-    return "contained";
+  function hideHint(): void {
+    const hint = document.getElementById("input-hint")!;
+    hint.textContent = "";
+    hint.classList.remove("visible");
   }
 
-  function deriveCompressionMechanism(
-    absorption: Absorption,
-    reversibility: ReversibilityLevel
-  ): string {
-    const absorptionSignal =
-      absorption === "no"
-        ? "market resistance"
-        : absorption === "restricted"
-        ? "restricted absorption"
-        : "correction";
-
-    const reversibilitySignal =
-      reversibility === "none"
-        ? "locked reversibility"
-        : reversibility === "partial"
-        ? "partial reversibility"
-        : "reversibility";
-
-    return `${absorptionSignal} + ${reversibilitySignal}`;
+  function formatStructuralLoad(value: number): string {
+    return value.toFixed(2);
   }
 
-  function deriveSystemReading(windowDays: number): { primary: string; secondary: string } {
-    if (windowDays <= 4) {
-      return {
-        primary: "capacity compressed",
-        secondary: "execution window narrow",
-      };
-    }
+  function toDisplayText(items: string[], fallback: string): string {
+    return items.filter(Boolean).join(" + ") || fallback;
+  }
 
-    return {
-      primary: "capacity maintained",
-      secondary: "execution window open",
-    };
+  function renderDecisionResult(decision: AuroraDecisionResult): void {
+    const pressurePoint = decision.structural_pressure.pressure_points[0] ?? "not surfaced";
+    const compressionMechanism = toDisplayText(
+      decision.structural_pressure.compression_mechanisms,
+      "not surfaced"
+    );
+
+    document.getElementById("insight-0")!.textContent = "movement registered";
+    document.getElementById("insight-1")!.textContent = `decision_id: ${decision.decision_id}`;
+    document.getElementById("insight-2")!.textContent = `protocol: ${decision.protocol}`;
+
+    document.getElementById("map-capital")!.textContent =
+      `structural load: ${formatStructuralLoad(decision.structural_pressure.structural_load)}`;
+    document.getElementById("map-window")!.textContent = `pressure point: ${pressurePoint}`;
+    document.getElementById("map-reversibility")!.textContent =
+      `compression mechanism: ${compressionMechanism}`;
+    document.getElementById("system-reading-primary")!.textContent = decision.executive_summary;
+    document.getElementById("system-reading-secondary")!.textContent = decision.recommendation;
+    document.getElementById("system-reading-signature")!.textContent =
+      `run_signature: ${decision.run_signature}`;
+
+    document.getElementById("reg-id")!.textContent = decision.decision_id;
+    document.getElementById("reg-hash")!.textContent = decision.protocol;
+    document.getElementById("reg-pressure")!.textContent = decision.run_signature;
+    document.getElementById("reg-window")!.textContent =
+      formatStructuralLoad(decision.structural_pressure.structural_pressure);
+    document.getElementById("reg-ts")!.textContent = pressurePoint;
   }
 
   // ── Process ─────────────────────────────────────────────────────────────
@@ -850,21 +856,15 @@ import MainLayout from "../layouts/MainLayout.astro";
   document.getElementById("btn-process")!.addEventListener("click", async () => {
     const capitalInput = document.getElementById("input-capital") as HTMLInputElement;
     const capital      = parseFloat(capitalInput.value);
-    const hint         = document.getElementById("input-hint")!;
-
     if (!capitalInput.value || isNaN(capital) || capital < 0) {
-      hint.textContent = "Ingresá un valor de capital válido.";
-      hint.classList.add("visible");
+      showHint("Ingresá un valor de capital válido.");
       return;
     }
 
-    hint.classList.remove("visible");
+    hideHint();
 
-    const absorption    = (getChipValue("absorption")    || "yes")  as Absorption;
-    const reversibility = (getChipValue("reversibility") || "full") as ReversibilityLevel;
-
-    // Deterministic engine
-    const output = computeMovement({ capital, absorption, reversibility });
+    const absorption = (getChipValue("absorption") || "yes") as DemoAbsorption;
+    const reversibility = (getChipValue("reversibility") || "full") as DemoReversibility;
 
     // Reset loader state
     document.querySelectorAll<HTMLElement>(".loader-line").forEach((l) => {
@@ -874,46 +874,20 @@ import MainLayout from "../layouts/MainLayout.astro";
     showPhase("loader", "loader-status");
 
     runLoader(async () => {
-      const protocol = "vΩ";
+      try {
+        const decision = await requestAuroraDecision({
+          capital,
+          absorption,
+          reversibility
+        });
 
-      // Deterministic SHA-256 hash
-      const fullHash = await computeMovementHash({
-        capital,
-        absorption,
-        reversibility,
-        pressureDay: output.pressureDay,
-        protocolVersion: protocol,
-      });
-
-      const decisionId = deriveDecisionId(fullHash);
-      const runSignature = fullHash.slice(0, 6);
-      const structuralLoad = deriveStructuralLoad(output.pressureScore);
-      const compressionMechanism = deriveCompressionMechanism(absorption, reversibility);
-      const systemReading = deriveSystemReading(output.correctionWindowDays);
-
-      // Decision footprint
-      document.getElementById("insight-0")!.textContent = "movement registered";
-      document.getElementById("insight-1")!.textContent = `decision_id: ${decisionId}`;
-      document.getElementById("insight-2")!.textContent = `protocol: ${protocol}`;
-
-      // Structural reading
-      document.getElementById("map-capital")!.textContent =
-        `structural load: ${structuralLoad}`;
-      document.getElementById("map-window")!.textContent =
-        `pressure point: day ${output.pressureDay}`;
-      document.getElementById("map-reversibility")!.textContent =
-        `compression mechanism: ${compressionMechanism}`;
-      document.getElementById("system-reading-primary")!.textContent = systemReading.primary;
-      document.getElementById("system-reading-secondary")!.textContent = systemReading.secondary;
-      document.getElementById("system-reading-signature")!.textContent =
-        `run_signature: ${runSignature}`;
-
-      // Ledger memory signal
-      document.getElementById("reg-id")!.textContent       = decisionId;
-      document.getElementById("reg-hash")!.textContent     = protocol;
-      document.getElementById("reg-pressure")!.textContent = runSignature;
-      document.getElementById("reg-window")!.textContent   = structuralLoad;
-      document.getElementById("reg-ts")!.textContent       = `day ${output.pressureDay}`;
+        renderDecisionResult(decision);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Aurora OS request failed.";
+        showPhase("inputs", "input-capital");
+        showHint(message);
+        return;
+      }
 
       // Reset reveals
       ["insight-block", "rel-map", "reg-ritual", "cta-block", "reset-row"].forEach(
@@ -954,9 +928,7 @@ import MainLayout from "../layouts/MainLayout.astro";
         c.tabIndex = isSelected ? 0 : -1;
       });
 
-    const hint = document.getElementById("input-hint")!;
-    hint.textContent = "";
-    hint.classList.remove("visible");
+    hideHint();
 
     showPhase("hero", "btn-start");
   });
