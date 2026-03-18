@@ -189,7 +189,7 @@ export async function submitAuroraDecision(
   } catch (error) {
     if (AURORA_MODE === "dev" && ALLOW_FALLBACK) {
       const { evaluateMovement } = await import("./movementEngine");
-      const fallback = evaluateMovement(request);
+      const fallback = await evaluateMovement(request);
 
       return {
         data: {

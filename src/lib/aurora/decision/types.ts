@@ -25,7 +25,7 @@ export interface AuroraDecisionResponse {
 
 export interface AuroraDecisionEnvelope {
   data: AuroraDecisionResponse;
-  source: "remote";
+  source: "remote" | "local";
 }
 
 export interface AuroraDecisionErrorShape {
