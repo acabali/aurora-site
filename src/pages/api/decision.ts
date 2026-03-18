@@ -3,20 +3,22 @@ import { evaluateMovement } from "../../lib/aurora/decision/movementEngine";
 import {
   normalizeDecisionInput,
   normalizeRiskLevel,
+  normalizeStructuralLoad,
   type DecisionResponse,
 } from "../../lib/aurora/decision/types";
 import { getClaudeDecision } from "../../lib/aurora/server/claudeDecision";
 
 function normalizeDecisionResponse(raw: Record<string, unknown>): DecisionResponse {
-  const hash = String(raw.decision_hash ?? raw.decisionHash ?? "").toLowerCase();
+  const directHash = String(raw.decision_hash ?? raw.decisionHash ?? "").trim().toLowerCase();
   const decisionId =
     typeof raw.decision_id === "string" && raw.decision_id.trim().length > 0
       ? raw.decision_id.trim()
       : typeof raw.decisionId === "string" && raw.decisionId.trim().length > 0
         ? raw.decisionId.trim()
-      : hash
-        ? `dec_${hash}`
+        : directHash
+        ? `dec_${directHash}`
         : "";
+  const hash = directHash || (decisionId.startsWith("dec_") ? decisionId.slice(4).toLowerCase() : "");
 
   return {
     risk_level: normalizeRiskLevel(raw.risk_level ?? raw.riskLevel),
@@ -32,10 +34,7 @@ function normalizeDecisionResponse(raw: Record<string, unknown>): DecisionRespon
       typeof raw.pressure_day === "number" ? raw.pressure_day :
       typeof raw.pressureDay === "number" ? raw.pressureDay :
       undefined,
-    structural_load:
-      raw.structural_load ? String(raw.structural_load).trim() :
-      raw.structuralLoad ? String(raw.structuralLoad).trim() :
-      undefined,
+    structural_load: normalizeStructuralLoad(raw.structural_load ?? raw.structuralLoad),
   };
 }
 

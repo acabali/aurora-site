@@ -73,6 +73,17 @@ import {
             <li>protocol: vΩ</li>
           </ul>
 
+          <div class="decision-output__meta" data-demo-metrics hidden>
+            <p class="decision-output__meta-item" data-demo-pressure-score hidden></p>
+            <p class="decision-output__meta-item" data-demo-pressure-day hidden></p>
+            <p class="decision-output__meta-item" data-demo-structural-load hidden></p>
+          </div>
+
+          <div class="decision-output__creatives" data-demo-creatives hidden>
+            <span class="decision-output__eyebrow">Creative variants</span>
+            <ul class="decision-output__creative-list" data-demo-creatives-list></ul>
+          </div>
+
           <p class="decision-output__error" data-demo-error></p>
 
           <button type="button" class="decision-output__retry" data-demo-retry hidden>Retry</button>
@@ -233,6 +244,56 @@ import {
     background: rgba(4, 8, 10, 0.92);
     color: #c7ffd9;
     font: 500 13px/1.6 "IBM Plex Mono", monospace;
+  }
+
+  .decision-output__meta,
+  .decision-output__creatives,
+  .decision-output__creative-list {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .decision-output__meta {
+    padding: 0.95rem 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .decision-output__meta-item,
+  .decision-output__creative-item {
+    margin: 0;
+    color: rgba(244, 246, 242, 0.88);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .decision-output__creative-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .decision-output__creative-item {
+    padding: 0.85rem 1rem;
+    border: 1px solid rgba(151, 214, 186, 0.14);
+    background: rgba(4, 8, 10, 0.56);
+  }
+
+  .decision-output__creative-hook,
+  .decision-output__creative-angle {
+    display: block;
+  }
+
+  .decision-output__creative-hook {
+    color: var(--color-text);
+    font-size: 15px;
+  }
+
+  .decision-output__creative-angle {
+    color: var(--color-text-secondary);
+    font: 500 12px/1.5 "IBM Plex Mono", monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .decision-output__error:empty {
