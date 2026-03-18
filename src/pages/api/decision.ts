@@ -1,50 +1,58 @@
 import type { APIRoute } from "astro";
 import { evaluateMovement } from "../../lib/aurora/decision/movementEngine";
+import {
+  normalizeDecisionInput,
+  normalizeRiskLevel,
+  type DecisionResponse,
+} from "../../lib/aurora/decision/types";
 import { getClaudeDecision } from "../../lib/aurora/server/claudeDecision";
 
-type CanonRisk = "RIESGO_BAJO" | "RIESGO_CONTROLADO" | "RIESGO_CRITICO";
+function normalizeDecisionResponse(raw: Record<string, unknown>): DecisionResponse {
+  const hash = String(raw.decision_hash ?? raw.decisionHash ?? "").toLowerCase();
+  const decisionId =
+    typeof raw.decision_id === "string" && raw.decision_id.trim().length > 0
+      ? raw.decision_id.trim()
+      : typeof raw.decisionId === "string" && raw.decisionId.trim().length > 0
+        ? raw.decisionId.trim()
+      : hash
+        ? `dec_${hash}`
+        : "";
 
-function normalizeRiskLevel(value: unknown): CanonRisk {
-  const v = String(value ?? "").trim().toUpperCase();
-
-  if ([
-    "RIESGO_CRITICO", "RIESGO_CRÍTICO", "CRITICO", "CRÍTICO", "ALTO", "HIGH", "SEVERE"
-  ].includes(v)) return "RIESGO_CRITICO";
-
-  if ([
-    "RIESGO_CONTROLADO", "CONTROLADO", "MEDIO", "MODERADO", "MEDIUM"
-  ].includes(v)) return "RIESGO_CONTROLADO";
-
-  return "RIESGO_BAJO";
-}
-
-function normalizeDecisionResponse(raw: any) {
   return {
-    risk_level: normalizeRiskLevel(raw?.risk_level ?? raw?.riskLevel),
-    insight: String(raw?.insight ?? "").trim(),
-    counterfactual: String(raw?.counterfactual ?? "").trim(),
-    decision_id: String(raw?.decision_id ?? raw?.decisionId ?? "").trim(),
-    decision_hash: String(raw?.decision_hash ?? raw?.decisionHash ?? "").trim(),
-    pressure_score: typeof raw?.pressure_score === "number" ? raw.pressure_score : undefined,
-    pressure_day: typeof raw?.pressure_day === "number" ? raw.pressure_day : undefined,
-    structural_load: raw?.structural_load ? String(raw.structural_load).trim() : undefined,
+    risk_level: normalizeRiskLevel(raw.risk_level ?? raw.riskLevel),
+    insight: String(raw.insight ?? "").trim(),
+    counterfactual: String(raw.counterfactual ?? "").trim(),
+    decision_hash: hash,
+    decision_id: decisionId,
+    pressure_score:
+      typeof raw.pressure_score === "number" ? raw.pressure_score :
+      typeof raw.pressureScore === "number" ? raw.pressureScore :
+      undefined,
+    pressure_day:
+      typeof raw.pressure_day === "number" ? raw.pressure_day :
+      typeof raw.pressureDay === "number" ? raw.pressureDay :
+      undefined,
+    structural_load:
+      raw.structural_load ? String(raw.structural_load).trim() :
+      raw.structuralLoad ? String(raw.structuralLoad).trim() :
+      undefined,
   };
 }
 
 export const POST: APIRoute = async ({ request }) => {
   try {
-    const body = await request.json();
+    const body = normalizeDecisionInput(await request.json());
     const mode = (process.env.AURORA_MODE || "local").toLowerCase();
 
     if (mode === "claude") {
       try {
         const claude = await getClaudeDecision(body);
-        return new Response(JSON.stringify(normalizeDecisionResponse(claude)), {
+        return new Response(JSON.stringify(normalizeDecisionResponse(claude as Record<string, unknown>)), {
           status: 200,
           headers: { "Content-Type": "application/json" },
         });
       } catch (error) {
-        console.error("[/api/decision] Claude failed, falling back to local engine:", error);
+        console.error("[/api/decision] Claude failed → fallback local:", error);
       }
     }
 
@@ -58,6 +66,9 @@ export const POST: APIRoute = async ({ request }) => {
           counterfactual: result.counterfactual,
           decisionId: result.decisionId,
           decisionHash: result.decisionHash,
+          pressureScore: result.pressureScore,
+          pressureDay: result.pressureDay,
+          structuralLoad: result.structuralLoad,
         })
       ),
       {
@@ -73,10 +84,7 @@ export const POST: APIRoute = async ({ request }) => {
         error: "server_error",
         message: "Aurora evaluation failed",
       }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+      { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
 };

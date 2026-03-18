@@ -1,10 +1,13 @@
 import { submitAuroraDecision, toAuroraDecisionError } from "./adapter";
+import { generateCreatives } from "../integrations/pencil";
 import {
   DECISION_ABSORPTION_LABEL,
   DECISION_RISK_LEVEL_LABEL,
   DECISION_REVERSIBILITY_LABEL,
   DEFAULT_DECISION_REQUEST,
+  mapLegacyRequestToCanon,
   type AuroraDecisionRequest,
+  type DecisionCreative,
   type AuroraDecisionResponse,
   type DemoViewState,
 } from "./types";
@@ -74,14 +77,85 @@ function renderTerminal(root: ParentNode, lines: string[]): void {
   );
 }
 
+function setRowVisibility(root: ParentNode, selector: string, visible: boolean): void {
+  const element = root.querySelector<HTMLElement>(selector);
+
+  if (element) {
+    element.hidden = !visible;
+  }
+}
+
+function renderDataPoint(root: ParentNode, selector: string, label: string, value?: string | number): void {
+  const element = root.querySelector<HTMLElement>(selector);
+  const hasValue = value !== undefined && value !== null && String(value).trim().length > 0;
+
+  if (!element) {
+    return;
+  }
+
+  element.hidden = !hasValue;
+
+  if (hasValue) {
+    element.textContent = `${label}: ${value}`;
+  }
+}
+
+function renderCreatives(root: ParentNode, creatives: DecisionCreative[]): void {
+  const container = root.querySelector<HTMLElement>("[data-demo-creatives]");
+  const list = root.querySelector<HTMLElement>("[data-demo-creatives-list]");
+
+  if (!container || !list) {
+    return;
+  }
+
+  container.hidden = creatives.length === 0;
+
+  if (creatives.length === 0) {
+    list.replaceChildren();
+    return;
+  }
+
+  list.replaceChildren(
+    ...creatives.slice(0, 2).map((creative) => {
+      const item = document.createElement("li");
+      item.className = "decision-output__creative-item";
+
+      const hook = document.createElement("strong");
+      hook.className = "decision-output__creative-hook";
+      hook.textContent = creative.hook;
+
+      const angle = document.createElement("span");
+      angle.className = "decision-output__creative-angle";
+      angle.textContent = creative.angle;
+
+      item.append(hook, angle);
+      return item;
+    }),
+  );
+}
+
 function terminalLines(data: AuroraDecisionResponse): string[] {
-  return [
+  const lines = [
     `risk_level: ${data.risk_level}`,
     `insight: ${data.insight}`,
     `counterfactual: ${data.counterfactual}`,
     `decision_id: ${data.decision_id}`,
     `decision_hash: ${data.decision_hash}`,
   ];
+
+  if (typeof data.pressure_score === "number") {
+    lines.push(`pressure_score: ${data.pressure_score}`);
+  }
+
+  if (typeof data.pressure_day === "number") {
+    lines.push(`pressure_day: ${data.pressure_day}`);
+  }
+
+  if (data.structural_load) {
+    lines.push(`structural_load: ${data.structural_load}`);
+  }
+
+  return lines;
 }
 
 function renderState(root: HTMLElement, state: DemoViewState): void {
@@ -109,6 +183,8 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
     secondaryEl.textContent = "esperando respuesta canónica del engine";
     errorEl.textContent = "";
     retryButton.hidden = true;
+    setRowVisibility(root, "[data-demo-metrics]", false);
+    setRowVisibility(root, "[data-demo-creatives]", false);
     renderTerminal(root, [
       "POST /api/decision",
       `capital: ${state.request.capital}`,
@@ -127,6 +203,8 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
     secondaryEl.textContent = "el demo no calcula localmente ni completa datos por fuera del engine.";
     errorEl.textContent = "";
     retryButton.hidden = true;
+    setRowVisibility(root, "[data-demo-metrics]", false);
+    setRowVisibility(root, "[data-demo-creatives]", false);
     renderTerminal(root, [
       "request.shape",
       "capital: number",
@@ -145,6 +223,8 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
     secondaryEl.textContent = "never run local calculation, never show partial data, never mock";
     errorEl.textContent = "sistema no disponible";
     retryButton.hidden = false;
+    setRowVisibility(root, "[data-demo-metrics]", false);
+    setRowVisibility(root, "[data-demo-creatives]", false);
     renderTerminal(root, [
       "error: sistema no disponible",
       `code: ${state.error?.code ?? "unknown"}`,
@@ -163,6 +243,15 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
   secondaryEl.textContent = data.counterfactual;
   errorEl.textContent = "";
   retryButton.hidden = false;
+  setRowVisibility(root, "[data-demo-metrics]", Boolean(
+    typeof data.pressure_score === "number" ||
+      typeof data.pressure_day === "number" ||
+      data.structural_load,
+  ));
+  renderDataPoint(root, "[data-demo-pressure-score]", "Pressure score", data.pressure_score);
+  renderDataPoint(root, "[data-demo-pressure-day]", "Pressure day", data.pressure_day);
+  renderDataPoint(root, "[data-demo-structural-load]", "Structural load", data.structural_load);
+  renderCreatives(root, state.result.creatives ?? []);
   renderTerminal(root, terminalLines(data));
   traceEl.textContent = `${DECISION_RISK_LEVEL_LABEL[data.risk_level]} · ${data.decision_id} · ${data.decision_hash}`;
 }
@@ -206,12 +295,28 @@ export function mountDecisionDemo(): void {
     });
 
     try {
-      const result = await submitAuroraDecision(request);
+      const canonicalRequest = mapLegacyRequestToCanon(request);
+      const result = await submitAuroraDecision(canonicalRequest);
+      let creatives: DecisionCreative[] = [];
+
+      try {
+        const creativeResult = await generateCreatives({
+          category: canonicalRequest.category,
+          industry: canonicalRequest.industry,
+          risk_level: result.data.risk_level,
+        });
+        creatives = creativeResult.variants;
+      } catch {
+        creatives = [];
+      }
 
       renderState(root, {
         status: "success",
         request,
-        result,
+        result: {
+          ...result,
+          creatives,
+        },
         error: null,
       });
     } catch (error) {

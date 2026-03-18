@@ -1,73 +1,124 @@
+import type {
+  AuroraRiskLevel,
+  DecisionCash30d,
+  DecisionInput,
+  DecisionNature,
+  DecisionReversibility,
+} from "./types";
+import { normalizeDecisionInput } from "./types";
 import { sha256 } from "./hash";
 
-type MovementInput = {
-  capital?: number;
-  absorption?: "yes" | "restricted" | "no";
-  reversibility?: "full" | "partial" | "none";
-  protocol?: string;
-};
-
 type MovementResult = {
-  riskLevel: "BAJO" | "CONTROLADO" | "CRITICO";
+  riskLevel: AuroraRiskLevel;
   insight: string;
   counterfactual: string;
   decisionId: string;
   decisionHash: string;
+  pressureScore: number;
+  pressureDay: number;
+  structuralLoad: "BAJA" | "MEDIA" | "ALTA";
 };
 
-function toRiskLevel(score: number): MovementResult["riskLevel"] {
-  if (score >= 0.7) return "CRITICO";
-  if (score >= 0.4) return "CONTROLADO";
-  return "BAJO";
+function clamp(value: number, min = 0, max = 1): number {
+  return Math.min(Math.max(value, min), max);
 }
 
-function buildInsight(score: number, absorption: string, reversibility: string): string {
-  if (score >= 0.7) {
-    return "La presión estructural es crítica para vΩ: el capital expuesto supera la absorción disponible.";
-  }
-  if (score >= 0.4) {
-    return `La presión estructural está contenida pero exige atención: absorción ${absorption} y reversibilidad ${reversibility}.`;
-  }
-  return "La presión estructural es baja: el movimiento conserva margen operativo.";
+function toRiskLevel(score: number): AuroraRiskLevel {
+  if (score >= 0.72) return "RIESGO_CRITICO";
+  if (score >= 0.45) return "RIESGO_CONTROLADO";
+  return "RIESGO_BAJO";
 }
 
-function buildCounterfactual(score: number): string {
-  if (score >= 0.7) {
-    return "Reducir el capital comprometido o ampliar la absorción evitaría la zona crítica.";
-  }
-  if (score >= 0.4) {
-    return "Aumentar la reversibilidad o mejorar la absorción reduciría la presión del movimiento.";
-  }
-  return "Si la absorción empeora o la reversibilidad cae, el riesgo subiría un nivel.";
+function cashPressure(value: DecisionCash30d): number {
+  if (value === "ALTA") return 1;
+  if (value === "MEDIA") return 0.6;
+  return 0.2;
 }
 
-export async function evaluateMovement(input: MovementInput): Promise<MovementResult> {
-  const capital = Number(input.capital ?? 0);
-  const absorption = input.absorption ?? "restricted";
-  const reversibility = input.reversibility ?? "partial";
-  const protocol = input.protocol ?? "vΩ";
+function reversibilityPressure(value: DecisionReversibility): number {
+  if (value === "BAJA") return 1;
+  if (value === "MEDIA") return 0.6;
+  return 0.2;
+}
 
-  const capitalFactor = Math.min(capital / 100000, 1);
-  const absorptionFactor =
-    absorption === "no" ? 1 : absorption === "restricted" ? 0.6 : 0.2;
-  const reversibilityFactor =
-    reversibility === "none" ? 1 : reversibility === "partial" ? 0.6 : 0.2;
+function naturePressure(value: DecisionNature): number {
+  return value === "RECURRENTE" ? 1 : 0.45;
+}
 
-  const score = Math.min(
-    capitalFactor * 0.45 + absorptionFactor * 0.35 + reversibilityFactor * 0.2,
-    1,
+function pressureDay(value: DecisionCash30d): number {
+  if (value === "ALTA") return 7;
+  if (value === "MEDIA") return 21;
+  return 45;
+}
+
+function structuralLoad(
+  reversibility: DecisionReversibility,
+  nature: DecisionNature,
+): MovementResult["structuralLoad"] {
+  if (reversibility === "BAJA" || nature === "RECURRENTE") return "ALTA";
+  if (reversibility === "MEDIA") return "MEDIA";
+  return "BAJA";
+}
+
+function buildInsight(input: DecisionInput, score: number): string {
+  if (score >= 0.72) {
+    return `La presión estructural es crítica: ${input.category} compromete caja a 30 días ${input.cash_30d} con reversibilidad ${input.reversibility}.`;
+  }
+
+  if (score >= 0.45) {
+    return `La presión estructural está contenida pero exige atención: caja a 30 días ${input.cash_30d} y reversibilidad ${input.reversibility}.`;
+  }
+
+  return `La presión estructural es baja: ${input.category} conserva margen operativo para ${input.industry ?? "General"}.`;
+}
+
+function buildCounterfactual(input: DecisionInput, score: number): string {
+  if (score >= 0.72) {
+    return "Reducir el monto comprometido o mejorar la caja a 30 dias evitaría la zona crítica.";
+  }
+
+  if (score >= 0.45) {
+    return `Aumentar la reversibilidad por encima de ${input.reversibility} o bajar la presión de caja reduciría el riesgo.`;
+  }
+
+  return "Si la caja a 30 dias empeora o la reversibilidad cae, el riesgo subiría un nivel.";
+}
+
+export async function evaluateMovement(input: DecisionInput | unknown): Promise<MovementResult> {
+  const normalized = normalizeDecisionInput(input);
+  const amountFactor = clamp(normalized.amount / 100000);
+  const cashFactor = cashPressure(normalized.cash_30d);
+  const reversibilityFactor = reversibilityPressure(normalized.reversibility);
+  const natureFactor = naturePressure(normalized.nature);
+
+  const score = clamp(
+    amountFactor * 0.45 +
+      cashFactor * 0.25 +
+      reversibilityFactor * 0.2 +
+      natureFactor * 0.1,
   );
 
   const riskLevel = toRiskLevel(score);
-  const seed = `${capital}|${absorption}|${reversibility}|${protocol}|${riskLevel}`;
-  const decisionHash = await sha256(seed);
-  const decisionId = `AUR-${decisionHash.toUpperCase()}`;
+  const decisionHash = await sha256(
+    JSON.stringify({
+      amount: normalized.amount,
+      cash_30d: normalized.cash_30d,
+      nature: normalized.nature,
+      category: normalized.category,
+      reversibility: normalized.reversibility,
+      industry: normalized.industry ?? "General",
+      riskLevel,
+    }),
+  );
 
   return {
     riskLevel,
-    insight: buildInsight(score, absorption, reversibility),
-    counterfactual: buildCounterfactual(score),
-    decisionId,
+    insight: buildInsight(normalized, score),
+    counterfactual: buildCounterfactual(normalized, score),
+    decisionId: `dec_${decisionHash}`,
     decisionHash,
+    pressureScore: Math.round(score * 100),
+    pressureDay: pressureDay(normalized.cash_30d),
+    structuralLoad: structuralLoad(normalized.reversibility, normalized.nature),
   };
 }

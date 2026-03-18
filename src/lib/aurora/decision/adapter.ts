@@ -3,6 +3,13 @@ import type {
   AuroraDecisionErrorShape,
   AuroraDecisionRequest,
   AuroraDecisionResponse,
+  DecisionInput,
+} from "./types";
+import {
+  mapLegacyRequestToCanon,
+  normalizeDecisionInput,
+  normalizeRiskLevel,
+  normalizeStructuralLoad,
 } from "./types";
 
 const REQUEST_TIMEOUT_MS = 6000;
@@ -46,21 +53,32 @@ function readObject(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
+function readText(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function readNumber(value: unknown): number | undefined {
+  return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
 function normalizeResponse(payload: unknown): AuroraDecisionResponse {
   const root = readObject(payload);
+  const rawRiskLevel = readText(root?.risk_level ?? root?.riskLevel);
+  const decisionHash = readText(root?.decision_hash ?? root?.decisionHash)?.toLowerCase() ?? null;
+  const decisionId =
+    readText(root?.decision_id ?? root?.decisionId) ??
+    (decisionHash ? `dec_${decisionHash}` : null);
+  const insight = readText(root?.insight) ?? "";
+  const counterfactual = readText(root?.counterfactual) ?? "";
 
   if (
-    (root?.risk_level !== "BAJO" &&
-      root?.risk_level !== "CONTROLADO" &&
-      root?.risk_level !== "CRITICO") ||
-    typeof root?.insight !== "string" ||
-    root.insight.trim().length === 0 ||
-    typeof root?.counterfactual !== "string" ||
-    root.counterfactual.trim().length === 0 ||
-    typeof root?.decision_id !== "string" ||
-    !/^AUR-[A-Z0-9]{4,}$/i.test(root.decision_id) ||
-    typeof root?.decision_hash !== "string" ||
-    !/^[a-f0-9]{8}$/i.test(root.decision_hash)
+    rawRiskLevel === null ||
+    insight.length === 0 ||
+    counterfactual.length === 0 ||
+    decisionId === null ||
+    !/^dec_[a-f0-9]{8,}$/i.test(decisionId) ||
+    decisionHash === null ||
+    !/^[a-f0-9]{8,}$/i.test(decisionHash)
   ) {
     throw new AuroraDecisionAdapterError({
       code: "server",
@@ -70,11 +88,14 @@ function normalizeResponse(payload: unknown): AuroraDecisionResponse {
   }
 
   return {
-    risk_level: root.risk_level,
-    insight: root.insight,
-    counterfactual: root.counterfactual,
-    decision_id: root.decision_id,
-    decision_hash: root.decision_hash,
+    risk_level: normalizeRiskLevel(rawRiskLevel),
+    insight,
+    counterfactual,
+    decision_id: decisionId,
+    decision_hash: decisionHash,
+    pressure_score: readNumber(root?.pressure_score ?? root?.pressureScore),
+    pressure_day: readNumber(root?.pressure_day ?? root?.pressureDay),
+    structural_load: normalizeStructuralLoad(root?.structural_load ?? root?.structuralLoad),
   };
 }
 
@@ -132,8 +153,10 @@ function buildServiceError(status: number, payload: unknown): AuroraDecisionAdap
 }
 
 async function fetchRemoteDecision(
-  request: AuroraDecisionRequest,
+  request: AuroraDecisionRequest | DecisionInput,
 ): Promise<AuroraDecisionResponse> {
+  const canonicalRequest =
+    "capital" in request ? mapLegacyRequestToCanon(request) : normalizeDecisionInput(request);
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
@@ -146,7 +169,7 @@ async function fetchRemoteDecision(
           ? { Authorization: `Bearer ${import.meta.env.AURORA_API_KEY}` }
           : {}),
       },
-      body: JSON.stringify(request),
+      body: JSON.stringify(canonicalRequest),
       signal: controller.signal,
     });
 
@@ -177,7 +200,7 @@ async function fetchRemoteDecision(
 }
 
 export async function submitAuroraDecision(
-  request: AuroraDecisionRequest,
+  request: AuroraDecisionRequest | DecisionInput,
 ): Promise<AuroraDecisionEnvelope> {
   try {
     const result = await fetchRemoteDecision(request);
@@ -198,6 +221,9 @@ export async function submitAuroraDecision(
           counterfactual: fallback.counterfactual,
           decision_id: fallback.decisionId,
           decision_hash: fallback.decisionHash,
+          pressure_score: fallback.pressureScore,
+          pressure_day: fallback.pressureDay,
+          structural_load: fallback.structuralLoad,
         },
         source: "local",
       };
