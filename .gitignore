@@ -26,3 +26,5 @@ logs
 
 .claude/state/
 var/
+.env.*
+!.env.example

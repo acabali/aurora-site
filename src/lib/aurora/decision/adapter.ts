@@ -163,12 +163,7 @@ async function fetchRemoteDecision(
   try {
     const response = await fetch(DECISION_ENDPOINT, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(import.meta.env.AURORA_API_KEY
-          ? { Authorization: `Bearer ${import.meta.env.AURORA_API_KEY}` }
-          : {}),
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(canonicalRequest),
       signal: controller.signal,
     });

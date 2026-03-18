@@ -23,7 +23,12 @@ function readObject(value: unknown): Record<string, unknown> | null {
 }
 
 function resolveEngineUrl(): string | null {
-  const origin = String(process.env.AURORA_ENGINE_ORIGIN ?? process.env.AURORA_ENGINE_BASE_URL ?? "").trim();
+  const origin = String(
+    process.env.AURORA_OS_BASE_URL ??
+      process.env.AURORA_ENGINE_ORIGIN ??
+      process.env.AURORA_ENGINE_BASE_URL ??
+      "",
+  ).trim();
 
   if (!origin) {
     return null;
@@ -108,7 +113,7 @@ export default async function handler(req: MovementRequest, res: MovementRespons
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
       },
       body: JSON.stringify(request),
       signal: controller.signal,

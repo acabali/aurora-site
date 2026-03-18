@@ -1,14 +1,16 @@
 ---
 import MainLayout from "../layouts/MainLayout.astro";
 import {
+  DECISION_ABSORPTION_LABEL,
   DECISION_ABSORPTION_OPTIONS,
+  DECISION_REVERSIBILITY_LABEL,
   DECISION_REVERSIBILITY_OPTIONS,
 } from "../lib/aurora/decision/types";
 ---
 
 <MainLayout
   title="Aurora — Demo"
-  description="Aurora envía el request canónico al engine real y renderiza la lectura estructural sin fallback local."
+  description="Aurora envía la solicitud canónica al motor real y renderiza la lectura estructural sin cálculo local."
   shell="landing"
 >
   <section class="decision-demo" data-decision-demo data-status="idle">
@@ -18,7 +20,7 @@ import {
         <h1>POST /api/decision</h1>
         <p class="decision-demo__lead">
           La interfaz mapea capital, absorción y reversibilidad al contrato canónico. El
-          resultado se renderiza únicamente desde la respuesta del engine.
+          resultado se renderiza únicamente desde la respuesta del motor.
         </p>
         <div class="decision-demo__trace" data-demo-trace>US$ 50.000 · Absorción restringida · Reversibilidad parcial</div>
       </div>
@@ -33,44 +35,48 @@ import {
           </label>
 
           <label class="decision-form__field">
-            <span>absorption</span>
+            <span>absorción</span>
             <select name="absorption">
               {DECISION_ABSORPTION_OPTIONS.map((option) => (
-                <option value={option} selected={option === "restricted"}>{option}</option>
+                <option value={option} selected={option === "restricted"}>
+                  {DECISION_ABSORPTION_LABEL[option]}
+                </option>
               ))}
             </select>
           </label>
 
           <label class="decision-form__field">
-            <span>reversibility</span>
+            <span>reversibilidad</span>
             <select name="reversibility">
               {DECISION_REVERSIBILITY_OPTIONS.map((option) => (
-                <option value={option} selected={option === "partial"}>{option}</option>
+                <option value={option} selected={option === "partial"}>
+                  {DECISION_REVERSIBILITY_LABEL[option]}
+                </option>
               ))}
             </select>
           </label>
 
-          <button type="submit" class="decision-form__submit">Evaluate movement</button>
+          <button type="submit" class="decision-form__submit">Evaluar movimiento</button>
         </form>
 
         <div class="decision-output">
           <div class="decision-output__status">
-            <span class="decision-output__eyebrow">Frontend state</span>
-            <p class="decision-output__label" data-demo-status-label>idle</p>
-            <p class="decision-output__summary" data-demo-summary>form visible, no request in flight</p>
+            <span class="decision-output__eyebrow">Estado del frontend</span>
+            <p class="decision-output__label" data-demo-status-label>listo</p>
+            <p class="decision-output__summary" data-demo-summary>formulario visible, sin solicitud en curso</p>
           </div>
 
           <div class="decision-output__panel">
-            <p class="decision-output__text" data-demo-primary>capital, absorción y reversibilidad quedan mapeados al request canónico.</p>
-            <p class="decision-output__text decision-output__text--secondary" data-demo-secondary>el demo no calcula localmente ni completa datos por fuera del engine.</p>
+            <p class="decision-output__text" data-demo-primary>capital, absorción y reversibilidad se mapean a la solicitud canónica.</p>
+            <p class="decision-output__text decision-output__text--secondary" data-demo-secondary>el demo no calcula localmente ni completa datos fuera del motor.</p>
           </div>
 
           <ul class="decision-output__terminal" data-demo-terminal>
-            <li>request.shape</li>
+            <li>forma de la solicitud</li>
             <li>capital: number</li>
-            <li>absorption: yes | restricted | no</li>
-            <li>reversibility: full | partial | none</li>
-            <li>protocol: vΩ</li>
+            <li>absorción: yes | restricted | no</li>
+            <li>reversibilidad: full | partial | none</li>
+            <li>protocolo: vΩ</li>
           </ul>
 
           <div class="decision-output__meta" data-demo-metrics hidden>
@@ -80,13 +86,13 @@ import {
           </div>
 
           <div class="decision-output__creatives" data-demo-creatives hidden>
-            <span class="decision-output__eyebrow">Creative variants</span>
+            <span class="decision-output__eyebrow">Variantes creativas</span>
             <ul class="decision-output__creative-list" data-demo-creatives-list></ul>
           </div>
 
           <p class="decision-output__error" data-demo-error></p>
 
-          <button type="button" class="decision-output__retry" data-demo-retry hidden>Retry</button>
+          <button type="button" class="decision-output__retry" data-demo-retry hidden>Reintentar</button>
         </div>
       </div>
     </div>

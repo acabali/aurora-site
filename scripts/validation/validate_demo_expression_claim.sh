@@ -53,7 +53,7 @@ fi
 echo
 echo "3. Structural reasoning language"
 
-if rg -n "structural load" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "carga estructural|structural load" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "structural load detected"
 else
   fail "structural load missing"
@@ -80,19 +80,19 @@ fi
 echo
 echo "4. Loader sequence"
 
-if rg -n "registering movement" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "movimiento registrado|registering movement|movement registered" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "registering movement detected"
 else
   warn "registering movement missing"
 fi
 
-if rg -n "mapping structural variables" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "mapeando variables estructurales|mapping structural variables" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "mapping structural variables detected"
 else
   warn "mapping structural variables missing"
 fi
 
-if rg -n "locating pressure point" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "ubicando punto de presión|locating pressure point|pressure point" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "locating pressure point detected"
 else
   warn "locating pressure point missing"
@@ -101,7 +101,7 @@ fi
 echo
 echo "5. Ledger memory signal"
 
-if rg -n "movement recorded" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "movimiento registrado|movimiento grabado|movement recorded|movement registered" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "movement recorded detected"
 else
   warn "movement recorded missing"

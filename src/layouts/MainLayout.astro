@@ -3,16 +3,6 @@ import SiteFooter from "../components/site/SiteFooter.astro";
 import SiteHeader from "../components/site/SiteHeader.astro";
 import "../styles/layout.css";
 
-const organizationSchema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Aurora",
-  "description": "Aurora calcula las consecuencias de un movimiento antes de ejecutarlo.",
-  "url": "https://aurora-site.com"
-};
-
-const organizationJSON = JSON.stringify(organizationSchema);
-
 interface Props {
   title?: string;
   description?: string;
@@ -27,7 +17,20 @@ const {
 
 const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
 const currentPath = Astro.url.pathname;
-const canonicalHref = new URL(currentPath, "https://aurora-site.com").toString();
+const configuredSiteUrl = String(
+  process.env.PUBLIC_SITE_URL ?? import.meta.env.PUBLIC_SITE_URL ?? "",
+).trim().replace(/\/+$/, "");
+const siteOrigin = configuredSiteUrl || Astro.url.origin;
+const canonicalHref = new URL(currentPath, `${siteOrigin}/`).toString();
+const socialImageHref = new URL("/aurora-logo.png", `${siteOrigin}/`).toString();
+const organizationJSON = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Aurora",
+  "description": "Aurora calcula las consecuencias de un movimiento antes de ejecutarlo.",
+  "url": siteOrigin,
+  "logo": socialImageHref
+});
 ---
 
 <!DOCTYPE html>
@@ -43,6 +46,14 @@ const canonicalHref = new URL(currentPath, "https://aurora-site.com").toString()
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalHref} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aurora" />
+    <meta property="og:locale" content="es_AR" />
+    <meta property="og:image" content={socialImageHref} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageHref} />
 
     <link rel="canonical" href={canonicalHref} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

@@ -177,10 +177,10 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
   form.hidden = state.status === "loading";
 
   if (state.status === "loading") {
-    statusEl.textContent = "loading";
-    summaryEl.textContent = "loader sequence active";
-    primaryEl.textContent = "registrando movimiento";
-    secondaryEl.textContent = "esperando respuesta canónica del engine";
+    statusEl.textContent = "cargando";
+    summaryEl.textContent = "secuencia de carga activa";
+    primaryEl.textContent = "movimiento registrado";
+    secondaryEl.textContent = "esperando respuesta canónica del motor";
     errorEl.textContent = "";
     retryButton.hidden = true;
     setRowVisibility(root, "[data-demo-metrics]", false);
@@ -188,29 +188,29 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
     renderTerminal(root, [
       "POST /api/decision",
       `capital: ${state.request.capital}`,
-      `absorption: ${state.request.absorption}`,
-      `reversibility: ${state.request.reversibility}`,
-      "protocol: vΩ",
+      `absorción: ${state.request.absorption}`,
+      `reversibilidad: ${state.request.reversibility}`,
+      "protocolo: vΩ",
     ]);
     traceEl.textContent = `${formatCapital(state.request.capital)} · ${DECISION_ABSORPTION_LABEL[state.request.absorption]} · ${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]}`;
     return;
   }
 
   if (state.status === "idle") {
-    statusEl.textContent = "idle";
-    summaryEl.textContent = "form visible, no request in flight";
-    primaryEl.textContent = "capital, absorción y reversibilidad quedan mapeados al request canónico.";
-    secondaryEl.textContent = "el demo no calcula localmente ni completa datos por fuera del engine.";
+    statusEl.textContent = "listo";
+    summaryEl.textContent = "formulario visible, sin solicitud en curso";
+    primaryEl.textContent = "capital, absorción y reversibilidad se mapean a la solicitud canónica.";
+    secondaryEl.textContent = "el demo no calcula localmente ni completa datos fuera del motor.";
     errorEl.textContent = "";
     retryButton.hidden = true;
     setRowVisibility(root, "[data-demo-metrics]", false);
     setRowVisibility(root, "[data-demo-creatives]", false);
     renderTerminal(root, [
-      "request.shape",
+      "forma de la solicitud",
       "capital: number",
-      "absorption: yes | restricted | no",
-      "reversibility: full | partial | none",
-      "protocol: vΩ",
+      "absorción: yes | restricted | no",
+      "reversibilidad: full | partial | none",
+      "protocolo: vΩ",
     ]);
     traceEl.textContent = `${formatCapital(state.request.capital)} · ${DECISION_ABSORPTION_LABEL[state.request.absorption]} · ${DECISION_REVERSIBILITY_LABEL[state.request.reversibility]}`;
     return;
@@ -219,8 +219,8 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
   if (state.status === "error" || !state.result) {
     statusEl.textContent = "error";
     summaryEl.textContent = "sistema no disponible";
-    primaryEl.textContent = "any error state OR response takes > latency_max";
-    secondaryEl.textContent = "never run local calculation, never show partial data, never mock";
+    primaryEl.textContent = "cualquier error o latencia mayor al máximo deja el sistema fuera de servicio.";
+    secondaryEl.textContent = "nunca calcular localmente, nunca mostrar datos parciales, nunca simular.";
     errorEl.textContent = "sistema no disponible";
     retryButton.hidden = false;
     setRowVisibility(root, "[data-demo-metrics]", false);
@@ -237,8 +237,8 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
 
   const { data } = state.result;
 
-  statusEl.textContent = "success";
-  summaryEl.textContent = "results rendered from response";
+  statusEl.textContent = "resultado";
+  summaryEl.textContent = "resultado renderizado desde la respuesta";
   primaryEl.textContent = data.insight;
   secondaryEl.textContent = data.counterfactual;
   errorEl.textContent = "";
@@ -248,9 +248,9 @@ function renderState(root: HTMLElement, state: DemoViewState): void {
       typeof data.pressure_day === "number" ||
       data.structural_load,
   ));
-  renderDataPoint(root, "[data-demo-pressure-score]", "Pressure score", data.pressure_score);
-  renderDataPoint(root, "[data-demo-pressure-day]", "Pressure day", data.pressure_day);
-  renderDataPoint(root, "[data-demo-structural-load]", "Structural load", data.structural_load);
+  renderDataPoint(root, "[data-demo-pressure-score]", "Puntaje de presión", data.pressure_score);
+  renderDataPoint(root, "[data-demo-pressure-day]", "Día de presión", data.pressure_day);
+  renderDataPoint(root, "[data-demo-structural-load]", "Carga estructural", data.structural_load);
   renderCreatives(root, state.result.creatives ?? []);
   renderTerminal(root, terminalLines(data));
   traceEl.textContent = `${DECISION_RISK_LEVEL_LABEL[data.risk_level]} · ${data.decision_id} · ${data.decision_hash}`;

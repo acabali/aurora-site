@@ -34,7 +34,7 @@ echo "4. Styles"
 
 echo
 echo "5. Demo terminal signals"
-if rg -n "decision_id|run_signature|movement registered|movement recorded|structural load|pressure point|compression|system reading" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "decision_id|run_signature|movimiento registrado|movement registered|movement recorded|carga estructural|structural load|pressure point|compression|system reading" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "demo terminal signals detected"
 else
   warn "demo terminal signals not detected"
@@ -42,7 +42,7 @@ fi
 
 echo
 echo "6. Loader sequence"
-if rg -n "registering movement|mapping structural variables|locating pressure point" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
+if rg -n "movimiento registrado|registering movement|mapeando variables estructurales|mapping structural variables|ubicando punto de presión|locating pressure point" src/pages/demo.astro src/components/AuroraLanding.astro >/dev/null 2>&1; then
   pass "loader sequence detected"
 else
   warn "loader sequence not detected"
