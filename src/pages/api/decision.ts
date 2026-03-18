@@ -7,27 +7,13 @@ type CanonRisk = "RIESGO_BAJO" | "RIESGO_CONTROLADO" | "RIESGO_CRITICO";
 function normalizeRiskLevel(value: unknown): CanonRisk {
   const v = String(value ?? "").trim().toUpperCase();
 
-  if (
-    [
-      "RIESGO_CRITICO",
-      "RIESGO_CRÍTICO",
-      "CRITICO",
-      "CRÍTICO",
-      "ALTO",
-      "HIGH",
-      "SEVERE",
-    ].includes(v)
-  ) return "RIESGO_CRITICO";
+  if ([
+    "RIESGO_CRITICO", "RIESGO_CRÍTICO", "CRITICO", "CRÍTICO", "ALTO", "HIGH", "SEVERE"
+  ].includes(v)) return "RIESGO_CRITICO";
 
-  if (
-    [
-      "RIESGO_CONTROLADO",
-      "CONTROLADO",
-      "MEDIO",
-      "MODERADO",
-      "MEDIUM",
-    ].includes(v)
-  ) return "RIESGO_CONTROLADO";
+  if ([
+    "RIESGO_CONTROLADO", "CONTROLADO", "MEDIO", "MODERADO", "MEDIUM"
+  ].includes(v)) return "RIESGO_CONTROLADO";
 
   return "RIESGO_BAJO";
 }
