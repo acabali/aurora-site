@@ -3,8 +3,18 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build"
+    "dev": "npm run repo:dev",
+    "build": "npm run repo:build",
+    "site:dev": "node tools/dev.mjs",
+    "site:build": "astro build",
+    "repo:env": "node --experimental-strip-types ./scripts/check-env.ts",
+    "repo:backend": "node --experimental-strip-types ./scripts/check-backend.ts",
+    "repo:check": "node --experimental-strip-types ./scripts/repo-check.ts",
+    "repo:dev": "node --experimental-strip-types ./scripts/repo-dev.ts",
+    "repo:smoke": "node --experimental-strip-types ./scripts/smoke-aurora-os.ts",
+    "repo:build": "node --experimental-strip-types ./scripts/repo-build.ts",
+    "repo:deploy:check": "node --experimental-strip-types ./scripts/repo-deploy-check.ts",
+    "smoke:aurora": "npm run repo:smoke"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.99.0",
