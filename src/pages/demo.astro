@@ -2,7 +2,12 @@
 import MainLayout from "../layouts/MainLayout.astro";
 ---
 
-<MainLayout title="Aurora — Demo" description="Aurora procesa la estructura real del movimiento.">
+<MainLayout
+  title="Aurora — Demo"
+  description="Aurora procesa la estructura real del movimiento."
+  locale="es"
+  pathName="/demo"
+>
   <div class="demo-wrap">
 
     <!-- Phase 1: Hero -->
@@ -48,9 +53,9 @@ import MainLayout from "../layouts/MainLayout.astro";
       <div class="input-group">
         <span class="input-label">¿Qué tan reversible es?</span>
         <div class="cal-chips" data-group="reversibility">
-          <button type="button" class="chip selected" data-value="full">Total</button>
-          <button type="button" class="chip" data-value="partial">Parcial</button>
-          <button type="button" class="chip" data-value="none">Ninguna</button>
+          <button type="button" class="chip selected" data-value="high">Alta</button>
+          <button type="button" class="chip" data-value="medium">Media</button>
+          <button type="button" class="chip" data-value="low">Baja</button>
         </div>
       </div>
 
@@ -660,9 +665,27 @@ import MainLayout from "../layouts/MainLayout.astro";
 </style>
 
 <script>
-  import { computeMovement } from "../lib/movementEngine";
-  import type { Absorption, ReversibilityLevel } from "../lib/movementEngine";
-  import { computeMovementHash } from "../lib/hash";
+  type Absorption = "yes" | "restricted" | "no";
+  type ReversibilityLevel = "low" | "medium" | "high";
+
+  interface DecisionRequest {
+    capital: number;
+    absorption: Absorption;
+    reversibility: ReversibilityLevel;
+  }
+
+  interface DecisionPresentation {
+    decisionId: string;
+    protocol: string;
+    runSignature: string;
+    structuralLoad: string;
+    pressurePoint: string;
+    compressionMechanism: string;
+    systemReadingPrimary: string;
+    systemReadingSecondary: string;
+  }
+
+  let systemStateProbe: Promise<Record<string, unknown>> | null = null;
 
   // ── Phase control ───────────────────────────────────────────────────────
 
@@ -728,15 +751,232 @@ import MainLayout from "../layouts/MainLayout.astro";
     );
   }
 
-  function deriveDecisionId(fullHashHex: string): string {
-    const n = parseInt(fullHashHex.slice(0, 6), 16) % 10_000;
-    return `AUR-${n.toString().padStart(4, "0")}`;
+  async function readJsonResponse(response: Response): Promise<Record<string, unknown>> {
+    const text = await response.text();
+    const contentType = response.headers.get("content-type") ?? "";
+
+    if (/text\/html/i.test(contentType) || /^\s*<!doctype html|^\s*<html/i.test(text)) {
+      throw new Error("Aurora returned HTML instead of JSON.");
+    }
+
+    try {
+      const parsed = JSON.parse(text) as unknown;
+
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw new Error("Aurora returned an invalid JSON payload.");
+      }
+
+      return parsed as Record<string, unknown>;
+    } catch {
+      throw new Error("Aurora returned invalid JSON.");
+    }
   }
 
-  function deriveStructuralLoad(pressureScore: number): string {
-    if (pressureScore >= 0.72) return "elevated";
-    if (pressureScore >= 0.45) return "active";
-    return "contained";
+  function getApiErrorMessage(
+    payload: Record<string, unknown>,
+    fallbackMessage: string,
+    status: number
+  ): string {
+    const message =
+      (typeof payload.message === "string" && payload.message.trim()) ||
+      (typeof payload.error === "string" && payload.error.trim()) ||
+      fallbackMessage;
+    const upstreamStatus =
+      typeof payload.upstreamStatus === "number" ? ` Upstream status ${payload.upstreamStatus}.` : "";
+
+    return `${message} Status ${status}.${upstreamStatus}`.trim();
+  }
+
+  async function getSystemState(): Promise<Record<string, unknown>> {
+    const response = await fetch("/api/system-state", {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+    });
+
+    const payload = await readJsonResponse(response);
+
+    if (!response.ok) {
+      throw new Error(
+        getApiErrorMessage(payload, "System state request failed.", response.status)
+      );
+    }
+
+    return payload;
+  }
+
+  async function postDecision(payload: DecisionRequest): Promise<Record<string, unknown>> {
+    const response = await fetch("/api/decision", {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const payloadResponse = await readJsonResponse(response);
+
+    if (!response.ok) {
+      throw new Error(
+        getApiErrorMessage(payloadResponse, "Decision request failed.", response.status)
+      );
+    }
+
+    return payloadResponse;
+  }
+
+  async function ensureSystemState(): Promise<Record<string, unknown>> {
+    if (!systemStateProbe) {
+      systemStateProbe = getSystemState().finally(() => {
+        systemStateProbe = null;
+      });
+    }
+
+    return systemStateProbe;
+  }
+
+  function getResponseScopes(response: Record<string, unknown>): Record<string, unknown>[] {
+    const scopes: Record<string, unknown>[] = [];
+    const queue: Record<string, unknown>[] = [response];
+    const visited = new Set<Record<string, unknown>>();
+
+    while (queue.length > 0 && scopes.length < 24) {
+      const scope = queue.shift()!;
+
+      if (visited.has(scope)) {
+        continue;
+      }
+
+      visited.add(scope);
+      scopes.push(scope);
+
+      for (const value of Object.values(scope)) {
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+          queue.push(value as Record<string, unknown>);
+        }
+      }
+    }
+
+    return scopes;
+  }
+
+  function getStringValue(scopes: Record<string, unknown>[], keys: string[]): string | null {
+    for (const scope of scopes) {
+      for (const key of keys) {
+        const value = scope[key];
+        if (typeof value === "string" && value.trim()) {
+          return value.trim();
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function getNumberValue(scopes: Record<string, unknown>[], keys: string[]): number | null {
+    for (const scope of scopes) {
+      for (const key of keys) {
+        const value = scope[key];
+        if (typeof value === "number" && Number.isFinite(value)) {
+          return value;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function getBooleanValue(scopes: Record<string, unknown>[], keys: string[]): boolean | null {
+    for (const scope of scopes) {
+      for (const key of keys) {
+        const value = scope[key];
+        if (typeof value === "boolean") {
+          return value;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function getStringArrayValue(scopes: Record<string, unknown>[], keys: string[]): string[] | null {
+    for (const scope of scopes) {
+      for (const key of keys) {
+        const value = scope[key];
+        if (!Array.isArray(value)) {
+          continue;
+        }
+
+        const strings = value
+          .filter((entry): entry is string => typeof entry === "string")
+          .map((entry) => entry.trim())
+          .filter(Boolean);
+
+        if (strings.length > 0) {
+          return strings;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  function formatPressurePoint(scopes: Record<string, unknown>[]): string {
+    const pressurePoints = getStringArrayValue(scopes, ["pressure_points", "pressurePoints"]);
+    if (pressurePoints) {
+      return pressurePoints[0]!;
+    }
+
+    const day = getNumberValue(scopes, ["pressure_day", "pressureDay", "day"]);
+    if (day !== null) {
+      return `day ${day}`;
+    }
+
+    return (
+      getStringValue(scopes, ["pressure_point", "pressurePoint", "pressure_point_label"]) ??
+      "not reported"
+    );
+  }
+
+  function formatStructuralLoad(scopes: Record<string, unknown>[]): string {
+    const classification = getStringValue(scopes, [
+      "structural_risk_classification",
+      "structuralRiskClassification",
+      "structural_load",
+      "structuralLoad",
+      "load",
+    ]);
+    if (classification) {
+      return classification;
+    }
+
+    const explicit = getStringValue(scopes, ["structural_load", "structuralLoad", "load"]);
+    if (explicit) {
+      return explicit;
+    }
+
+    const structuralPressure = getNumberValue(scopes, [
+      "structural_pressure",
+      "structuralPressure",
+      "pressure_score",
+      "pressureScore",
+      "structural_load",
+    ]);
+    if (structuralPressure !== null) {
+      const percentage = structuralPressure <= 1 ? structuralPressure * 100 : structuralPressure;
+      return `${percentage.toFixed(1)} pressure`;
+    }
+
+    const score = getNumberValue(scopes, ["pressure_score", "pressureScore"]);
+    if (score !== null) {
+      if (score >= 0.72) return "elevated";
+      if (score >= 0.45) return "active";
+      return "contained";
+    }
+
+    return "not reported";
   }
 
   function deriveCompressionMechanism(
@@ -751,11 +991,11 @@ import MainLayout from "../layouts/MainLayout.astro";
         : "correction";
 
     const reversibilitySignal =
-      reversibility === "none"
-        ? "locked reversibility"
-        : reversibility === "partial"
-        ? "partial reversibility"
-        : "reversibility";
+      reversibility === "low"
+        ? "low reversibility"
+        : reversibility === "medium"
+        ? "medium reversibility"
+        : "high reversibility";
 
     return `${absorptionSignal} + ${reversibilitySignal}`;
   }
@@ -774,6 +1014,103 @@ import MainLayout from "../layouts/MainLayout.astro";
     };
   }
 
+  function normalizeDecisionResponse(
+    response: Record<string, unknown>,
+    payload: DecisionRequest
+  ): DecisionPresentation {
+    const scopes = getResponseScopes(response);
+    const decisionId = getStringValue(scopes, ["decision_id", "decisionId", "id"]);
+
+    if (!decisionId) {
+      throw new Error("Aurora decision response is missing decision_id.");
+    }
+
+    const runSignature =
+      getStringValue(scopes, ["run_signature", "runSignature", "signature"]) ??
+      getStringValue(scopes, ["decision_hash", "decisionHash"])?.slice(0, 6) ??
+      "not reported";
+
+    const protocol =
+      getStringValue(scopes, ["protocol", "protocol_version", "protocolVersion", "version"]) ??
+      "vΩ";
+
+    const compressionMechanism =
+      getStringValue(scopes, ["compression_mechanism", "compressionMechanism"]) ??
+      getStringArrayValue(scopes, ["compression_mechanisms", "compressionMechanisms"])?.join(" + ") ??
+      deriveCompressionMechanism(payload.absorption, payload.reversibility);
+
+    const provider =
+      getStringValue(scopes, [
+        "resolvedProvider",
+        "provider",
+        "requestedProvider",
+        "defaultProvider",
+        "agentBackend",
+      ]) ?? "not reported";
+    const riskLevel =
+      getStringValue(scopes, ["risk_level", "riskLevel", "structural_risk_classification"]) ??
+      "not reported";
+    const fallbackUsed = getBooleanValue(scopes, ["fallbackUsed"]);
+    const recommendation =
+      getStringValue(scopes, ["recommendation", "executive_summary", "executiveSummary"]) ??
+      null;
+    const providerSummary = [
+      `provider ${provider}`,
+      `risk ${riskLevel}`,
+      `fallback ${fallbackUsed === null ? "not reported" : fallbackUsed ? "yes" : "no"}`,
+    ].join(" | ");
+
+    const systemReadingObject = scopes
+      .map((scope) => scope.system_reading)
+      .find((value) => value && typeof value === "object" && !Array.isArray(value)) as
+      | Record<string, unknown>
+      | undefined;
+
+    const systemReadingPrimary =
+      (systemReadingObject &&
+        typeof systemReadingObject.primary === "string" &&
+        systemReadingObject.primary.trim()) ||
+      null;
+
+    const systemReadingSecondary =
+      (systemReadingObject &&
+        typeof systemReadingObject.secondary === "string" &&
+        systemReadingObject.secondary.trim()) ||
+      null;
+
+    const derivedSystemReading = (() => {
+      const windowDays = getNumberValue(scopes, [
+        "correction_window_days",
+        "correctionWindowDays",
+        "window_days",
+        "windowDays",
+      ]);
+
+      return windowDays === null ? null : deriveSystemReading(windowDays);
+    })();
+
+    return {
+      decisionId,
+      protocol,
+      runSignature,
+      structuralLoad: formatStructuralLoad(scopes),
+      pressurePoint: formatPressurePoint(scopes),
+      compressionMechanism,
+      systemReadingPrimary:
+        recommendation ??
+        systemReadingPrimary ??
+        derivedSystemReading?.primary ??
+        "state available",
+      systemReadingSecondary: providerSummary,
+    };
+  }
+
+  function setProcessError(message: string): void {
+    const hint = document.getElementById("input-hint")!;
+    hint.textContent = message;
+    hint.classList.add("visible");
+  }
+
   // ── Process ─────────────────────────────────────────────────────────────
 
   document.getElementById("btn-process")!.addEventListener("click", async () => {
@@ -790,12 +1127,18 @@ import MainLayout from "../layouts/MainLayout.astro";
     hint.classList.remove("visible");
 
     const absorption    = (getChipValue("absorption")    || "yes")  as Absorption;
-    const reversibility = (getChipValue("reversibility") || "full") as ReversibilityLevel;
+    const reversibility = (getChipValue("reversibility") || "high") as ReversibilityLevel;
+    const payload: DecisionRequest = { capital, absorption, reversibility };
 
-    // Deterministic engine
-    const output = computeMovement({ capital, absorption, reversibility });
+    try {
+      await ensureSystemState();
+    } catch (error) {
+      setProcessError(
+        error instanceof Error ? error.message : "Aurora system state is unavailable."
+      );
+      return;
+    }
 
-    // Reset loader state
     document.querySelectorAll<HTMLElement>(".loader-line").forEach((l) => {
       delete l.dataset.state;
     });
@@ -803,59 +1146,52 @@ import MainLayout from "../layouts/MainLayout.astro";
     showPhase("loader");
 
     runLoader(async () => {
-      const protocol = "vΩ";
+      try {
+        const response = await postDecision(payload);
+        const presentation = normalizeDecisionResponse(response, payload);
 
-      // Deterministic SHA-256 hash
-      const fullHash = await computeMovementHash({
-        capital,
-        absorption,
-        reversibility,
-        pressureDay: output.pressureDay,
-        protocolVersion: protocol,
-      });
+        document.getElementById("insight-0")!.textContent = "movement registered";
+        document.getElementById("insight-1")!.textContent =
+          `decision_id: ${presentation.decisionId}`;
+        document.getElementById("insight-2")!.textContent =
+          `protocol: ${presentation.protocol}`;
+        document.getElementById("insight-3")!.textContent =
+          `run_signature: ${presentation.runSignature}`;
 
-      const decisionId = deriveDecisionId(fullHash);
-      const runSignature = fullHash.slice(0, 6);
-      const structuralLoad = deriveStructuralLoad(output.pressureScore);
-      const compressionMechanism = deriveCompressionMechanism(absorption, reversibility);
-      const systemReading = deriveSystemReading(output.correctionWindowDays);
+        document.getElementById("map-capital")!.textContent =
+          `structural load: ${presentation.structuralLoad}`;
+        document.getElementById("map-window")!.textContent =
+          `pressure point: ${presentation.pressurePoint}`;
+        document.getElementById("map-reversibility")!.textContent =
+          `compression mechanism: ${presentation.compressionMechanism}`;
+        document.getElementById("system-reading-primary")!.textContent =
+          presentation.systemReadingPrimary;
+        document.getElementById("system-reading-secondary")!.textContent =
+          presentation.systemReadingSecondary;
 
-      // Decision footprint
-      document.getElementById("insight-0")!.textContent = "movement registered";
-      document.getElementById("insight-1")!.textContent = `decision_id: ${decisionId}`;
-      document.getElementById("insight-2")!.textContent = `protocol: ${protocol}`;
-      document.getElementById("insight-3")!.textContent = `run_signature: ${runSignature}`;
+        document.getElementById("reg-id")!.textContent       = presentation.decisionId;
+        document.getElementById("reg-hash")!.textContent     = presentation.protocol;
+        document.getElementById("reg-pressure")!.textContent = presentation.runSignature;
+        document.getElementById("reg-window")!.textContent   = presentation.structuralLoad;
+        document.getElementById("reg-ts")!.textContent       = presentation.pressurePoint;
 
-      // Structural reading
-      document.getElementById("map-capital")!.textContent =
-        `structural load: ${structuralLoad}`;
-      document.getElementById("map-window")!.textContent =
-        `pressure point: day ${output.pressureDay}`;
-      document.getElementById("map-reversibility")!.textContent =
-        `compression mechanism: ${compressionMechanism}`;
-      document.getElementById("system-reading-primary")!.textContent = systemReading.primary;
-      document.getElementById("system-reading-secondary")!.textContent = systemReading.secondary;
+        ["insight-block", "rel-map", "reg-ritual", "cta-block", "reset-row"].forEach(
+          (elId) => document.getElementById(elId)?.classList.remove("revealed")
+        );
 
-      // Ledger memory signal
-      document.getElementById("reg-id")!.textContent       = decisionId;
-      document.getElementById("reg-hash")!.textContent     = protocol;
-      document.getElementById("reg-pressure")!.textContent = runSignature;
-      document.getElementById("reg-window")!.textContent   = structuralLoad;
-      document.getElementById("reg-ts")!.textContent       = `day ${output.pressureDay}`;
+        showPhase("results");
 
-      // Reset reveals
-      ["insight-block", "rel-map", "reg-ritual", "cta-block", "reset-row"].forEach(
-        (elId) => document.getElementById(elId)?.classList.remove("revealed")
-      );
-
-      showPhase("results");
-
-      // Sequential reveal
-      revealEl("insight-block", 60);
-      revealEl("rel-map",       440);
-      revealEl("reg-ritual",    820);
-      revealEl("cta-block",     1080);
-      revealEl("reset-row",     1280);
+        revealEl("insight-block", 60);
+        revealEl("rel-map",       440);
+        revealEl("reg-ritual",    820);
+        revealEl("cta-block",     1080);
+        revealEl("reset-row",     1280);
+      } catch (error) {
+        showPhase("inputs");
+        setProcessError(
+          error instanceof Error ? error.message : "Aurora decision request failed."
+        );
+      }
     });
   });
 
@@ -870,7 +1206,7 @@ import MainLayout from "../layouts/MainLayout.astro";
 
     document
       .querySelectorAll<HTMLButtonElement>('[data-group="reversibility"] .chip')
-      .forEach((c) => c.classList.toggle("selected", c.dataset.value === "full"));
+      .forEach((c) => c.classList.toggle("selected", c.dataset.value === "high"));
 
     const hint = document.getElementById("input-hint")!;
     hint.textContent = "";

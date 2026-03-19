@@ -1,330 +1,472 @@
 ---
+interface Props {
+  locale?: "es" | "en";
+}
+
+const { locale = "es" } = Astro.props;
+const isEn = locale === "en";
+const demoHref = isEn ? "/en/demo" : "/demo";
+
+const content = {
+  ticker: isEn
+    ? "Aurora introduces calculation over moves"
+    : "Aurora introduce cálculo sobre los movimientos",
+  heroTitle: isEn
+    ? "The human mind has a limit. Reality does not."
+    : "La mente humana tiene un límite. La realidad no.",
+  heroLines: isEn
+    ? [
+        "The market no longer competes with people.",
+        "It competes with systems.",
+        "Calculation replaces interpretation.",
+        "Aurora introduces that capacity.",
+      ]
+    : [
+        "El mercado ya no compite con personas.",
+        "Compite con sistemas.",
+        "El cálculo reemplaza la interpretación.",
+        "Aurora introduce esa capacidad.",
+      ],
+  heroClosing: isEn ? "It is operational replacement." : "Es sustitución operativa.",
+  heroCta: isEn ? "Put a move under calculation" : "Poner un movimiento bajo cálculo",
+  enemyTitle: isEn ? "Enemy" : "Enemy",
+  enemyLines: isEn
+    ? [
+        "The market no longer operates at human speed.",
+        "It operates through moves.",
+        "Adding more interpretation does not increase capability.",
+        "It increases delay.",
+      ]
+    : [
+        "El mercado ya no opera a velocidad humana.",
+        "Opera sobre movimientos.",
+        "Añadir más interpretación no aumenta capacidad.",
+        "Aumenta retraso.",
+      ],
+  changeTitle: isEn ? "Change" : "Change",
+  changeLines: isEn
+    ? [
+        "Operating conditions changed.",
+        "Seeing the structure of a move before acting is now possible.",
+        "This is not optimization.",
+        "It is an entry condition.",
+      ]
+    : [
+        "La forma de operar cambió.",
+        "Ver la estructura de un movimiento antes de actuar ya es posible.",
+        "No es optimización.",
+        "Es condición de entrada.",
+      ],
+  whatTitle: isEn ? "What" : "What",
+  whatLines: isEn
+    ? [
+        "Aurora introduces calculation over moves.",
+        "Human interpretation is no longer enough.",
+        "Aurora does not improve judgment.",
+        "It replaces it.",
+      ]
+    : [
+        "Aurora introduce cálculo sobre los movimientos.",
+        "La interpretación humana ya no alcanza.",
+        "Aurora no mejora el juicio.",
+        "Lo reemplaza.",
+      ],
+  bridgeTitle: isEn ? "Demo Bridge" : "Demo Bridge",
+  bridgeLines: isEn
+    ? [
+        "Put your next move under calculation.",
+        "Aurora does not provide opinions.",
+        "Aurora calculates.",
+      ]
+    : [
+        "Pon tu próximo movimiento bajo cálculo.",
+        "Aurora no opina.",
+        "Aurora calcula.",
+      ],
+  philosophyTitle: isEn ? "Philosophy" : "Philosophy",
+  philosophyLines: isEn
+    ? [
+        "This is not digital transformation.",
+        "It is a change of standard.",
+        "The advantage is no longer growth.",
+        "It is seeing the structure before entering it.",
+      ]
+    : [
+        "No es transformación digital.",
+        "Es cambio de estándar.",
+        "La ventaja ya no es crecer.",
+        "Es ver la estructura antes de entrar en ella.",
+      ],
+  closingTitle: isEn ? "Closing" : "Closing",
+  closingLines: isEn
+    ? [
+        "Aurora sells a category.",
+        "The demo proves the system.",
+        "Institutional contact is handled through a private demo.",
+      ]
+    : [
+        "Aurora vende una categoría.",
+        "La demo prueba el sistema.",
+        "El contacto institucional se gestiona mediante una demo privada.",
+      ],
+  contactCta: isEn ? "Request institutional demo" : "Solicitar demo institucional",
+  crossTitle: isEn ? "Decision cross" : "Cruz de decisiones",
+  crossItems: [
+    {
+      axis: "CRECER",
+      description: isEn
+        ? "Expansion, hiring and demand moves."
+        : "Expansión, contratación y movimientos de demanda.",
+    },
+    {
+      axis: "GASTAR",
+      description: isEn
+        ? "Allocation, pricing pressure and operating spend."
+        : "Asignación, presión de pricing y gasto operativo.",
+    },
+    {
+      axis: "CAMBIAR",
+      description: isEn
+        ? "Strategic shifts, repositioning and timing."
+        : "Cambios estratégicos, reposicionamiento y timing.",
+    },
+    {
+      axis: "DEFENDER",
+      description: isEn
+        ? "Risk containment, resilience and governance."
+        : "Contención de riesgo, resiliencia y gobernanza.",
+    },
+  ],
+};
+
+const tickerItems = Array.from({ length: 5 }, () => content.ticker);
 ---
 
-<div class="aurora-page">
-  <section class="hero">
-    <div class="hero-structure" aria-hidden="true">
-      <div class="hero-grid"></div>
-    </div>
-
-    <div class="hero-content">
-      <h1 data-reveal="line">La mente humana tiene un límite.<br />La realidad no.</h1>
-
-      <p data-reveal="line" data-reveal-delay="80">
-        El mercado ya no compite con personas.<br />
-        Compite con sistemas.
-      </p>
-
-      <p class="hero-thesis" data-reveal="line" data-reveal-delay="200">
-        El cálculo reemplaza la interpretación.
-      </p>
-
-      <p data-reveal="line" data-reveal-delay="320">
-        Aurora introduce esa capacidad.
-      </p>
-
-      <p data-reveal="line" data-reveal-delay="400">
-        No es digitalización.
-      </p>
-
-      <p class="hero-emphasis" data-reveal="line" data-reveal-delay="460">
-        Es sustitución operativa.
-      </p>
-
-      <div class="hero-cta-row" data-reveal data-reveal-delay="560">
-        <a href="#aurora" class="cta-button">→ See how Aurora works</a>
-      </div>
+<div class="aurora-home">
+  <section class="ticker ticker--top" aria-label="Aurora ticker">
+    <div class="ticker-track">
+      {tickerItems.map((item) => (
+        <span class="ticker-item">{item}</span>
+      ))}
     </div>
   </section>
 
-  <section class="section section-1" id="que-cambio">
-    <div class="section-inner">
-      <h2 data-reveal="line">Qué cambió</h2>
+  <section class="hero" id="top">
+    <div class="hero-grid" aria-hidden="true"></div>
 
-      <p data-reveal="line" data-reveal-delay="0">La forma de operar cambió.</p>
-      <p data-reveal="line" data-reveal-delay="60">Ver la estructura de un movimiento antes de actuar ya es posible.</p>
+    <div class="hero-body">
+      <div class="hero-copy">
+        <p class="section-kicker" data-reveal="line">Aurora</p>
+        <h1 data-reveal="line">{content.heroTitle}</h1>
+        {content.heroLines.map((line, index) => (
+          <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+        ))}
+        <p class="hero-closing" data-reveal="line" data-reveal-delay="320">{content.heroClosing}</p>
 
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">No es optimización.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="80">Es condición de entrada.</p>
-
-      <p data-reveal="line" data-reveal-delay="0">La precisión define quién compite.</p>
-    </div>
-  </section>
-
-  <section class="section section-2" id="desajuste">
-    <div class="section-inner">
-      <h2 data-reveal="line">Desajuste</h2>
-
-      <p data-reveal="line" data-reveal-delay="0">El mercado ya no opera a velocidad humana.</p>
-      <p data-reveal="line" data-reveal-delay="60">Opera sobre movimientos.</p>
-      <p data-reveal="line" data-reveal-delay="120">Movimientos que comprometen recursos, cierran posiciones y activan consecuencias.</p>
-
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">Añadir más interpretación no aumenta capacidad.</p>
-      <p class="text-accent-red text-bold" data-reveal="line" data-reveal-delay="120">Aumenta retraso.</p>
-
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">La ventaja ya no es crecer.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Es ver la estructura antes de entrar en ella.</p>
-    </div>
-  </section>
-
-  <section class="section section-rupture" id="ruptura">
-    <div class="section-inner">
-      <h2 data-reveal="line">Ruptura</h2>
-
-      <div class="rupture-container">
-        <div class="rupture-before">
-          <h3 class="rupture-label rupture-label--before" data-reveal="line" data-reveal-delay="0">Antes</h3>
-          <p class="rupture-item rupture-item--muted" data-reveal="line" data-reveal-delay="60">El error se absorbía.</p>
-          <p class="rupture-item rupture-item--muted" data-reveal="line" data-reveal-delay="120">El ajuste era posterior.</p>
-        </div>
-
-        <div class="rupture-divider" data-reveal data-reveal-delay="200"></div>
-
-        <div class="rupture-after">
-          <h3 class="rupture-label rupture-label--after" data-reveal="line" data-reveal-delay="260">Hoy</h3>
-          <p class="rupture-item rupture-key" data-reveal="strong" data-reveal-delay="340">El cálculo reemplaza la interpretación.</p>
-          <p class="rupture-item" data-reveal="line" data-reveal-delay="480">El mercado ejecuta con cálculo continuo.</p>
+        <div class="hero-actions" data-reveal data-reveal-delay="420">
+          <a href={demoHref} class="cta-primary">{content.heroCta}</a>
         </div>
       </div>
 
-      <p class="gap-top" data-reveal="line" data-reveal-delay="0">No es transformación digital.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Es cambio de estándar.</p>
+      <aside class="decision-cross" data-reveal data-reveal-delay="160" aria-labelledby="decision-cross-title">
+        <div class="decision-cross__header">
+          <p class="section-kicker" id="decision-cross-title">{content.crossTitle}</p>
+        </div>
+
+        <div class="decision-cross__grid">
+          {content.crossItems.map((item) => (
+            <article class="decision-cross__card">
+              <h2>{item.axis}</h2>
+              <p>{item.description}</p>
+            </article>
+          ))}
+        </div>
+      </aside>
     </div>
   </section>
 
-  <section class="section section-definition" id="aurora">
+  <section class="section section--enemy" id="enemy">
     <div class="section-inner">
-      <h2 data-reveal="line">Aurora</h2>
-
-      <p data-reveal="line" data-reveal-delay="0">Aurora introduce cálculo sobre los movimientos.</p>
-      <p data-reveal="line" data-reveal-delay="60">La interpretación humana ya no alcanza.</p>
-
-      <p class="gap-top text-bold" data-reveal="line" data-reveal-delay="0">Aurora no mejora el juicio.</p>
-      <p class="text-accent-blue text-bold" data-reveal="line" data-reveal-delay="60">Lo reemplaza.</p>
+      <p class="section-kicker" data-reveal="line">{content.enemyTitle}</p>
+      <h2 data-reveal="line">{content.enemyLines[0]}</h2>
+      {content.enemyLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
     </div>
   </section>
 
-  <section class="section section-demo" id="demo">
+  <section class="section" id="change">
+    <div class="section-inner">
+      <p class="section-kicker" data-reveal="line">{content.changeTitle}</p>
+      <h2 data-reveal="line">{content.changeLines[0]}</h2>
+      {content.changeLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section" id="what">
+    <div class="section-inner">
+      <p class="section-kicker" data-reveal="line">{content.whatTitle}</p>
+      <h2 data-reveal="line">{content.whatLines[0]}</h2>
+      {content.whatLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--bridge" id="demo-bridge">
     <div class="section-inner section-inner--centered">
-      <h2 data-reveal="line">Demo</h2>
+      <p class="section-kicker" data-reveal="line">{content.bridgeTitle}</p>
+      <h2 data-reveal="line">{content.bridgeLines[0]}</h2>
+      {content.bridgeLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
 
-      <p data-reveal="line" data-reveal-delay="60">Pon tu próximo movimiento bajo cálculo.</p>
-      <p data-reveal="line" data-reveal-delay="120">Aurora no opina. Calcula.</p>
-      <p data-reveal="line" data-reveal-delay="180">Detecta la interacción dominante. Expone la vulnerabilidad central.</p>
-      <p class="text-bold" data-reveal="line" data-reveal-delay="260">Una señal. Un movimiento correcto.</p>
-
-      <div class="hero-cta-row" data-reveal data-reveal-delay="360">
-        <a href="/demo" class="cta-button">→ Explore Aurora</a>
+      <div class="hero-actions" data-reveal data-reveal-delay="220">
+        <a href={demoHref} class="cta-primary">{content.heroCta}</a>
       </div>
+    </div>
+  </section>
+
+  <section class="section section--philosophy" id="philosophy">
+    <div class="section-inner">
+      <p class="section-kicker" data-reveal="line">{content.philosophyTitle}</p>
+      <h2 data-reveal="line">{content.philosophyLines[0]}</h2>
+      {content.philosophyLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
+    </div>
+  </section>
+
+  <section class="section section--closing" id="closing">
+    <div class="section-inner section-inner--centered">
+      <p class="section-kicker" data-reveal="line">{content.closingTitle}</p>
+      <h2 data-reveal="line">{content.closingLines[0]}</h2>
+      {content.closingLines.slice(1).map((line, index) => (
+        <p data-reveal="line" data-reveal-delay={String(index * 70)}>{line}</p>
+      ))}
+
+      <div class="hero-actions" data-reveal data-reveal-delay="220">
+        <a href={demoHref} class="cta-secondary">{content.contactCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ticker ticker--bottom" aria-label="Aurora ticker">
+    <div class="ticker-track">
+      {tickerItems.map((item) => (
+        <span class="ticker-item">{item}</span>
+      ))}
     </div>
   </section>
 </div>
 
 <style>
-  .aurora-page {
-    min-height: 100vh;
+  .aurora-home {
     color: var(--color-text);
-    --duration-reveal: 350ms;
-    --duration-reveal-line: 220ms;
-    --duration-reveal-strong: 520ms;
+    --reveal-duration: 280ms;
+  }
+
+  .ticker {
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background:
+      linear-gradient(90deg, rgba(46, 91, 255, 0.1), rgba(11, 11, 12, 0)),
+      rgba(255, 255, 255, 0.01);
+  }
+
+  .ticker-track {
+    display: flex;
+    gap: 32px;
+    min-width: max-content;
+    padding: 14px 24px;
+    animation: ticker-shift 24s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
   }
 
   .hero {
     position: relative;
-    padding: 128px 24px 140px;
+    padding: 104px 24px 88px;
     overflow: hidden;
-  }
-
-  .hero-structure {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
   }
 
   .hero-grid {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(46, 91, 255, 0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46, 91, 255, 0.04) 1px, transparent 1px);
-    background-size: 64px 64px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 70%);
+      linear-gradient(rgba(46, 91, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46, 91, 255, 0.06) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(circle at top center, black 18%, transparent 76%);
+    -webkit-mask-image: radial-gradient(circle at top center, black 18%, transparent 76%);
+    pointer-events: none;
   }
 
-  .hero-content {
+  .hero-body,
+  .section-inner {
     position: relative;
     z-index: 1;
-    max-width: 860px;
+    width: min(1120px, 100%);
     margin: 0 auto;
-    text-align: center;
   }
 
-  .hero h1 {
+  .hero-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(320px, 0.9fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .hero-copy h1,
+  .section h2 {
     margin: 0;
-    font-size: 58px;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    font-weight: 700;
+    font-size: clamp(2.6rem, 5vw, 4.8rem);
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    max-width: 11ch;
   }
 
-  .hero p {
-    margin-top: 1.25rem;
-    margin-bottom: 0;
+  .section h2 {
+    font-size: clamp(1.8rem, 3vw, 2.7rem);
+    max-width: 16ch;
+  }
+
+  .hero-copy p,
+  .section p,
+  .decision-cross__card p {
+    margin: 0;
     color: var(--color-text-secondary);
-    line-height: 1.6;
+    font-size: 1rem;
+    line-height: 1.65;
+    max-width: 62ch;
   }
 
-  .hero-thesis {
-    font-size: 21px;
-    font-weight: 500;
+  .hero-copy {
+    display: grid;
+    gap: 18px;
+  }
+
+  .section-kicker {
+    margin: 0 0 8px;
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent-blue);
+  }
+
+  .hero-closing {
     color: var(--color-text) !important;
-    letter-spacing: -0.015em;
-    line-height: 1.35;
-    margin-top: 2.75rem !important;
-    margin-bottom: 2.25rem !important;
-  }
-
-  .hero-emphasis {
     font-weight: 600;
-    color: var(--color-text) !important;
   }
 
-  .hero-cta-row {
+  .hero-actions {
     display: flex;
-    gap: 16px;
     justify-content: center;
+    gap: 16px;
     flex-wrap: wrap;
-    margin-top: 2.5rem;
+    margin-top: 10px;
   }
 
-  .cta-button {
+  .hero-copy .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .cta-primary,
+  .cta-secondary {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     min-height: 48px;
     padding: 0 20px;
-    border-radius: 6px;
+    border-radius: 999px;
     text-decoration: none;
-    font: 600 15px/1 "DM Sans", sans-serif;
-    letter-spacing: 0.01em;
+    font: 600 14px/1 "DM Sans", sans-serif;
+    letter-spacing: 0.02em;
     transition:
-      transform 250ms var(--ease-aurora),
-      box-shadow 250ms var(--ease-aurora);
+      transform 220ms var(--ease-aurora),
+      box-shadow 220ms var(--ease-aurora),
+      border-color 220ms var(--ease-aurora);
+  }
+
+  .cta-primary {
+    color: var(--color-text);
     background: var(--color-accent-blue);
+    box-shadow: 0 18px 36px rgba(46, 91, 255, 0.24);
+  }
+
+  .cta-secondary {
+    color: var(--color-text);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .cta-primary:hover,
+  .cta-secondary:hover {
+    transform: translateY(-2px);
+  }
+
+  .decision-cross {
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background:
+      radial-gradient(circle at top left, rgba(46, 91, 255, 0.14), transparent 44%),
+      rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(10px);
+  }
+
+  .decision-cross__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .decision-cross__card {
+    min-height: 142px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(11, 11, 12, 0.72);
+  }
+
+  .decision-cross__card h2 {
+    margin: 0 0 10px;
+    font-size: 0.95rem;
+    line-height: 1.2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
     color: var(--color-text);
   }
 
-  .cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 28px rgba(46, 91, 255, 0.3);
-  }
-
   .section {
-    padding: 112px 24px;
+    padding: 88px 24px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
   }
 
   .section-inner {
-    max-width: 860px;
-    margin: 0 auto;
+    display: grid;
+    gap: 18px;
   }
 
   .section-inner--centered {
+    justify-items: center;
     text-align: center;
   }
 
-  .section h2 {
-    margin: 0 0 2.5rem;
-    font-size: 28px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .section p {
-    margin: 0 0 1.5rem;
-    max-width: 760px;
-    color: var(--color-text-secondary);
-    line-height: 1.6;
-    font-size: 16px;
-  }
-
-  .gap-top {
-    margin-top: 2.5rem !important;
-  }
-
-  .text-bold {
-    font-weight: 600;
-    color: var(--color-text);
-  }
-
-  .text-accent-blue {
-    color: var(--color-accent-blue) !important;
-  }
-
-  .text-accent-red {
-    color: var(--color-accent-red) !important;
-  }
-
-  .rupture-container {
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    gap: 2.5rem;
-    margin: 3.5rem 0;
-    padding: 2.5rem 2rem;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .rupture-before,
-  .rupture-after {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .rupture-label {
-    margin: 0;
-    font-size: 13px;
-    font-family: "DM Mono", monospace;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-
-  .rupture-label--before {
-    color: var(--color-accent-red);
-    opacity: 0.7;
-  }
-
-  .rupture-label--after {
-    color: var(--color-accent-green);
-  }
-
-  .rupture-item {
-    margin: 0;
-    color: var(--color-text-secondary);
-    line-height: 1.5;
-  }
-
-  .rupture-item--muted {
-    opacity: 0.45;
-  }
-
-  .rupture-key {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.3;
-    color: var(--color-text) !important;
-    opacity: 1 !important;
-  }
-
-  .rupture-divider {
-    width: 1px;
-    background: linear-gradient(180deg, transparent, rgba(46, 91, 255, 0.4), transparent);
+  .section--bridge,
+  .section--closing {
+    background:
+      linear-gradient(180deg, rgba(46, 91, 255, 0.06), transparent 48%),
+      transparent;
   }
 
   [data-reveal] {
@@ -332,99 +474,106 @@
     transform: translateY(12px);
     filter: blur(3px);
     transition:
-      opacity var(--duration-reveal) var(--ease-aurora),
-      transform var(--duration-reveal) var(--ease-aurora),
-      filter var(--duration-reveal) var(--ease-aurora);
-  }
-
-  [data-reveal="line"] {
-    opacity: 0;
-    transform: translateY(8px);
-    filter: blur(2px);
-    transition:
-      opacity var(--duration-reveal-line) var(--ease-aurora),
-      transform var(--duration-reveal-line) var(--ease-aurora),
-      filter var(--duration-reveal-line) var(--ease-aurora);
-  }
-
-  [data-reveal="strong"] {
-    opacity: 0;
-    transform: translateY(20px);
-    transition:
-      opacity var(--duration-reveal-strong) var(--ease-aurora),
-      transform var(--duration-reveal-strong) var(--ease-aurora);
+      opacity var(--reveal-duration) var(--ease-aurora),
+      transform var(--reveal-duration) var(--ease-aurora),
+      filter var(--reveal-duration) var(--ease-aurora);
   }
 
   [data-reveal].is-visible,
-  [data-reveal="line"].is-visible,
-  [data-reveal="strong"].is-visible {
+  [data-reveal="line"].is-visible {
     opacity: 1;
     transform: translateY(0);
     filter: blur(0);
   }
 
+  @keyframes ticker-shift {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-20%);
+    }
+  }
+
+  @media (max-width: 960px) {
+    .hero-body {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-copy h1,
+    .section h2 {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero,
+    .section {
+      padding-inline: 16px;
+    }
+
+    .hero {
+      padding-top: 80px;
+      padding-bottom: 72px;
+    }
+
+    .decision-cross {
+      padding: 18px;
+    }
+
+    .decision-cross__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ticker-track {
+      padding-inline: 16px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .ticker-track {
+      animation: none;
+    }
+
     [data-reveal],
-    [data-reveal="line"],
-    [data-reveal="strong"] {
+    [data-reveal="line"] {
       opacity: 1;
       transform: none;
       filter: none;
       transition: none;
     }
   }
-
-  @media (max-width: 768px) {
-    .hero {
-      padding: 80px 24px 96px;
-    }
-
-    .hero h1 {
-      font-size: 36px;
-    }
-
-    .hero-thesis {
-      font-size: 18px;
-    }
-
-    .section {
-      padding: 80px 24px;
-    }
-
-    .rupture-container {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .rupture-divider {
-      display: none;
-    }
-  }
 </style>
 
 <script>
-  const revealTargets = Array.from(document.querySelectorAll('[data-reveal]'));
+  const revealTargets = Array.from(document.querySelectorAll("[data-reveal], [data-reveal='line']"));
 
-  if ('IntersectionObserver' in window) {
+  if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const delay = parseInt((entry.target as HTMLElement).dataset.revealDelay || '0', 10);
-            if (delay > 0) {
-              setTimeout(() => entry.target.classList.add('is-visible'), delay);
-            } else {
-              entry.target.classList.add('is-visible');
-            }
-            observer.unobserve(entry.target);
+          if (!entry.isIntersecting) {
+            return;
           }
+
+          const target = entry.target as HTMLElement;
+          const delay = parseInt(target.dataset.revealDelay || "0", 10);
+
+          if (delay > 0) {
+            setTimeout(() => target.classList.add("is-visible"), delay);
+          } else {
+            target.classList.add("is-visible");
+          }
+
+          observer.unobserve(target);
         });
       },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+      { threshold: 0.12, rootMargin: "0px 0px -48px 0px" }
     );
 
-    revealTargets.forEach((el) => observer.observe(el));
+    revealTargets.forEach((target) => observer.observe(target));
   } else {
-    revealTargets.forEach((el) => el.classList.add('is-visible'));
+    revealTargets.forEach((target) => target.classList.add("is-visible"));
   }
 </script>

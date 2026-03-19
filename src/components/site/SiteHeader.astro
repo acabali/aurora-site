@@ -1,23 +1,31 @@
 ---
 interface Props {
   variant?: "default" | "landing";
+  locale?: "es" | "en";
+  demoHref?: string;
+  homeHref?: string;
 }
 
-const { variant = "default" } = Astro.props;
+const {
+  variant = "default",
+  locale = "es",
+  demoHref = locale === "en" ? "/en/demo" : "/demo",
+  homeHref = locale === "en" ? "/en" : "/",
+} = Astro.props;
 const isLanding = variant === "landing";
+const isEn = locale === "en";
 ---
 
 <header class:list={["site-header", isLanding ? "site-header--landing" : "site-header--default"]}>
   <div class="site-header-left">
     {isLanding ? (
-      <a href="/" class="site-logo-link" aria-label="Aurora home">
-        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 24a12 12 0 0 1 24 0" stroke="var(--color-text)" stroke-width="6" stroke-linecap="square" />
-          <path d="M36 24a12 12 0 0 1-12 12" stroke="var(--color-text)" stroke-width="6" stroke-linecap="square" />
-        </svg>
+      <a href={homeHref} class="site-logo-link" aria-label="Aurora home">
+        <img src="/aurora-logo.png" alt="Aurora" class="site-logo-image" />
       </a>
     ) : (
-      <a href="/" class="site-logo" aria-label="Aurora home">◧</a>
+      <a href={homeHref} class="site-logo-link" aria-label="Aurora home">
+        <img src="/aurora-logo.png" alt="Aurora" class="site-logo-image site-logo-image--compact" />
+      </a>
     )}
   </div>
 
@@ -25,6 +33,13 @@ const isLanding = variant === "landing";
     class:list={["site-nav", isLanding ? "site-nav--landing" : "site-nav--default"]}
     aria-label="Primary navigation"
   >
-    <a href="/demo">DEMO</a>
+    {!isLanding && <a href={homeHref}>HOME</a>}
+    <a href={demoHref}>DEMO</a>
+    {isLanding && (
+      <div class="site-lang-switch" aria-label="Language switcher">
+        <a href="/" aria-current={!isEn ? "page" : undefined}>ES</a>
+        <a href="/en" aria-current={isEn ? "page" : undefined}>EN</a>
+      </div>
+    )}
   </nav>
 </header>

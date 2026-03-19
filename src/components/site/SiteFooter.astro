@@ -1,16 +1,21 @@
 ---
 interface Props {
   variant?: "default" | "landing";
+  homeHref?: string;
+  demoHref?: string;
 }
 
-const { variant = "default" } = Astro.props;
-const homeHref = variant === "landing" ? "#top" : "/";
+const {
+  variant = "default",
+  homeHref = variant === "landing" ? "#top" : "/",
+  demoHref = "/demo",
+} = Astro.props;
 ---
 
 <footer class:list={["site-footer", variant === "landing" ? "site-footer--landing" : "site-footer--default"]}>
   <div class="site-footer-inner">
     <a href={homeHref} class="site-footer-link">Home</a>
-    <a href="/demo" class="site-footer-link">Demo</a>
+    <a href={demoHref} class="site-footer-link">Demo</a>
     <span class="site-footer-copy">© 2026 Aurora</span>
   </div>
 </footer>

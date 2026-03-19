@@ -17,19 +17,29 @@ interface Props {
   title?: string;
   description?: string;
   shell?: "default" | "landing";
+  locale?: "es" | "en";
+  pathName?: string;
 }
 
 const {
   title = "Aurora",
   description = "Aurora calcula las consecuencias de una decisión antes de ejecutarla.",
-  shell = "default"
+  shell = "default",
+  locale = "es",
+  pathName = "/"
 } = Astro.props;
 
 const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
+const siteUrl = "https://aurora-site.com";
+const canonicalUrl = new URL(pathName, siteUrl).toString();
+const esUrl = new URL(pathName.startsWith("/en") ? pathName.replace(/^\/en/, "") || "/" : pathName, siteUrl).toString();
+const enUrl = new URL(pathName.startsWith("/en") ? pathName : pathName === "/demo" ? "/en/demo" : "/en", siteUrl).toString();
+const demoHref = locale === "en" ? "/en/demo" : "/demo";
+const homeHref = locale === "en" ? "/en" : "/";
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,7 +52,10 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
     <meta property="og:url" content="https://aurora-site.com" />
     <meta property="og:type" content="website" />
 
-    <link rel="canonical" href="https://aurora-site.com" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="es" href={esUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={`${siteUrl}/`} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <script type="application/ld+json" set:html={organizationJSON}></script>
@@ -54,12 +67,12 @@ const bodyClass = shell === "landing" ? "landing-shell" : "default-shell";
     <slot name="head" />
   </head>
   <body class={bodyClass}>
-    <SiteHeader variant={shell} />
+    <SiteHeader variant={shell} locale={locale} demoHref={demoHref} homeHref={homeHref} />
 
     <main id="top" class="site-main">
       <slot />
     </main>
 
-    <SiteFooter variant={shell} />
+    <SiteFooter variant={shell} homeHref={homeHref} demoHref={demoHref} />
   </body>
 </html>

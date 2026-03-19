@@ -1,4 +1,5 @@
-import { normalizeAuroraBaseUrl, readRequiredAuroraEnv } from "./env.ts";
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 
 export interface AuroraDecisionPayload {
   title: string;
@@ -31,8 +32,52 @@ export class AuroraApiError extends Error {
 
 type RequiredAuroraEnv = "AURORA_OS_BASE_URL" | "AURORA_API_KEY" | "AURORA_API_SECRET";
 
+type EnvRecord = Partial<Record<RequiredAuroraEnv, string>>;
+
+let envLocalCache: EnvRecord | null = null;
+
+function getEnvLocalPath(): string {
+  return path.join(process.cwd(), ".env.local");
+}
+
+function readEnvLocalValue(name: RequiredAuroraEnv): string | null {
+  if (envLocalCache === null) {
+    envLocalCache = {};
+
+    const envLocalPath = getEnvLocalPath();
+    if (existsSync(envLocalPath)) {
+      const contents = readFileSync(envLocalPath, "utf8");
+
+      for (const key of [
+        "AURORA_OS_BASE_URL",
+        "AURORA_API_KEY",
+        "AURORA_API_SECRET",
+      ] satisfies RequiredAuroraEnv[]) {
+        const match = contents.match(new RegExp(`^${key}=(.*)$`, "m"));
+        if (!match) {
+          continue;
+        }
+
+        let value = match[1].trim();
+        if (
+          (value.startsWith("\"") && value.endsWith("\"")) ||
+          (value.startsWith("'") && value.endsWith("'"))
+        ) {
+          value = value.slice(1, -1);
+        }
+
+        if (value) {
+          envLocalCache[key] = value;
+        }
+      }
+    }
+  }
+
+  return envLocalCache[name] ?? null;
+}
+
 function requireEnv(name: RequiredAuroraEnv): string {
-  const value = readRequiredAuroraEnv()[name];
+  const value = process.env[name]?.trim() || readEnvLocalValue(name);
   if (!value) {
     throw new AuroraApiError(`Missing required environment variable ${name}`, {
       url: "env://local",
@@ -44,7 +89,24 @@ function requireEnv(name: RequiredAuroraEnv): string {
 }
 
 function getAuroraBaseUrl(): string {
-  return normalizeAuroraBaseUrl(requireEnv("AURORA_OS_BASE_URL"));
+  const rawBaseUrl = requireEnv("AURORA_OS_BASE_URL");
+  const url = new URL(rawBaseUrl);
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new AuroraApiError(`Invalid AURORA_OS_BASE_URL protocol: ${url.protocol}`, {
+      url: "env://local",
+    });
+  }
+
+  if (url.hostname === "localhost") {
+    url.hostname = "127.0.0.1";
+  }
+
+  url.pathname = "";
+  url.search = "";
+  url.hash = "";
+
+  return url.toString().replace(/\/$/, "");
 }
 
 function buildAuroraUrl(pathname: string): string {

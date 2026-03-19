@@ -189,9 +189,19 @@ body.landing-shell .site-logo-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  min-height: 48px;
   text-decoration: none;
+}
+
+body.landing-shell .site-logo-image,
+body.default-shell .site-logo-image {
+  display: block;
+  width: auto;
+  height: 30px;
+}
+
+body.default-shell .site-logo-image--compact {
+  height: 28px;
 }
 
 body.landing-shell .site-nav--landing {
@@ -208,6 +218,18 @@ body.landing-shell .site-nav--landing a {
 }
 
 body.landing-shell .site-nav--landing a:hover {
+  color: var(--color-text);
+}
+
+body.landing-shell .site-lang-switch {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.landing-shell .site-lang-switch a[aria-current="page"] {
   color: var(--color-text);
 }
 
@@ -244,6 +266,14 @@ body.landing-shell .site-footer--landing .site-footer-copy {
   body.default-shell .site-header--default,
   body.landing-shell .site-header--landing {
     padding: 0 16px;
+  }
+
+  body.landing-shell .site-nav--landing {
+    gap: 12px;
+  }
+
+  body.landing-shell .site-lang-switch {
+    padding-left: 8px;
   }
 
   body.default-shell h1 {
