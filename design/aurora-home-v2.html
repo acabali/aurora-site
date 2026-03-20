@@ -3,37 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aurora — Ves qué pasa antes de hacerlo</title>
+  <title>{{TITLE}}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:    #080808;
-      --paper:  #f0ede8;
-      --gold:   #c8a84b;
-      --red:    #b84040;
-      --mute:   rgba(240,237,232,0.45);
-      --line:   rgba(240,237,232,0.1);
-      --line2:  rgba(240,237,232,0.05);
-      --cond:   'Barlow Condensed', sans-serif;
-      --body:   'Barlow', sans-serif;
-      --mono:   'JetBrains Mono', monospace;
+      --ink: #080808;
+      --paper: #ebebdf;
+      --gold: #c8a84b;
+      --red: #b84040;
+      --mute: rgba(235,235,223,0.45);
+      --line: rgba(235,235,223,0.1);
+      --line2: rgba(235,235,223,0.05);
+      --display: 'Bebas Neue', sans-serif;
+      --text: 'IBM Plex Sans', sans-serif;
+      --mono: 'IBM Plex Mono', monospace;
     }
 
     html { scroll-behavior: smooth; }
 
-    body {
+    body.aurora-home {
       background: var(--ink);
       color: var(--paper);
-      font-family: var(--body);
+      font-family: var(--text);
       font-weight: 300;
       overflow-x: hidden;
     }
 
-    /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; justify-content: space-between; align-items: center;
@@ -47,11 +46,9 @@
       display: flex; align-items: center; gap: 14px;
       text-decoration: none; color: var(--paper);
     }
-    .nav-logo-mark {
-      width: 30px; height: 30px; flex-shrink: 0;
-    }
+    .nav-logo-mark { width: 30px; height: 30px; flex-shrink: 0; }
     .nav-logo-text {
-      font-family: var(--cond); font-weight: 800;
+      font-family: var(--display); font-weight: 400;
       font-size: 19px; letter-spacing: 0.18em;
     }
     .nav-cta {
@@ -63,763 +60,548 @@
     }
     .nav-cta:hover { background: var(--gold); }
 
-    /* ── TICKER ── */
-    .ticker-rail {
-      margin-top: 73px;
-      overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      background: var(--line2);
-      padding: 16px 0;
-    }
-    .ticker-track {
-      display: flex; gap: 64px;
-      animation: roll 40s linear infinite;
-      white-space: nowrap;
-    }
-    .t {
-      font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(240,237,232,0.28); flex-shrink: 0;
-    }
-    .t b { color: var(--gold); font-weight: 400; margin-right: 8px; }
-    @keyframes roll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ── HERO ── */
     #hero {
       min-height: 100vh;
       display: flex; flex-direction: column; justify-content: flex-end;
       padding: 0 48px 80px;
+      padding-top: 100px;
       position: relative; overflow: hidden;
     }
-    .hero-grid {
+    .hero-ghost {
       position: absolute; inset: 0; pointer-events: none;
       background-image:
-        linear-gradient(rgba(240,237,232,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(240,237,232,0.025) 1px, transparent 1px);
+        linear-gradient(rgba(235,235,223,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(235,235,223,0.025) 1px, transparent 1px);
       background-size: 72px 72px;
     }
-    .hero-bg-num {
-      position: absolute; right: 40px; bottom: 60px;
-      font-family: var(--cond); font-size: clamp(180px, 22vw, 320px);
-      font-weight: 900; color: rgba(240,237,232,0.025);
-      line-height: 1; user-select: none; pointer-events: none;
-      letter-spacing: -0.04em;
-    }
-    .hero-tag {
+    .hero-content { position: relative; z-index: 1; }
+    .hero-kicker {
       font-family: var(--mono); font-size: 10px;
       letter-spacing: 0.22em; color: var(--gold);
       text-transform: uppercase; margin-bottom: 28px;
-      position: relative; z-index: 1;
     }
     .hero-h1 {
-      font-family: var(--cond); font-weight: 900;
-      font-size: clamp(80px, 11.5vw, 160px);
-      line-height: 0.9; letter-spacing: -0.01em;
+      font-family: var(--display); font-weight: 400;
+      font-size: clamp(64px, 10vw, 140px);
+      line-height: 0.92; letter-spacing: 0.02em;
       text-transform: uppercase;
       max-width: 1100px; margin-bottom: 40px;
-      position: relative; z-index: 1;
     }
     .hero-h1 .accent { color: var(--gold); }
-    .hero-sub {
-      font-size: clamp(17px, 1.8vw, 22px); font-weight: 300;
-      color: var(--mute); max-width: 560px;
-      line-height: 1.55; margin-bottom: 52px;
-      position: relative; z-index: 1;
+    .hero-h1 .break { display: block; }
+
+    .hero-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: end;
+      max-width: 1200px;
     }
+    .hero-stmt {
+      font-size: clamp(16px, 1.65vw, 19px);
+      font-weight: 300;
+      color: var(--mute);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+    .hero-stmt strong { color: var(--paper); font-weight: 400; }
     .hero-actions {
-      display: flex; align-items: center; gap: 32px;
-      position: relative; z-index: 1;
+      display: flex; align-items: center; gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 36px;
     }
-    .btn-primary {
+    .btn-hero {
       font-family: var(--mono); font-size: 12px;
       letter-spacing: 0.06em; color: var(--ink);
-      background: var(--paper); padding: 16px 32px;
+      background: var(--paper); padding: 16px 28px;
       text-decoration: none; display: inline-block;
       transition: background 0.2s;
     }
-    .btn-primary:hover { background: var(--gold); }
+    .btn-hero:hover { background: var(--gold); }
     .hero-note {
       font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.1em; color: rgba(240,237,232,0.3);
+      letter-spacing: 0.1em; color: rgba(235,235,223,0.3);
       text-transform: uppercase;
     }
 
-    /* ── RULE ── */
-    hr { border: none; border-top: 1px solid var(--line); }
+    .section { padding: 100px 52px; border-bottom: 1px solid rgba(235,235,223,0.08); }
+    .section-inner { max-width: 1200px; margin: 0 auto; }
 
-    /* ── SECTION BASE ── */
-    .blk { padding: 110px 48px; max-width: 1400px; margin: 0 auto; }
-    .blk-full { padding: 110px 48px; }
-    .blk-full .blk-in { max-width: 1400px; margin: 0 auto; }
-
-    .tag {
+    .eyebrow {
       font-family: var(--mono); font-size: 10px;
       letter-spacing: 0.22em; text-transform: uppercase;
-      color: rgba(240,237,232,0.3);
+      color: rgba(235,235,223,0.35);
       display: flex; align-items: center; gap: 16px;
-      margin-bottom: 56px;
+      margin-bottom: 40px;
     }
-    .tag::after {
-      content: ''; flex: 1; max-width: 120px;
+    .eyebrow::after {
+      content: ''; flex: 1; max-width: 100px;
       height: 1px; background: var(--line);
     }
 
-    .sec-h {
-      font-family: var(--cond); font-weight: 900;
-      font-size: clamp(52px, 7vw, 88px);
-      line-height: 0.95; text-transform: uppercase;
-      margin-bottom: 56px;
-    }
+    .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .fade-up.vis { opacity: 1; transform: translateY(0); }
 
-    /* ── ENEMY ── */
-    #enemy { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-
-    .enemy-layout {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: start;
+    .yp-headline {
+      font-family: var(--display);
+      font-size: clamp(44px, 6vw, 76px);
+      line-height: 0.95;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      max-width: 900px;
     }
-    .enemy-stmt {
-      font-family: var(--cond); font-weight: 800;
-      font-size: clamp(40px, 5vw, 62px);
-      line-height: 1.05; text-transform: uppercase;
-    }
-    .enemy-stmt .bad { color: var(--red); }
-    .enemy-copy {
-      margin-top: 36px;
-      font-size: 17px; font-weight: 300;
-      color: var(--mute); line-height: 1.75;
-      max-width: 440px;
-    }
-    .enemy-cards { display: flex; flex-direction: column; gap: 2px; }
-    .ec {
-      padding: 24px 28px;
-      border-left: 2px solid var(--line);
-      transition: border-color 0.25s;
-      opacity: 0; transform: translateX(18px);
-      transition: opacity 0.5s, transform 0.5s, border-color 0.25s;
-    }
-    .ec.vis { opacity: 1; transform: translateX(0); }
-    .ec:hover { border-left-color: var(--gold); }
-    .ec-lbl {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 8px;
-    }
-    .ec-txt {
-      font-size: 15px; font-weight: 300;
-      color: rgba(240,237,232,0.72); line-height: 1.55;
-    }
-
-    /* ── CHANGE ── */
-    #change { border-bottom: 1px solid var(--line); }
-
-    .change-grid {
-      display: grid; grid-template-columns: 1fr 48px 1fr;
-    }
-    .cg-col {
-      padding: 48px; border: 1px solid var(--line);
-    }
-    .cg-col.past { border-right: none; opacity: 0.45; }
-    .cg-col.now  { border-color: rgba(200,168,75,0.4); }
-    .cg-sep {
+    .yp-track { display: flex; flex-direction: column; gap: 0; }
+    .yp-item {
+      display: grid;
+      grid-template-columns: 100px 140px 1fr;
+      gap: 24px;
+      padding: 22px 0;
       border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; color: var(--gold);
+      align-items: start;
     }
-    .cg-label {
+    .yi-status {
       font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      color: rgba(240,237,232,0.3); margin-bottom: 36px;
+      letter-spacing: 0.16em; text-transform: uppercase;
     }
-    .cg-col.now .cg-label { color: var(--gold); }
-    .cg-step {
-      font-family: var(--cond); font-weight: 800;
-      font-size: 34px; text-transform: uppercase;
-      line-height: 1; margin-bottom: 6px;
+    .yi-status.done { color: rgba(235,235,223,0.35); }
+    .yi-status.next { color: var(--gold); }
+    .yi-industry {
+      font-family: var(--mono); font-size: 11px;
+      letter-spacing: 0.08em;
+      color: rgba(235,235,223,0.55);
+      text-transform: uppercase;
     }
-    .cg-sub {
-      font-size: 13px; font-weight: 300;
-      color: var(--mute); margin-bottom: 28px;
-      line-height: 1.4;
+    .yi-desc {
+      font-size: 15px; font-weight: 300;
+      color: rgba(235,235,223,0.68); line-height: 1.55;
+      max-width: 520px;
     }
-    .cg-col.now .cg-sub.ok { color: rgba(200,168,75,0.9); }
-    .cg-note {
-      margin-top: 12px; font-size: 13px; font-weight: 300;
-      color: rgba(240,237,232,0.35); line-height: 1.5;
-    }
-    .cg-col.now .cg-note { color: rgba(240,237,232,0.5); }
-
-    /* ── WHAT ── */
-    #what { border-bottom: 1px solid var(--line); background: rgba(240,237,232,0.015); }
-
-    .what-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: 1px; background: var(--line);
-    }
-    .wc {
-      background: var(--ink); padding: 44px;
-      opacity: 0; transform: translateY(18px);
-      transition: opacity 0.6s, transform 0.6s;
-    }
-    .wc.vis { opacity: 1; transform: translateY(0); }
-    .wc-num {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.18em; color: rgba(240,237,232,0.25);
-      margin-bottom: 20px;
-    }
-    .wc-title {
-      font-family: var(--cond); font-weight: 800;
-      font-size: 26px; text-transform: uppercase;
-      line-height: 1.1; margin-bottom: 14px;
-    }
-    .wc-txt {
-      font-size: 14px; font-weight: 300;
-      color: rgba(240,237,232,0.6); line-height: 1.6;
-    }
-    .wc-cta {
-      background: rgba(200,168,75,0.07);
-      border: 1px solid rgba(200,168,75,0.2);
-      display: flex; align-items: center; justify-content: center;
-      text-align: center;
-    }
-    .wc-cta-inner .mini-tag {
-      font-family: var(--mono); font-size: 9px;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 14px;
-    }
-    .wc-cta-inner .big {
-      font-family: var(--cond); font-weight: 900;
-      font-size: 26px; text-transform: uppercase;
-      line-height: 1.05; margin-bottom: 24px;
-    }
-    .btn-sm {
-      font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.07em; color: var(--ink);
-      background: var(--paper); padding: 10px 18px;
-      text-decoration: none;
-      transition: background 0.2s;
-      display: inline-block;
-    }
-    .btn-sm:hover { background: var(--gold); }
-
-    /* ── DEMO BRIDGE ── */
-    #demo-bridge {
-      position: relative; overflow: hidden;
-      border-bottom: 1px solid var(--line);
-      min-height: 58vh;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .db-cross {
-      position: absolute; inset: 0; pointer-events: none;
-    }
-    .db-cross::before {
-      content: ''; position: absolute;
-      left: 50%; top: 0; bottom: 0; width: 1px;
-      background: var(--line);
-    }
-    .db-cross::after {
-      content: ''; position: absolute;
-      top: 50%; left: 0; right: 0; height: 1px;
-      background: var(--line);
-    }
-    .db-inner {
-      text-align: center; position: relative; z-index: 2;
-      padding: 80px 48px;
-    }
-    .db-tag {
-      font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 32px;
-    }
-    .db-h {
-      font-family: var(--cond); font-weight: 900;
-      font-size: clamp(64px, 9vw, 128px);
-      line-height: 0.88; text-transform: uppercase;
-      margin-bottom: 36px;
-    }
-    .db-h .hl { color: var(--gold); }
-    .db-sub {
-      font-size: 17px; font-weight: 300;
-      color: var(--mute); max-width: 460px;
-      margin: 0 auto 48px; line-height: 1.6;
-    }
-    .db-small {
-      margin-top: 24px; font-family: var(--mono);
-      font-size: 10px; letter-spacing: 0.12em;
-      color: rgba(240,237,232,0.25); text-transform: uppercase;
-    }
-
-    /* ── PHILOSOPHY ── */
-    #philo { border-bottom: 1px solid var(--line); background: rgba(240,237,232,0.018); }
-
-    .phil-pull {
-      font-family: var(--cond); font-weight: 800;
-      font-size: clamp(34px, 4.5vw, 58px);
-      line-height: 1.1; text-transform: uppercase;
-      max-width: 860px; margin: 0 0 72px;
-    }
-    .phil-pull .hl { color: var(--gold); }
-
-    .phil-cols {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 80px; align-items: start;
-    }
-    .phil-p {
-      font-size: 16px; font-weight: 300;
-      color: rgba(240,237,232,0.68);
-      line-height: 1.75; margin-bottom: 24px;
-    }
-    .phil-p.hot {
-      color: rgba(240,237,232,0.88);
-      font-weight: 400;
-    }
-    .phil-list {
-      list-style: none; margin-top: 40px;
-    }
-    .phil-list li {
+    .yp-bottom {
+      margin-top: 40px;
       font-family: var(--mono); font-size: 12px;
-      letter-spacing: 0.06em; color: rgba(240,237,232,0.3);
-      padding: 14px 0; border-top: 1px solid var(--line);
+      letter-spacing: 0.06em;
+      color: rgba(235,235,223,0.4);
+      text-transform: uppercase;
     }
-    .phil-list li::before {
-      content: '×  '; color: var(--red);
+    .yp-verdict {
+      margin-top: 16px;
+      font-size: 16px; font-weight: 400;
+      color: rgba(235,235,223,0.78);
+    }
+    .yp-cost {
+      margin-top: 8px;
+      font-size: 14px; color: rgba(235,235,223,0.45);
     }
 
-    /* ── CLOSING ── */
-    #closing {
-      border-bottom: 1px solid var(--line);
-      padding: 120px 48px;
-      display: flex; justify-content: space-between;
-      align-items: flex-end; gap: 48px;
+    .comp-headline {
+      font-family: var(--display);
+      font-size: clamp(40px, 5.5vw, 72px);
+      line-height: 0.96;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      max-width: 880px;
+    }
+    .comp-headline .gold { color: var(--gold); }
+    .comp-items { display: flex; flex-direction: column; gap: 0; margin-bottom: 56px; }
+    .comp-item {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: 28px;
+      padding: 28px 0;
+      border-top: 1px solid var(--line);
+    }
+    .ci-num {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; color: rgba(235,235,223,0.25);
+    }
+    .ci-title {
+      font-family: var(--display); font-size: 26px;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .ci-body {
+      font-size: 15px; font-weight: 300;
+      color: rgba(235,235,223,0.62); line-height: 1.6;
+      max-width: 480px;
+    }
+    .comp-bottom {
+      display: flex; align-items: baseline;
+      justify-content: space-between; gap: 32px;
       flex-wrap: wrap;
     }
-    .closing-left .big-q {
-      font-family: var(--cond); font-weight: 900;
-      font-size: clamp(48px, 7vw, 96px);
-      line-height: 0.92; text-transform: uppercase;
-      max-width: 700px;
+    .cb-big {
+      font-family: var(--display);
+      font-size: clamp(36px, 5vw, 64px);
+      text-transform: uppercase;
+      line-height: 1;
     }
-    .closing-left .big-q .sub-q {
-      display: block; font-size: clamp(24px, 3vw, 40px);
-      color: var(--mute); font-weight: 600;
-      margin-top: 12px;
-    }
-    .closing-right {
-      display: flex; flex-direction: column;
-      align-items: flex-start; gap: 16px;
-    }
-    .closing-note {
-      font-family: var(--mono); font-size: 10px;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: rgba(240,237,232,0.28); max-width: 280px;
-      line-height: 1.7;
-    }
+    .cb-right { font-family: var(--display); font-size: clamp(28px, 4vw, 52px); text-transform: uppercase; }
+    .red { color: var(--red); }
 
-    /* ── FOOTER TICKER ── */
-    .ticker-rail2 {
+    .qh-intro { margin-bottom: 12px; }
+    .qh-headline {
+      font-family: var(--display);
+      font-size: clamp(40px, 5vw, 68px);
+      line-height: 0.98;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      max-width: 920px;
+    }
+    .qh-desc {
+      font-size: 15px; color: rgba(235,235,223,0.45);
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+    .qh-outputs { display: flex; flex-direction: column; gap: 0; }
+    .qo {
       border-top: 1px solid var(--line);
-      overflow: hidden; background: var(--line2);
-      padding: 16px 0;
+      padding: 22px 0;
+      cursor: pointer;
     }
-    .ticker-track2 {
-      display: flex; gap: 64px;
-      animation: roll2 50s linear infinite;
-      white-space: nowrap;
+    .qo-n {
+      font-family: var(--mono); font-size: 9px;
+      letter-spacing: 0.16em;
+      color: rgba(235,235,223,0.28);
+      margin-bottom: 10px;
     }
-    @keyframes roll2 {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+    .qo-title {
+      font-family: var(--display); font-size: 24px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .qo-body {
+      font-size: 14px; font-weight: 300;
+      color: rgba(235,235,223,0.62);
+      line-height: 1.6;
+      max-width: 640px;
+      padding-top: 10px;
     }
 
-    /* ── FOOTER ── */
+    #inevitable .inv-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .inv-eyebrow {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(235,235,223,0.35);
+      margin-bottom: 28px;
+    }
+    .inv-headline {
+      font-family: var(--display);
+      font-size: clamp(36px, 4.8vw, 56px);
+      line-height: 0.98;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .inv-p {
+      font-size: 16px; font-weight: 300;
+      color: rgba(235,235,223,0.6);
+      line-height: 1.65;
+      max-width: 420px;
+    }
+    .inv-stairs { display: flex; flex-direction: column; gap: 0; }
+    .is {
+      padding: 20px 0;
+      border-top: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 16px;
+    }
+    .is-year {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.14em; color: var(--gold);
+      text-transform: uppercase;
+    }
+    .is-label { font-family: var(--display); font-size: 22px; text-transform: uppercase; margin-bottom: 6px; }
+    .is-note { font-size: 13px; color: rgba(235,235,223,0.45); }
+    .inv-coda {
+      margin-top: 40px;
+      font-family: var(--mono); font-size: 12px;
+      letter-spacing: 0.06em;
+      color: rgba(235,235,223,0.4);
+      text-transform: uppercase;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+
+    #demo-gateway {
+      position: relative;
+      min-height: 52vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 48px;
+      border-bottom: 1px solid rgba(235,235,223,0.08);
+    }
+    .gw-h, .gw-v {
+      position: absolute; background: var(--line);
+      pointer-events: none;
+    }
+    .gw-h { left: 48px; right: 48px; top: 50%; height: 1px; }
+    .gw-v { top: 48px; bottom: 48px; left: 50%; width: 1px; }
+    .gw-corner { position: absolute; inset: 0; pointer-events: none; border: 1px solid transparent; }
+    .gw-inner { position: relative; z-index: 2; text-align: center; max-width: 720px; }
+    .gw-kicker {
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 24px;
+    }
+    .gw-h1 {
+      font-family: var(--display);
+      font-size: clamp(56px, 8vw, 112px);
+      line-height: 0.9;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .gw-sub {
+      font-size: 17px; color: var(--mute);
+      margin-bottom: 32px;
+    }
+    .btn-gw {
+      font-family: var(--mono); font-size: 13px;
+      letter-spacing: 0.06em;
+      color: var(--ink);
+      background: var(--paper);
+      padding: 18px 40px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s;
+    }
+    .btn-gw:hover { background: var(--gold); }
+    .gw-aside {
+      margin-top: 22px;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em;
+      color: rgba(235,235,223,0.28);
+      text-transform: uppercase;
+    }
+
     footer {
       padding: 40px 48px;
       display: flex; justify-content: space-between;
       align-items: center; gap: 24px;
-      border-top: 1px solid var(--line);
       flex-wrap: wrap;
     }
     .foot-logo {
       display: flex; align-items: center; gap: 12px;
-      text-decoration: none; color: rgba(240,237,232,0.5);
+      text-decoration: none; color: rgba(235,235,223,0.55);
     }
     .foot-logo span {
-      font-family: var(--cond); font-weight: 800;
+      font-family: var(--display);
       font-size: 15px; letter-spacing: 0.18em;
     }
     .foot-nav a {
       font-family: var(--mono); font-size: 10px;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(240,237,232,0.3); text-decoration: none;
+      color: rgba(235,235,223,0.3); text-decoration: none;
       margin-left: 28px;
     }
     .foot-nav a:hover { color: var(--paper); }
+    .foot-nav a:first-child { margin-left: 0; }
     .foot-cr {
       font-family: var(--mono); font-size: 10px;
-      color: rgba(240,237,232,0.18); letter-spacing: 0.08em;
+      color: rgba(235,235,223,0.18); letter-spacing: 0.08em;
     }
 
-    /* ── SCROLL REVEAL ── */
-    .fade { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
-    .fade.vis { opacity: 1; transform: translateY(0); }
-
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       nav { padding: 18px 24px; }
-      #hero { padding: 0 24px 64px; }
-      .blk, .blk-full { padding: 80px 24px; }
-      .enemy-layout { grid-template-columns: 1fr; gap: 48px; }
-      .change-grid { grid-template-columns: 1fr; }
-      .cg-col.past { border-right: 1px solid var(--line); border-bottom: none; }
-      .cg-sep { display: none; }
-      .what-grid { grid-template-columns: 1fr; }
-      .phil-cols { grid-template-columns: 1fr; gap: 40px; }
-      #closing { flex-direction: column; align-items: flex-start; padding: 80px 24px; }
-      footer { flex-direction: column; align-items: flex-start; padding: 32px 24px; }
-      .foot-nav a:first-child { margin-left: 0; }
+      #hero { padding: 96px 24px 64px; }
+      .hero-body { grid-template-columns: 1fr; }
+      .section { padding: 80px 24px; }
+      .yp-item { grid-template-columns: 1fr; gap: 8px; }
+      #inevitable .inv-wrap { grid-template-columns: 1fr; gap: 40px; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .gw-h, .gw-v { display: none; }
     }
   </style>
 </head>
-<body>
+<body class="aurora-home">
 
-<!-- NAV -->
 <nav id="nav">
-  <a href="/" class="nav-logo">
+  <a href="{{HOME_HREF}}" class="nav-logo">
     <svg class="nav-logo-mark" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="15" cy="15" r="12" stroke="#f0ede8" stroke-width="1.4"
+      <circle cx="15" cy="15" r="12" stroke="#ebebdf" stroke-width="1.4"
         stroke-dasharray="58 18" stroke-linecap="round"
         transform="rotate(-25 15 15)"/>
       <circle cx="15" cy="15" r="3" fill="#c8a84b"/>
     </svg>
     <span class="nav-logo-text">AURORA</span>
   </a>
-  <a href="/demo" class="nav-cta">Probá con tu decisión →</a>
+  <div class="nav-actions">
+    <div class="nav-lang" aria-label="Language switcher">
+      <a href="/">ES</a>
+      <a href="/en">EN</a>
+    </div>
+    <a href="{{DEMO_HREF}}" class="nav-cta">{{NAV_CTA}}</a>
+  </div>
 </nav>
 
-<!-- TICKER TOP -->
-<div class="ticker-rail">
-  <div class="ticker-track">
-    <span class="t"><b>↳</b>No estás decidiendo mal. Estás decidiendo sin ver.</span>
-    <span class="t"><b>↳</b>Ver después ya es tarde</span>
-    <span class="t"><b>↳</b>Lo que no modelás igual te impacta</span>
-    <span class="t"><b>↳</b>El problema no es la decisión. Es lo que no ves.</span>
-    <span class="t"><b>↳</b>Ejecutás después de ver. No antes.</span>
-    <span class="t"><b>↳</b>No estás decidiendo mal. Estás decidiendo sin ver.</span>
-    <span class="t"><b>↳</b>Ver después ya es tarde</span>
-    <span class="t"><b>↳</b>Lo que no modelás igual te impacta</span>
-    <span class="t"><b>↳</b>El problema no es la decisión. Es lo que no ves.</span>
-    <span class="t"><b>↳</b>Ejecutás después de ver. No antes.</span>
-  </div>
-</div>
-
-<!-- HERO -->
 <section id="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-bg-num">01</div>
-
-  <div class="hero-tag fade">Antes de ejecutar — calculá</div>
-
-  <h1 class="hero-h1 fade">
-    Ves qué pasa<br>
-    <span class="accent">antes</span><br>
-    de hacerlo.
-  </h1>
-
-  <p class="hero-sub fade">
-    Aurora convierte tu próxima decisión en algo que podés ver antes de comprometer plata, tiempo o equipo.
-  </p>
-
-  <div class="hero-actions fade">
-    <a href="/demo" class="btn-primary">Probá con tu decisión real →</a>
-    <span class="hero-note">Sin registro · Sin demo comercial</span>
+  <div class="hero-ghost"></div>
+  <div class="hero-content">
+    <div class="hero-kicker fade-up">{{HERO_KICKER}}</div>
+    <h1 class="hero-h1 fade-up">
+      {{HERO_H1_LINE1}}<span class="break"></span>{{HERO_H1_LINE2}}
+    </h1>
+    <div class="hero-body">
+      <div class="hero-stmt fade-up">
+        <p class="hero-statement">{{HERO_STATEMENT}}</p>
+        <div class="hero-actions">
+          <a href="{{DEMO_HREF}}" class="btn-hero">{{HERO_CTA}}</a>
+          <span class="hero-note">{{HERO_NOTE}}</span>
+        </div>
+      </div>
+      {{HERO_READOUT}}
+    </div>
   </div>
 </section>
 
-<hr>
+<section id="yapaso" class="section">
+  <div class="section-inner">
+    <div class="eyebrow fade-up">{{YAPASO_EYEBROW}}</div>
+    <h2 class="yp-headline fade-up">{{YAPASO_HEADLINE}}</h2>
+    <div class="yp-track">
+      {{YAPASO_ITEMS}}
+    </div>
+    <p class="yp-bottom fade-up">{{YAPASO_BOTTOM}}</p>
+    <p class="yp-verdict fade-up">{{YAPASO_VERDICT}}</p>
+    <p class="yp-cost fade-up">{{YAPASO_COST}}</p>
+  </div>
+</section>
 
-<!-- ENEMY -->
-<section id="enemy">
-  <div class="blk">
-    <div class="tag">El problema real</div>
+<section id="complexity" class="section">
+  <div class="section-inner">
+    <div class="eyebrow fade-up">{{COMP_EYEBROW}}</div>
+    <h2 class="comp-headline fade-up">{{COMP_HEADLINE}}</h2>
+    <div class="comp-items">
+      {{COMP_ITEMS}}
+    </div>
+    <div class="comp-bottom fade-up">
+      <div class="cb-big">{{COMP_BOTTOM_BIG}}</div>
+      <div class="cb-right"><span class="red">{{COMP_BOTTOM_ACCENT}}</span></div>
+    </div>
+  </div>
+</section>
 
-    <div class="enemy-layout">
-      <div>
-        <div class="enemy-stmt fade">
-          No estás<br>
-          decidiendo mal.<br>
-          Estás decidiendo<br>
-          <span class="bad">sin ver.</span>
-        </div>
-        <p class="enemy-copy fade">
-          El error más caro no viene de mala información.<br>
-          Viene de no ver las consecuencias antes de que sea tarde corregirlas.
-        </p>
-      </div>
+<section id="queHace" class="section">
+  <div class="section-inner">
+    <div class="eyebrow qh-intro fade-up">{{OUTPUTS_INTRO}}</div>
+    <h2 class="qh-headline fade-up">{{OUTPUTS_HEADLINE}}</h2>
+    <p class="qh-desc fade-up">{{OUTPUTS_DESC}}</p>
+    <div class="qh-outputs" id="qh-outputs">
+      {{OUTPUT_ITEMS}}
+    </div>
+  </div>
+</section>
 
-      <div class="enemy-cards">
-        <div class="ec">
-          <div class="ec-lbl">Caja</div>
-          <div class="ec-txt">Lo que parecía un movimiento de $30k compromete estructura que no estaba planeada.</div>
-        </div>
-        <div class="ec">
-          <div class="ec-lbl">Tiempo</div>
-          <div class="ec-txt">La ventana para corregir se cierra antes de que veas el costo real. Después es historia.</div>
-        </div>
-        <div class="ec">
-          <div class="ec-lbl">Equipo</div>
-          <div class="ec-txt">Cada contratación, cada expansión, crea dependencias que no estaban mapeadas.</div>
-        </div>
-        <div class="ec">
-          <div class="ec-lbl">Reversibilidad</div>
-          <div class="ec-txt">El margen para dar marcha atrás no avisa cuando se acaba. Simplemente se acaba.</div>
-        </div>
+{{SYSTEM_SECTION}}
+
+<section id="inevitable" class="section">
+  <div class="section-inner inv-wrap">
+    <div class="inv-left">
+      <div class="inv-eyebrow fade-up">{{INV_EYEBROW}}</div>
+      <h2 class="inv-headline fade-up">{{INV_HEADLINE}}</h2>
+      <p class="inv-p fade-up">{{INV_LEAD}}</p>
+      <p class="inv-coda fade-up">{{INV_CODA}}</p>
+    </div>
+    <div class="inv-right">
+      <div class="inv-stairs">
+        {{INV_STAIRS}}
       </div>
     </div>
   </div>
 </section>
 
-<!-- CHANGE -->
-<section id="change">
-  <div class="blk">
-    <div class="tag">Cambio de estándar</div>
-    <h2 class="sec-h fade">El modelo<br>viejo rompió.</h2>
-
-    <div class="change-grid fade">
-      <div class="cg-col past">
-        <div class="cg-label">Antes — el ciclo roto</div>
-        <div class="cg-step">Decidís.</div>
-        <div class="cg-sub">Sin ver qué compromete.</div>
-        <div class="cg-step">Ejecutás.</div>
-        <div class="cg-sub">Con toda la exposición encima.</div>
-        <div class="cg-step">Descubrís.</div>
-        <div class="cg-sub">Cuando ya es tarde o muy caro.</div>
-        <div class="cg-note">
-          Funcionaba cuando los errores eran baratos.<br>
-          Ya no lo son.
-        </div>
-      </div>
-
-      <div class="cg-sep">→</div>
-
-      <div class="cg-col now">
-        <div class="cg-label">Ahora — el nuevo estándar</div>
-        <div class="cg-step">Simulás.</div>
-        <div class="cg-sub">Ves qué variable manda. Dónde se rompe.</div>
-        <div class="cg-step">Evaluás.</div>
-        <div class="cg-sub">Qué deja de ser reversible. Qué costo aparece.</div>
-        <div class="cg-step">Ejecutás.</div>
-        <div class="cg-sub ok">Solo cuando cierra.</div>
-        <div class="cg-note">
-          Aurora no te dice qué hacer.<br>
-          Te muestra qué pasa si lo hacés.
-        </div>
-      </div>
+<div id="demo-gateway">
+  <div class="gw-h"></div>
+  <div class="gw-v"></div>
+  <div class="gw-inner">
+    <div class="gw-kicker fade-up">{{GW_KICKER}}</div>
+    <h2 class="gw-h1 fade-up">{{GW_H1}}</h2>
+    <p class="gw-sub fade-up">{{GW_SUB}}</p>
+    <div style="max-width:480px;margin:0 auto 28px;display:flex;flex-direction:column;gap:10px;">
+      <textarea name="movimiento" rows="3" placeholder="{{CONTACT_PLACEHOLDER}}" style="background:rgba(235,235,223,0.03);border:1px solid rgba(235,235,223,0.10);color:#ebebdf;font-family:var(--mono);font-size:12px;padding:12px;resize:vertical;width:100%;min-height:72px;"></textarea>
+      <input type="email" name="email" placeholder="{{CONTACT_EMAIL_PLACEHOLDER}}" style="background:rgba(235,235,223,0.03);border:1px solid rgba(235,235,223,0.10);color:#ebebdf;font-family:var(--mono);font-size:12px;padding:12px;width:100%;" />
     </div>
-  </div>
-</section>
-
-<!-- WHAT -->
-<section id="what">
-  <div class="blk">
-    <div class="tag">Qué hace Aurora</div>
-    <h2 class="sec-h fade">Tomás una decisión.<br>Aurora devuelve<br>un mapa.</h2>
-
-    <div class="what-grid">
-      <div class="wc">
-        <div class="wc-num">01 — Variable dominante</div>
-        <div class="wc-title">Qué manda realmente</div>
-        <div class="wc-txt">No la que asumís. La que el sistema detecta como dominante bajo presión estructural.</div>
-      </div>
-      <div class="wc">
-        <div class="wc-num">02 — Punto de quiebre</div>
-        <div class="wc-title">Dónde se rompe</div>
-        <div class="wc-txt">El supuesto central que, si falla, derrumba el plan. Visible antes de comprometerte.</div>
-      </div>
-      <div class="wc">
-        <div class="wc-num">03 — Reversibilidad</div>
-        <div class="wc-title">Qué ya no podés deshacer</div>
-        <div class="wc-txt">El margen de corrección antes de que la decisión deje de ser reversible.</div>
-      </div>
-      <div class="wc">
-        <div class="wc-num">04 — Dependencias</div>
-        <div class="wc-title">Qué crea el movimiento</div>
-        <div class="wc-txt">Las cadenas que no pediste pero que el movimiento activa. Operación, caja, equipo.</div>
-      </div>
-      <div class="wc">
-        <div class="wc-num">05 — Costo oculto</div>
-        <div class="wc-title">Lo que no estaba en el plan</div>
-        <div class="wc-txt">El costo que aparece después — antes de que aparezca. Lo que el Excel siempre omitió.</div>
-      </div>
-      <div class="wc wc-cta">
-        <div class="wc-cta-inner">
-          <div class="mini-tag">Todo en un readout</div>
-          <div class="big">Antes<br>de ejecutar.</div>
-          <a href="/demo" class="btn-sm">Entrar a la demo →</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- DEMO BRIDGE -->
-<div id="demo-bridge">
-  <div class="db-cross"></div>
-  <div class="db-inner">
-    <div class="db-tag">Prueba real — no tutorial</div>
-    <div class="db-h">
-      Tu próxima<br>decisión.<br>
-      <span class="hl">Ahora.</span>
-    </div>
-    <p class="db-sub">
-      No educa. No explica de más.<br>
-      Somete tu movimiento a cálculo y te devuelve lo que no estás viendo.
-    </p>
-    <a href="/demo" class="btn-primary" style="font-size: 13px; padding: 18px 44px;">
-      Probá con tu decisión real →
-    </a>
-    <div class="db-small">Sin registro · Sin demo comercial · Solo el cálculo.</div>
+    <a href="{{DEMO_HREF}}" class="btn-gw">{{GW_CTA}}</a>
+    <p class="gw-aside fade-up">{{GW_ASIDE}}</p>
   </div>
 </div>
 
-<!-- PHILOSOPHY -->
-<section id="philo">
-  <div class="blk">
-    <div class="tag">Por qué existe</div>
-
-    <blockquote class="phil-pull fade">
-      El modelo viejo era decidir, ejecutar, corregir.<br>
-      Funcionaba cuando corregir era barato.<br>
-      <span class="hl">Ya no lo es.</span>
-    </blockquote>
-
-    <div class="phil-cols">
-      <div>
-        <p class="phil-p">
-          Hoy el error llega más rápido, cuesta más y deja menos margen. El ciclo no cambió. El costo de cada vuelta, sí.
-        </p>
-        <p class="phil-p">
-          Los founders que operan bien no tienen más datos. Tienen más visibilidad antes de moverse.
-        </p>
-        <p class="phil-p hot">
-          La falla no es de información.<br>
-          Es que no podés ver las consecuencias<br>antes de comprometerte con ellas.
-        </p>
-      </div>
-      <div>
-        <p class="phil-p">
-          Excel simplifica demasiado. Las métricas sueltas no tienen contexto. La intuición no escala. El "probemos y vemos" era aceptable hasta que dejó de serlo.
-        </p>
-        <p class="phil-p">
-          Aurora existe porque ver después ya es tarde.
-        </p>
-        <ul class="phil-list">
-          <li>No es software tradicional</li>
-          <li>No es consultora</li>
-          <li>No es dashboard de métricas</li>
-          <li>No es "AI tool"</li>
-        </ul>
-        <p class="phil-p" style="margin-top: 24px; font-size: 15px; color: rgba(240,237,232,0.5);">
-          Es la capacidad de ver qué pasa antes de hacerlo.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CLOSING -->
-<div id="closing">
-  <div class="closing-left">
-    <div class="big-q fade">
-      Lo que no ves<br>igual se paga.
-      <span class="sub-q">¿Cuándo lo vas a ver?</span>
-    </div>
-  </div>
-  <div class="closing-right">
-    <a href="/demo" class="btn-primary" style="font-size: 13px; padding: 18px 40px;">
-      Probá con tu decisión real →
-    </a>
-    <p class="closing-note">
-      Ingresá tu movimiento real.<br>
-      Aurora te devuelve lo que no estás viendo antes de hacerlo.
-    </p>
-  </div>
-</div>
-
-<!-- TICKER BOTTOM -->
-<div class="ticker-rail2">
-  <div class="ticker-track2">
-    <span class="t"><b>—</b>Simulá antes de ejecutar</span>
-    <span class="t"><b>—</b>El margen para corregir se cierra solo</span>
-    <span class="t"><b>—</b>Lo que no ves igual se paga</span>
-    <span class="t"><b>—</b>La reversibilidad no avisa cuando se acaba</span>
-    <span class="t"><b>—</b>Qué variable manda. Dónde se rompe. Qué no podés deshacer.</span>
-    <span class="t"><b>—</b>Probá el plan antes de pagarlo</span>
-    <span class="t"><b>—</b>Simulá antes de ejecutar</span>
-    <span class="t"><b>—</b>El margen para corregir se cierra solo</span>
-    <span class="t"><b>—</b>Lo que no ves igual se paga</span>
-    <span class="t"><b>—</b>La reversibilidad no avisa cuando se acaba</span>
-    <span class="t"><b>—</b>Qué variable manda. Dónde se rompe. Qué no podés deshacer.</span>
-    <span class="t"><b>—</b>Probá el plan antes de pagarlo</span>
-  </div>
-</div>
-
-<!-- FOOTER -->
 <footer>
-  <a href="/" class="foot-logo">
+  <a href="{{HOME_HREF}}" class="foot-logo">
     <svg width="22" height="22" viewBox="0 0 30 30" fill="none">
       <circle cx="15" cy="15" r="12"
-        stroke="rgba(240,237,232,0.35)" stroke-width="1.4"
+        stroke="rgba(235,235,223,0.35)" stroke-width="1.4"
         stroke-dasharray="58 18" stroke-linecap="round"
         transform="rotate(-25 15 15)"/>
       <circle cx="15" cy="15" r="3" fill="rgba(200,168,75,0.5)"/>
     </svg>
     <span>AURORA</span>
   </a>
-  <nav class="foot-nav">
-    <a href="/">Inicio</a>
-    <a href="/demo">Demo</a>
-  </nav>
-  <span class="foot-cr">© 2026 Aurora</span>
+  <nav class="foot-nav">{{FOOTER_NAV}}</nav>
+  <span class="foot-cr">{{FOOTER_COPYRIGHT}}</span>
 </footer>
 
 <script>
-  // Scroll reveal
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
   }, { threshold: 0.12 });
 
-  document.querySelectorAll('.fade, .ec, .wc').forEach((el, i) => {
-    io.observe(el);
-  });
+  document.querySelectorAll('.fade-up, .fade').forEach(el => io.observe(el));
 
-  // Stagger enemy cards
-  document.querySelectorAll('.ec').forEach((el, i) => {
-    el.style.transitionDelay = `${i * 0.12}s`;
-  });
-
-  // Stagger what cards
-  document.querySelectorAll('.wc').forEach((el, i) => {
-    el.style.transitionDelay = `${i * 0.09}s`;
-  });
-
-  // Immediate hero reveals
   window.addEventListener('load', () => {
-    document.querySelectorAll('#hero .fade').forEach((el, i) => {
-      setTimeout(() => el.classList.add('vis'), 200 + i * 150);
+    document.querySelectorAll('#hero .fade-up').forEach((el, i) => {
+      setTimeout(() => el.classList.add('vis'), 200 + i * 120);
     });
   });
 
-  // Nav scroll style
+  let expandedOutput = 0;
+  function applyOutputExpand(idx) {
+    expandedOutput = idx;
+    document.querySelectorAll('.qo').forEach((el, i) => {
+      const body = el.querySelector('.qo-body');
+      if (!body) return;
+      const open = i === idx;
+      body.style.maxHeight = open ? '200px' : '0';
+      body.style.opacity = open ? '1' : '0';
+    });
+  }
+  document.querySelectorAll('.qo').forEach((el, idx) => {
+    el.addEventListener('click', () => applyOutputExpand(idx));
+    el.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        applyOutputExpand(idx);
+      }
+    });
+  });
+  applyOutputExpand(0);
+
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
     nav.style.borderBottomColor = window.scrollY > 60
-      ? 'rgba(240,237,232,0.06)'
-      : 'rgba(240,237,232,0.10)';
+      ? 'rgba(235,235,223,0.06)'
+      : 'rgba(235,235,223,0.10)';
   });
+
+  const lang = document.querySelector('.nav-lang');
+  if (lang) {
+    const path = window.location.pathname.replace(/\/$/, '') || '/';
+    const links = lang.querySelectorAll('a');
+    links.forEach(a => {
+      const href = a.getAttribute('href') || '';
+      if (href === '/en') {
+        if (path === '/en' || path.startsWith('/en/')) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      } else if (href === '/') {
+        if (!path.startsWith('/en')) a.setAttribute('aria-current', 'page');
+        else a.removeAttribute('aria-current');
+      }
+    });
+  }
 </script>
 </body>
 </html>

@@ -1,7 +1,15 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-type HomeLocale = "es" | "en";
+import {
+  getDemoHref,
+  getHomeHref,
+  homeContent,
+  type HomeContent,
+  type Locale,
+} from "./homeContent.ts";
+
+type HomeLocale = Locale;
 
 const canonPath = path.resolve(process.cwd(), "design/aurora-home-v2.html");
 
@@ -19,24 +27,173 @@ function extractTitle(source: string): string {
   return match?.[1]?.trim() || "Aurora";
 }
 
-function localizeCanonHtml(html: string, locale: HomeLocale): string {
-  const homeHref = locale === "en" ? "/en" : "/";
-  const demoHref = locale === "en" ? "/en/demo" : "/demo";
-  const navActions = `
-  <div class="nav-actions">
-    <div class="nav-lang" aria-label="Language switcher">
-      <a href="/"${locale === "es" ? ' aria-current="page"' : ""}>ES</a>
-      <a href="/en"${locale === "en" ? ' aria-current="page"' : ""}>EN</a>
-    </div>
-    <a href="${demoHref}" class="nav-cta">Probá con tu decisión →</a>
-  </div>`;
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
 
-  return html
-    .replace('<a href="/demo" class="nav-cta">Probá con tu decisión →</a>', navActions)
-    .replace(/href="\/demo"/g, `href="${demoHref}"`)
-    .replace('href="/" class="nav-logo"', `href="${homeHref}" class="nav-logo"`)
-    .replace('href="/" class="foot-logo"', `href="${homeHref}" class="foot-logo"`)
-    .replace('href="/">Inicio</a>', `href="${homeHref}">Inicio</a>`);
+function buildReadout(c: HomeContent): string {
+  const r = c.heroReadout;
+  const rows = r.rows
+    .map(
+      (row) => `
+      <div style="margin-bottom:18px;">
+        <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(235,235,223,0.3);margin-bottom:6px;">${escapeHtml(row.label)}</div>
+        <div style="font-family:var(--mono);font-size:12px;line-height:1.5;color:rgba(235,235,223,0.68);"><span style="color:#ebebdf;">${escapeHtml(row.value)}</span></div>
+      </div>`,
+    )
+    .join("");
+  return `<div class="fade-up" style="border-left:1px solid rgba(196,168,78,0.2);padding-left:24px;">
+    <div style="font-family:var(--mono);font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(235,235,223,0.35);margin-bottom:22px;">${escapeHtml(r.eyebrow)}</div>
+    ${rows}
+  </div>`;
+}
+
+function yapasoItems(c: HomeContent): string {
+  return c.yapaso.track
+    .map(
+      (item) => `
+    <div class="yp-item fade-up">
+      <div class="yi-status ${item.variant}">${escapeHtml(item.status)}</div>
+      <div class="yi-industry">${escapeHtml(item.industry)}</div>
+      <div class="yi-desc">${escapeHtml(item.desc)}</div>
+    </div>`,
+    )
+    .join("");
+}
+
+function compItems(c: HomeContent): string {
+  return c.complexity.items
+    .map(
+      (item) => `
+    <div class="comp-item fade-up">
+      <div class="ci-num">${escapeHtml(item.num)}</div>
+      <div>
+        <div class="ci-title">${escapeHtml(item.title)}</div>
+        <div class="ci-body">${escapeHtml(item.body)}</div>
+      </div>
+    </div>`,
+    )
+    .join("");
+}
+
+function outputItems(c: HomeContent): string {
+  return c.outputs.items
+    .map((item, idx) => {
+      const open = idx === 0;
+      const bodyStyle = `max-height:${open ? "200px" : "0"};opacity:${open ? "1" : "0"};overflow:hidden;transition:max-height 0.35s ease, opacity 0.3s ease;`;
+      const num = String(idx + 1).padStart(2, "0");
+      return `
+    <div class="qo fade-up" data-output-idx="${idx}" role="button" tabindex="0">
+      <div class="qo-n">${num}</div>
+      <div class="qo-title">${escapeHtml(item.title)}</div>
+      <div class="qo-body" style="${bodyStyle}">${escapeHtml(item.body)}</div>
+    </div>`;
+    })
+    .join("");
+}
+
+function systemSection(c: HomeContent): string {
+  const lines = c.systemDef;
+  const parts = lines.map((text, i) => {
+    const isLast = i === lines.length - 1;
+    const color = isLast ? "#ebebdf" : "rgba(235,235,223,0.48)";
+    const fw = isLast ? "400" : "300";
+    const border = !isLast ? "border-bottom:1px solid rgba(235,235,223,0.06);" : "";
+    return `<p class="fade-up" style="font-family:var(--mono);font-size:13px;color:${color};font-weight:${fw};margin:0;padding:18px 0;${border}">${escapeHtml(text)}</p>`;
+  });
+  return `<section style="padding:80px 52px;border-bottom:1px solid rgba(235,235,223,0.08);">
+    <div style="max-width:680px;display:grid;">
+      ${parts.join("")}
+    </div>
+  </section>`;
+}
+
+function invStairs(c: HomeContent): string {
+  return c.inevitable.stairs
+    .map(
+      (s) => `
+    <div class="is fade-up">
+      <div class="is-year">${escapeHtml(s.year)}</div>
+      <div>
+        <div class="is-label">${escapeHtml(s.label)}</div>
+        <div class="is-note">${escapeHtml(s.note)}</div>
+      </div>
+    </div>`,
+    )
+    .join("");
+}
+
+function footerNav(c: HomeContent, homeHref: string, demoHref: string): string {
+  return c.footer.nav
+    .map((link) => {
+      const href = link.href === "home" ? homeHref : demoHref;
+      return `<a href="${href}">${escapeHtml(link.label)}</a>`;
+    })
+    .join("");
+}
+
+function injectHomeBody(body: string, locale: HomeLocale): string {
+  const c = homeContent[locale];
+  const homeHref = getHomeHref(locale);
+  const demoHref = getDemoHref(locale);
+  const vars: Record<string, string> = {
+    HOME_HREF: homeHref,
+    DEMO_HREF: demoHref,
+    NAV_CTA: escapeHtml(c.navCta),
+    HERO_KICKER: escapeHtml(c.hero.kicker),
+    HERO_H1_LINE1: escapeHtml(c.hero.h1Line1),
+    HERO_H1_LINE2: escapeHtml(c.hero.h1Line2),
+    HERO_STATEMENT: c.hero.statementHtml,
+    HERO_CTA: escapeHtml(c.hero.cta),
+    HERO_NOTE: escapeHtml(c.hero.note),
+    HERO_READOUT: buildReadout(c),
+    YAPASO_EYEBROW: escapeHtml(c.yapaso.eyebrow),
+    YAPASO_HEADLINE: escapeHtml(c.yapaso.headline),
+    YAPASO_ITEMS: yapasoItems(c),
+    YAPASO_BOTTOM: escapeHtml(c.yapaso.bottom),
+    YAPASO_VERDICT: escapeHtml(c.yapaso.verdict),
+    YAPASO_COST: escapeHtml(c.yapaso.cost),
+    COMP_EYEBROW: escapeHtml(c.complexity.eyebrow),
+    COMP_HEADLINE: escapeHtml(c.complexity.headline),
+    COMP_ITEMS: compItems(c),
+    COMP_BOTTOM_BIG: escapeHtml(c.complexity.bottomBig),
+    COMP_BOTTOM_ACCENT: escapeHtml(c.complexity.bottomAccent),
+    OUTPUTS_INTRO: escapeHtml(c.outputs.intro),
+    OUTPUTS_HEADLINE: escapeHtml(c.outputs.headline),
+    OUTPUTS_DESC: escapeHtml(c.outputs.desc),
+    OUTPUT_ITEMS: outputItems(c),
+    SYSTEM_SECTION: systemSection(c),
+    INV_EYEBROW: escapeHtml(c.inevitable.eyebrow),
+    INV_HEADLINE: escapeHtml(c.inevitable.headline),
+    INV_LEAD: escapeHtml(c.inevitable.lead),
+    INV_CODA: escapeHtml(c.inevitable.coda),
+    INV_STAIRS: invStairs(c),
+    GW_KICKER: escapeHtml(c.gateway.kicker),
+    GW_H1: escapeHtml(c.gateway.h1),
+    GW_SUB: escapeHtml(c.gateway.sub),
+    GW_CTA: escapeHtml(c.gateway.cta),
+    GW_ASIDE: escapeHtml(c.gateway.aside),
+    CONTACT_PLACEHOLDER: escapeHtml(c.contact.placeholder),
+    CONTACT_EMAIL_PLACEHOLDER: escapeHtml(c.contact.emailPlaceholder),
+    FOOTER_NAV: footerNav(c, homeHref, demoHref),
+    FOOTER_COPYRIGHT: escapeHtml(c.footer.copyright),
+  };
+
+  let out = body;
+  for (const [k, v] of Object.entries(vars)) {
+    out = out.split(`{{${k}}}`).join(v);
+  }
+
+  if (/\{\{[A-Z0-9_]+\}\}/.test(out)) {
+    const leftover = out.match(/\{\{[A-Z0-9_]+\}\}/g);
+    throw new Error(`Canonical home has unreplaced placeholders: ${leftover?.join(", ")}`);
+  }
+
+  return out;
 }
 
 function getExtendedStyles(): string {
@@ -60,7 +217,7 @@ function getExtendedStyles(): string {
     font-size: 10px;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(240,237,232,0.4);
+    color: rgba(235,235,223,0.4);
     text-decoration: none;
   }
 
@@ -87,10 +244,12 @@ export function getCanonicalHomePage(locale: HomeLocale): {
   bodyHtml: string;
   script: string;
 } {
-  const source = readFileSync(canonPath, "utf8");
+  const raw = readFileSync(canonPath, "utf8");
+  const c = homeContent[locale];
+  const source = raw.replace(/\{\{TITLE\}\}/g, escapeHtml(c.title));
   const title = extractTitle(source);
   const styles = `${extractSection(source, "style")}\n${getExtendedStyles()}`;
-  const bodyHtml = localizeCanonHtml(extractSection(source, "body"), locale);
+  const bodyHtml = injectHomeBody(extractSection(source, "body"), locale);
   const script = extractSection(source, "script");
 
   return {
