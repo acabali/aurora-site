@@ -1,5 +1,5 @@
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
+import { loadEnvLocal, validateAuroraBaseUrl } from "./env.js";
+import type { RequiredAuroraEnv } from "./env.ts";
 
 export interface AuroraDecisionPayload {
   title: string;
@@ -30,54 +30,8 @@ export class AuroraApiError extends Error {
   }
 }
 
-type RequiredAuroraEnv = "AURORA_OS_BASE_URL" | "AURORA_API_KEY" | "AURORA_API_SECRET";
-
-type EnvRecord = Partial<Record<RequiredAuroraEnv, string>>;
-
-let envLocalCache: EnvRecord | null = null;
-
-function getEnvLocalPath(): string {
-  return path.join(process.cwd(), ".env.local");
-}
-
-function readEnvLocalValue(name: RequiredAuroraEnv): string | null {
-  if (envLocalCache === null) {
-    envLocalCache = {};
-
-    const envLocalPath = getEnvLocalPath();
-    if (existsSync(envLocalPath)) {
-      const contents = readFileSync(envLocalPath, "utf8");
-
-      for (const key of [
-        "AURORA_OS_BASE_URL",
-        "AURORA_API_KEY",
-        "AURORA_API_SECRET",
-      ] satisfies RequiredAuroraEnv[]) {
-        const match = contents.match(new RegExp(`^${key}=(.*)$`, "m"));
-        if (!match) {
-          continue;
-        }
-
-        let value = match[1].trim();
-        if (
-          (value.startsWith("\"") && value.endsWith("\"")) ||
-          (value.startsWith("'") && value.endsWith("'"))
-        ) {
-          value = value.slice(1, -1);
-        }
-
-        if (value) {
-          envLocalCache[key] = value;
-        }
-      }
-    }
-  }
-
-  return envLocalCache[name] ?? null;
-}
-
 function requireEnv(name: RequiredAuroraEnv): string {
-  const value = process.env[name]?.trim() || readEnvLocalValue(name);
+  const value = process.env[name]?.trim() || loadEnvLocal().values[name]?.trim();
   if (!value) {
     throw new AuroraApiError(`Missing required environment variable ${name}`, {
       url: "env://local",
@@ -89,24 +43,13 @@ function requireEnv(name: RequiredAuroraEnv): string {
 }
 
 function getAuroraBaseUrl(): string {
-  const rawBaseUrl = requireEnv("AURORA_OS_BASE_URL");
-  const url = new URL(rawBaseUrl);
-
-  if (!["http:", "https:"].includes(url.protocol)) {
-    throw new AuroraApiError(`Invalid AURORA_OS_BASE_URL protocol: ${url.protocol}`, {
+  try {
+    return validateAuroraBaseUrl(requireEnv("AURORA_OS_BASE_URL"));
+  } catch (error) {
+    throw new AuroraApiError(error instanceof Error ? error.message : String(error), {
       url: "env://local",
     });
   }
-
-  if (url.hostname === "localhost") {
-    url.hostname = "127.0.0.1";
-  }
-
-  url.pathname = "";
-  url.search = "";
-  url.hash = "";
-
-  return url.toString().replace(/\/$/, "");
 }
 
 function buildAuroraUrl(pathname: string): string {
@@ -138,6 +81,10 @@ function buildAuroraFailureMessage(
 
   if (status === 404) {
     return `Aurora API endpoint not found for ${pathname}.`;
+  }
+
+  if (status === 502 || status === 503 || status === 504 || status === 530) {
+    return `Aurora API upstream is unavailable for ${pathname}. Verify AURORA_OS_BASE_URL points to a live persistent Aurora OS host and that the relay is not hitting a dead tunnel or proxy edge.`;
   }
 
   return `Aurora API request failed for ${pathname} with status ${status}.`;
@@ -178,11 +125,14 @@ async function requestAuroraJson<T>(
   const contentType = response.headers.get("content-type") ?? "";
 
   if (isHtmlResponse(contentType, bodyText)) {
-    throw new AuroraApiError(`Aurora API returned HTML for ${pathname}`, {
+    throw new AuroraApiError(
+      `Aurora API returned HTML for ${pathname}. This usually means the configured backend host is wrong or an upstream proxy returned an error page.`,
+      {
       url,
       status: response.status,
       bodySnippet: toBodySnippet(bodyText),
-    });
+      }
+    );
   }
 
   if (response.status !== 200) {

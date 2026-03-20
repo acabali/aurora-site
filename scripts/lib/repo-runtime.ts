@@ -5,6 +5,7 @@ import {
   normalizeAuroraBaseUrl,
   readRequiredAuroraEnv,
   REQUIRED_AURORA_ENV,
+  validateAuroraBaseUrl,
 } from "../../src/lib/aurora/env.ts";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -74,13 +75,24 @@ function toSnippet(bodyText: string): string {
   return bodyText.trim().replace(/\s+/g, " ").slice(0, 220);
 }
 
+function buildBackendFailureMessage(url: string, status: number, bodyText: string): string {
+  const snippet = toSnippet(bodyText);
+
+  if (status === 502 || status === 503 || status === 504 || status === 530) {
+    return `Aurora backend gate failed: ${url} returned ${status}. The Aurora OS upstream is unavailable or the configured host is not stable. ${snippet || "Empty response."}`;
+  }
+
+  return `Aurora backend gate failed: ${url} returned ${status}. ${snippet || "Empty response."}`;
+}
+
 function isHealthySuccess(payload: Record<string, unknown>): boolean {
   return payload.ok === true || payload.success === true;
 }
 
 export function validateAuroraEnv(): Record<(typeof REQUIRED_AURORA_ENV)[number], string> {
   const env = readRequiredAuroraEnv({ requireEnvLocal: true });
-  console.log(`[repo] env OK: ${REQUIRED_AURORA_ENV.join(", ")}`);
+  env.AURORA_OS_BASE_URL = validateAuroraBaseUrl(env.AURORA_OS_BASE_URL);
+  console.log(`[repo] env OK: ${REQUIRED_AURORA_ENV.join(", ")} | base=${env.AURORA_OS_BASE_URL}`);
   return env;
 }
 
@@ -110,13 +122,13 @@ export async function validateAuroraBackend(): Promise<Record<string, unknown>> 
   const contentType = response.headers.get("content-type") ?? "";
 
   if (response.status !== 200) {
-    throw new Error(
-      `Aurora backend gate failed: ${url} returned ${response.status}. ${toSnippet(bodyText) || "Empty response."}`
-    );
+    throw new Error(buildBackendFailureMessage(url, response.status, bodyText));
   }
 
   if (isHtmlResponse(contentType, bodyText)) {
-    throw new Error(`Aurora backend gate failed: ${url} returned HTML instead of JSON.`);
+    throw new Error(
+      `Aurora backend gate failed: ${url} returned HTML instead of JSON. This usually means a dead tunnel, proxy error page, or wrong backend host.`
+    );
   }
 
   let payload: unknown;

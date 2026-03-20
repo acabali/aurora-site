@@ -5,11 +5,7 @@ export const REQUIRED_AURORA_ENV = [
   "AURORA_OS_BASE_URL",
   "AURORA_API_KEY",
   "AURORA_API_SECRET",
-] as const;
-
-export type RequiredAuroraEnv = (typeof REQUIRED_AURORA_ENV)[number];
-
-type EnvRecord = Partial<Record<RequiredAuroraEnv, string>>;
+];
 
 const PLACEHOLDER_BASE_URL_SNIPPETS = [
   "placeholder",
@@ -23,16 +19,16 @@ const PLACEHOLDER_BASE_URL_SNIPPETS = [
   "example.com",
   "example.org",
   "example.net",
-] as const;
+];
 
-let envLocalCache: EnvRecord | null = null;
+let envLocalCache = null;
 
-function getEnvLocalPath(): string {
+function getEnvLocalPath() {
   return path.join(process.cwd(), ".env.local");
 }
 
-function parseEnvFile(contents: string): EnvRecord {
-  const values: EnvRecord = {};
+function parseEnvFile(contents) {
+  const values = {};
 
   for (const rawLine of contents.split(/\r?\n/)) {
     const line = rawLine.trim();
@@ -48,7 +44,7 @@ function parseEnvFile(contents: string): EnvRecord {
       continue;
     }
 
-    const key = normalized.slice(0, separatorIndex).trim() as RequiredAuroraEnv;
+    const key = normalized.slice(0, separatorIndex).trim();
     let value = normalized.slice(separatorIndex + 1).trim();
 
     if (!REQUIRED_AURORA_ENV.includes(key)) {
@@ -70,7 +66,7 @@ function parseEnvFile(contents: string): EnvRecord {
   return values;
 }
 
-export function loadEnvLocal(): { envLocalPath: string; exists: boolean; values: EnvRecord } {
+export function loadEnvLocal() {
   if (envLocalCache !== null) {
     return {
       envLocalPath: getEnvLocalPath(),
@@ -99,50 +95,8 @@ export function loadEnvLocal(): { envLocalPath: string; exists: boolean; values:
   };
 }
 
-export function readRequiredAuroraEnv(options?: {
-  requireEnvLocal?: boolean;
-}): Record<RequiredAuroraEnv, string> {
-  const { envLocalPath, exists, values } = loadEnvLocal();
-  const resolved = {} as Record<RequiredAuroraEnv, string>;
-  const missing: RequiredAuroraEnv[] = [];
-  const hasProcessEnvForAll = REQUIRED_AURORA_ENV.every((name) => {
-    const value = process.env[name];
-    return typeof value === "string" && value.trim().length > 0;
-  });
-
-  if (options?.requireEnvLocal && !exists && !hasProcessEnvForAll) {
-    throw new Error(
-      `Missing .env.local at ${envLocalPath}. Copy .env.example to .env.local and set ${REQUIRED_AURORA_ENV.join(", ")}.`
-    );
-  }
-
-  for (const name of REQUIRED_AURORA_ENV) {
-    const value = process.env[name]?.trim() || values[name]?.trim();
-
-    if (!value) {
-      missing.push(name);
-      continue;
-    }
-
-    process.env[name] = value;
-    resolved[name] = value;
-  }
-
-  if (missing.length > 0) {
-    const suffix = exists
-      ? `Add them to ${envLocalPath}.`
-      : `Create ${envLocalPath} from .env.example and set them there, or provide them in the runtime environment.`;
-    throw new Error(`Missing required Aurora env vars: ${missing.join(", ")}. ${suffix}`);
-  }
-
-  resolved.AURORA_OS_BASE_URL = validateAuroraBaseUrl(resolved.AURORA_OS_BASE_URL);
-  process.env.AURORA_OS_BASE_URL = resolved.AURORA_OS_BASE_URL;
-
-  return resolved;
-}
-
-export function normalizeAuroraBaseUrl(rawBaseUrl: string): string {
-  let url: URL;
+export function normalizeAuroraBaseUrl(rawBaseUrl) {
+  let url;
 
   try {
     url = new URL(rawBaseUrl);
@@ -165,7 +119,7 @@ export function normalizeAuroraBaseUrl(rawBaseUrl: string): string {
   return url.toString().replace(/\/$/, "");
 }
 
-export function isTryCloudflareUrl(rawBaseUrl: string): boolean {
+export function isTryCloudflareUrl(rawBaseUrl) {
   try {
     return new URL(normalizeAuroraBaseUrl(rawBaseUrl)).hostname.endsWith(".trycloudflare.com");
   } catch {
@@ -173,12 +127,12 @@ export function isTryCloudflareUrl(rawBaseUrl: string): boolean {
   }
 }
 
-function looksLikePlaceholderBaseUrl(rawBaseUrl: string): boolean {
+function looksLikePlaceholderBaseUrl(rawBaseUrl) {
   const normalized = rawBaseUrl.trim().toLowerCase();
   return PLACEHOLDER_BASE_URL_SNIPPETS.some((token) => normalized.includes(token));
 }
 
-export function validateAuroraBaseUrl(rawBaseUrl: string): string {
+export function validateAuroraBaseUrl(rawBaseUrl) {
   const normalizedBaseUrl = normalizeAuroraBaseUrl(rawBaseUrl);
   const url = new URL(normalizedBaseUrl);
 

@@ -28,6 +28,12 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
         error: "AURORA_SYSTEM_STATE_FAILED",
         message: error.message,
         upstreamStatus: error.status ?? null,
+        upstreamUrl: error.url,
+        bodySnippet: error.bodySnippet ?? null,
+        relay: {
+          endpoint: "/api/system-state",
+          authHeader: "x-aurora-secret",
+        },
       });
       return;
     }

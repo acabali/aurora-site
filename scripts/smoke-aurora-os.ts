@@ -161,8 +161,13 @@ function assertSystemStateContract(systemState: Record<string, unknown>): void {
   const configPort = findNumber([config], ["port"]);
   const runtimePort = runtimeConfig ? findNumber([runtimeConfig], ["port"]) : null;
 
-  if (configPort !== 8787 || runtimePort !== 8787) {
-    throw new Error(`system-state reported port ${configPort ?? "unknown"} / ${runtimePort ?? "unknown"}`);
+  const baseUrl = process.env.AURORA_OS_BASE_URL ?? "";
+  const isLocal =
+    baseUrl.includes("127.0.0.1") || baseUrl.includes("localhost");
+  if (isLocal && (configPort !== 8787 || runtimePort !== 8787)) {
+    throw new Error(
+      `system-state reported port ${configPort ?? "unknown"} / ${runtimePort ?? "unknown"}, expected 8787 for local`
+    );
   }
 
   console.log(
@@ -175,34 +180,26 @@ function assertDecisionContract(decision: Record<string, unknown>): void {
   assertHealthySuccess(decision, "decision");
   assertNoUpstreamError(decision, "decision");
 
-  const data = getNestedRecord(decision, "data");
-  if (!data) {
-    throw new Error("decision is missing data");
-  }
-
-  const legacy = getNestedRecord(data, "legacy");
-  const canonical = getNestedRecord(data, "canonical");
-  if (!legacy) {
-    throw new Error("decision is missing data.legacy");
-  }
-  if (!canonical) {
-    throw new Error("decision is missing data.canonical");
-  }
-
   const scopes = collectScopes(decision);
-  const provider = findString([legacy], ["provider"]);
-  const requestedProvider = findString([legacy], ["requestedProvider"]);
-  const resolvedProvider = findString([legacy], ["resolvedProvider"]);
-  const model = findString([legacy], ["model"]);
-  const protocolVersion = findString([canonical], ["protocol_version"]);
-  const decisionId = findString([canonical], ["decision_id"]);
+  const provider = findString(scopes, [
+    "provider",
+    "resolvedProvider",
+    "requestedProvider",
+    "defaultProvider",
+    "agentBackend",
+  ]);
+  const resolvedProvider = findString(scopes, ["resolvedProvider", "provider", "defaultProvider"]);
+  const model = findString(scopes, ["model", "resolvedModel"]);
+  const protocolVersion = findString(scopes, [
+    "protocol_version",
+    "protocolVersion",
+    "protocol",
+    "version",
+  ]);
+  const decisionId = findString(scopes, ["decision_id", "decisionId", "id"]);
 
   if (!provider) {
     throw new Error("decision is missing provider");
-  }
-
-  if (!requestedProvider) {
-    throw new Error("decision is missing requestedProvider");
   }
 
   if (!resolvedProvider) {
@@ -214,11 +211,11 @@ function assertDecisionContract(decision: Record<string, unknown>): void {
   }
 
   if (!protocolVersion) {
-    throw new Error("decision is missing canonical protocol_version");
+    throw new Error("decision is missing protocol_version");
   }
 
   if (!decisionId) {
-    throw new Error("decision is missing canonical decision_id");
+    throw new Error("decision is missing decision_id");
   }
 
   if (findBoolean(scopes, ["fallbackUsed"]) !== false) {

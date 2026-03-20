@@ -783,8 +783,16 @@ import MainLayout from "../layouts/MainLayout.astro";
       fallbackMessage;
     const upstreamStatus =
       typeof payload.upstreamStatus === "number" ? ` Upstream status ${payload.upstreamStatus}.` : "";
+    const relayTarget =
+      typeof payload.upstreamUrl === "string" && payload.upstreamUrl.trim()
+        ? ` Relay ${payload.upstreamUrl}.`
+        : "";
+    const bodySnippet =
+      typeof payload.bodySnippet === "string" && payload.bodySnippet.trim()
+        ? ` ${payload.bodySnippet.trim()}`
+        : "";
 
-    return `${message} Status ${status}.${upstreamStatus}`.trim();
+    return `${message} Status ${status}.${upstreamStatus}${relayTarget}${bodySnippet}`.trim();
   }
 
   async function getSystemState(): Promise<Record<string, unknown>> {

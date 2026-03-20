@@ -21,6 +21,24 @@ interface DemoDecisionPayload {
   reversibility: DemoReversibility;
 }
 
+function normalizeReversibility(value: unknown): DemoReversibility | null {
+  const normalized = String(value ?? "").trim().toLowerCase();
+
+  if (normalized === "high" || normalized === "reversible") {
+    return "high";
+  }
+
+  if (normalized === "medium" || normalized === "partial" || normalized === "mixed") {
+    return "medium";
+  }
+
+  if (normalized === "low" || normalized === "irreversible") {
+    return "low";
+  }
+
+  return null;
+}
+
 function parseDecisionBody(body: unknown): DemoDecisionPayload {
   const parsedBody =
     typeof body === "string" ? (JSON.parse(body) as Record<string, unknown>) : body;
@@ -31,7 +49,15 @@ function parseDecisionBody(body: unknown): DemoDecisionPayload {
 
   const capital = Number((parsedBody as Record<string, unknown>).capital);
   const absorption = String((parsedBody as Record<string, unknown>).absorption ?? "");
-  const reversibility = String((parsedBody as Record<string, unknown>).reversibility ?? "");
+  const context =
+    (parsedBody as Record<string, unknown>).context &&
+    typeof (parsedBody as Record<string, unknown>).context === "object" &&
+    !Array.isArray((parsedBody as Record<string, unknown>).context)
+      ? ((parsedBody as Record<string, unknown>).context as Record<string, unknown>)
+      : null;
+  const reversibility = normalizeReversibility(
+    (parsedBody as Record<string, unknown>).reversibility ?? context?.reversibility
+  );
 
   if (!Number.isFinite(capital) || capital < 0) {
     throw new Error("Decision payload must include a non-negative capital number");
@@ -41,8 +67,10 @@ function parseDecisionBody(body: unknown): DemoDecisionPayload {
     throw new Error("Decision payload must include a valid absorption value");
   }
 
-  if (!["low", "medium", "high"].includes(reversibility)) {
-    throw new Error("Decision payload must include a valid reversibility value: low, medium, or high");
+  if (!reversibility) {
+    throw new Error(
+      "Decision payload must include a valid reversibility value: low, medium, or high."
+    );
   }
 
   return {
@@ -146,6 +174,12 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
         error: "AURORA_DECISION_FAILED",
         message: error.message,
         upstreamStatus: error.status ?? null,
+        upstreamUrl: error.url,
+        bodySnippet: error.bodySnippet ?? null,
+        relay: {
+          endpoint: "/api/decision",
+          authHeader: "x-api-key",
+        },
       });
       return;
     }
