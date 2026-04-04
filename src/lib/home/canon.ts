@@ -112,6 +112,61 @@ function systemSection(c: HomeContent): string {
   </section>`;
 }
 
+function crossSection(): string {
+  const zones = {
+    top: {
+      title: 'DISEÑA',
+      label: 'Lo que deberías hacer',
+      items: [
+        'Simulación de escenarios',
+        'Estructura de decisión',
+        'Mapa de dependencias',
+        'Asignación de capital',
+        'Tensión crecimiento/margen',
+      ],
+    },
+    left: {
+      title: 'ESTUDIA',
+      label: 'Lo que no estás viendo',
+      items: ['Signal', 'Demand Shift', 'Lectura de audiencia', 'Presión de canal', 'Quiebre de funnel'],
+    },
+    center: {
+      title: 'EJECUTA',
+      label: 'Lo que termina pasando',
+      items: ['Aurora Ledger', 'Decision Replay', 'Grafo decisional', 'Presión de mercado', 'Estrés de margen'],
+    },
+    right: {
+      title: 'CALCULA',
+      label: 'Lo que va a pasar',
+      items: ['Punto de quiebre', 'Ventana de corrección', 'Motor contrafactual', 'Costo real', 'Multiplicador oculto'],
+    },
+  };
+
+  function renderZone(z: { title: string; label: string; items: string[] }, mod: string): string {
+    const items = z.items.map((i) => `<div class="cx-item">${escapeHtml(i)}</div>`).join('');
+    return `
+      <div class="cx-zone cx-zone--${mod}">
+        <div class="cx-title">${escapeHtml(z.title)}</div>
+        <div class="cx-label">${escapeHtml(z.label)}</div>
+        <div class="cx-items">${items}</div>
+      </div>`;
+  }
+
+  return `
+<section id="cross" class="fade-up">
+  <div class="cx-wrap">
+    <div class="cx-vline" aria-hidden="true"></div>
+    ${renderZone(zones.top, 'top')}
+    <div class="cx-hline" aria-hidden="true"></div>
+    <div class="cx-row">
+      ${renderZone(zones.left, 'left')}
+      ${renderZone(zones.center, 'center')}
+      ${renderZone(zones.right, 'right')}
+    </div>
+  </div>
+</section>`;
+}
+
 function invStairs(c: HomeContent): string {
   return c.inevitable.stairs
     .map(
@@ -166,6 +221,7 @@ function injectHomeBody(body: string, locale: HomeLocale): string {
     OUTPUTS_HEADLINE: escapeHtml(c.outputs.headline),
     OUTPUTS_DESC: escapeHtml(c.outputs.desc),
     OUTPUT_ITEMS: outputItems(c),
+    CROSS_SECTION: crossSection(),
     SYSTEM_SECTION: systemSection(c),
     INV_EYEBROW: escapeHtml(c.inevitable.eyebrow),
     INV_HEADLINE: escapeHtml(c.inevitable.headline),
