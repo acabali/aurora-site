@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aurora — Cross Section v8</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: #F5F3EE;
+    color: #0A0A0A;
+    font-family: 'Inter', 'Helvetica Neue', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  #cross {
+    width: 100%;
+    background: #F5F3EE;
+    padding: 100px 0 0;
+  }
+
+  .cx-outer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 40px;
+  }
+
+  /* ─── GRID ─── */
+  .cx-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    position: relative;
+    min-height: 640px;
+  }
+
+  /* Cross lines */
+  .cx-grid::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: #0A0A0A;
+    transform: translateX(-50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .cx-grid::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #0A0A0A;
+    transform: translateY(-50%);
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* ─── ZONES ─── */
+  .cx-zone {
+    display: flex;
+    flex-direction: column;
+    padding: 48px 52px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ESTUDIA — top, spans full width */
+  .cx-zone--top {
+    grid-column: 1 / 3;
+    grid-row: 1;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 72px;
+    padding-top: 0;
+    z-index: 4;
+  }
+
+  /* DISEÑA — bottom-left */
+  .cx-zone--left {
+    grid-column: 1;
+    grid-row: 2;
+    align-items: flex-end;
+    text-align: right;
+    padding-top: 72px;
+    padding-right: 72px;
+  }
+
+  /* CALCULA — bottom-right */
+  .cx-zone--right {
+    grid-column: 2;
+    grid-row: 2;
+    align-items: flex-start;
+    text-align: left;
+    padding-top: 72px;
+    padding-left: 72px;
+  }
+
+  /* EJECUTA — bottom, spans full width */
+  .cx-zone--bottom {
+    grid-column: 1 / 3;
+    grid-row: 3;
+    align-items: center;
+    text-align: center;
+    padding-top: 96px;
+    padding-bottom: 80px;
+    z-index: 4;
+  }
+
+  /* ─── ZONE HEADER ─── */
+  .cx-title {
+    font-family: 'Inter', 'Helvetica Neue', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #0A0A0A;
+    margin-bottom: 6px;
+  }
+
+  .cx-sublabel {
+    font-family: 'Inter', 'Helvetica Neue', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: rgba(10,10,10,0.45);
+    margin-bottom: 32px;
+  }
+
+  /* ─── ITEMS ─── */
+  .cx-items {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cx-item {
+    cursor: default;
+    padding: 4px 0;
+  }
+
+  .cx-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #0A0A0A;
+    letter-spacing: 0.01em;
+    line-height: 1.4;
+    text-underline-offset: 3px;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition:
+      font-weight 0s,
+      text-decoration-color 0.2s ease;
+  }
+
+  .cx-item:hover .cx-name {
+    font-weight: 700;
+    text-decoration-color: rgba(74, 108, 247, 0.55);
+  }
+
+  .cx-desc {
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(10,10,10,0.55);
+    letter-spacing: 0.01em;
+    line-height: 1.45;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-height 0.25s ease,
+      opacity 0.22s ease;
+  }
+
+  .cx-item:hover .cx-desc {
+    max-height: 40px;
+    opacity: 1;
+  }
+
+  /* Alignment helpers for left zone */
+  .cx-zone--left .cx-items { align-items: flex-end; }
+  .cx-zone--left .cx-item  { text-align: right; }
+  .cx-zone--right .cx-items { align-items: flex-start; }
+  .cx-zone--right .cx-item  { text-align: left; }
+  .cx-zone--top .cx-items   { align-items: center; }
+  .cx-zone--top .cx-item    { text-align: center; }
+  .cx-zone--bottom .cx-items { align-items: center; }
+  .cx-zone--bottom .cx-item  { text-align: center; }
+
+  /* ─── BOTTOM BLOCK (SERRUCHO) ─── */
+  .cxb-outer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: #F5F3EE;
+  }
+
+  /* Blue seam flash */
+  .cxb-outer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    transform: translateX(-50%);
+    background: #4A6CF7;
+    z-index: 10;
+    transition: none;
+  }
+
+  .cxb-outer.flash::after {
+    width: 3px;
+    transition: none;
+  }
+
+  .cxb-panels {
+    display: flex;
+    width: 100%;
+    min-height: 140px;
+  }
+
+  .cxb-panel {
+    width: 50%;
+    background: #0A0A0A;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 48px;
+    min-height: 140px;
+    will-change: transform;
+  }
+
+  .cxb-panel--left {
+    clip-path: polygon(
+      0% 0%, 50% 0%, 52% 12.5%, 50% 25%, 52% 37.5%,
+      50% 50%, 52% 62.5%, 50% 75%, 52% 87.5%, 50% 100%,
+      0% 100%
+    );
+    transform: translateX(-100%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-right: 60px;
+  }
+
+  .cxb-panel--right {
+    clip-path: polygon(
+      50% 0%, 100% 0%, 100% 100%, 50% 100%,
+      48% 87.5%, 50% 75%, 48% 62.5%, 50% 50%,
+      48% 37.5%, 50% 25%, 48% 12.5%, 50% 0%
+    );
+    transform: translateX(100%);
+    transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    padding-left: 60px;
+  }
+
+  .cxb-outer.revealed .cxb-panel--left,
+  .cxb-outer.revealed .cxb-panel--right {
+    transform: translateX(0);
+  }
+
+  .cxb-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cxb-line {
+    font-family: 'Inter', 'Helvetica Neue', -apple-system, sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(245,243,238,0.65);
+    line-height: 1.5;
+  }
+
+  .cxb-badge {
+    font-family: 'Inter', 'Helvetica Neue', -apple-system, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #C9A96E;
+    opacity: 0;
+    /* NO transition — instant reveal */
+  }
+
+  .cxb-outer.revealed .cxb-badge {
+    opacity: 1;
+  }
+
+  /* ─── FADE-UP ANIMATION ─── */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── MOBILE ─── */
+  @media (max-width: 700px) {
+    #cross { padding-top: 60px; }
+    .cx-outer { padding: 0 20px; }
+
+    .cx-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      min-height: unset;
+    }
+
+    .cx-grid::before,
+    .cx-grid::after { display: none; }
+
+    .cx-zone {
+      align-items: flex-start !important;
+      text-align: left !important;
+      padding: 36px 0;
+      border-bottom: 1px solid rgba(10,10,10,0.1);
+    }
+
+    .cx-zone--bottom { border-bottom: none; }
+
+    .cx-zone--left .cx-items,
+    .cx-zone--right .cx-items,
+    .cx-zone--top .cx-items,
+    .cx-zone--bottom .cx-items {
+      align-items: flex-start;
+    }
+
+    .cx-zone--left .cx-item,
+    .cx-zone--right .cx-item,
+    .cx-zone--top .cx-item,
+    .cx-zone--bottom .cx-item {
+      text-align: left;
+    }
+
+    .cxb-panels {
+      flex-direction: column;
+    }
+
+    .cxb-panel {
+      width: 100%;
+      clip-path: none !important;
+      transform: none !important;
+      transition: none !important;
+      padding: 32px 24px;
+    }
+
+    .cxb-panel--left { border-bottom: 1px solid rgba(245,243,238,0.08); }
+
+    .cxb-badge { opacity: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<section id="cross">
+  <div class="cx-outer">
+    <div class="cx-grid fade-up">
+
+      <!-- ESTUDIA — top -->
+      <div class="cx-zone cx-zone--top">
+        <div class="cx-title">ESTUDIA</div>
+        <div class="cx-sublabel">Lo que no estás viendo</div>
+        <div class="cx-items">
+          <div class="cx-item">
+            <div class="cx-name">Signal</div>
+            <div class="cx-desc">Señal temprana de movimiento de mercado</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Demand Shift</div>
+            <div class="cx-desc">Cambio real en demanda del segmento</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Lectura de audiencia</div>
+            <div class="cx-desc">Estado del segmento bajo presión actual</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Presión de canal</div>
+            <div class="cx-desc">Saturación y fricción por canal</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Quiebre de funnel</div>
+            <div class="cx-desc">Nodo exacto donde falla la conversión</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISEÑA — bottom-left -->
+      <div class="cx-zone cx-zone--left">
+        <div class="cx-title">DISEÑA</div>
+        <div class="cx-sublabel">Lo que deberías hacer</div>
+        <div class="cx-items">
+          <div class="cx-item">
+            <div class="cx-name">Simulación de escenarios</div>
+            <div class="cx-desc">Futuros modelados antes del compromiso</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Estructura de decisión</div>
+            <div class="cx-desc">Árbol de consecuencias del movimiento</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Mapa de dependencias</div>
+            <div class="cx-desc">Red de variables acopladas en operación</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Asignación de capital</div>
+            <div class="cx-desc">Distribución óptima bajo restricciones</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Tensión crecimiento/margen</div>
+            <div class="cx-desc">Equilibrio entre escala y rentabilidad</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CALCULA — bottom-right -->
+      <div class="cx-zone cx-zone--right">
+        <div class="cx-title">CALCULA</div>
+        <div class="cx-sublabel">Lo que va a pasar</div>
+        <div class="cx-items">
+          <div class="cx-item">
+            <div class="cx-name">Punto de quiebre</div>
+            <div class="cx-desc">Umbral donde el sistema no se sostiene</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Ventana de corrección</div>
+            <div class="cx-desc">Tiempo disponible para revertir sin costo</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Motor contrafactual</div>
+            <div class="cx-desc">Qué hubiera pasado con otra decisión</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Costo real</div>
+            <div class="cx-desc">Costo total con consecuencias indirectas</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Multiplicador oculto</div>
+            <div class="cx-desc">Variable que amplifica el impacto en silencio</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EJECUTA — bottom, spans full width, pushed further down -->
+      <div class="cx-zone cx-zone--bottom">
+        <div class="cx-title">EJECUTA</div>
+        <div class="cx-sublabel">Lo que termina pasando</div>
+        <div class="cx-items">
+          <div class="cx-item">
+            <div class="cx-name">Aurora Ledger</div>
+            <div class="cx-desc">Registro estructural de decisiones tomadas</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Decision Replay</div>
+            <div class="cx-desc">Reconstrucción causal de ejecuciones pasadas</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Grafo decisional</div>
+            <div class="cx-desc">Mapa de nodos causales y dependencias vivas</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Presión de mercado</div>
+            <div class="cx-desc">Fuerza externa que modifica el plan activo</div>
+          </div>
+          <div class="cx-item">
+            <div class="cx-name">Estrés de margen</div>
+            <div class="cx-desc">Tensión acumulada sobre rentabilidad operativa</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cx-grid -->
+  </div><!-- /cx-outer -->
+
+  <!-- Bottom block: serrucho -->
+  <div class="cxb-outer">
+    <div class="cxb-panels">
+
+      <div class="cxb-panel cxb-panel--left">
+        <div class="cxb-lines">
+          <p class="cxb-line">ANÁLISIS DE MILLONES DE DATOS</p>
+          <p class="cxb-line">PATRONES REALES EN CONTEXTO</p>
+        </div>
+        <p class="cxb-badge">PROGRESO</p>
+      </div>
+
+      <div class="cxb-panel cxb-panel--right">
+        <p class="cxb-badge">INEVITABLE</p>
+        <div class="cxb-lines" style="text-align:right;">
+          <p class="cxb-line">MODELADO ESTRUCTURAL</p>
+          <p class="cxb-line">VELOCIDAD Y PRECISIÓN</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
+<script>
+(function () {
+  var triggered = false;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-up').forEach(function (el) {
+    observer.observe(el);
+  });
+
+  // Bottom block trigger
+  var blockObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting && !triggered) {
+        triggered = true;
+        var outer = entry.target;
+
+        // Slide panels in
+        outer.classList.add('revealed');
+
+        // Flash seam at ~700ms (when panels meet center)
+        setTimeout(function () {
+          outer.classList.add('flash');
+          // Remove flash after 180ms — instant on, instant off
+          setTimeout(function () {
+            outer.classList.remove('flash');
+          }, 180);
+        }, 700);
+      }
+    });
+  }, { threshold: 0.35 });
+
+  var cxbOuter = document.querySelector('.cxb-outer');
+  if (cxbOuter) blockObserver.observe(cxbOuter);
+})();
+</script>
+
+</body>
+</html>
