@@ -112,60 +112,116 @@ function systemSection(c: HomeContent): string {
   </section>`;
 }
 
+type CrossItem = { name: string; desc: string };
+type CrossZone = { title: string; label: string; items: CrossItem[] };
+
 function crossSection(): string {
-  const zones = {
+  // ESTUDIA → top   |  Lo que no estás viendo
+  // DISEÑA  → left  |  Lo que deberías hacer
+  // CALCULA → right |  Lo que va a pasar
+  // EJECUTA → bottom|  Lo que termina pasando
+  // Centro: VACÍO — la intersección es el espacio
+
+  const zones: Record<string, CrossZone> = {
     top: {
-      title: 'DISEÑA',
-      label: 'Lo que deberías hacer',
+      title: 'ESTUDIA',
+      label: 'Lo que no estás viendo',
       items: [
-        'Simulación de escenarios',
-        'Estructura de decisión',
-        'Mapa de dependencias',
-        'Asignación de capital',
-        'Tensión crecimiento/margen',
+        { name: 'Signal',               desc: 'Señal temprana de movimiento de mercado' },
+        { name: 'Demand Shift',          desc: 'Cambio real en demanda del segmento' },
+        { name: 'Lectura de audiencia',  desc: 'Estado del segmento bajo presión actual' },
+        { name: 'Presión de canal',      desc: 'Saturación y fricción por canal' },
+        { name: 'Quiebre de funnel',     desc: 'Nodo exacto donde falla la conversión' },
       ],
     },
     left: {
-      title: 'ESTUDIA',
-      label: 'Lo que no estás viendo',
-      items: ['Signal', 'Demand Shift', 'Lectura de audiencia', 'Presión de canal', 'Quiebre de funnel'],
-    },
-    center: {
-      title: 'EJECUTA',
-      label: 'Lo que termina pasando',
-      items: ['Aurora Ledger', 'Decision Replay', 'Grafo decisional', 'Presión de mercado', 'Estrés de margen'],
+      title: 'DISEÑA',
+      label: 'Lo que deberías hacer',
+      items: [
+        { name: 'Simulación de escenarios', desc: 'Futuros modelados antes del compromiso' },
+        { name: 'Estructura de decisión',   desc: 'Árbol de consecuencias del movimiento' },
+        { name: 'Mapa de dependencias',     desc: 'Red de variables acopladas en operación' },
+        { name: 'Asignación de capital',    desc: 'Distribución óptima bajo restricciones' },
+        { name: 'Tensión crecimiento/margen', desc: 'Equilibrio entre escala y rentabilidad' },
+      ],
     },
     right: {
       title: 'CALCULA',
       label: 'Lo que va a pasar',
-      items: ['Punto de quiebre', 'Ventana de corrección', 'Motor contrafactual', 'Costo real', 'Multiplicador oculto'],
+      items: [
+        { name: 'Punto de quiebre',       desc: 'Umbral donde el sistema no se sostiene' },
+        { name: 'Ventana de corrección',  desc: 'Tiempo disponible para revertir sin costo' },
+        { name: 'Motor contrafactual',    desc: 'Qué hubiera pasado con otra decisión' },
+        { name: 'Costo real',             desc: 'Costo total con consecuencias indirectas' },
+        { name: 'Multiplicador oculto',   desc: 'Variable que amplifica el impacto en silencio' },
+      ],
+    },
+    bottom: {
+      title: 'EJECUTA',
+      label: 'Lo que termina pasando',
+      items: [
+        { name: 'Aurora Ledger',    desc: 'Registro estructural de decisiones tomadas' },
+        { name: 'Decision Replay',  desc: 'Reconstrucción causal de ejecuciones pasadas' },
+        { name: 'Grafo decisional', desc: 'Mapa de nodos causales y dependencias vivas' },
+        { name: 'Presión de mercado', desc: 'Fuerza externa que modifica el plan activo' },
+        { name: 'Estrés de margen', desc: 'Tensión acumulada sobre rentabilidad operativa' },
+      ],
     },
   };
 
-  function renderZone(z: { title: string; label: string; items: string[] }, mod: string): string {
-    const items = z.items.map((i) => `<div class="cx-item">${escapeHtml(i)}</div>`).join('');
+  function renderItems(items: CrossItem[]): string {
+    return items
+      .map(
+        (item) => `
+        <div class="cx-item-wrap">
+          <div class="cx-name">${escapeHtml(item.name)}</div>
+          <div class="cx-desc">${escapeHtml(item.desc)}</div>
+        </div>`,
+      )
+      .join('');
+  }
+
+  function renderZone(key: string, mod: string): string {
+    const z = zones[key]!;
     return `
       <div class="cx-zone cx-zone--${mod}">
         <div class="cx-title">${escapeHtml(z.title)}</div>
-        <div class="cx-label">${escapeHtml(z.label)}</div>
-        <div class="cx-items">${items}</div>
+        <div class="cx-sublabel">${escapeHtml(z.label)}</div>
+        <div class="cx-items">${renderItems(z.items)}</div>
       </div>`;
   }
 
   return `
 <section id="cross" class="fade-up">
   <div class="cx-wrap">
-    <div class="cx-vline" aria-hidden="true"></div>
-    ${renderZone(zones.top, 'top')}
-    <div class="cx-hline" aria-hidden="true"></div>
-    <div class="cx-row">
-      ${renderZone(zones.left, 'left')}
-      ${renderZone(zones.center, 'center')}
-      ${renderZone(zones.right, 'right')}
+    <div class="cx-grid">
+      <div class="cx-vline" aria-hidden="true"></div>
+      <div class="cx-hline" aria-hidden="true"></div>
+      ${renderZone('top', 'top')}
+      ${renderZone('left', 'left')}
+      ${renderZone('right', 'right')}
+      ${renderZone('bottom', 'bottom')}
+    </div>
+  </div>
+
+  <!-- ── Bloque inferior: encastre serrucho ── -->
+  <div class="cxb-container">
+    <div class="cxb-panel cxb-panel--left">
+      <div>
+        <p class="cxb-line">ANÁLISIS DE MILLONES DE DATOS</p>
+        <p class="cxb-line">PATRONES REALES EN CONTEXTO</p>
+      </div>
+      <p class="cxb-badge">PROGRESO</p>
+    </div>
+    <div class="cxb-panel cxb-panel--right">
+      <div>
+        <p class="cxb-line">MODELADO ESTRUCTURAL</p>
+        <p class="cxb-line">VELOCIDAD Y PRECISIÓN</p>
+      </div>
+      <p class="cxb-badge">INEVITABLE</p>
     </div>
   </div>
 </section>`;
-}
 
 function invStairs(c: HomeContent): string {
   return c.inevitable.stairs

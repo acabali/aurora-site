@@ -416,148 +416,275 @@
       .gw-h, .gw-v { display: none; }
     }
 
-    /* ── Cross Section ── */
+    /* ══════════════════════════════════════
+       CROSS SECTION
+       ESTUDIA (top) · DISEÑA (left)
+       CALCULA (right) · EJECUTA (bottom)
+       Centro vacío — cruz real
+    ══════════════════════════════════════ */
+
     #cross {
-      padding: 100px 52px;
+      padding: 100px 52px 0;
       border-bottom: 1px solid rgba(235,235,223,0.08);
-      overflow: hidden;
     }
 
     .cx-wrap {
-      position: relative;
       max-width: 1200px;
       margin: 0 auto;
-      display: flex;
-      flex-direction: column;
     }
 
-    /* Vertical line — full section height */
+    /* ── 2×2 grid, zones overlap at corners ── */
+    .cx-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      min-height: 600px;
+      position: relative;
+    }
+
+    /* Cross lines */
     .cx-vline {
       position: absolute;
-      left: 50%;
-      top: 0;
-      bottom: 0;
+      left: 50%; top: 0; bottom: 0;
       width: 1px;
       background: rgba(235,235,223,0.09);
       pointer-events: none;
+      z-index: 0;
     }
-
-    /* Horizontal line — extends past wrap padding to section edges */
     .cx-hline {
+      position: absolute;
+      top: 50%;
+      left: -52px; right: -52px;
       height: 1px;
       background: rgba(235,235,223,0.09);
-      margin-left: -52px;
-      margin-right: -52px;
-      flex-shrink: 0;
       pointer-events: none;
+      z-index: 0;
     }
 
-    /* Top zone: DISEÑA */
+    /* ── Zone base ── */
+    .cx-zone {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ESTUDIA — top, spans both columns */
     .cx-zone--top {
-      display: flex;
-      flex-direction: column;
+      grid-column: 1 / 3;
+      grid-row: 1;
+      z-index: 2;
       align-items: center;
+      justify-content: flex-end;   /* items push down toward center line */
       text-align: center;
-      padding: 20px 0 56px;
-      position: relative;
-      z-index: 1;
+      padding-bottom: 48px;
+      padding-top: 16px;
     }
 
-    /* Bottom row */
-    .cx-row {
-      display: grid;
-      grid-template-columns: 1fr 200px 1fr;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* Left zone: ESTUDIA */
+    /* DISEÑA — left, spans both rows */
     .cx-zone--left {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
+      grid-column: 1;
+      grid-row: 1 / 3;
+      z-index: 1;
+      align-items: flex-end;       /* items push right toward vertical line */
+      justify-content: center;
       text-align: right;
-      padding: 56px 52px 40px 0;
+      padding-right: 52px;
     }
 
-    /* Center zone: EJECUTA */
-    .cx-zone--center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 56px 8px 40px;
-    }
-
-    /* Right zone: CALCULA */
+    /* CALCULA — right, spans both rows */
     .cx-zone--right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      grid-column: 2;
+      grid-row: 1 / 3;
+      z-index: 1;
+      align-items: flex-start;     /* items pull from vertical line */
+      justify-content: center;
       text-align: left;
-      padding: 56px 0 40px 52px;
+      padding-left: 52px;
     }
 
-    /* Zone title (DISEÑA / ESTUDIA / CALCULA / EJECUTA) */
+    /* EJECUTA — bottom, spans both columns */
+    .cx-zone--bottom {
+      grid-column: 1 / 3;
+      grid-row: 2;
+      z-index: 2;
+      align-items: center;
+      justify-content: flex-start; /* items pull up toward center line */
+      text-align: center;
+      padding-top: 48px;
+      padding-bottom: 16px;
+    }
+
+    /* ── Zone header ── */
     .cx-title {
-      font-family: var(--display);
-      font-size: 30px;
-      letter-spacing: 0.14em;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
       color: var(--paper);
-      line-height: 1;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
-
-    /* Zone sub-label */
-    .cx-label {
+    .cx-sublabel {
       font-family: var(--mono);
-      font-size: 9px;
-      letter-spacing: 0.20em;
+      font-size: 8px;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(235,235,223,0.26);
-      margin-bottom: 28px;
+      color: rgba(235,235,223,0.22);
+      margin-bottom: 22px;
     }
 
-    /* Items */
+    /* ── Items ── */
     .cx-items {
       display: flex;
       flex-direction: column;
-      gap: 13px;
+      gap: 0;
     }
 
-    .cx-item {
-      font-family: var(--text);
-      font-size: 15px;
-      font-weight: 300;
-      color: rgba(235,235,223,0.52);
-      line-height: 1;
-      transition: color 0.22s ease, letter-spacing 0.22s ease;
+    .cx-item-wrap {
+      margin-bottom: 13px;
       cursor: default;
     }
 
-    .cx-item:hover {
-      color: var(--paper);
-      letter-spacing: 0.01em;
+    /* Product name */
+    .cx-name {
+      font-family: var(--text);
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(235,235,223,0.50);
+      line-height: 1;
+      display: inline-block;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition:
+        color 0.22s ease,
+        letter-spacing 0.22s ease,
+        border-color 0.22s ease;
     }
 
-    /* Mobile */
+    /* Short description — hidden at rest */
+    .cx-desc {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      color: transparent;
+      line-height: 1.4;
+      max-height: 0;
+      overflow: hidden;
+      transition:
+        color 0.25s ease 0.04s,
+        max-height 0.3s ease;
+    }
+
+    /* Hover state */
+    .cx-item-wrap:hover .cx-name {
+      color: var(--paper);
+      letter-spacing: 0.018em;
+      border-bottom-color: rgba(96, 165, 250, 0.50); /* blue-400 @ 50% */
+    }
+    .cx-item-wrap:hover .cx-desc {
+      color: rgba(235,235,223,0.38);
+      max-height: 28px;
+      margin-top: 4px;
+    }
+
+    /* ══════════════════════════════════════
+       BOTTOM BLOCK — encastre serrucho
+    ══════════════════════════════════════ */
+    .cxb-container {
+      position: relative;
+      min-height: 190px;
+      margin: 0 -52px;
+      overflow: hidden;
+    }
+
+    /* Both panels: full-width absolute, background #000 over #080808 section */
+    .cxb-panel {
+      position: absolute;
+      inset: 0;
+      background: #000;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 60px;
+    }
+
+    /* LEFT panel — teeth point right at 52-53% */
+    .cxb-panel--left {
+      align-items: flex-start;
+      text-align: left;
+      clip-path: polygon(
+        0%   0%,
+        50%  0%,
+        53%  25%,
+        50%  50%,
+        53%  75%,
+        50%  100%,
+        0%   100%
+      );
+    }
+
+    /* RIGHT panel — teeth mirror left (gaps match) */
+    .cxb-panel--right {
+      align-items: flex-end;
+      text-align: right;
+      padding-left: 55%; /* push content into right half */
+      clip-path: polygon(
+        50%  0%,
+        100% 0%,
+        100% 100%,
+        50%  100%,
+        47%  75%,
+        50%  50%,
+        47%  25%
+      );
+    }
+
+    /* 4 gold lines — identical hierarchy */
+    .cxb-line {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      line-height: 1.45;
+    }
+
+    /* PROGRESO / INEVITABLE labels */
+    .cxb-badge {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.30em;
+      text-transform: uppercase;
+      color: rgba(200,168,75,0.38);
+    }
+
+    /* ── Mobile ── */
     @media (max-width: 900px) {
-      #cross { padding: 80px 24px; }
+      #cross { padding: 80px 24px 0; }
+
+      .cx-grid {
+        display: flex;
+        flex-direction: column;
+        min-height: unset;
+        gap: 0;
+      }
+
       .cx-vline { display: none; }
-      .cx-hline { margin-left: -24px; margin-right: -24px; }
-      .cx-row {
-        grid-template-columns: 1fr;
-        gap: 48px;
+      .cx-hline { display: none; }
+
+      .cx-zone {
+        align-items: center !important;
+        justify-content: flex-start !important;
+        text-align: center !important;
+        padding: 40px 0 !important;
+        border-bottom: 1px solid rgba(235,235,223,0.07);
       }
-      .cx-zone--left,
-      .cx-zone--center,
-      .cx-zone--right {
-        align-items: center;
-        text-align: center;
-        padding: 40px 0;
-        border-top: 1px solid rgba(235,235,223,0.08);
-      }
+
+      .cxb-container { margin: 0 -24px; }
+      .cxb-panel { position: static; min-height: 130px; clip-path: none !important; }
+      .cxb-panel--right { padding-left: 60px; text-align: left; align-items: flex-start; }
     }
   </style>
 </head>
