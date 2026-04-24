@@ -85,10 +85,10 @@ export const homeContent: Record<Locale, HomeContent> = {
     navCta: "Ver qué rompe tu próximo movimiento →",
     hero: {
       kicker: "Aurora",
-      h1Line1: "La mente humana tiene un límite.",
-      h1Line2: "La realidad no.",
+      h1Line1: "Ya tomaste la decisión.",
+      h1Line2: "No sabés cuánto te va a costar.",
       statementHtml:
-        "Cada decisión que tomás tiene consecuencias que no calculaste.<br/>No porque seas negligente. Porque no se puede a mano.<br/><br/><strong>Aurora lo calcula. Antes de que muevas un peso.</strong>",
+        "Aurora calcula el impacto real de una decisión antes de que comprometas capital.<br/><br/><strong>No analiza lo que pasó. Interviene antes de que pase.</strong>",
       cta: "Ver qué rompe tu próximo movimiento →",
       note: "Sin registro · Solo el cálculo",
     },
@@ -216,10 +216,10 @@ export const homeContent: Record<Locale, HomeContent> = {
     navCta: "See what your next move breaks →",
     hero: {
       kicker: "Aurora",
-      h1Line1: "The human mind has a limit.",
-      h1Line2: "Reality does not.",
+      h1Line1: "You’ve already made the decision.",
+      h1Line2: "You just don’t know what it costs yet.",
       statementHtml:
-        "Every decision you make has consequences you did not compute.<br/>Not because you were negligent. Because it cannot be done by hand.<br/><br/><strong>Aurora computes it. Before you move weight.</strong>",
+        "Aurora computes the real impact of a decision before you commit capital.<br/><br/><strong>It does not analyze the past. It intervenes before execution.</strong>",
       cta: "See what your next move breaks →",
       note: "No account · Computation only",
     },
