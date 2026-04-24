@@ -15,6 +15,22 @@ export interface OutputItem {
   body: string;
 }
 
+export interface ProductSystemBlock {
+  num: string;
+  title: string;
+  signalKey: string;
+  tagline: string;
+  points: string[];
+  whyEyebrow: string;
+  whyPoints: string[];
+}
+
+export interface ProductSystem {
+  navEyebrow: string;
+  topLines: string[];
+  blocks: ProductSystemBlock[];
+}
+
 export interface FooterNavLink {
   label: string;
   href: "home" | "demo";
@@ -53,6 +69,7 @@ export interface HomeContent {
     desc: string;
     items: OutputItem[];
   };
+  productSystem?: ProductSystem;
   systemDef: [string, string, string, string];
   inevitable: {
     eyebrow: string;
@@ -171,6 +188,126 @@ export const homeContent: Record<Locale, HomeContent> = {
         {
           title: "Cuándo deja de ser reversible",
           body: "El punto donde la marcha atrás ya no cierra sin costo nuevo.",
+        },
+      ],
+    },
+    productSystem: {
+      navEyebrow: "Sistema · 06 módulos",
+      topLines: [
+        "Aurora cruza millones de datos reales de operaciones.",
+        "Analiza patrones históricos de comportamiento.",
+        "Aplica modelos matemáticos para entender cómo interactúan las variables.",
+        "Usa modelos estructurales para simular resultados.",
+        "Y conecta todo en un sistema que calcula qué va a pasar antes de que el capital se mueva.",
+      ],
+      blocks: [
+        {
+          num: "01",
+          title: "Grafo de costos invisibles",
+          signalKey: "capital_delta",
+          tagline: "👉 O ves todos los costos o tu margen ya está comprometido",
+          points: [
+            "Identifica costos que no aparecen en tu estructura actual",
+            "Detecta dónde el gasto no retorna capital",
+            "Calcula el impacto total por operación (no parcial)",
+            "Prioriza qué costos eliminar para recuperar margen",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "Conecta costos, operación y datos reales en un mismo sistema",
+            "Detecta patrones que no aparecen en ningún reporte",
+            "No depende de cómo cargás la información, calcula comportamiento real",
+          ],
+        },
+        {
+          num: "02",
+          title: "Motor de rentabilidad comercial",
+          signalKey: "margin_pressure",
+          tagline: "👉 O cada venta deja capital o lo destruye",
+          points: [
+            "Calcula la ganancia real por cliente y canal",
+            "Detecta ventas con margen negativo aunque facturen",
+            "Identifica qué parte del negocio erosiona rentabilidad",
+            "Define qué sostener, escalar o cortar",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "Integra marketing, operación y finanzas en un solo cálculo",
+            "Rompe la lógica de ROAS aislado",
+            "Mide impacto en caja, no métricas intermedias",
+          ],
+        },
+        {
+          num: "03",
+          title: "Radar de solvencia",
+          signalKey: "solvency_window",
+          tagline: "👉 O tu caja aguanta o el negocio entra en riesgo",
+          points: [
+            "Proyecta liquidez real en el corto plazo",
+            "Detecta presión sobre caja antes de que aparezca",
+            "Identifica cuándo no podés sostener la operación",
+            "Define límites para no comprometer capital",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "No mira el pasado, proyecta comportamiento futuro",
+            "Cruza ingresos, costos y timing real de caja",
+            "Anticipa el problema antes de que sea visible",
+          ],
+        },
+        {
+          num: "04",
+          title: "Motor de precio real",
+          signalKey: "price_elasticity",
+          tagline: "👉 O el precio sostiene el negocio o lo debilita",
+          points: [
+            "Detecta si el precio cubre todos los costos reales",
+            "Calcula impacto en margen ante cambios de precio",
+            "Identifica cuándo el precio funciona en chico y falla al escalar",
+            "Define rangos sostenibles de precio",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "Modela interacción entre precio, volumen y costos",
+            "No depende de pruebas manuales ni intuición",
+            "Calcula resultado real, no hipótesis",
+          ],
+        },
+        {
+          num: "05",
+          title: "Motor de compromiso de capital",
+          signalKey: "commit_load",
+          tagline: "👉 O invertís con retorno o comprometés capital a ciegas",
+          points: [
+            "Simula impacto de contratar, expandir o invertir",
+            "Calcula retorno y presión sobre caja antes de ejecutar",
+            "Detecta si la estructura soporta la decisión",
+            "Define condiciones mínimas para avanzar",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "Ejecuta escenarios antes de que ocurran",
+            "Usa datos comparables reales, no supuestos",
+            "Convierte decisiones en resultados medibles antes de invertir",
+          ],
+        },
+        {
+          num: "06",
+          title: "Índice de presión operativa",
+          signalKey: "op_pressure_index",
+          tagline: "👉 O el negocio es sostenible o se está tensionando",
+          points: [
+            "Detecta dónde el sistema empieza a fallar",
+            "Mide carga operativa vs capacidad real",
+            "Identifica cuellos de botella críticos",
+            "Define cuándo el crecimiento deja de ser viable",
+          ],
+          whyEyebrow: "Por qué Aurora lo hace mejor",
+          whyPoints: [
+            "Condensa múltiples variables en un estado claro",
+            "Detecta patrones de deterioro antes de que escalen",
+            "Muestra el sistema completo, no partes aisladas",
+          ],
         },
       ],
     },

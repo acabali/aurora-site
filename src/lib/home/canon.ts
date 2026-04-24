@@ -7,6 +7,7 @@ import {
   homeContent,
   type HomeContent,
   type Locale,
+  type ProductSystem,
 } from "./homeContent.ts";
 
 type HomeLocale = Locale;
@@ -96,6 +97,79 @@ function outputItems(c: HomeContent): string {
     .join("");
 }
 
+function renderLegacyOutputs(c: HomeContent): string {
+  return `<section id="queHace" class="section">
+  <div class="section-inner">
+    <div class="eyebrow qh-intro fade-up">${escapeHtml(c.outputs.intro)}</div>
+    <h2 class="qh-headline fade-up">${escapeHtml(c.outputs.headline)}</h2>
+    <p class="qh-desc fade-up">${escapeHtml(c.outputs.desc)}</p>
+    <div class="qh-outputs" id="qh-outputs">
+      ${outputItems(c)}
+    </div>
+  </div>
+</section>`;
+}
+
+function renderProductSystem(ps: ProductSystem): string {
+  const navItems = ps.blocks
+    .map(
+      (b, i) => `
+        <div class="ps-nav-item fade-up" data-ps-nav-item data-idx="${i}" role="button" tabindex="0">
+          <span class="ps-nav-num">${escapeHtml(b.num)}</span>
+          <span class="ps-nav-label">${escapeHtml(b.title)}</span>
+        </div>`,
+    )
+    .join("");
+
+  const blocks = ps.blocks
+    .map(
+      (b, i) => `
+      <article class="ps-block" data-ps-block="${i}">
+        <div class="ps-block-line"></div>
+        <div class="ps-block-meta">
+          <span class="ps-block-num">${escapeHtml(b.num)}</span>
+          <span class="ps-block-signal">signal_key: ${escapeHtml(b.signalKey)}</span>
+        </div>
+        <h3 class="ps-block-title">${escapeHtml(b.title)}</h3>
+        <p class="ps-block-tagline">${escapeHtml(b.tagline)}</p>
+        <ul class="ps-block-points">
+          ${b.points.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}
+        </ul>
+        <div class="ps-block-why">
+          <div class="ps-block-why-eyebrow">${escapeHtml(b.whyEyebrow)}</div>
+          <ul class="ps-block-why-list">
+            ${b.whyPoints.map((p) => `<li>${escapeHtml(p)}</li>`).join("")}
+          </ul>
+        </div>
+      </article>`,
+    )
+    .join("");
+
+  const topLines = ps.topLines
+    .map((line) => `<span>${escapeHtml(line)}</span>`)
+    .join("");
+
+  return `<section id="productSystem" class="section">
+  <div class="section-inner">
+    <p class="ps-top fade-up">${topLines}</p>
+    <div class="ps-grid">
+      <aside class="ps-nav fade-up" data-ps-sidebar>
+        <div class="ps-nav-eyebrow">${escapeHtml(ps.navEyebrow)}</div>
+        <div class="ps-nav-list">${navItems}
+        </div>
+      </aside>
+      <div class="ps-content">${blocks}
+      </div>
+    </div>
+  </div>
+</section>`;
+}
+
+function productSystemSection(c: HomeContent): string {
+  if (c.productSystem) return renderProductSystem(c.productSystem);
+  return renderLegacyOutputs(c);
+}
+
 function systemSection(c: HomeContent): string {
   const lines = c.systemDef;
   const parts = lines.map((text, i) => {
@@ -162,10 +236,7 @@ function injectHomeBody(body: string, locale: HomeLocale): string {
     COMP_ITEMS: compItems(c),
     COMP_BOTTOM_BIG: escapeHtml(c.complexity.bottomBig),
     COMP_BOTTOM_ACCENT: escapeHtml(c.complexity.bottomAccent),
-    OUTPUTS_INTRO: escapeHtml(c.outputs.intro),
-    OUTPUTS_HEADLINE: escapeHtml(c.outputs.headline),
-    OUTPUTS_DESC: escapeHtml(c.outputs.desc),
-    OUTPUT_ITEMS: outputItems(c),
+    PRODUCT_SYSTEM_SECTION: productSystemSection(c),
     SYSTEM_SECTION: systemSection(c),
     INV_EYEBROW: escapeHtml(c.inevitable.eyebrow),
     INV_HEADLINE: escapeHtml(c.inevitable.headline),

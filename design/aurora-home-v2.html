@@ -276,6 +276,181 @@
       padding-top: 10px;
     }
 
+    #productSystem {
+      padding: 96px 52px;
+      border-bottom: 1px solid rgba(235,235,223,0.08);
+      background-image:
+        linear-gradient(rgba(235,235,223,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(235,235,223,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
+      background-position: -1px -1px;
+    }
+    #productSystem .section-inner { max-width: 1200px; margin: 0 auto; }
+
+    .ps-top {
+      font-family: var(--text);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--paper);
+      max-width: 760px;
+      margin: 0 0 88px;
+      font-weight: 300;
+    }
+    .ps-top span { display: block; }
+    .ps-top span + span { margin-top: 2px; }
+
+    .ps-grid {
+      display: grid;
+      grid-template-columns: 30% 1fr;
+      align-items: stretch;
+      border-top: 1px solid var(--line);
+    }
+
+    .ps-nav {
+      position: sticky;
+      top: 40px;
+      align-self: start;
+      padding: 32px 0;
+      border-right: 1px solid var(--line);
+      background: rgba(0,0,0,0.35);
+    }
+    .ps-nav-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(235,235,223,0.6);
+      margin: 0 0 24px 24px;
+    }
+    .ps-nav-list { display: flex; flex-direction: column; }
+    .ps-nav-item {
+      display: grid;
+      grid-template-columns: 36px 1fr;
+      gap: 12px;
+      padding: 16px 24px 16px 22px;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+      transition: color 200ms ease, border-color 200ms ease, background-color 200ms ease;
+      color: rgba(235,235,223,0.72);
+    }
+    .ps-nav-item:hover {
+      color: var(--paper);
+      background: rgba(235,235,223,0.03);
+    }
+    .ps-nav-item:focus-visible {
+      outline: 1px solid var(--gold);
+      outline-offset: -2px;
+    }
+    .ps-nav-item[data-active] {
+      color: var(--paper);
+      border-left-color: var(--gold);
+      background: rgba(200,168,75,0.07);
+    }
+    .ps-nav-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: rgba(235,235,223,0.55);
+    }
+    .ps-nav-item[data-active] .ps-nav-num { color: var(--gold); }
+    .ps-nav-label {
+      font-family: var(--text);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    .ps-nav-item[data-active] .ps-nav-label { font-weight: 500; }
+
+    .ps-content {
+      padding: 40px 0 40px 56px;
+      min-height: 520px;
+    }
+    .ps-block { display: none; }
+    .ps-block[data-active] {
+      display: block;
+      animation: ps-fade-in 320ms ease both;
+    }
+    @keyframes ps-fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .ps-block-line {
+      width: 64px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 24px;
+    }
+    .ps-block-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .ps-block-num {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      color: var(--gold);
+    }
+    .ps-block-signal {
+      margin-left: auto;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: rgba(235,235,223,0.5);
+    }
+    .ps-block-title {
+      font-family: var(--display);
+      font-size: clamp(36px, 4.4vw, 56px);
+      line-height: 0.98;
+      text-transform: uppercase;
+      color: var(--paper);
+      margin: 0 0 22px;
+    }
+    .ps-block-tagline {
+      font-size: 16px;
+      line-height: 1.55;
+      color: var(--paper);
+      font-weight: 300;
+      max-width: 580px;
+      margin: 0 0 32px;
+    }
+    .ps-block-points,
+    .ps-block-why-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .ps-block-points li {
+      padding: 14px 0;
+      border-top: 1px solid var(--line);
+      font-size: 15px;
+      color: var(--paper);
+      line-height: 1.55;
+    }
+    .ps-block-points li:last-child { border-bottom: 1px solid var(--line); }
+    .ps-block-why {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid rgba(200,168,75,0.3);
+    }
+    .ps-block-why-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .ps-block-why-list li {
+      padding: 10px 0;
+      font-size: 14px;
+      color: rgba(235,235,223,0.82);
+      line-height: 1.55;
+    }
+
     #inevitable .inv-wrap {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -414,6 +589,39 @@
       #inevitable .inv-wrap { grid-template-columns: 1fr; gap: 40px; }
       footer { flex-direction: column; align-items: flex-start; }
       .gw-h, .gw-v { display: none; }
+      #productSystem { padding: 64px 24px; background-size: 48px 48px; }
+      .ps-top { margin-bottom: 48px; font-size: 15px; }
+      .ps-grid { grid-template-columns: 1fr; border-top: none; }
+      .ps-nav {
+        position: static;
+        padding: 0 0 24px 0;
+        border-right: none;
+        border-bottom: 1px solid var(--line);
+        background: transparent;
+      }
+      .ps-nav-eyebrow { margin: 0 0 14px 0; }
+      .ps-nav-list {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 8px;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+      }
+      .ps-nav-list::-webkit-scrollbar { display: none; }
+      .ps-nav-item {
+        flex: 0 0 auto;
+        grid-template-columns: auto auto;
+        gap: 8px;
+        padding: 10px 14px;
+        border-left: none;
+        border: 1px solid var(--line);
+      }
+      .ps-nav-item[data-active] {
+        border: 1px solid var(--gold);
+        background: rgba(200,168,75,0.08);
+      }
+      .ps-content { padding: 28px 0 0 0; min-height: 0; }
+      .ps-block-signal { display: none; }
     }
   </style>
 </head>
@@ -485,16 +693,7 @@
   </div>
 </section>
 
-<section id="queHace" class="section">
-  <div class="section-inner">
-    <div class="eyebrow qh-intro fade-up">{{OUTPUTS_INTRO}}</div>
-    <h2 class="qh-headline fade-up">{{OUTPUTS_HEADLINE}}</h2>
-    <p class="qh-desc fade-up">{{OUTPUTS_DESC}}</p>
-    <div class="qh-outputs" id="qh-outputs">
-      {{OUTPUT_ITEMS}}
-    </div>
-  </div>
-</section>
+{{PRODUCT_SYSTEM_SECTION}}
 
 {{SYSTEM_SECTION}}
 
@@ -579,6 +778,46 @@
     });
   });
   applyOutputExpand(0);
+
+  (function () {
+    const sidebar = document.querySelector('[data-ps-sidebar]');
+    const blocks = document.querySelectorAll('[data-ps-block]');
+    if (!sidebar || !blocks.length) return;
+    const items = sidebar.querySelectorAll('[data-ps-nav-item]');
+
+    const setActive = (idx) => {
+      items.forEach((el, i) => {
+        if (i === idx) el.setAttribute('data-active', '');
+        else el.removeAttribute('data-active');
+      });
+      blocks.forEach((el, i) => {
+        if (i === idx) el.setAttribute('data-active', '');
+        else el.removeAttribute('data-active');
+      });
+    };
+
+    items.forEach((item, i) => {
+      item.addEventListener('click', () => setActive(i));
+      item.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setActive(i);
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          const next = Math.min(i + 1, items.length - 1);
+          items[next].focus();
+          setActive(next);
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          const prev = Math.max(i - 1, 0);
+          items[prev].focus();
+          setActive(prev);
+        }
+      });
+    });
+
+    setActive(0);
+  })();
 
   const nav = document.getElementById('nav');
   window.addEventListener('scroll', () => {
