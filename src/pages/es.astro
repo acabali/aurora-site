@@ -1,0 +1,20 @@
+---
+import { getCanonicalHomePage } from "../lib/home/canon.ts";
+
+const home = getCanonicalHomePage("es");
+---
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{home.title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <style is:global set:html={home.styles}></style>
+  </head>
+  <body>
+    <Fragment set:html={home.bodyHtml} />
+    <script is:inline set:html={home.script}></script>
+  </body>
+</html>
