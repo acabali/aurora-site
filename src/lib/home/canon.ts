@@ -124,7 +124,7 @@ function renderProductSystem(ps: ProductSystem): string {
   const blocks = ps.blocks
     .map(
       (b, i) => `
-      <article class="ps-block fade-up" data-ps-block="${i}">
+      <article class="ps-block" data-ps-block="${i}">
         <div class="ps-block-line"></div>
         <div class="ps-block-meta">
           <span class="ps-block-num">${escapeHtml(b.num)}</span>
