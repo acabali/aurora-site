@@ -1,0 +1,15 @@
+{
+  "clarity_score": null,
+  "executive_summary_rewritten": null,
+  "complexity_reduction_pct": null,
+  "jargon_removed": [],
+  "decision_one_liner": null,
+  "business_risk_summary": null,
+  "meta": {
+    "agent": "ExecutiveClarityAgent",
+    "version": "1.0.0",
+    "evaluated_at": null,
+    "pass": null,
+    "note": "Populated at runtime by aurora_orchestrator_v2"
+  }
+}

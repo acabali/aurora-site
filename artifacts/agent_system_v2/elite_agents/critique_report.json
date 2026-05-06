@@ -1,0 +1,17 @@
+{
+  "critique_score": null,
+  "hidden_assumptions": [],
+  "strategic_risks": [],
+  "weak_reasoning": [],
+  "contradiction_flags": [],
+  "generic_output_risk": null,
+  "executive_confidence": null,
+  "recommendation": null,
+  "meta": {
+    "agent": "StrategicCriticAgent",
+    "version": "1.0.0",
+    "evaluated_at": null,
+    "input_hash": null,
+    "note": "Populated at runtime by aurora_orchestrator_v2"
+  }
+}
